@@ -1,0 +1,34 @@
+<HTML>
+	<HEAD>
+		<title>Example API client</title>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	</HEAD>
+	<BODY>
+		<div style="width: 450px"><p>Simple example of using Node+Express, hit F12 to monitor network calls by going to the network tab and filtering for XHR. Check the request and response of the call as well as seeing how it works by going to api.js, feel free to mess around with it.</p></div>
+		<label for="name">Enter your name here or leave it blank</label> 
+		<input type="text" name="name" id="name">
+		<br><br>
+		<button onclick="javascript:getClicked()">Click here to make a get call</button>
+		<button onclick="javascript:postClicked()">Click here to make a post call</button>
+		<script type="text/javascript">
+			function getClicked(){
+				$.get(
+					"./api/hello",
+					{name : document.getElementById('name').value},
+					function(data) {
+						alert('API response: ' + JSON.stringify(data));
+					}
+				);
+			}
+			function postClicked(){
+				$.post(
+					"./api/hello",
+					{name : document.getElementById('name').value},
+					function(data) {
+						alert('API response: ' + JSON.stringify(data));
+					}
+				);
+			}
+		</script>
+	</BODY>
+</HTML>
