@@ -1,0 +1,1 @@
+This is a folder for creating JS files as helpers that you import and use in the APIs.
