@@ -3,11 +3,6 @@ var path = require('path');
 var http = require('http');
 var bodyParse = require('body-parser');
 
-var pg = require('pg');
-var conString = "postgres://postgres:123@localhost:5432/pickup";
-var client = new pg.Client(conString);
-client.connect();
-
 var api = require('./api/api');
 
 var app = express();
