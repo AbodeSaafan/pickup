@@ -6,11 +6,13 @@ module.exports = {
 	checkEmailUniqueness(email){
 		client.connect();
 		client.query('SELECT * FROM users WHERE email = $1', [email], (err, res) => {
-  			console.log(err ? err.stack : res.rows[0].message);
   			client.end();
+  			if (res.rows.length != 0){
+  				throw new Error("Email is not unique")
+  			}
 		});
 	},
-	registerUser(userId, reqBody){
+	registerUser(user){
 		client.connect();
 		// register user here
 		client.end();

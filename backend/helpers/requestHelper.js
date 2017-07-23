@@ -1,4 +1,4 @@
-var usernameRegex = /^[a-z0-9]{4,10}$/;
+var nicknameRegex = /^[a-z0-9]{4,10}$/;
 var passwordRegex = /^[a-z0-9A-Z]{6,20}$/;
 var nameRegex = /^[a-zA-Z]*$/;
 var genderRegex = /^[m|f|o]$/;
@@ -8,9 +8,9 @@ var emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@
 
 module.exports = {
 	validateRegisterRequest(data){
-		if(!(data.username && usernameRegex.test(data.username))){
-			console.log(data.username);
-			throw new Error("Invalid username");
+		if(!(data.nickname && nicknameRegex.test(data.nickname))){
+			console.log(data.nickname);
+			throw new Error("Invalid nickname");
 		}
 		if(!(data.password && passwordRegex.test(data.password))){
 			throw new Error("Invalid password");	

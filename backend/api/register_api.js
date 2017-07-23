@@ -5,27 +5,35 @@ var tokenHelper = require('../helpers/tokenHelper');
 var requestHelper = require('../helpers/requestHelper');
 var databaseHelper = require('../helpers/databaseHelper');
 var md5 = require('md5');
+var crypto = require('crypto');
 
 router.post('/', function(req, res){
-	console.log(req.body);
+	var user = req.body;
 
-	requestHelper.validateRegisterRequest(req.body); // Validate
-	databaseHelper.checkEmailUniqueness(req.body.email); // Email uniqueness
+	requestHelper.validateRegisterRequest(user);
+	databaseHelper.checkEmailUniqueness(user);
 
-	var userId = generateUserId(req.body.username); // Generate user id
+	user.userId = generateUserId(user.email);
+	user.salt = generateSalt();
+	user.hashedPassword = md5(user.salt + user.userId + user.password);
+	
+	databaseHelper.registerUser(user);
 
-	databaseHelper.registerUser(userId, req.body); // Register the user in the db
+	var token = tokenHelper.createTokenForUser(user.userId, user.email); // Auth token
+	// var vtoken = tokenHelper.verifyToken(token); // Verify token (debug)
+	
+	res.status(200);
+	res.json({'token':token});
 
-	var token = tokenHelper.createTokenForUser(userId, req.body.username); // Auth token
-	var vtoken = tokenHelper.verifyToken(token); // Verify token (debug)
-	res.status(200); // Response code
-	res.json({'token':token, 'verified token':vtoken}); // Response data
-	console.log("GET /register has been processed"); // Helpful log message
+	console.log("GET /register has been processed");
 });
 
-function generateUserId(username){
-	return md5(new Date().getUTCMilliseconds() + username);
+function generateUserId(email){
+	return md5(new Date().getUTCMilliseconds() + email);
 }
 
+function generateSalt(){
+	return crypto.randomBytes(40).toString('hex');
+}
 
 module.exports = router;

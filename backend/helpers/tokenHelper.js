@@ -3,8 +3,8 @@ var fs = require('fs');
 var cert = fs.readFileSync('api/private.key');
 
 module.exports = {
-	createTokenForUser(user_id, username) {
-		var payload = {user_id: user_id, username: username};
+	createTokenForUser(user_id, email) {
+		var payload = {user_id: user_id, email: email};
 		var expiry = {expiresIn: '1h'};
 		return jwt.sign(payload, cert, expiry);
 	},
