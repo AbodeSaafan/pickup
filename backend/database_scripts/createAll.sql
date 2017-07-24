@@ -1,3 +1,3 @@
 BEGIN;
-\i tableCreationSample.sql
+\i login_register_tables.sql
 COMMIT;
