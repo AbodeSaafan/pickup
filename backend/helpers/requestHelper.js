@@ -7,26 +7,25 @@ var emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@
 
 
 module.exports = {
-	validateRegisterRequest(data){
-		if(!(data.nickname && nicknameRegex.test(data.nickname))){
-			console.log(data.nickname);
+	validateAndCleanRegisterRequest(data){
+		if(!(data.nickname && (data.nickname = data.nickname.trim()) && nicknameRegex.test(data.nickname))){
 			throw new Error("Invalid nickname");
 		}
 		if(!(data.password && passwordRegex.test(data.password))){
 			throw new Error("Invalid password");	
 		}
-		if(!(data.fname && data.lname && nameRegex.test(data.fname) && nameRegex.test(data.lname))){
+		if(!(data.fname && data.lname && (data.fname = data.fname.trim()) && (data.lname = data.lname.trim()) && nameRegex.test(data.fname) && nameRegex.test(data.lname))){
 			throw new Error("Invalid name");
 		}
-		if(!(data.gender && genderRegex.test(data.gender))){
+		if(!(data.gender && (data.gender = data.gender.trim()) && genderRegex.test(data.gender))){
 			throw new Error("Invalid gender parameter");	
 		}
-		if(!(data.dob && dateRegex.test(data.dob))){
+		if(!(data.dob && (data.dob = data.dob.trim()) && dateRegex.test(data.dob))){
 			throw new Error("Invalid date of birth");	
 		}
-		if(!(data.email && emailRegex.test(data.email))){
+		if(!(data.email && (data.email = data.email.trim()) && emailRegex.test(data.email))){
 			throw new Error("Invalid email");	
 		}
-		return true;
+		return data;
 	}
 }
