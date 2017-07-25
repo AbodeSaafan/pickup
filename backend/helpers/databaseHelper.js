@@ -28,10 +28,8 @@ module.exports = {
 				pool.end();
 			});
 		});
-	}
-}
-
-function getUserId(email, callback){
+	},
+	getUserId(email, callback){
 	var queryString = "SELECT user_id FROM users WHERE email =  '" + email + "';";
 
 	const pool = new pg.Pool({connectionString: conString});
@@ -39,11 +37,14 @@ function getUserId(email, callback){
 	pool.connect((err, client, done) => {
 		client.query(queryString, (err, res) => {
   			if(res.rows[0]){
-  				done();
-  				return res.rows[0].email;
+  				callback(res.rows[0].user_id);
+  			} else {
+  				console.log("Failed to get user id");
+				callback(false);
   			}
+  			done();
+  			pool.end();
 		});
-		console.log("Failed to get user id");
-		done();
 	});
+	}
 }
