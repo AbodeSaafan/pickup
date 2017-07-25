@@ -12,9 +12,13 @@
     "nodemon": "^1.11.0",
     "pg": "^6.4.0"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "frisby": "^0.8.5",
+    "jasmine-node": "^1.14.5"
+  },
   "scripts": {
-    "start": "nodemon server.js"
+    "start": "nodemon server.js",
+    "test": "jasmine-node .\\tests\\"
   },
   "license": "ISC"
 }
