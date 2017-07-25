@@ -36,8 +36,8 @@ router.post('/', function(req, res){
 					res.json({'error': registerError });
 				}
 			});
+			console.log("GET /register has been processed");
 		}
-		console.log("GET /register has been processed");
 	});
 });
 

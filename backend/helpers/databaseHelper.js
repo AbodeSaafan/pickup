@@ -16,14 +16,13 @@ module.exports = {
 		});
 	},
 	registerUser(user, callback){
-		var queryString = "INSERT INTO users(nickname, fname, lname, dob, gender, email, password, salt) VALUES(" + 
-		user.nickname + ", " + user.fname + ", " + user.lname + ", " + user.dob + ", " +
-		user.gender + ", " + user.email + ", " + user.hashedPassword + ", " + user.salt + ");";
+		var queryString = "INSERT INTO users(nickname, fname, lname, dob, gender, email, password, salt) VALUES($1, $2, $3, $4, $5, $6, $7, $8)";
+		var queryParams = [user.nickname, user.fname, user.lname, user.dob, user.gender, user.email, user.hashedPassword, user.salt];
 
 		const pool = new pg.Pool({connectionString: conString});
 
 		pool.connect((err, client, done) => {
-			client.query(queryString, (err, res) => {
+			client.query(queryString, queryParams, (err, res) => {
   				callback(!err);
   				done();
 				pool.end();
