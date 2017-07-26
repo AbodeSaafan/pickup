@@ -1,6 +1,6 @@
 CREATE TABLE IF NOT EXISTS Users (
-	user_id varchar(255) PRIMARY KEY,
-	username varchar(255),
+	user_id BIGSERIAL PRIMARY KEY,
+	nickname varchar(255),
 	fname varchar(255),
 	lname varchar(255),
 	dob varchar(255),

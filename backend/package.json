@@ -3,6 +3,10 @@
   "version": "1.0.0",
   "description": "API for pickup app",
   "main": "api.js",
+  "apidoc": {
+    "title": "pickup API documentation",
+    "url" : ""
+  },
   "dependencies": {
     "body-parser": "^1.17.2",
     "core-js": "^2.4.1",

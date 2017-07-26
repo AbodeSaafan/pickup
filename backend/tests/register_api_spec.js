@@ -1,6 +1,7 @@
 var frisby = require('frisby');
 var crypto = require('crypto');
 var request = require('request');
+var strings = require('../api/universal_strings');
 
 var registerEndpoint = 'http://localhost:3000/api/register';
 // Testing creating a user with valid creds
@@ -38,6 +39,9 @@ frisby.create('Register a user using the API')
   .expectStatus(400)
   .expectHeaderContains('content-type', 'application/json')
   .expectBodyContains('error')
+  .expectJSON({
+    error: strings.emailError
+  })
 .toss();
 
 
