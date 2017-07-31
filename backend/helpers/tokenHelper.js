@@ -5,7 +5,7 @@ var cert = fs.readFileSync('api/private.key');
 module.exports = {
 	createTokenForUser(user_id, email) {
 		var payload = {user_id: user_id, email: email};
-		var expiry = {expiresIn: '1h'};
+		var expiry = {expiresIn: '15m'};
 		return jwt.sign(payload, cert, expiry);
 	},
 	verifyToken(token){
@@ -14,5 +14,8 @@ module.exports = {
 		} catch(err) { // catch expired or broken and so on
   			throw new Error("Token Error: " + err.message);
 		}
+	},
+	getUserFromToken(token){
+		return jwt.decode(token);
 	}
 }

@@ -7,7 +7,8 @@ var invalidName = "Invalid name";
 var invalidGender = "Invalid gender parameter";
 var invalidDob = "Invalid date of birth";
 var invalidEmail = "Invalid email";
-
+var noRefreshToken = "No refresh token has been found for you, please attempt to login to acquire a new token";
+var createRefreshFail = "Unable to create refresh token";
 
 module.exports = {
 	uniqueEmailError,
@@ -18,5 +19,7 @@ module.exports = {
 	invalidName,
 	invalidGender,
 	invalidDob,
-	invalidEmail
+	invalidEmail,
+	noRefreshToken,
+	createRefreshFail
 }

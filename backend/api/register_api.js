@@ -21,8 +21,9 @@ var strings = require('./universal_strings');
 * @apiParam {String} email The email of the user
 * @apiParam {String} password The password of the user
 *
-* @apiSuccess {String} token A token that can be used to authenticate futher API calls
+* @apiSuccess {String} token A JWT token that can be used to authenticate futher API calls
 * @apiSuccess {String} user_id The id assigned to the user for unique identification
+* @apiSuccess {String} refresh A refresh token that can be used to generate JWTs throught the API
 *
 * @apiError error The error field has a string with an exact error
 *
@@ -54,29 +55,34 @@ router.post('/', function(req, res){
 			console.log(strings.uniqueEmailError);
 			res.status(400).json({'error': strings.uniqueEmailError}); return;
 		}
+		else {
+			user.salt = generateSalt();
+			user.hashedPassword = md5(user.salt + user.password);
 
-		user.salt = generateSalt();
-		user.hashedPassword = md5(user.salt + user.password);
-
-		databaseHelper.registerUser(user, (registerSuccess) => {
-			if(!registerSuccess){
-				console.log(strings.registerFailError);
-				res.status(400).json({'error': strings.registerFailError}); return;
-			}
-
-			var token = tokenHelper.createTokenForUser(user.userId, user.email); // Auth token
-			// var vtoken = tokenHelper.verifyToken(token); // Verify token (debug)
-
-			databaseHelper.getUserId(user.email, (userId) => {
-				if(userId){
-					res.status(200).json({'token':token, 'user_id':userId}); return;		
+			databaseHelper.registerUser(user, (registerSuccess) => {
+				if(!registerSuccess){
+					console.log(strings.registerFailError);
+					res.status(400).json({'error': strings.registerFailError}); return;
 				}
-				console.log(userIdFail);
-				res.status(400).json({'error': userIdFail }); return;
-			});
 
-		});
-		console.log("POST /register has been processed successfully");
+				databaseHelper.getUserId(user.email, (userId) => {
+					if(userId){
+						var token = tokenHelper.createTokenForUser(userId, user.email); // Auth token
+
+						databaseHelper.createRefreshToken(userId, (refreshToken) => {
+							if(!refreshToken){
+								console.log("token is " + refreshToken);
+								res.status(400).json({'error': strings.createRefreshFail}); return;
+							}
+							res.status(200).json({'token':token, 'refresh':refreshToken, 'user_id':userId}); return;
+						});
+					} else {
+						console.log(strings.userIdFail);
+						res.status(400).json({'error': strings.userIdFail }); return;	
+					}
+				});
+			});
+		}
 	});
 });
 

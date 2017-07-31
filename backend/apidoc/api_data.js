@@ -1,5 +1,72 @@
 define({ "api": [
   {
+    "type": "get",
+    "url": "/refresh",
+    "title": "Refresh your JWT token",
+    "name": "RefreshToken",
+    "group": "Authorization",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "jwt",
+            "description": "<p>The JWT you have currently</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "refresh",
+            "description": "<p>The refresh token you were given at signup</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "token",
+            "description": "<p>A JWT token that can be used to authenticate futher API calls</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": " HTTP/1.1 200 OK\n{\n  \"jwt\": Encrypted_JWT_Token,\n  \"refresh\": RefreshToken\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "fields": {
+        "Error 4xx": [
+          {
+            "group": "Error 4xx",
+            "optional": false,
+            "field": "error",
+            "description": "<p>The error field has a string with an exact error</p>"
+          }
+        ]
+      }
+    },
+    "sampleRequest": [
+      {
+        "url": "/api/refresh"
+      }
+    ],
+    "version": "0.0.0",
+    "filename": "api/refresh_api.js",
+    "groupTitle": "Authorization"
+  },
+  {
     "type": "post",
     "url": "/register",
     "title": "Register a user account",
@@ -68,7 +135,7 @@ define({ "api": [
             "type": "String",
             "optional": false,
             "field": "token",
-            "description": "<p>A token that can be used to authenticate futher API calls</p>"
+            "description": "<p>A JWT token that can be used to authenticate futher API calls</p>"
           },
           {
             "group": "Success 200",
@@ -76,6 +143,13 @@ define({ "api": [
             "optional": false,
             "field": "user_id",
             "description": "<p>The id assigned to the user for unique identification</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "refresh",
+            "description": "<p>A refresh token that can be used to generate JWTs throught the API</p>"
           }
         ]
       },
