@@ -1,6 +1,7 @@
 var jwt = require('jsonwebtoken');
 var fs = require('fs');
 var cert = fs.readFileSync('api/private.key');
+var strings = require('../api/universal_strings')
 
 module.exports = {
 	createTokenForUser(user_id, email) {
@@ -16,6 +17,14 @@ module.exports = {
 		}
 	},
 	getUserFromToken(token){
-		return jwt.decode(token);
+		var info = jwt.decode(token);
+		try{
+			if(info.user_id && info.email){
+				return info;
+			}
+		} catch(err){
+			throw new Error(strings.invalidJwt);
+		}
+			
 	}
 }

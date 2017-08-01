@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 var databaseHelper = require('../helpers/databaseHelper');
 var tokenHelper = require('../helpers/tokenHelper');
+var requestHelper = require('../helpers/requestHelper');
 var md5 = require('md5');
 var crypto = require('crypto');
 var strings = require('./universal_strings');
@@ -29,11 +30,15 @@ var strings = require('./universal_strings');
 */
 router.get('/', function(req, res){
 	if(!(req.query.jwt && req.query.refresh)){
-		res.status(400).json({'error': "Please provide your current JWT and refresh tokens"});
+		res.status(400).json({'error': "Please provide your current JWT and refresh tokens"}); return;
 	}
 
-	// read jwt token and get user_id
-	var user = tokenHelper.getUserFromToken(req.query.jwt);
+	try{
+		var user = tokenHelper.getUserFromToken(req.query.jwt);
+	} catch(err){
+		res.status(400).json(requestHelper.jsonError(err)); return;
+	}
+	
 	databaseHelper.getRefreshToken(user.user_id, req.query.refresh, (success) => {
 		if(!success){
 			console.log("No refresh token found");

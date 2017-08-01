@@ -9,6 +9,7 @@ var invalidDob = "Invalid date of birth";
 var invalidEmail = "Invalid email";
 var noRefreshToken = "No refresh token has been found for you, please attempt to login to acquire a new token";
 var createRefreshFail = "Unable to create refresh token";
+var invalidJwt = "The JWT token you have provided is invalid";
 
 module.exports = {
 	uniqueEmailError,
@@ -21,5 +22,6 @@ module.exports = {
 	invalidDob,
 	invalidEmail,
 	noRefreshToken,
-	createRefreshFail
+	createRefreshFail,
+	invalidJwt
 }

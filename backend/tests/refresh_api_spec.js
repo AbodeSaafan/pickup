@@ -1,37 +1,20 @@
 var frisby = require('frisby');
-var crypto = require('crypto');
 var request = require('request');
 var strings = require('../api/universal_strings');
-
-var refreshEndpoint = 'http://localhost:3000/api/refresh';
-var registerEndpoint = 'http://localhost:3000/api/register';
-
-var genericUser = {
-    nickname:'abode',
-    password:'password123',
-    fname:'abode',
-    lname:'saafan',
-    gender:'m',
-    dob:'25/03/1996',
-    email:randomEmail()
-  };
-
- request.post(registerEndpoint, genericUser, (res) => {
- 	console.log(res.refresh);
- });
+var testHelper = require('./testHelper');
 
  // Creating a user with valid creds for testing
 frisby.create('Register a user using the API with valid credentials to use for refresh testing')
-  .post(registerEndpoint, genericUser) 
+  .post(testHelper.registerEndpoint, testHelper.createGenericUser()) 
   .expectStatus(200)
   .expectHeaderContains('content-type', 'application/json')
   .expectBodyContains('token')
   .expectBodyContains('user_id')
   .expectBodyContains('refresh')
+  .afterJSON(function (body) {
+    frisby.create('Get a new jwt token refresh')
+    .get(refreshEndpoint+"?jwt="+body.token+"&refresh="+body.refresh)
+    .expectBodyContains('token')
+    .toss();
+  })
 .toss();
-
-
-
-function randomEmail(){
-  return crypto.randomBytes(4).toString('hex') + "@mail.com";
-}
