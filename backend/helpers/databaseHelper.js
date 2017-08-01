@@ -31,16 +31,36 @@ module.exports = {
 		});
 	},
 	getUserId(email, callback){
-		var queryString = "SELECT user_id FROM users WHERE email =  '" + email + "';";
+		var queryString = "SELECT user_id FROM users WHERE email =  $1;";
+		var queryParams = [email];
 
 		const pool = new pg.Pool({connectionString: conString});
 
 		pool.connect((err, client, done) => {
-			client.query(queryString, (err, res) => {
+			client.query(queryString, queryParams, (err, res) => {
   				if(!err && res.rows[0].user_id){
 	  				callback(res.rows[0].user_id);
   				} else {
 	  				console.log("Failed to get user id");
+					callback(false);
+  				}
+  				done();
+  				pool.end();
+			});
+		});
+	},
+	getUserRowById(userId, callback){
+		var queryString = "SELECT * FROM users WHERE user_id = $1";
+		var queryParams = [userId];
+
+		const pool = new pg.Pool({connectionString: conString});
+
+		pool.connect((err, client, done) => {
+			client.query(queryString, queryParams, (err, res) => {
+  				if(!err && res.rows[0]){
+	  				callback(res.rows[0]);
+  				} else {
+	  				console.log("Failed to get user row");
 					callback(false);
   				}
   				done();
