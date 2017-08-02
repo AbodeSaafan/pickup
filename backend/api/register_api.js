@@ -67,6 +67,13 @@ router.post('/', function(req, res){
 
 				databaseHelper.getUserId(user.email, (userId) => {
 					if(userId){
+						user.userId = userId;
+						databaseHelper.populateExtendedProfile(user, (populateSuccess) => {
+							if(!populateSuccess){
+								res.status(400).json({'error': "Unable to populate extended profile database"}); return;
+							}
+						});
+
 						var token = tokenHelper.createTokenForUser(userId, user.email); // Auth token
 
 						databaseHelper.createRefreshToken(userId, (refreshToken) => {

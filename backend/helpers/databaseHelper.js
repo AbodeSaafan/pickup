@@ -102,5 +102,28 @@ module.exports = {
 				pool.end();
 			});
 		});
+	},
+	populateExtendedProfile(user, callback){
+		var queryString = "INSERT INTO extended_profile(user_id, age, gender) VALUES($1, $2, $3);";
+		var age = calculateAge(new Date(user.dob.substring(6)));
+		var queryParams = [user.userId, age, user.gender];
+
+		const pool = new pg.Pool({connectionString: conString});
+
+		pool.connect((err, client, done) => {
+			client.query(queryString, queryParams, (err, res) => {
+  				callback(!err);
+  				done();
+				pool.end();
+			});
+		});
 	}
+}
+
+
+// Taken mostly from https://stackoverflow.com/questions/4060004/calculate-age-given-the-birth-date-in-the-format-yyyymmdd
+function calculateAge(birthday) {
+    var ageDifMs = Date.now() - birthday.getTime();
+    var ageDate = new Date(ageDifMs); // miliseconds from epoch
+    return Math.abs(ageDate.getUTCFullYear() - 1970);
 }
