@@ -14,7 +14,7 @@ module.exports = {
 			throw new Error(strings.invalidName);
 		}
 		if(!(data.gender && (data.gender = data.gender.trim()) && regex.genderRegex.test(data.gender))){
-			throw new Error(strings.invaliGender);	
+			throw new Error(strings.invalidGender);	
 		}
 		if(!(data.dob && (data.dob = data.dob.trim()) && regex.dateRegex.test(data.dob))){
 			throw new Error(strings.invalidDob);	
