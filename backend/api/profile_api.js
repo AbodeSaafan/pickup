@@ -20,7 +20,7 @@ var strings = require('./universal_strings');
 });*/
 
 // endpoint should be -> /api/profile/:user_id
-
+//api to get user profile
 router.get('/:user_id', function (req, res) {
   var userID = req.params.user_id;
 
