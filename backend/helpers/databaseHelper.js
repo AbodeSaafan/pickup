@@ -103,6 +103,22 @@ module.exports = {
 			});
 		});
 	},
+	deleteRefreshToken(userId, refreshToken, callback){
+		var queryString = "DELETE FROM refresh WHERE user_id = $1 and refresh_token = $2;";
+		var queryParams = [userId, refreshToken];
+
+		const pool = new pg.Pool({connectionString: conString});
+
+		pool.connect((err, client, done) => {
+			client.query(queryString, queryParams, (err, res) => {
+				console.log(res);
+				console.log((res && res.rowCount != 0));
+				callback(!err && (res && res.rowCount != 0));
+  				done();
+  				pool.end();
+			});
+		});
+	},
 	populateExtendedProfile(user, callback){
 		var queryString = "INSERT INTO extended_profile(user_id, age, gender) VALUES($1, $2, $3);";
 		var age = calculateAge(new Date(user.dob.substring(6)));
