@@ -24,8 +24,8 @@ var strings = require('./universal_strings');
 router.get('/:user_id', function (req, res) {
   var userID = req.params.user_id;
   try {
-      console.log(req.headers.token);
-      //verifyToken(req.headers.token);
+      //console.log(req.headers.token);
+      verifyToken(req.headers.token);
       databaseHelper.getUserRowById(userID, (user_id) => {
           if(user_id) {
               console.log(user_id);
@@ -48,8 +48,8 @@ router.post('/:user_id', function (req, res) {
     try {
         var user = req.body;
         user['user_id'] = user_id;
-        console.log(user);
-        //verifyToken(req.headers.token);
+        //console.log(user);
+        verifyToken(req.headers.token);
         databaseHelper.updateUser(user, (user_id) => {
             if(user_id) {
                 console.log(user_id);
