@@ -23,17 +23,48 @@ var strings = require('./universal_strings');
 //api to get user profile
 router.get('/:user_id', function (req, res) {
   var userID = req.params.user_id;
+  try {
+      console.log(req.headers.token);
+      //verifyToken(req.headers.token);
+      databaseHelper.getUserRowById(userID, (user_id) => {
+          if(user_id) {
+              console.log(user_id);
+              res.status(200).json(user_id);
+              return;
+          }else{
+              res.status(400).json({'error': strings.userIdFail});
+              return;
+          }
+        })
+    }catch(err){
+       res.status(400).json({'error': strings.invalidJwt});
+       return;
+    }
+});
 
-  databaseHelper.getUserRowById(userID, (user_id) => {
-    if (user_id) {
-      console.log(user_id);
-      res.status(200).json(user_id); return;
+router.post('/:user_id', function (req, res) {
+    var user_id = req.params.user_id;
+
+    try {
+        var user = req.body;
+        user['user_id'] = user_id;
+        console.log(user);
+        //verifyToken(req.headers.token);
+        databaseHelper.updateUser(user, (user_id) => {
+            if(user_id) {
+                console.log(user_id);
+                res.status(200).json(user_id);
+                return;
+            }else{
+                res.status(400).json({'error': strings.userIdFail});
+        return;
     }
-    else {
-      res.status(400).json({'error': strings.userIdFail}); return;
+        });
+    }catch(err){
+        res.status(400).json({'error': err});
+        return;
     }
-  })
-})
+});
 
 
 

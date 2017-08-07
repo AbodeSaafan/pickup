@@ -30,6 +30,20 @@ module.exports = {
 			});
 		});
 	},
+    updateUser(user, callback){
+        var queryString = "update users SET nickname = $2, fname = $3, lname = $4, dob = $5 where user_id = $1";
+        var queryParams = [user['user_id'], user['nickname'], user['fname'], user['lname'], user['dob']];
+		console.log(user);
+        const pool = new pg.Pool({connectionString: conString});
+
+        pool.connect((err, client, done) => {
+            client.query(queryString, queryParams, (err, res) => {
+            callback(!err);
+        	done();
+        	pool.end();
+			});
+    	});
+    },
 	getUserId(email, callback){
 		var queryString = "SELECT user_id FROM users WHERE email =  $1;";
 		var queryParams = [email];
