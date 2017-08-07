@@ -67,6 +67,62 @@
     "groupTitle": "Authorization"
   },
   {
+    "type": "delete",
+    "url": "/refresh",
+    "title": "Delete (revoke) a refresh token",
+    "name": "RefreshToken_Delete",
+    "group": "Authorization",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "jwt",
+            "description": "<p>The JWT you have currently</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "refresh",
+            "description": "<p>The refresh token you want revoked</p>"
+          }
+        ]
+      }
+    },
+    "error": {
+      "fields": {
+        "Error 4xx": [
+          {
+            "group": "Error 4xx",
+            "optional": false,
+            "field": "error",
+            "description": "<p>The error field has a string with an exact error</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": " HTTP/1.1 200 OK\n{\n  \"jwt\": Encrypted_JWT_Token,\n  \"refresh\": RefreshToken\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "sampleRequest": [
+      {
+        "url": "/api/refresh"
+      }
+    ],
+    "version": "0.0.0",
+    "filename": "api/refresh_api.js",
+    "groupTitle": "Authorization"
+  },
+  {
     "type": "post",
     "url": "/register",
     "title": "Register a user account",

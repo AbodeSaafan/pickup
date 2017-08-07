@@ -52,5 +52,47 @@ router.get('/', function(req, res){
 	});
 });
 
+/**
+* @api {delete} /refresh Delete (revoke) a refresh token
+* @apiName RefreshToken Delete
+* @apiGroup Authorization
+*
+* @apiParam {String} jwt The JWT you have currently 
+* @apiParam {String} refresh The refresh token you want revoked
+*
+*
+* @apiError error The error field has a string with an exact error
+*
+* @apiSuccessExample Success-Response:
+*      HTTP/1.1 200 OK
+*     {
+*       "jwt": Encrypted_JWT_Token,
+*       "refresh": RefreshToken
+*     }
+*
+* @apiSampleRequest /api/refresh
+*/
+router.delete('/', function(req, res){
+	if(!(req.body.jwt && req.body.refresh)){
+		res.status(400).json({'error': "Please provide your current JWT and the refresh token you want revoked"}); return;
+	}
+
+	try{
+		var user = tokenHelper.getUserFromToken(req.body.jwt);
+	} catch(err){
+		res.status(400).json(requestHelper.jsonError(err)); return;
+	}
+	
+	databaseHelper.deleteRefreshToken(user.user_id, req.body.refresh, (success) => {
+		if(!success){
+			console.log("No refresh token found");
+			res.status(400).json({'error' : "The refresh token you want to delete does not exist"}); return;
+		} else{
+			res.status(200).json({'status': "Successful refresh token delete"}); return;	
+		}		
+	});
+});
+
+
 
 module.exports = router;
