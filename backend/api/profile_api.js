@@ -25,7 +25,7 @@ router.get('/:user_id', function (req, res) {
   var userID = req.params.user_id;
   try {
       //console.log(req.headers.token);
-      verifyToken(req.headers.token);
+      tokenHelper.verifyToken(req.headers.token);
       databaseHelper.getUserRowById(userID, (user_id) => {
           if(user_id) {
               console.log(user_id);
@@ -46,19 +46,19 @@ router.post('/:user_id', function (req, res) {
     var user_id = req.params.user_id;
 
     try {
-        var user = req.body;
+        var user = requestHelper.validateAndCleanUpdateRequest(req.body);
         user['user_id'] = user_id;
-        //console.log(user);
-        verifyToken(req.headers.token);
+        console.log("updating user: "+user);
+        tokenHelper.verifyToken(req.headers.token);
         databaseHelper.updateUser(user, (user_id) => {
             if(user_id) {
                 console.log(user_id);
-                res.status(200).json(user_id);
+                res.status(200).json("user "+ user.user_id+" successfully updated");
                 return;
             }else{
                 res.status(400).json({'error': strings.userIdFail});
-        return;
-    }
+                return;
+            }
         });
     }catch(err){
         res.status(400).json({'error': err});
