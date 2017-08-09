@@ -14,8 +14,6 @@ var strings = require('./universal_strings');
 router.get('/:user_id', function (req, res) {
   var userID = req.params.user_id;
   try {
-      //console.log(req.headers.token);
-      tokenHelper.verifyToken(req.headers.token);
       databaseHelper.getExtendedProfile(userID, (user_id) => {
           if(user_id) {
               console.log(user_id);
@@ -31,3 +29,5 @@ router.get('/:user_id', function (req, res) {
        return;
     }
 });
+
+module.exports = router;

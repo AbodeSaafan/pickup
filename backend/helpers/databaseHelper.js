@@ -148,8 +148,9 @@ module.exports = {
 			});
 		});
 	},
-	getExtendedProfile(user, callback) {
+	getExtendedProfile(userID, callback) {
 		var queryString = "SELECT * FROM extended_profile WHERE user_id = $1";
+		var queryParams = [userID];
 		const pool = new pg.Pool({connectionString: conString});
 
 		pool.connect((err, client, done) => {
