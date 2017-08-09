@@ -147,7 +147,25 @@ module.exports = {
 				pool.end();
 			});
 		});
+	},
+	getExtendedProfile(user, callback) {
+		var queryString = "SELECT * FROM extended_profile WHERE user_id = $1";
+		const pool = new pg.Pool({connectionString: conString});
+
+		pool.connect((err, client, done) => {
+			client.query(queryString, queryParams, (err, res) => {
+  				if(!err && res.rows[0]){
+	  				callback(res.rows[0]);
+  				} else {
+	  				console.log("Failed to get user row");
+					callback(false);
+  				}
+  				done();
+  				pool.end();
+			});
+		});
 	}
+
 }
 
 
