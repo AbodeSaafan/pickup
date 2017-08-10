@@ -23,7 +23,19 @@ module.exports = {
 			throw new Error(strings.invalidEmail);	
 		}
 		return data;
-	},
+	},validateAndCleanUpdateRequest(data){
+        if(!(data.nickname && (data.nickname = data.nickname.trim()) && regex.nicknameRegex.test(data.nickname))){
+            throw new Error(strings.invalidNickname);
+        }
+        if(!(data.fname && data.lname && (data.fname = data.fname.trim()) && (data.lname = data.lname.trim())
+                && regex.nameRegex.test(data.fname) && regex.nameRegex.test(data.lname))){
+            throw new Error(strings.invalidName);
+        }
+        if(!(data.dob && (data.dob = data.dob.trim()) && regex.dateRegex.test(data.dob))){
+            throw new Error(strings.invalidDob);
+        }
+        return data;
+    },
 	jsonError(Error){
 		return {'error': Error.toString().substring(7)};
 	}
