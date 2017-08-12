@@ -133,13 +133,12 @@ module.exports = {
 			});
 		});
 	},
-	populateExtendedProfile(user, callback){
-		var queryString = "INSERT INTO extended_profile(user_id, age, gender) VALUES($1, $2, $3);";
-		var age = calculateAge(new Date(user.dob.substring(6)));
-		var queryParams = [user.userId, age, user.gender];
+	populateExtendedProfile(user, callback) {
+        var queryString = "INSERT INTO extended_profile(user_id, age, gender) VALUES($1, $2, $3);";
+        var age = calculateAge(new Date(user.dob.substring(6)));
+        var queryParams = [user.userId, age, user.gender];
 
-		const pool = new pg.Pool({connectionString: conString});
-
+        const pool = new pg.Pool({connectionString: conString});
 		pool.connect((err, client, done) => {
 			client.query(queryString, queryParams, (err, res) => {
   				callback(!err);
@@ -165,8 +164,26 @@ module.exports = {
   				pool.end();
 			});
 		});
-	}
+    },
+	check_password(emailIn, passIn, callback){
+        var queryString = "SELECT email FROM users WHERE email = $1 AND password = $2;";
+        var queryParams = [emailIn, passIn];
 
+        const pool = new pg.Pool({connectionString: conString});
+
+        pool.connect((err, client, done) => {
+            client.query(queryString, queryParams, (err, res) => {
+                if(res.rows.length > 0){
+                    callback(true);
+                } else {
+                    console.log("Invalid password or email");
+                    callback(false);
+                }
+                done();
+                pool.end();
+            });
+        });
+	}
 }
 
 

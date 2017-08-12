@@ -36,6 +36,15 @@ module.exports = {
         }
         return data;
     },
+    validateAndCleanLoginRequest(data){
+        if(!(data.password && regex.passwordRegex.test(data.password))){
+            throw new Error(strings.invalidPassword);
+        }
+        if(!(data.email && (data.email = data.email.trim()) && regex.emailRegex.test(data.email))){
+            throw new Error(strings.invalidEmail);
+        }
+        return data;
+    },
 	jsonError(Error){
 		return {'error': Error.toString().substring(7)};
 	}
