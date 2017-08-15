@@ -26,10 +26,10 @@
         android:layout_height="wrap_content"
         android:inputType="textPassword"
         android:ems="10"
-        android:id="@+id/editText2"
-        android:layout_alignTop="@+id/editText"
-        android:layout_alignLeft="@+id/editText"
-        android:layout_alignStart="@+id/editText"
+        android:id="@+id/passEditText"
+        android:layout_alignTop="@+id/emailEditText"
+        android:layout_alignLeft="@+id/emailEditText"
+        android:layout_alignStart="@+id/emailEditText"
         android:layout_marginTop="49dp"
         android:hint="@string/password"/>
 
@@ -38,7 +38,7 @@
         android:layout_height="wrap_content"
         android:inputType="textEmailAddress"
         android:ems="10"
-        android:id="@+id/editText"
+        android:id="@+id/emailEditText"
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true"
         android:hint="@string/email"/>
@@ -62,11 +62,9 @@
         android:id="@+id/textView2"
         android:clickable="true"
         android:onClick="newAccount"
-        android:layout_marginBottom="43dp"
+        android:layout_marginBottom="37dp"
         android:layout_alignParentBottom="true"
         android:layout_alignLeft="@+id/button"
-        android:layout_alignStart="@+id/button"
-        android:layout_marginLeft="11dp"
-        android:layout_marginStart="11dp" />
+        android:layout_alignStart="@+id/button" />
 
 </RelativeLayout>

@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Pickup</string>
     <string name="welcome">Welcome to PickUp</string>
-    <string name="create_account"><u>Create an Account</u></string>
+    <string name="create_account"> <u>Create an Account</u></string>
     <string name="sign_in">Sign In</string>
     <string name="email">Email</string>
     <string name="password">Password</string>
