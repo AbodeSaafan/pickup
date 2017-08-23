@@ -186,6 +186,7 @@ module.exports = {
             });
       });
 	},
+	//
 	updateExtendedUser (userId, skill_level, location, callback) {
 		var queryString = "UPDATE extended_profile SET skilllevel = $1, location = $2 WHERE user_id = $3;"
 		var queryParams = [skill_level, location, userId]

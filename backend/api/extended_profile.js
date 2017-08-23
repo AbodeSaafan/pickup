@@ -31,7 +31,7 @@ router.get('/:user_id', function (req, res) {
 });
 
 // endpoint should be -> /api/extendedProfile/:user_id?skill_level=&location=
-//api to update extended profile
+//api to update extended profile (skill_level)
 router.put('/:user_id', function (req, res) {
   var userID = req.params.user_id;
   var skill_level = req.query.skill_level;
