@@ -36,7 +36,7 @@ router.post('/', function(req, res){
         res.status(400).json(requestHelper.jsonError(err)); return;
     }
 
-	databaseHelper.check_password(user.email, user.password, (accessGranted) => {
+	databaseHelper.checkPassword(user.email, user.password, (accessGranted) => {
 		if (accessGranted) {
 			console.log(loginSuccess);
 			res.status(200).json();

@@ -1,6 +1,7 @@
 var pg = require('pg');
 const conString = "postgres://postgres:123@localhost:5432/pickup";
 var crypto = require('crypto');
+var md5 = require('md5');
 
 module.exports = {
 	checkEmailUniqueness(user, callback){
@@ -165,15 +166,16 @@ module.exports = {
 			});
 		});
     },
-	check_password(emailIn, passIn, callback){
-        var queryString = "SELECT email FROM users WHERE email = $1 AND password = $2;";
-        var queryParams = [emailIn, passIn];
+	checkPassword(emailIn, passIn, callback){
+        var queryString = "SELECT salt, password FROM users WHERE email = $1;";
+        var queryParams = [emailIn];
 
         const pool = new pg.Pool({connectionString: conString});
 
         pool.connect((err, client, done) => {
             client.query(queryString, queryParams, (err, res) => {
-                if(res.rows.length > 0){
+                var rowsRes = res.rows;
+                if(rowsRes.length > 0 && md5(rowsRes[0].salt + passIn) === rowsRes[0].password){
                     callback(true);
                 } else {
                     console.log("Invalid password or email");
