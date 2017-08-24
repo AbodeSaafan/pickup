@@ -14,11 +14,12 @@ var strings = require('./universal_strings');
 *
 * @apiParam {String} name The name of the game you are creating
 * @apiParam {String} type The type of the game you are creating (Serious, casual, ..)
-* @apiParam {String} skill The intended skill range for this game (x/100 with toleration)
+* @apiParam {int} skill The intended skill range for this game (x/10) (next week)
 * @apiParam {int} total_players The total required players for the game
 * @apiParam {date_time} start_time The time the game starts
 * @apiParam {time} duration The duration of the game
 * @apiParam {location} location The location of the game represented in location object (x/y)
+* @apiParam {location_notes} string how to get into the court
 * @apiParam {String} description Short description for the game (less than 250 characters)
 * @apiParam {String} gender The preferred for the game (if any)
 * @apiParam {String} age The preferred age range for the game (if any)
@@ -33,11 +34,12 @@ var strings = require('./universal_strings');
 *     {
 *       "name": "abode's game",
 *       "type": "casual",
-*       "intended_skill": "50/100 +-10",
+*       "intended_skill": "5",
 *       "total_players_required": 6,
 *       "start_time": "25/03/2018 14:30:00 PM EST",
 *       "duration": "01h30m00s",
 *       "location": {x: 500, y:500},
+*		"location_notes": "Come around the back and knock on the blue door"
 *       "description": "Casual basketball game",
 *       "gender": "A",
 *       "age": "20 +-3",
@@ -48,7 +50,7 @@ var strings = require('./universal_strings');
 */
 router.post('/', function(req, res){
 	try{
-		// var user = requestHelper.validateAndCleanCreateGameRequest(req.body);	
+		var game = requestHelper.validateAndCleanCreateGameRequest(req.body);	
 	}
 	catch (err){
 		res.status(400).json(requestHelper.jsonError(err)); return;
