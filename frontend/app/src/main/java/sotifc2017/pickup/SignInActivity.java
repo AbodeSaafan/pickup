@@ -1,5 +1,6 @@
 package sotifc2017.pickup;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -30,21 +31,46 @@ public class SignInActivity extends AppCompatActivity {
     }
 
     public void signIn(View view) {
+
+        final ProgressDialog progressDialog = new ProgressDialog(SignInActivity.this,
+                R.style.AppTheme_Dark);
+        progressDialog.setIndeterminate(true);
+        progressDialog.setMessage("Authenticating...");
+        progressDialog.show();
+
         email = emailText.getText().toString();
         pass = passText.getText().toString();
 
-        if (this.authenticateUser(email, pass)) {
-            signInSuccess();
-        }
+        new android.os.Handler().postDelayed(
+                new Runnable() {
+                    public void run() {
+                        // On complete call either onLoginSuccess or onLoginFailed
+                        if (authenticateUser(email, pass)) {
+                            progressDialog.dismiss();
+                            signInSuccess();
+                        }
+                        else {
+                            progressDialog.dismiss();
+                            signInFailure();
+                        }
+
+                    }
+                }, 3000);
     }
 
+
     private void signInSuccess() {
-        Toast.makeText(this, "Sign in successsful " + email + " : " + pass, Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Sign in successsful", Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(this, MapActivity.class);
         startActivity(intent);
     }
 
+    private void signInFailure() {
+        Toast.makeText(this, "Sign in failed", Toast.LENGTH_SHORT).show();
+
+    }
+
     private boolean authenticateUser(String email, String password) {
-        return true;
+        return false;
     }
 }
