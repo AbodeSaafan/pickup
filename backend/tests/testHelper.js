@@ -3,6 +3,7 @@ var crypto = require('crypto');
 var refreshEndpoint = 'http://localhost:3000/api/refresh';
 var registerEndpoint = 'http://localhost:3000/api/register';
 var loginEndpoint = 'http://localhost:3000/api/login';
+var extendedProfileEndpoint = 'http://localhost:3000/api/extended_profile';
 
 function randomEmail(){
 	return crypto.randomBytes(4).toString('hex') + "@mail.com";
@@ -25,5 +26,6 @@ module.exports = {
 	registerEndpoint,
     loginEndpoint,
 	randomEmail,
+	extendedProfileEndpoint,
 	createGenericUser
 }
