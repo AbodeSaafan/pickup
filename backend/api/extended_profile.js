@@ -30,4 +30,37 @@ router.get('/:user_id', function (req, res) {
     }
 });
 
+// endpoint should be -> /api/extendedProfile/:user_id?skill_level=&location=
+//api to update extended profile (skill_level)
+router.put('/:user_id', function (req, res) {
+  var userID = req.params.user_id;
+  var skill_level = req.query.skill_level;
+  var location = req.query.location;
+  //tokenHelper.verifyToken(req.headers.token);
+  try {
+    databaseHelper.getExtendedProfile(userID, (user_id) => {
+        if(user_id) {
+            console.log(user_id);
+            databaseHelper.updateExtendedUser(userID, skill_level, location, (update) => {
+              if (update) {
+                console.log('update was successful');
+                res.status(200).json(update);
+              } else {
+                console.log(update)
+                res.status(400).json({'error': strings.userIdFail});
+                return;
+              }
+            })
+            return;
+        }else{
+            res.status(400).json({'error': strings.userIdFail});
+            return;
+        }
+    })
+  } catch (err) {
+    res.status(400).json({'error': strings.invalidJwt});
+    return;
+  }
+});
+
 module.exports = router;

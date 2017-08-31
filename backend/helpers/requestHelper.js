@@ -1,49 +1,41 @@
 var regex = require('../api/universal_regex');
-var strings = require('../api/universal_strings')
+var strings = require('../api/universal_strings');
+
+function validate(param, regexPattern, errorMessage){
+	if(!regexPattern){
+		throw new Error("Regex not found" + param);
+	}
+	if(!(param && (param = param.trim()) && regexPattern.test(param))){
+		throw new Error(errorMessage);
+	}
+}
 
 module.exports = {
 	validateAndCleanRegisterRequest(data){
-		if(!(data.nickname && (data.nickname = data.nickname.trim()) && regex.nicknameRegex.test(data.nickname))){
-			throw new Error(strings.invalidNickname);
-		}
-		if(!(data.password && regex.passwordRegex.test(data.password))){
-			throw new Error(strings.invalidPassword);	
-		}
-		if(!(data.fname && data.lname && (data.fname = data.fname.trim()) && (data.lname = data.lname.trim()) 
-			&& regex.nameRegex.test(data.fname) && regex.nameRegex.test(data.lname))){
-			throw new Error(strings.invalidName);
-		}
-		if(!(data.gender && (data.gender = data.gender.trim()) && regex.genderRegex.test(data.gender))){
-			throw new Error(strings.invalidGender);	
-		}
-		if(!(data.dob && (data.dob = data.dob.trim()) && regex.dateRegex.test(data.dob))){
-			throw new Error(strings.invalidDob);	
-		}
-		if(!(data.email && (data.email = data.email.trim()) && regex.emailRegex.test(data.email))){
-			throw new Error(strings.invalidEmail);	
-		}
+		validate(data.nickname, regex.nicknameRegex, strings.invalidNickname);
+		validate(data.password, regex.passwordRegex, strings.invalidPassword);
+		validate(data.fname, regex.nameRegex, strings.invalidName);
+		validate(data.lname, regex.nameRegex, strings.invalidName);
+		validate(data.gender, regex.genderRegex, strings.invalidGender);
+		validate(data.dob, regex.dateRegex, strings.invalidDob);
+		validate(data.email, regex.emailRegex, strings.invalidEmail);
 		return data;
 	},validateAndCleanUpdateRequest(data){
-        if(!(data.nickname && (data.nickname = data.nickname.trim()) && regex.nicknameRegex.test(data.nickname))){
-            throw new Error(strings.invalidNickname);
-        }
-        if(!(data.fname && data.lname && (data.fname = data.fname.trim()) && (data.lname = data.lname.trim())
-                && regex.nameRegex.test(data.fname) && regex.nameRegex.test(data.lname))){
-            throw new Error(strings.invalidName);
-        }
-        if(!(data.dob && (data.dob = data.dob.trim()) && regex.dateRegex.test(data.dob))){
-            throw new Error(strings.invalidDob);
-        }
+		validate(data.nickname, regex.nicknameRegex, strings.invalidNickname);
+        validate(data.fname, regex.nameRegex, strings.invalidName);
+		validate(data.lname, regex.nameRegex, strings.invalidName);
+        validate(data.dob, regex.dateRegex, strings.invalidDob);
         return data;
     },
     validateAndCleanLoginRequest(data){
-        if(!(data.password && regex.passwordRegex.test(data.password))){
-            throw new Error(strings.invalidPassword);
-        }
-        if(!(data.email && (data.email = data.email.trim()) && regex.emailRegex.test(data.email))){
-            throw new Error(strings.invalidEmail);
-        }
+        validate(data.password, regex.passwordRegex, strings.invalidPassword);
+		validate(data.email, regex.emailRegex, strings.invalidEmail);
         return data;
+    },
+    validateAndCleanCreateGameRequest(data){
+    	validate(data.name, regex.gameNameRegex, strings.invalidGameName);
+    	// more to come 
+    	return data;
     },
 	jsonError(Error){
 		return {'error': Error.toString().substring(7)};
