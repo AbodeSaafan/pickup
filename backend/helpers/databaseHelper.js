@@ -102,22 +102,7 @@ module.exports = {
 			});
 		});
 	},
-	createRefreshToken(userId, callback){
-		var refreshToken = crypto.randomBytes(50).toString('hex');
-		var queryString = "INSERT INTO refresh(user_id, refresh_token) VALUES($1, $2);";
-		var queryParams = [userId, refreshToken];
-
-		const pool = new pg.Pool({connectionString: conString});
-
-		pool.connect((err, client, done) => {
-			client.query(queryString, queryParams, (err, res) => {
-  				var result = err ? null : refreshToken;
-  				callback(result);
-  				done();
-				pool.end();
-			});
-		});
-	},
+    createRefreshToken,
 	deleteRefreshToken(userId, refreshToken, callback){
 		var queryString = "DELETE FROM refresh WHERE user_id = $1 and refresh_token = $2;";
 		var queryParams = [userId, refreshToken];
@@ -167,7 +152,7 @@ module.exports = {
 		});
     },
 	checkPassword(emailIn, passIn, callback){
-        var queryString = "SELECT salt, password FROM users WHERE email = $1;";
+        var queryString = "SELECT user_id, salt, password FROM users WHERE email = $1;";
         var queryParams = [emailIn];
 
         const pool = new pg.Pool({connectionString: conString});
@@ -175,11 +160,13 @@ module.exports = {
         pool.connect((err, client, done) => {
             client.query(queryString, queryParams, (err, res) => {
                 var rowsRes = res.rows;
-                if(rowsRes.length > 0 && md5(rowsRes[0].salt + passIn) === rowsRes[0].password){
-                    callback(true);
+                if(rowsRes.length > 0 && md5(rowsRes[0].salt + passIn) === rowsRes[0].password){//Log in success
+                    createRefreshToken(rowsRes[0].user_id, (refreshToken) => {
+                        callback(refreshToken, rowsRes[0].user_id);
+                    });
                 } else {
                     console.log("Invalid password or email");
-                    callback(false);
+                    callback(null, null);
                 }
                 done();
                 pool.end();
@@ -194,4 +181,21 @@ function calculateAge(birthday) {
     var ageDifMs = Date.now() - birthday.getTime();
     var ageDate = new Date(ageDifMs); // miliseconds from epoch
     return Math.abs(ageDate.getUTCFullYear() - 1970);
+}
+
+function createRefreshToken(userId, callback){
+    var refreshToken = crypto.randomBytes(50).toString('hex');
+    var queryString = "INSERT INTO refresh(user_id, refresh_token) VALUES($1, $2);";
+    var queryParams = [userId, refreshToken];
+
+    const pool = new pg.Pool({connectionString: conString});
+
+    pool.connect((err, client, done) => {
+        client.query(queryString, queryParams, (err, res) => {
+            var result = err ? null : refreshToken;
+            callback(result);
+            done();
+            pool.end();
+        });
+    });
 }

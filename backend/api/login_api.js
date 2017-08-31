@@ -36,10 +36,10 @@ router.post('/', function(req, res){
         res.status(400).json(requestHelper.jsonError(err)); return;
     }
 
-	databaseHelper.checkPassword(user.email, user.password, (accessGranted) => {
-		if (accessGranted) {
+	databaseHelper.checkPassword(user.email, user.password, (refreshToken, userId) => {
+		if (refreshToken != null) {
 			console.log(loginSuccess);
-			res.status(200).json();
+			res.status(200).json({'token':refreshToken, 'user_id':userId});
 			return;
 		} else {
             console.log(loginError);
