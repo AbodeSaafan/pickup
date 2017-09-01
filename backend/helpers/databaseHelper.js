@@ -193,6 +193,21 @@ function updateExtendedUser (userId, skill_level, location, callback) {
 		});
 }
 
+function addReview (userId, gameId, reviewerId, rating, tags[]){
+		var queryString = "INSERT INTO reviews(user_id, game_id, reviewer_id, rating, tags) VALUES($1, $2, $3, $4, $5)";
+		var queryParams = [userId, gameId, reviewerId, rating, tags];
+
+		const pool = new pg.Pool({connectionString: conString});
+
+		pool.connect((err, client, done) => {
+			client.query(queryString, queryParams, (err, res) => {
+  				callback(!err);
+  				done();
+				pool.end();
+			});
+		});
+}
+
 
 module.exports = {
 	checkEmailUniqueness,
