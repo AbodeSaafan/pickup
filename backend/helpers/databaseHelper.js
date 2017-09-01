@@ -3,8 +3,7 @@ const conString = "postgres://postgres:123@localhost:5432/pickup";
 var crypto = require('crypto');
 var md5 = require('md5');
 
-module.exports = {
-	checkEmailUniqueness(user, callback){
+function checkEmailUniqueness(user, callback){
 		var queryString = "SELECT * FROM users WHERE email = '" + user.email +"';";
 
 		const pool = new pg.Pool({connectionString: conString});
@@ -16,8 +15,9 @@ module.exports = {
 				pool.end();
 			});
 		});
-	},
-	registerUser(user, callback){
+}
+
+function registerUser(user, callback){
 		var queryString = "INSERT INTO users(nickname, fname, lname, dob, gender, email, password, salt) VALUES($1, $2, $3, $4, $5, $6, $7, $8)";
 		var queryParams = [user.nickname, user.fname, user.lname, user.dob, user.gender, user.email, user.hashedPassword, user.salt];
 
@@ -30,8 +30,9 @@ module.exports = {
 				pool.end();
 			});
 		});
-	},
-    updateUser(user, callback){
+}
+
+function updateUser(user, callback){
         var queryString = "update users SET nickname = $2, fname = $3, lname = $4, dob = $5 where user_id = $1";
         var queryParams = [user['user_id'], user['nickname'], user['fname'], user['lname'], user['dob']];
 		console.log(user);
@@ -44,8 +45,9 @@ module.exports = {
         	pool.end();
 			});
     	});
-    },
-	getUserId(email, callback){
+}
+
+function getUserId(email, callback){
 		var queryString = "SELECT user_id FROM users WHERE email =  $1;";
 		var queryParams = [email];
 
@@ -63,8 +65,9 @@ module.exports = {
   				pool.end();
 			});
 		});
-	},
-	getUserRowById(userId, callback){
+}
+
+function getUserRowById(userId, callback){
 		var queryString = "SELECT * FROM users WHERE user_id = $1";
 		var queryParams = [userId];
 
@@ -82,8 +85,8 @@ module.exports = {
   				pool.end();
 			});
 		});
-	},
-	getRefreshToken(userId, refreshToken, callback){
+}
+function getRefreshToken(userId, refreshToken, callback){
 		var queryString = "SELECT * FROM refresh WHERE user_id = $1 and refresh_token = $2;";
 		var queryParams = [userId, refreshToken];
 
@@ -101,9 +104,9 @@ module.exports = {
   				pool.end();
 			});
 		});
-	},
-    createRefreshToken,
-	deleteRefreshToken(userId, refreshToken, callback){
+}
+
+function deleteRefreshToken(userId, refreshToken, callback){
 		var queryString = "DELETE FROM refresh WHERE user_id = $1 and refresh_token = $2;";
 		var queryParams = [userId, refreshToken];
 
@@ -118,8 +121,8 @@ module.exports = {
   				pool.end();
 			});
 		});
-	},
-	populateExtendedProfile(user, callback) {
+}
+function populateExtendedProfile(user, callback) {
         var queryString = "INSERT INTO extended_profile(user_id, age, gender) VALUES($1, $2, $3);";
         var age = calculateAge(new Date(user.dob.substring(6)));
         var queryParams = [user.userId, age, user.gender];
@@ -132,8 +135,9 @@ module.exports = {
 				pool.end();
 			});
 		});
-	},
-	getExtendedProfile(userID, callback) {
+}
+
+function getExtendedProfile(userID, callback) {
 		var queryString = "SELECT * FROM extended_profile WHERE user_id = $1";
 		var queryParams = [userID];
 		const pool = new pg.Pool({connectionString: conString});
@@ -150,8 +154,9 @@ module.exports = {
   				pool.end();
 			});
 		});
-    },
-	checkPassword(emailIn, passIn, callback){
+}
+
+function checkPassword(emailIn, passIn, callback){
         var queryString = "SELECT user_id, salt, password FROM users WHERE email = $1;";
         var queryParams = [emailIn];
 
@@ -172,9 +177,9 @@ module.exports = {
                 pool.end();
             });
       });
-	},
-	//
-	updateExtendedUser (userId, skill_level, location, callback) {
+}
+
+function updateExtendedUser (userId, skill_level, location, callback) {
 		var queryString = "UPDATE extended_profile SET skilllevel = $1, location = $2 WHERE user_id = $3;"
 		var queryParams = [skill_level, location, userId]
 
@@ -186,9 +191,25 @@ module.exports = {
 				pool.end();
 			});
 		});
-	}
 }
 
+
+module.exports = {
+	checkEmailUniqueness,
+	registerUser,
+    updateUser,
+	getUserId,
+	getUserRowById,
+	getRefreshToken,
+    createRefreshToken,
+	deleteRefreshToken,
+	populateExtendedProfile,
+	getExtendedProfile,
+	checkPassword,
+	updateExtendedUser
+}
+
+//////////////// Helpers ////////////////
 
 // Taken mostly from https://stackoverflow.com/questions/4060004/calculate-age-given-the-birth-date-in-the-format-yyyymmdd
 function calculateAge(birthday) {

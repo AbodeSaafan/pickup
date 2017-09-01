@@ -13,6 +13,16 @@ var noRefreshToken = "No refresh token has been found for you, please attempt to
 var createRefreshFail = "Unable to create refresh token";
 var invalidJwt = "The JWT token you have provided is invalid";
 var invalidGameName = "The game name you have entered is invalid";
+var invalidGameType = "The game type you have entered is invalid";
+var invalidGameDuration = "The game duration has to be specified as time in seconds";
+var invalidGameTotalPlayers = "The total players required for a game must be specified as an integer";
+var invalidGameGenderPreference = "The gender preference you specified is not valid";
+var invalidGameStartTime = "The game start time you specified is not valid";
+var invalidGameAgeRange = "The age range you specified is not valid";
+var invalidGameLocation = "The game location you specified is not valid";
+var invalidLocationNotes = "The location notes description you specified is not valid";
+var invalidGameDescription = "The game description you specified is not valid";
+var invalidEnforcedParamList = "The enforced parameters list you have specified is not valid";
 
 module.exports = {
 	uniqueEmailError,
@@ -29,5 +39,15 @@ module.exports = {
 	noRefreshToken,
 	createRefreshFail,
 	invalidJwt,
-	invalidGameName
+	invalidGameName,
+	invalidGameType,
+	invalidGameDuration,
+	invalidGameTotalPlayers,
+	invalidGameGenderPreference,
+	invalidGameStartTime,
+	invalidGameAgeRange,
+	invalidGameLocation,
+	invalidLocationNotes,
+	invalidGameDescription,
+	invalidEnforcedParamList
 }
