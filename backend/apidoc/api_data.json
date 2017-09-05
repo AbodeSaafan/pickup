@@ -322,7 +322,7 @@
             "type": "int",
             "optional": false,
             "field": "skill",
-            "description": "<p>The intended skill range for this game (x/10) (next week)</p>"
+            "description": "<p>The intended skill range for this game (x/100) (next week)</p>"
           },
           {
             "group": "Parameter",
@@ -333,24 +333,24 @@
           },
           {
             "group": "Parameter",
-            "type": "date_time",
+            "type": "int",
             "optional": false,
             "field": "start_time",
-            "description": "<p>The time the game starts</p>"
+            "description": "<p>The time the game starts (in unix epoch time)</p>"
           },
           {
             "group": "Parameter",
-            "type": "time",
+            "type": "int",
             "optional": false,
             "field": "duration",
-            "description": "<p>The duration of the game</p>"
+            "description": "<p>The duration of the game (in seconds as an int)</p>"
           },
           {
             "group": "Parameter",
             "type": "location",
             "optional": false,
             "field": "location",
-            "description": "<p>The location of the game represented in location object (x/y)</p>"
+            "description": "<p>The location of the game represented in location object (lat/lng)</p>"
           },
           {
             "group": "Parameter",
@@ -375,9 +375,9 @@
           },
           {
             "group": "Parameter",
-            "type": "String",
+            "type": "list",
             "optional": false,
-            "field": "age",
+            "field": "age_range",
             "description": "<p>The preferred age range for the game (if any)</p>"
           },
           {
@@ -385,7 +385,7 @@
             "type": "list",
             "optional": false,
             "field": "enforced_params",
-            "description": "<p>List of parmeters that the creator wants to enforce</p>"
+            "description": "<p>List of parmeters that the creator wants to enforce valid options for enforced_params are: gender, age, skill</p>"
           }
         ]
       }
@@ -405,7 +405,7 @@
       "examples": [
         {
           "title": "Success-Response:",
-          "content": "     HTTP/1.1 200 OK\n    {\n      \"name\": \"abode's game\",\n      \"type\": \"casual\",\n      \"intended_skill\": \"5\",\n      \"total_players_required\": 6,\n      \"start_time\": \"25/03/2018 14:30:00 PM EST\",\n      \"duration\": \"01h30m00s\",\n      \"location\": {x: 500, y:500},\n\t\t\"location_notes\": \"Come around the back and knock on the blue door\"\n      \"description\": \"Casual basketball game\",\n      \"gender\": \"A\",\n      \"age\": \"20 +-3\",\n      \"enforced_params\": [skill, gender, age]\n    }",
+          "content": "     HTTP/1.1 200 OK\n    {\n      \"name\": \"abode's game\",\n      \"type\": \"casual\",\n      \"skill\": 5,\n      \"total_players_required\": 6,\n      \"start_time\": \"1504272395\",\n      \"duration\": \"5400\",\n      \"location\": {lat: 500.50, lng:500.50},\n\t\t\"location_notes\": \"Come around the back and knock on the blue door\"\n      \"description\": \"Casual basketball game\",\n      \"gender\": \"A\",\n      \"age_range\": \"[20, 30]\",\n      \"enforced_params\": [skill, gender, age]\n    }",
           "type": "json"
         }
       ]
@@ -425,6 +425,55 @@
     "sampleRequest": [
       {
         "url": "/api/games"
+      }
+    ],
+    "version": "0.0.0",
+    "filename": "api/games_api.js",
+    "groupTitle": "Games"
+  },
+  {
+    "type": "get",
+    "url": "/games/:gameid",
+    "title": "Get users of a game",
+    "name": "Get_game",
+    "group": "Games",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "int",
+            "optional": false,
+            "field": "id",
+            "description": "<p>of the game</p>"
+          }
+        ]
+      }
+    },
+    "error": {
+      "fields": {
+        "Error 4xx": [
+          {
+            "group": "Error 4xx",
+            "optional": false,
+            "field": "error",
+            "description": "<p>The error field has a string with an exact error</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": " HTTP/1.1 200 OK\n{\n  \"user_id\":[ \"Pavle\", \"Sam\", \"Abode\" ]\n }",
+          "type": "json"
+        }
+      ]
+    },
+    "sampleRequest": [
+      {
+        "url": "/api/games/:123"
       }
     ],
     "version": "0.0.0",
