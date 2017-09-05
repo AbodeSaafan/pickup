@@ -240,7 +240,9 @@ module.exports = {
 	populateExtendedProfile,
 	getExtendedProfile,
 	checkPassword,
-	updateExtendedUser
+	updateExtendedUser,
+	getUsers,
+	addReview
 }
 
 //////////////// Helpers ////////////////

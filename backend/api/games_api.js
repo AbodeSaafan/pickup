@@ -70,35 +70,35 @@ router.post('/', function(req, res){
  * @apiSuccessExample Success-Response:
  *      HTTP/1.1 200 OK
  *     {
-*       "user_id":[ "Pavle", "Sam", "Abode" ]
+*       "user_id":[ "1", "2", "3" ]
 *      }
  *
  * @apiSampleRequest /api/games/:123
  */
-router.get('/:game_id', function(req, res){
-	var gameid = req.params.game_id;
-	try {
+ router.get('/:game_id', function(req, res){
+ 	var gameid = req.params.game_id;
+ 	try {
 
-      	tokenHelper.verifyToken(req.headers.token);
-      	databaseHelper.getUsers(gameid , (user_id) => {
-          if(user_id) {
-              console.log(user_id);
-              res.status(200).json(user_id);
-              return;
-          }else{
-              res.status(400).json({'error': strings.userIdFail});
-              return;
-          }
-        })
-	 }
-	 catch(err){
+      //	tokenHelper.verifyToken(req.headers.token);
+      databaseHelper.getUsers(gameid , (user_id) => {
+      	if(user_id) {
+      		console.log(user_id);
+      		res.status(200).json(user_id);
+      		return;
+      	}else{
+      		res.status(400).json({'error': strings.userIdFail});
+      		return;
+      	}
+      })
+  }
+  catch(err){
 
-       res.status(400).json({'error': strings.invalidJwt});
-       return;
-    }
-    
+  	res.status(400).json({'error': strings.invalidJwt});
+  	return;
+  }
 
 
-	});
 
-module.exports = router;
+});
+
+ module.exports = router;
