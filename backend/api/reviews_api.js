@@ -23,7 +23,7 @@ databaseHelper.addReview(userId, gameId, reviewerId, rating, tags, (success) => 
 		res.status(200).json("Review added succesfully.");
 		return;
 	}else{
-		res.status(400).json({'error': strings.userIdFail});
+		res.status(400).json("Adding review failed");
 		return;
 	}
 })
