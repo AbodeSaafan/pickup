@@ -63,3 +63,5 @@ router.post('/setReview', function(req, res){
 
 
 	});
+
+module.exports = router;
