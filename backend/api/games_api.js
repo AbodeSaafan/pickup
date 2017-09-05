@@ -70,8 +70,8 @@ router.post('/', function(req, res){
  * @apiSuccessExample Success-Response:
  *      HTTP/1.1 200 OK
  *     {
-*       
-*     }
+*       "user_id":[ "Pavle", "Sam", "Abode" ]
+*      }
  *
  * @apiSampleRequest /api/games/:123
  */
