@@ -86,6 +86,7 @@ function getUserRowById(userId, callback){
 			});
 		});
 }
+
 function getRefreshToken(userId, refreshToken, callback){
 		var queryString = "SELECT * FROM refresh WHERE user_id = $1 and refresh_token = $2;";
 		var queryParams = [userId, refreshToken];
@@ -122,6 +123,7 @@ function deleteRefreshToken(userId, refreshToken, callback){
 			});
 		});
 }
+
 function populateExtendedProfile(user, callback) {
         var queryString = "INSERT INTO extended_profile(user_id, age, gender) VALUES($1, $2, $3);";
         var age = calculateAge(new Date(user.dob.substring(6)));
@@ -212,6 +214,7 @@ function getUsers (gameId, callback){
 			});
 		});
 }
+
 function addReview (userId, gameId, reviewerId, rating, tags, callback){
 		var queryString = "INSERT INTO reviews(user_id, game_id, reviewer_id, rating, tags) VALUES($1, $2, $3, $4, $5)";
 		var queryParams = [userId, gameId, reviewerId, rating, tags];
@@ -225,6 +228,22 @@ function addReview (userId, gameId, reviewerId, rating, tags, callback){
 				pool.end();
 			});
 		});
+}
+
+function createGame (userId, name, type, skill, totalPlayers, startTime, duration, location, locationNotes, description, gender, ageRange, enforcedParams){
+	var queryString "INSERT INTO games(creator_id, name, type, skill, total_players_required, start_time, duration, location, locatin_notes, description, gender, age_range, enforced_params)" 
+		+ "VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13);"
+	var queryParams = [userId, name, type, skill, totalPlayers, startTime, duration, location, locationNotes, description, gender, ageRange, enforced_params];
+
+	const pool = new pg.Pool({connectionString: conString});
+
+	pool.connect((err, client, done) => {
+		client.query(queryString, queryParams, (err, res) => {
+  			callback(!err);
+  			done();
+			pool.end();
+		});
+	});
 }
 
 
@@ -242,7 +261,8 @@ module.exports = {
 	checkPassword,
 	updateExtendedUser,
 	getUsers,
-	addReview
+	addReview,
+	createGame
 }
 
 //////////////// Helpers ////////////////
