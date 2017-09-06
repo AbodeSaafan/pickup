@@ -231,7 +231,7 @@ function addReview (userId, gameId, reviewerId, rating, tags, callback){
 }
 
 function createGame (userId, name, type, skill, totalPlayers, startTime, duration, location, locationNotes, description, gender, ageRange, enforcedParams, callback){
-	var queryString "INSERT INTO games(creator_id, name, type, skill, total_players_required, start_time, duration, location, locatin_notes, description, gender, age_range, enforced_params)" 
+	var queryString =  "INSERT INTO games(creator_id, name, type, skill, total_players_required, start_time, duration, location, locatin_notes, description, gender, age_range, enforced_params)" 
 		+ "VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13);"
 	var queryParams = [userId, name, type, skill, totalPlayers, startTime, duration, location, locationNotes, description, gender, ageRange, enforcedParams];
 
