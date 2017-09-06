@@ -40,18 +40,32 @@ var strings = require('./universal_strings');
 *       "start_time": "1504272395",
 *       "duration": "5400",
 *       "location": {lat: 500.50, lng:500.50},
-*		"location_notes": "Come around the back and knock on the blue door"
+*		    "location_notes": "Come around the back and knock on the blue door"
 *       "description": "Casual basketball game",
 *       "gender": "A",
 *       "age_range": "[20, 30]",
-*       "enforced_params": [skill, gender, age]
+*       "enforced_params": ["skill", "gender", "age"]
 *     }
 *
 * @apiSampleRequest /api/games
 */
 router.post('/', function(req, res){
 	try{
-		var game = requestHelper.validateAndCleanCreateGameRequest(req.body);	
+		var game = requestHelper.validateAndCleanCreateGameRequest(req.body);
+    var tok = tokenHelper.verifyToken(req.body.jwt);
+
+    databaseHelper.createGame(tok.user_id, game.name, game.type, game.skill, 
+                              game.total_players_required, game.start_time, 
+                              game.duration, game.location, game.location_notes,
+                              game.description, game.gender, game.age_range, game.enforced_params, 
+    (success) => {
+      if(success){
+        res.status(200).json(user_id);
+      } else {
+        res.status(400).json({'error': strings.invalidGameCreation});
+      }
+    });
+
 	}
 	catch (err){
 		res.status(400).json(requestHelper.jsonError(err)); return;
