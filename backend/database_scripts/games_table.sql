@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS Game (
+CREATE TABLE IF NOT EXISTS Games (
 	game_id BIGSERIAL PRIMARY KEY,
 	name varchar(255),
 	type varchar(255),
