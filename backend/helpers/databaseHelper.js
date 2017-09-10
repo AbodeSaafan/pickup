@@ -231,17 +231,38 @@ function addReview (userId, gameId, reviewerId, rating, tags, callback){
 }
 
 function createGame (userId, name, type, skill, totalPlayers, startTime, duration, location, locationNotes, description, gender, ageRange, enforcedParams, callback){
-	var queryString =  "INSERT INTO games(creator_id, name, type, skill, total_players_required, start_time, duration, location, locatin_notes, description, gender, age_range, enforced_params)" 
-		+ "VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13);"
-	var queryParams = [userId, name, type, skill, totalPlayers, startTime, duration, location, locationNotes, description, gender, ageRange, enforcedParams];
+	var queryString =  "INSERT INTO games(creator_id, name, type, skill, total_players_required, start_time, duration, location, location_notes, description, gender, age_range, enforced_params)" 
+		+ "VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13) RETURNING game_id;"
+		var dblocation = '(' + location.lat + ',' + location.lng + ')';
+	var queryParams = [userId, name, type, skill, totalPlayers, startTime, duration, dblocation, locationNotes, description, gender, ageRange, enforcedParams];
 
 	const pool = new pg.Pool({connectionString: conString});
 
 	pool.connect((err, client, done) => {
 		client.query(queryString, queryParams, (err, res) => {
-  			callback(!err);
+  			if(!err && res && res.rows && res.rows[0] && res.rows[0].game_id){
+  				callback(res.rows[0].game_id);
+  			} else {
+  				callback(false);
+  			}
   			done();
 			pool.end();
+		});
+	});
+}
+
+function getUsersEdgeGameTimes (userId){
+	var queryString = "SELECT start_time, duration FROM games WHERE creator_id = $1";
+	var queryParams = [userId];
+
+	var queryLatestGameTime = "SELECT MAX(late) FROM (SELECT SUM(start_time + duration) AS late FROM games WHERE creator_id = $1 group by game_id) AS latequery;"
+	var queryEarliestGameTime = "SELECT MAX(late) FROM (SELECT SUM(start_time + duration) AS late FROM games WHERE creator_id = $1 group by game_id) AS latequery;"
+
+	const pool = new pg.Pool({connectionString: conString});
+
+	pool.connect((err, client, done) => {
+		client.query(queryString, queryParams, (err, res) => {
+
 		});
 	});
 }

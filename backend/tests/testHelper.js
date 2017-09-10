@@ -1,9 +1,12 @@
 var crypto = require('crypto');
 
-var refreshEndpoint = 'http://localhost:3000/api/refresh';
-var registerEndpoint = 'http://localhost:3000/api/register';
-var loginEndpoint = 'http://localhost:3000/api/login';
-var extendedProfileEndpoint = 'http://localhost:3000/api/extended_profile';
+var baseApi = 'http://localhost:3000/api';
+
+var refreshEndpoint = baseApi + '/refresh';
+var registerEndpoint = baseApi + '/register';
+var loginEndpoint = baseApi + '/login';
+var extendedProfileEndpoint = baseApi + '/extended_profile';
+var createGameEndpoint = baseApi + '/games';
 
 function randomEmail(){
 	return crypto.randomBytes(4).toString('hex') + "@mail.com";
@@ -21,11 +24,31 @@ function createGenericUser(){
 	};
 }
 
+function createGenericGame(jwt){
+	return {
+      	name: "abode's game",
+      	type: "casual",
+      	skill_offset: 5,
+      	total_players_required: 6,
+      	start_time: "1504272395",
+	    duration: "5400",
+      	location: {lat: 500.50, lng:-500.50},
+	  	location_notes: "Come around the back and knock on the blue door",
+      	description: "Casual basketball game",
+      	gender: "A",
+      	age_range: [20, 30],
+    	enforced_params: ["gender", "age"],
+    	jwt: jwt
+    };
+}
+
 module.exports = {
 	refreshEndpoint,
 	registerEndpoint,
     loginEndpoint,
 	randomEmail,
 	extendedProfileEndpoint,
-	createGenericUser
+	createGenericUser,
+	createGameEndpoint,
+	createGenericGame
 }

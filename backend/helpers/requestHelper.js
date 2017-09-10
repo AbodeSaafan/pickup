@@ -29,14 +29,14 @@ function validateAndCleanLoginRequest(data){
 function validateAndCleanCreateGameRequest(data){
 	validate(data.name, regex.gameNameRegex, strings.invalidGameName);
 	validate(data.type, regex.gameTypeRegex, strings.invalidGameType);
-	validate(data.skill, regex.gameSkillRegex, strings.invalidGameSkill);
+	validateSkillOffset(data.skill_offset);
 	validateStartTime(data.start_time);
 	validate(data.duration, regex.gameDurationRegex, strings.invalidGameDuration);
 	validate(data.total_players_required, regex.gameTotalPlayersRegex, strings.invalidGameTotalPlayers);
 	validate(data.gender, regex.gameGenderRegex, strings.invalidGameGenderPreference);
 	validateAgeRange(data.age_range);
 	validateLocation(data.location);
-	validate(data.location_notes, regex.gameLocationRegex, strings.invalidLocationNotes);
+	validate(data.location_notes, regex.gameLocationNotesRegex, strings.invalidLocationNotes);
 	validate(data.description, regex.gameDescriptionRegex, strings.invalidGameDescription);
 	validateEnforcedParamsList(data.enforced_params);
     return data;
@@ -58,9 +58,9 @@ module.exports = {
 
 function validate(param, regexPattern, errorMessage){
 	if(!regexPattern){
-		throw new Error("Regex not found" + param);
+		throw new Error("Regex not found for input " + param);
 	}
-	if(!(param && (param = param.trim()) && regexPattern.test(param))){
+	if(!(param && (param = param.trim()) && regexPattern.test(param.trim()))){
 		throw new Error(errorMessage);
 	}
 }
@@ -92,4 +92,8 @@ function validateEnforcedParamsList(enforcedList){
 			}
 		}
 	}
+}
+
+function validateSkillOffset(skill){
+	return (skill && skill >= 0 && skill <=10);
 }

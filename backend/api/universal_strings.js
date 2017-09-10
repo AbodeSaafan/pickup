@@ -24,6 +24,7 @@ var invalidLocationNotes = "The location notes description you specified is not 
 var invalidGameDescription = "The game description you specified is not valid";
 var invalidEnforcedParamList = "The enforced parameters list you have specified is not valid";
 var invalidGameCreation = "Error creating the game";
+var invalidGameSkillOffset = "The game skill offset you have entered is invalid";
 
 module.exports = {
 	uniqueEmailError,
@@ -51,5 +52,6 @@ module.exports = {
 	invalidLocationNotes,
 	invalidGameDescription,
 	invalidEnforcedParamList,
-	invalidGameCreation
+	invalidGameCreation,
+	invalidGameSkillOffset
 }
