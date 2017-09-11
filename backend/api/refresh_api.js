@@ -12,6 +12,8 @@ var strings = require('./universal_strings');
 * @apiName RefreshToken
 * @apiGroup Authorization
 *
+* @apiDescription API used for getting a new JWT token using your refresh token.
+*
 * @apiParam {String} jwt The JWT you have currently 
 * @apiParam {String} refresh The refresh token you were given at signup
 *
@@ -19,12 +21,17 @@ var strings = require('./universal_strings');
 *
 * @apiError error The error field has a string with an exact error
 *
-* @apiSuccessExample Success-Response:
-*      HTTP/1.1 200 OK
+* @apiExample Example call:
 *     {
 *       "jwt": Encrypted_JWT_Token,
 *       "refresh": RefreshToken
 *     }
+*
+* @apiSuccessExample Success-Response:
+*      HTTP/1.1 200 OK
+*		{
+*		  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkc3NhZGFAbWFpbC5jb20iLCJpYXQiOjE1MDUxNTc2NjQsImV4cCI6MTUwNTE1ODU2NH0.HmhW4y-AZ1D5rMHbQ8RY0eBIGfo-8Lb_sFL1FrruFoc"
+*		}
 *
 * @apiSampleRequest /api/refresh
 */
@@ -63,12 +70,18 @@ router.get('/', function(req, res){
 *
 * @apiError error The error field has a string with an exact error
 *
-* @apiSuccessExample Success-Response:
-*      HTTP/1.1 200 OK
+* @apiExample Example call:
 *     {
 *       "jwt": Encrypted_JWT_Token,
 *       "refresh": RefreshToken
 *     }
+*
+* @apiSuccessExample Success-Response:
+*      HTTP/1.1 200 OK
+*	{
+*	    "status": "Successful refresh token delete"	
+*	}
+*
 *
 * @apiSampleRequest /api/refresh
 */

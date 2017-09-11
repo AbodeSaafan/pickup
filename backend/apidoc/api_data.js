@@ -5,6 +5,7 @@ define({ "api": [
     "title": "Log into the app",
     "name": "Login",
     "group": "Authorization",
+    "description": "<p>API used to login and obtain a refresh token.</p>",
     "parameter": {
       "fields": {
         "Parameter": [
@@ -41,11 +42,18 @@ define({ "api": [
       "examples": [
         {
           "title": "Success-Response:",
-          "content": " HTTP/1.1 200 OK\n{\n  \"email\": \"6209be52@mail.com\",\n  \"password\": \"fa2568a8dd82c24a6ee22df3f19d642d\"\n}",
+          "content": "     HTTP/1.1 200 OK\n\t{\n   \"token\": \"b43a545f90ec60bf5ed2a4bd45d81a711de7ba658faa6899d8240343b857664fc967a76cd622235313db8e2ec053fe34c26c\",\n   \"user_id\": \"240\"\n\t}",
           "type": "json"
         }
       ]
     },
+    "examples": [
+      {
+        "title": "Example call::",
+        "content": "{\n  \"email\": \"6209be52@mail.com\",\n  \"password\": \"fa2568a8dd82c24a6ee22df3f19d642d\"\n}",
+        "type": "json"
+      }
+    ],
     "sampleRequest": [
       {
         "url": "/api/login"
@@ -61,6 +69,7 @@ define({ "api": [
     "title": "Refresh your JWT token",
     "name": "RefreshToken",
     "group": "Authorization",
+    "description": "<p>API used for getting a new JWT token using your refresh token.</p>",
     "parameter": {
       "fields": {
         "Parameter": [
@@ -96,7 +105,7 @@ define({ "api": [
       "examples": [
         {
           "title": "Success-Response:",
-          "content": " HTTP/1.1 200 OK\n{\n  \"jwt\": Encrypted_JWT_Token,\n  \"refresh\": RefreshToken\n}",
+          "content": "     HTTP/1.1 200 OK\n\t\t{\n\t\t  \"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkc3NhZGFAbWFpbC5jb20iLCJpYXQiOjE1MDUxNTc2NjQsImV4cCI6MTUwNTE1ODU2NH0.HmhW4y-AZ1D5rMHbQ8RY0eBIGfo-8Lb_sFL1FrruFoc\"\n\t\t}",
           "type": "json"
         }
       ]
@@ -113,6 +122,13 @@ define({ "api": [
         ]
       }
     },
+    "examples": [
+      {
+        "title": "Example call:",
+        "content": "{\n  \"jwt\": Encrypted_JWT_Token,\n  \"refresh\": RefreshToken\n}",
+        "type": "json"
+      }
+    ],
     "sampleRequest": [
       {
         "url": "/api/refresh"
@@ -160,11 +176,18 @@ define({ "api": [
         ]
       }
     },
+    "examples": [
+      {
+        "title": "Example call:",
+        "content": "{\n  \"jwt\": Encrypted_JWT_Token,\n  \"refresh\": RefreshToken\n}",
+        "type": "json"
+      }
+    ],
     "success": {
       "examples": [
         {
           "title": "Success-Response:",
-          "content": " HTTP/1.1 200 OK\n{\n  \"jwt\": Encrypted_JWT_Token,\n  \"refresh\": RefreshToken\n}",
+          "content": "     HTTP/1.1 200 OK\n\t{\n\t    \"status\": \"Successful refresh token delete\"\t\n\t}",
           "type": "json"
         }
       ]
@@ -184,6 +207,7 @@ define({ "api": [
     "title": "Register a user account",
     "name": "RegisterUser",
     "group": "Authorization",
+    "description": "<p>API used to register for a new account.</p>",
     "parameter": {
       "fields": {
         "Parameter": [
@@ -268,7 +292,7 @@ define({ "api": [
       "examples": [
         {
           "title": "Success-Response:",
-          "content": " HTTP/1.1 200 OK\n{\n  \"nickname\": \"abode\",\n  \"fname\": \"Abode\",\n  \"lname\": \"Saafan\",\n  \"gender\": \"M\",\n  \"dob\": \"25/03/1996\",\n  \"email\": \"abodesaafan@hotmail.com\",\n  \"password\": \"password123\"\n}",
+          "content": "   HTTP/1.1 200 OK\n   {\n  \t\"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMjQwIiwiZW1haWwiOiJhZHNzYWRhQG1haWwuY29tIiwiaWF0IjoxNTA1MTU3NTA3LCJleHAiOjE1MDUxNTg0MDd9.r7h31S_wQTypjiSLh7TgeRZYnRNqJpCJCqUFoSUvxqI\",\n   \t\"refresh\": \"21251e5cc6e6a667f109ccc6f295c1595bc98ecc7cf8733e788fe1aab0ea14eeaf81990bbceb97874a6c4e8a7f5851e1ee89\",\n   \t\"user_id\": \"240\"\n\t }",
           "type": "json"
         }
       ]
@@ -285,6 +309,13 @@ define({ "api": [
         ]
       }
     },
+    "examples": [
+      {
+        "title": "Example call:",
+        "content": "{\n  \"nickname\": \"abode\",\n  \"fname\": \"Abode\",\n  \"lname\": \"Saafan\",\n  \"gender\": \"M\",\n  \"dob\": \"25/03/1996\",\n  \"email\": \"abodesaafan@hotmail.com\",\n  \"password\": \"password123\"\n}",
+        "type": "json"
+      }
+    ],
     "sampleRequest": [
       {
         "url": "/api/register"
@@ -300,10 +331,17 @@ define({ "api": [
     "title": "Create a new game",
     "name": "CreateGame",
     "group": "Games",
-    "description": "<p>API used for creating games. Games must not conflict with previous games the user has already created.</p>",
+    "description": "<p>API used for creating games. Games must not conflict with previous games the user has already created. Valid options for enforced_params are: gender, age</p>",
     "parameter": {
       "fields": {
         "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "jwt",
+            "description": "<p>Valid JWT</p>"
+          },
           {
             "group": "Parameter",
             "type": "String",
@@ -386,7 +424,7 @@ define({ "api": [
             "type": "String[]]",
             "optional": false,
             "field": "enforced_params",
-            "description": "<p>List of parmeters that the creator wants to enforce valid options for enforced_params are: gender, age</p>"
+            "description": "<p>List of parmeters that the creator wants to enforce</p>"
           }
         ]
       }
@@ -426,7 +464,7 @@ define({ "api": [
     "examples": [
       {
         "title": "Example call:",
-        "content": "    {\n      \"name\": \"abode's game\",\n      \"type\": \"casual\",\n      \"skill\": 5,\n      \"total_players_required\": 6,\n      \"start_time\": 1504272395,\n      \"duration\": 5400,\n      \"location\": {lat: 500.50, lng:500.50},\n\t\t    \"location_notes\": \"Come around the back and knock on the blue door\",\n      \"description\": \"Casual basketball game\",\n      \"gender\": \"A\",\n      \"age_range\": \"[20, 30]\",\n      \"enforced_params\": [\"gender\", \"age\"]\n    }",
+        "content": "    {\n      \"jwt\": Encrypted_JWT_Token,\n      \"name\": \"abode's game\",\n      \"type\": \"casual\",\n      \"skill\": 5,\n      \"total_players_required\": 6,\n      \"start_time\": 1504272395,\n      \"duration\": 5400,\n      \"location\": {lat: 500.50, lng:500.50},\n\t\t    \"location_notes\": \"Come around the back and knock on the blue door\",\n      \"description\": \"Casual basketball game\",\n      \"gender\": \"A\",\n      \"age_range\": \"[20, 30]\",\n      \"enforced_params\": [\"gender\", \"age\"]\n    }",
         "type": "json"
       }
     ],

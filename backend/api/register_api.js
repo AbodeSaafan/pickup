@@ -13,6 +13,8 @@ var strings = require('./universal_strings');
 * @apiName RegisterUser
 * @apiGroup Authorization
 *
+* @apiDescription API used to register for a new account.
+*
 * @apiParam {String} nickname The nickname of the user
 * @apiParam {String} fname The first name of the user
 * @apiParam {String} lname The last name of the user
@@ -27,8 +29,7 @@ var strings = require('./universal_strings');
 *
 * @apiError error The error field has a string with an exact error
 *
-* @apiSuccessExample Success-Response:
-*      HTTP/1.1 200 OK
+* @apiExample Example call:
 *     {
 *       "nickname": "abode",
 *       "fname": "Abode",
@@ -39,6 +40,13 @@ var strings = require('./universal_strings');
 *       "password": "password123"
 *     }
 *
+* @apiSuccessExample Success-Response:
+*    HTTP/1.1 200 OK
+*    {
+*   	"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMjQwIiwiZW1haWwiOiJhZHNzYWRhQG1haWwuY29tIiwiaWF0IjoxNTA1MTU3NTA3LCJleHAiOjE1MDUxNTg0MDd9.r7h31S_wQTypjiSLh7TgeRZYnRNqJpCJCqUFoSUvxqI",
+*    	"refresh": "21251e5cc6e6a667f109ccc6f295c1595bc98ecc7cf8733e788fe1aab0ea14eeaf81990bbceb97874a6c4e8a7f5851e1ee89",
+*    	"user_id": "240"
+* 	 }  
 * @apiSampleRequest /api/register
 */
 router.post('/', function(req, res){

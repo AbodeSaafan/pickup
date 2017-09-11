@@ -12,8 +12,9 @@ var strings = require('./universal_strings');
 * @apiName CreateGame
 * @apiGroup Games
 *
-* @apiDescription API used for creating games. Games must not conflict with previous games the user has already created.
+* @apiDescription API used for creating games. Games must not conflict with previous games the user has already created. Valid options for enforced_params are: gender, age
 *
+* @apiParam {String} jwt Valid JWT
 * @apiParam {String} name The name of the game you are creating
 * @apiParam {String} type The type of the game you are creating (Serious, casual, ..)
 * @apiParam {int} skill_offset The intended skill offset range for this game (0-10)
@@ -26,7 +27,7 @@ var strings = require('./universal_strings');
 * @apiParam {String} gender The preferred for the game (if any)
 * @apiParam {int[]} age_range The preferred age range for the game (if any)
 * @apiParam {String[]]} enforced_params List of parmeters that the creator wants to enforce
-* valid options for enforced_params are: gender, age
+* 
 * 	
 * @apiSuccess {int} gameId The id of the game that has been created
 *
@@ -34,6 +35,7 @@ var strings = require('./universal_strings');
 * 
 * @apiExample Example call:
 *     {
+*       "jwt": Encrypted_JWT_Token,
 *       "name": "abode's game",
 *       "type": "casual",
 *       "skill": 5,
