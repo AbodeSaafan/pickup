@@ -5,7 +5,7 @@ CREATE TABLE IF NOT EXISTS Games (
 	skill int,
 	total_players_required int,
 	start_time int,
-	duration int,
+	end_time int,
 	location point,
 	creator_id int REFERENCES Users(user_id),
 	description varchar(255),
