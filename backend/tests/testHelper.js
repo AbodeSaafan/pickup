@@ -24,14 +24,14 @@ function createGenericUser(){
 	};
 }
 
-function createGenericGame(jwt){
+function createGenericGame(jwt, start, duration){
 	return {
       	name: "abode's game",
       	type: "casual",
       	skill_offset: 5,
       	total_players_required: 6,
-      	start_time: "1504272395",
-	    duration: "5400",
+      	start_time: start,
+	    duration: duration,
       	location: {lat: 500.50, lng:-500.50},
 	  	location_notes: "Come around the back and knock on the blue door",
       	description: "Casual basketball game",

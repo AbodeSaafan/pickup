@@ -300,6 +300,7 @@
     "title": "Create a new game",
     "name": "CreateGame",
     "group": "Games",
+    "description": "<p>API used for creating games. Games must not conflict with previous games the user has already created.</p>",
     "parameter": {
       "fields": {
         "Parameter": [
@@ -321,8 +322,8 @@
             "group": "Parameter",
             "type": "int",
             "optional": false,
-            "field": "skill",
-            "description": "<p>The intended skill range for this game (x/100) (next week)</p>"
+            "field": "skill_offset",
+            "description": "<p>The intended skill offset range for this game (0-10)</p>"
           },
           {
             "group": "Parameter",
@@ -350,7 +351,7 @@
             "type": "location",
             "optional": false,
             "field": "location",
-            "description": "<p>The location of the game represented in location object (lat/lng)</p>"
+            "description": "<p>The location of the game represented in location point object (lat/lng)</p>"
           },
           {
             "group": "Parameter",
@@ -375,17 +376,17 @@
           },
           {
             "group": "Parameter",
-            "type": "list",
+            "type": "int[]",
             "optional": false,
             "field": "age_range",
             "description": "<p>The preferred age range for the game (if any)</p>"
           },
           {
             "group": "Parameter",
-            "type": "list",
+            "type": "String[]]",
             "optional": false,
             "field": "enforced_params",
-            "description": "<p>List of parmeters that the creator wants to enforce valid options for enforced_params are: gender, age, skill</p>"
+            "description": "<p>List of parmeters that the creator wants to enforce valid options for enforced_params are: gender, age</p>"
           }
         ]
       }
@@ -395,7 +396,7 @@
         "Success 200": [
           {
             "group": "Success 200",
-            "type": "String",
+            "type": "int",
             "optional": false,
             "field": "gameId",
             "description": "<p>The id of the game that has been created</p>"
@@ -405,7 +406,7 @@
       "examples": [
         {
           "title": "Success-Response:",
-          "content": "     HTTP/1.1 200 OK\n    {\n      \"name\": \"abode's game\",\n      \"type\": \"casual\",\n      \"skill\": 5,\n      \"total_players_required\": 6,\n      \"start_time\": \"1504272395\",\n      \"duration\": \"5400\",\n      \"location\": {lat: 500.50, lng:500.50},\n\t\t\"location_notes\": \"Come around the back and knock on the blue door\"\n      \"description\": \"Casual basketball game\",\n      \"gender\": \"A\",\n      \"age_range\": \"[20, 30]\",\n      \"enforced_params\": [skill, gender, age]\n    }",
+          "content": "HTTP/1.1 200 OK\n{\n  \"game_id\": 12\n}",
           "type": "json"
         }
       ]
@@ -422,6 +423,13 @@
         ]
       }
     },
+    "examples": [
+      {
+        "title": "Example call:",
+        "content": "    {\n      \"name\": \"abode's game\",\n      \"type\": \"casual\",\n      \"skill\": 5,\n      \"total_players_required\": 6,\n      \"start_time\": 1504272395,\n      \"duration\": 5400,\n      \"location\": {lat: 500.50, lng:500.50},\n\t\t    \"location_notes\": \"Come around the back and knock on the blue door\",\n      \"description\": \"Casual basketball game\",\n      \"gender\": \"A\",\n      \"age_range\": \"[20, 30]\",\n      \"enforced_params\": [\"gender\", \"age\"]\n    }",
+        "type": "json"
+      }
+    ],
     "sampleRequest": [
       {
         "url": "/api/games"
@@ -466,7 +474,7 @@
       "examples": [
         {
           "title": "Success-Response:",
-          "content": " HTTP/1.1 200 OK\n{\n  \"user_id\":[ \"Pavle\", \"Sam\", \"Abode\" ]\n }",
+          "content": " HTTP/1.1 200 OK\n{\n  \"user_id\":[ \"1\", \"2\", \"3\" ]\n }",
           "type": "json"
         }
       ]

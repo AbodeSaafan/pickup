@@ -244,7 +244,8 @@ function createGame (userId, name, type, skill, totalPlayers, startTime, duratio
 }
 
 function ensureGameIsValid (game, userId, callback){
-	var queryString = "SELECT start_time, end_time FROM games WHERE creator_id = $1 AND ($2 > start_time AND $2 < end_time) OR ($3 > start_time AND $3 < end_time) ORDER BY start_time ASC";
+	// TODO ensure that the user is not joined in any conflicting games either
+	var queryString = "SELECT start_time, end_time FROM games WHERE creator_id = $1 AND (($2 >= start_time AND $2 <= end_time) OR ($3 >= start_time AND $3 <= end_time) OR (start_time >= $2 AND start_time <= $3) OR (end_time >= $2 AND end_time <= $3)) ORDER BY start_time ASC";
 	var end_time = game.start_time + game.duration;
 	var queryParams = [userId, game.start_time, end_time];
 	

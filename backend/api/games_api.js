@@ -12,6 +12,8 @@ var strings = require('./universal_strings');
 * @apiName CreateGame
 * @apiGroup Games
 *
+* @apiDescription API used for creating games. Games must not conflict with previous games the user has already created.
+*
 * @apiParam {String} name The name of the game you are creating
 * @apiParam {String} type The type of the game you are creating (Serious, casual, ..)
 * @apiParam {int} skill_offset The intended skill offset range for this game (0-10)
@@ -22,23 +24,22 @@ var strings = require('./universal_strings');
 * @apiParam {location_notes} string how to get into the court
 * @apiParam {String} description Short description for the game (less than 250 characters)
 * @apiParam {String} gender The preferred for the game (if any)
-* @apiParam {list} age_range The preferred age range for the game (if any)
-* @apiParam {list} enforced_params List of parmeters that the creator wants to enforce
+* @apiParam {int[]} age_range The preferred age range for the game (if any)
+* @apiParam {String[]]} enforced_params List of parmeters that the creator wants to enforce
 * valid options for enforced_params are: gender, age
 * 	
 * @apiSuccess {int} gameId The id of the game that has been created
 *
 * @apiError error The error field has a string with an exact error
 * 
-* @apiSuccessExample Success-Response:
-*      HTTP/1.1 200 OK
+* @apiExample Example call:
 *     {
 *       "name": "abode's game",
 *       "type": "casual",
 *       "skill": 5,
 *       "total_players_required": 6,
-*       "start_time": "1504272395",
-*       "duration": "5400",
+*       "start_time": 1504272395,
+*       "duration": 5400,
 *       "location": {lat: 500.50, lng:500.50},
 *		    "location_notes": "Come around the back and knock on the blue door",
 *       "description": "Casual basketball game",
@@ -46,6 +47,12 @@ var strings = require('./universal_strings');
 *       "age_range": "[20, 30]",
 *       "enforced_params": ["gender", "age"]
 *     }
+*
+* @apiSuccessExample Success-Response:
+* HTTP/1.1 200 OK
+* {
+*   "game_id": 12
+* }
 *
 * @apiSampleRequest /api/games
 */
@@ -64,6 +71,7 @@ router.post('/', function(req, res){
           game.description, game.gender, game.age_range, game.enforced_params, 
           (game_id) => {
             if(game_id){
+              // TODO join game for creator
               res.status(200).json({'game_id': game_id});
             } else {
               res.status(400).json({'error': strings.invalidGameCreation});
