@@ -35,7 +35,7 @@ function registerUser(user, callback){
 function updateUser(user, callback){
         var queryString = "update users SET nickname = $2, fname = $3, lname = $4, dob = $5 where user_id = $1";
         var queryParams = [user['user_id'], user['nickname'], user['fname'], user['lname'], user['dob']];
-		console.log(user);
+
         const pool = new pg.Pool({connectionString: conString});
 
         pool.connect((err, client, done) => {
@@ -58,7 +58,6 @@ function getUserId(email, callback){
   				if(!err && res.rows[0].user_id){
 	  				callback(res.rows[0].user_id);
   				} else {
-	  				console.log("Failed to get user id");
 					callback(false);
   				}
   				done();
@@ -78,7 +77,6 @@ function getUserRowById(userId, callback){
   				if(!err && res.rows[0]){
 	  				callback(res.rows[0]);
   				} else {
-	  				console.log("Failed to get user row");
 					callback(false);
   				}
   				done();
@@ -98,7 +96,6 @@ function getRefreshToken(userId, refreshToken, callback){
   				if(!err && res.rows[0].refresh_token){
   					callback(res.rows[0].refresh_token);
   				} else {
-	  				console.log("Failed to get refresh token" + err);
 					callback(false);
   				}
   				done();
@@ -115,8 +112,6 @@ function deleteRefreshToken(userId, refreshToken, callback){
 
 		pool.connect((err, client, done) => {
 			client.query(queryString, queryParams, (err, res) => {
-				console.log(res);
-				console.log((res && res.rowCount != 0));
 				callback(!err && (res && res.rowCount != 0));
   				done();
   				pool.end();
@@ -149,7 +144,6 @@ function getExtendedProfile(userID, callback) {
   				if(!err && res.rows[0]){
 	  				callback(res.rows[0]);
   				} else {
-	  				console.log("Failed to get user row");
 					callback(false);
   				}
   				done();
@@ -172,7 +166,6 @@ function checkPassword(emailIn, passIn, callback){
                         callback(refreshToken, rowsRes[0].user_id);
                     });
                 } else {
-                    console.log("Invalid password or email");
                     callback(null, null);
                 }
                 done();
@@ -206,7 +199,6 @@ function getUsers (gameId, callback){
   				if(!err && res.rows.user_id){
   					callback(res.rows.user_id);
   				} else {
-	  				console.log("Failed to get users" + err);
 					callback(false);
   				}
   				done();
@@ -255,9 +247,7 @@ function ensureGameIsValid (game, userId, callback){
 	var queryString = "SELECT start_time, end_time FROM games WHERE creator_id = $1 AND ($2 > start_time AND $2 < end_time) OR ($3 > start_time AND $3 < end_time) ORDER BY start_time ASC";
 	var end_time = game.start_time + game.duration;
 	var queryParams = [userId, game.start_time, end_time];
-	console.log(queryString);
-	console.log(queryParams);
-
+	
 	const pool = new pg.Pool({connectionString: conString});
 
 	pool.connect((err, client, done) => {

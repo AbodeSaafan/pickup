@@ -16,7 +16,6 @@ router.get('/:user_id', function (req, res) {
   try {
       databaseHelper.getExtendedProfile(userID, (user_id) => {
           if(user_id) {
-              console.log(user_id);
               res.status(200).json(user_id);
               return;
           }else{
@@ -40,13 +39,10 @@ router.put('/:user_id', function (req, res) {
   try {
     databaseHelper.getExtendedProfile(userID, (user_id) => {
         if(user_id) {
-            console.log(user_id);
             databaseHelper.updateExtendedUser(userID, skill_level, location, (update) => {
               if (update) {
-                console.log('update was successful');
                 res.status(200).json(update);
               } else {
-                console.log(update)
                 res.status(400).json({'error': strings.userIdFail});
                 return;
               }

@@ -52,7 +52,6 @@ router.post('/', function(req, res){
 
 	databaseHelper.checkEmailUniqueness(user, (emailValid) => {
 		if(!emailValid){
-			console.log(strings.uniqueEmailError);
 			res.status(400).json({'error': strings.uniqueEmailError}); return;
 		}
 		else {
@@ -61,7 +60,6 @@ router.post('/', function(req, res){
 
 			databaseHelper.registerUser(user, (registerSuccess) => {
 				if(!registerSuccess){
-					console.log(strings.registerFailError);
 					res.status(400).json({'error': strings.registerFailError}); return;
 				}
 
@@ -78,13 +76,11 @@ router.post('/', function(req, res){
 
 						databaseHelper.createRefreshToken(userId, (refreshToken) => {
 							if(!refreshToken){
-								console.log("token is " + refreshToken);
 								res.status(400).json({'error': strings.createRefreshFail}); return;
 							}
 							res.status(200).json({'token':token, 'refresh':refreshToken, 'user_id':userId}); return;
 						});
 					} else {
-						console.log(strings.userIdFail);
 						res.status(400).json({'error': strings.userIdFail }); return;	
 					}
 				});

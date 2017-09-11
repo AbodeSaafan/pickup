@@ -38,11 +38,9 @@ router.post('/', function(req, res){
 
 	databaseHelper.checkPassword(user.email, user.password, (refreshToken, userId) => {
 		if (refreshToken != null) {
-			console.log(loginSuccess);
 			res.status(200).json({'token':refreshToken, 'user_id':userId});
 			return;
 		} else {
-            console.log(loginError);
 			res.status(400).json({'error': loginError});
 			return;
 		}
