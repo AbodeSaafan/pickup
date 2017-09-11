@@ -30,9 +30,13 @@ function validateAndCleanCreateGameRequest(data){
 	validate(data.name, regex.gameNameRegex, strings.invalidGameName);
 	validate(data.type, regex.gameTypeRegex, strings.invalidGameType);
 	validateSkillOffset(data.skill_offset);
+	data.skill_offset = data.skill_offset - 0; // quick convert to int
 	validateStartTime(data.start_time);
+	data.start_time = data.start_time - 0; // quick convert to int
 	validate(data.duration, regex.gameDurationRegex, strings.invalidGameDuration);
+	data.duration = data.duration - 0; // quick convert to int
 	validate(data.total_players_required, regex.gameTotalPlayersRegex, strings.invalidGameTotalPlayers);
+	data.total_players_required = data.total_players_required - 0; // quick convert to int
 	validate(data.gender, regex.gameGenderRegex, strings.invalidGameGenderPreference);
 	validateAgeRange(data.age_range);
 	validateLocation(data.location);

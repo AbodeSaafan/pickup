@@ -54,23 +54,27 @@ router.post('/', function(req, res){
 		var game = requestHelper.validateAndCleanCreateGameRequest(req.body);
     var tok = tokenHelper.verifyToken(req.body.jwt);
 
-    ensureGameIsValid(game, tok.user_id);
-
-    databaseHelper.createGame(tok.user_id, game.name, game.type, game.skill, 
-                              game.total_players_required, game.start_time, 
-                              game.duration, game.location, game.location_notes,
-                              game.description, game.gender, game.age_range, game.enforced_params, 
-    (game_id) => {
-      if(game_id){
-        res.status(200).json({'game_id': game_id});
+    databaseHelper.ensureGameIsValid(game, tok.user_id, (valid) => {
+      if(!valid){
+        res.status(400).json({'error': strings.invalidGameScheduleConflict});
       } else {
-        res.status(400).json({'error': strings.invalidGameCreation});
+        databaseHelper.createGame(tok.user_id, game.name, game.type, game.skill, 
+          game.total_players_required, game.start_time, 
+          game.duration, game.location, game.location_notes,
+          game.description, game.gender, game.age_range, game.enforced_params, 
+          (game_id) => {
+            if(game_id){
+              res.status(200).json({'game_id': game_id});
+            } else {
+              res.status(400).json({'error': strings.invalidGameCreation});
+            }
+          });
       }
     });
-	}
-	catch (err){
-		res.status(400).json(requestHelper.jsonError(err)); return;
-	}
+  }
+  catch (err){
+    res.status(400).json(requestHelper.jsonError(err)); return;
+  }
 });
 
 /**
@@ -105,24 +109,15 @@ router.post('/', function(req, res){
       		return;
       	}
       })
-  }
-  catch(err){
+    }
+    catch(err){
 
-  	res.status(400).json({'error': strings.invalidJwt});
-  	return;
-  }
+     res.status(400).json({'error': strings.invalidJwt});
+     return;
+   }
 
 
 
-});
-
- function ensureGameIsValid(game, userId){
-    // Make sure that the creator does not have another game during this time
-    var startTime = game.start_time;
-    var endTime = game.start_time + game.duration;
-
-    
-
- }
+ });
 
  module.exports = router;

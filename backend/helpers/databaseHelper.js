@@ -251,15 +251,24 @@ function createGame (userId, name, type, skill, totalPlayers, startTime, duratio
 	});
 }
 
-function ensureGameIsValid (game, userId){
-	var queryString = "SELECT start_time, end_time FROM games WHERE creator_id = $1 ORDER BY start_time ASC";
-	var queryParams = [userId];
+function ensureGameIsValid (game, userId, callback){
+	var queryString = "SELECT start_time, end_time FROM games WHERE creator_id = $1 AND ($2 > start_time AND $2 < end_time) OR ($3 > start_time AND $3 < end_time) ORDER BY start_time ASC";
+	var end_time = game.start_time + game.duration;
+	var queryParams = [userId, game.start_time, end_time];
+	console.log(queryString);
+	console.log(queryParams);
 
 	const pool = new pg.Pool({connectionString: conString});
 
 	pool.connect((err, client, done) => {
 		client.query(queryString, queryParams, (err, res) => {
-
+			if(!err && res.rows.length == 0){
+				callback(true);
+			} else{
+				callback(false);
+			}
+			done();
+			pool.end();
 		});
 	});
 }
