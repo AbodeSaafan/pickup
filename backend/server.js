@@ -18,6 +18,11 @@ app.use(function(req, res, next) {
 
 app.use(express.static(path.join(__dirname, 'apidoc')));
 
+app.use(function(req, res, next) {
+  console.log(req.method + " " + req.url);
+  // console.log(req) // use only for debugging do not commit uncommented
+  next();
+});
 app.use('/api', api);
 
 var port = process.env.PORT || 3000;
