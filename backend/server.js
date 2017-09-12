@@ -25,12 +25,10 @@ app.use(function(req, res, next) {
 });
 app.use('/api', api);
 
-var port = process.env.PORT || 3000;
 
-app.set('port',port);
 
 var server = http.createServer(app);
 
 app.listen(process.env.PORT || 3000, function(){
-	console.log("Server started on port: "+port);
+	console.log("Server started on port: " + this.address().port);
 });
