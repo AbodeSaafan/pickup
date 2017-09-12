@@ -31,6 +31,6 @@ app.set('port',port);
 
 var server = http.createServer(app);
 
-app.listen(port, function(){
+app.listen(process.env.PORT || 3000, function(){
 	console.log("Server started on port: "+port);
 });
