@@ -175,6 +175,21 @@ function checkPassword(emailIn, passIn, callback){
       });
 }
 
+function verifyGameId(gameIdIn, callback){
+    var queryString = "SELECT game_id FROM games WHERE game_id = $1;";
+    var queryParams = [gameIdIn];
+
+    const pool = new pg.Pool({connectionString: conString});
+
+    pool.connect((err, client, done) => {
+        client.query(queryString, queryParams, (err, res) => {
+            callback(res.rows.length > 0);
+            done();
+            pool.end();
+        });
+    });
+}
+
 function updateExtendedUser (userId, skill_level, location, callback) {
 		var queryString = "UPDATE extended_profile SET skilllevel = $1, location = $2 WHERE user_id = $3;"
 		var queryParams = [skill_level, location, userId]
@@ -285,7 +300,8 @@ module.exports = {
 	getUsers,
 	addReview,
 	createGame,
-	ensureGameIsValid
+	ensureGameIsValid,
+    verifyGameId
 }
 
 //////////////// Helpers ////////////////
