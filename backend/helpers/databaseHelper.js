@@ -1,5 +1,6 @@
 var pg = require('pg');
-const conString = "postgres://postgres:123@localhost:5432/pickup";
+var env = process.env.NODE_ENV || 'dev';
+const conString = env == 'dev' ? "postgres://postgres:123@localhost:5432/pickup" : "postgres://wnekcxcdwtvulo:709de1f0f44fe756d7eaf35226a1b40ec363f06eac9721a15af490ba8ee568fc@ec2-54-221-212-208.compute-1.amazonaws.com:5432/d80b1otoqo1lol";
 var crypto = require('crypto');
 var md5 = require('md5');
 

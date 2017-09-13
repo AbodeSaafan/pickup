@@ -1,0 +1,1 @@
+psql -h ec2-54-221-212-208.compute-1.amazonaws.com -p 5432 -d d80b1otoqo1lol -U wnekcxcdwtvulo -f createAll.sql

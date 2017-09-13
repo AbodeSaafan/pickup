@@ -1,6 +1,6 @@
 var jwt = require('jsonwebtoken');
 var fs = require('fs');
-var cert = fs.readFileSync('package.json');
+var cert = fs.readFileSync('api/private.key');
 var strings = require('../api/universal_strings')
 
 function createTokenForUser(user_id, email) {
