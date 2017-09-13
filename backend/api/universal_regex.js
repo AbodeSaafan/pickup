@@ -12,6 +12,7 @@ var gameGenderRegex = /^[m|f|a]$/i; // m/M for Male, f/F for Female, a/A for Any
 var gameDescriptionRegex = /^[a-zA-Z0-9\'\-\: ]*$/ // Alphanumerical with : - ' allowed and spaces
 var gameLocationNotesRegex = /^[a-zA-Z0-9\'\-\: ]*$/ // Alphanumerical with : - ' allowed and spaces
 var gameEnforcedParamRegex = /^age|gender$/i; // Skill, age or gender can be enforced
+var idRegex = /^[0-9]*$/; // Any integer number for now
 
 module.exports = {
 	nicknameRegex,
@@ -27,5 +28,6 @@ module.exports = {
 	gameGenderRegex,
 	gameDescriptionRegex,
 	gameLocationNotesRegex,
-	gameEnforcedParamRegex
+	gameEnforcedParamRegex,
+    idRegex
 }

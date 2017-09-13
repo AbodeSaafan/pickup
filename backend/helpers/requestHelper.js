@@ -46,6 +46,12 @@ function validateAndCleanCreateGameRequest(data){
     return data;
 }
 
+function validateAndCleanJoinRequest(data){
+    validate(data.user_id, regex.idRegex);
+    validate(data.game_id, regex.idRegex);
+    return data;
+}
+
 function jsonError(Error){
     return {'error': Error.toString().substring(7)};
 }
@@ -55,6 +61,7 @@ module.exports = {
     validateAndCleanUpdateRequest,
     validateAndCleanLoginRequest,
     validateAndCleanCreateGameRequest,
+    validateAndCleanJoinRequest,
     jsonError,
 }
 
