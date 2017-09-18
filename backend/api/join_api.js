@@ -14,7 +14,6 @@ var loginSuccess = "Log in successful";
 *
 * @apiDescription API used to join a game.
 *
-* @apiParam {int} user_id The id of the user that will join the game.
 * @apiParam {int} game_id The id of the game.
 *
 * @apiError error The error field has a string with an exact error
@@ -27,8 +26,8 @@ var loginSuccess = "Log in successful";
 *
 * @apiExample Example call::
 *   {
-*     "user_id": "240",
-*     "game_id": "1"
+*     "game_id": "1",
+*     "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMjQwIiwiZW1haWwiOiJhZHNzYWRhQG1haWwuY29tIiwiaWF0IjoxNTA1MTU3NTA3LCJleHAiOjE1MDUxNTg0MDd9.r7h31S_wQTypjiSLh7TgeRZYnRNqJpCJCqUFoSUvxqI"
 *   }
 *
 * 
@@ -43,16 +42,29 @@ router.put('/', function(req, res){
         res.status(400).json(requestHelper.jsonError(err)); return;
     }
 
-	databaseHelper.verifyGameId(user.user_id, user.game_id, (gameExists) => {
-		if (gameExists) {
-			res.status(200).json({'token':refreshToken, 'user_id':userId});
-			return;
-		} else {
-			res.status(400).json({'error': loginError});
-			return;
-		}
-	})
-});
+    var gameId = user.game_id;
+    var token = req.query.jwt;
+    print(token);
+    tokenHelper.verifyToken(token);
 
+    try{
+        var userId = tokenHelper.getUserFromToken(token).user_id;
+    } catch(err){
+        res.status(400).json(requestHelper.jsonError(err)); return;
+    }
+
+    databaseHelper.verifyGameId(userId, gameId, (gameExists) => {
+        if (gameExists) {
+            databaseHelper.addGamer(gameId, (querySuccess) => {
+                if (querySuccess) {
+                    res.status(200).json({'token': token, 'game_id': gameId});
+                    return;
+                }
+            })
+        }
+        res.status(400).json({'error': loginError});
+        return;
+    })
+});
 
 module.exports = router;

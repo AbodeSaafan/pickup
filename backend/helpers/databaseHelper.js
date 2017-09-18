@@ -190,6 +190,21 @@ function verifyGameId(gameIdIn, callback){
     });
 }
 
+function addGamer(userIdIn, gameIdIn, callback){
+    var queryString = "INSERT INTO gamers(user_id, game_id) VALUES($1, $2) RETURNING game_id";;
+    var queryParams = [userIdIn, gameIdIn];
+
+    const pool = new pg.Pool({connectionString: conString});
+
+    pool.connect((err, client, done) => {
+        client.query(queryString, queryParams, (err, res) => {
+            callback(res.rows.length > 0);
+            done();
+            pool.end();
+        });
+    });
+}
+
 function updateExtendedUser (userId, skill_level, location, callback) {
 		var queryString = "UPDATE extended_profile SET skilllevel = $1, location = $2 WHERE user_id = $3;"
 		var queryParams = [skill_level, location, userId]
@@ -301,7 +316,8 @@ module.exports = {
 	addReview,
 	createGame,
 	ensureGameIsValid,
-    verifyGameId
+    verifyGameId,
+	addGamer
 }
 
 //////////////// Helpers ////////////////
