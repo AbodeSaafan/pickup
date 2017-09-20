@@ -205,6 +205,21 @@ function addGamer(userIdIn, gameIdIn, callback){
     });
 }
 
+function leaveGame(userIdIn, gameIdIn, callback){
+    var queryString = "DELETE FROM gamers WHERE user_id = $1 AND game_id = $2;";
+    var queryParams = [userIdIn, gameIdIn];
+
+    const pool = new pg.Pool({connectionString: conString});
+
+    pool.connect((err, client, done) => {
+        client.query(queryString, queryParams, (err, res) => {
+            callback(res.rows.length > 0);
+            done();
+            pool.end();
+        });
+    });
+}
+
 function updateExtendedUser (userId, skill_level, location, callback) {
 		var queryString = "UPDATE extended_profile SET skilllevel = $1, location = $2 WHERE user_id = $3;"
 		var queryParams = [skill_level, location, userId]
@@ -254,7 +269,7 @@ function addReview (userId, gameId, reviewerId, rating, tags, callback){
 }
 
 function createGame (userId, name, type, skill, totalPlayers, startTime, duration, location, locationNotes, description, gender, ageRange, enforcedParams, callback){
-	var queryString =  "INSERT INTO games(creator_id, name, type, skill, total_players_required, start_time, end_time, location, location_notes, description, gender, age_range, enforced_params)" 
+	var queryString =  "INSERT INTO games(creator_id, name, type, skill, total_players_required, start_time, end_time, location, location_notes, description, gender, age_range, enforced_params)"
 		+ "VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13) RETURNING game_id;"
 		var dblocation = '(' + location.lat + ',' + location.lng + ')';
 	var queryParams = [userId, name, type, skill, totalPlayers, startTime, startTime+duration, dblocation, locationNotes, description, gender, ageRange, enforcedParams];
@@ -275,14 +290,14 @@ function createGame (userId, name, type, skill, totalPlayers, startTime, duratio
 }
 
 function ensureGameIsValid (game, userId, callback){
-	var queryString = "SELECT start_time, end_time " + 
+	var queryString = "SELECT start_time, end_time " +
 		"FROM (games FULL OUTER JOIN gamers ON games.game_id=gamers.game_id) " +
 		"WHERE (creator_id = $1 OR user_id = $1) AND (($2 >= start_time AND $2 <= end_time) OR ($3 >= start_time AND $3 <= end_time) OR (start_time >= $2 AND start_time <= $3) OR (end_time >= $2 AND end_time <= $3))";
 	var end_time = game.start_time + game.duration;
 	var queryParams = [userId, game.start_time, end_time];
 
 	console.log(queryParams);
-	
+
 	const pool = new pg.Pool({connectionString: conString});
 
 	pool.connect((err, client, done) => {

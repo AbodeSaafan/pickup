@@ -8,6 +8,7 @@ router.use('/refresh/', require('./refresh_api'));
 router.use('/extended_profile/', require('./extended_profile'));
 router.use('/games/', require('./games_api'));
 router.use('/reviews/', require('./reviews_api'));
+router.use('/leave/', require('./leave_api'));
 // Add more statements like the above to include other api files
 
 
