@@ -296,8 +296,6 @@ function ensureGameIsValid (game, userId, callback){
 	var end_time = game.start_time + game.duration;
 	var queryParams = [userId, game.start_time, end_time];
 
-	console.log(queryParams);
-
 	const pool = new pg.Pool({connectionString: conString});
 
 	pool.connect((err, client, done) => {
