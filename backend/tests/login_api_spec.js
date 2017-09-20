@@ -33,6 +33,8 @@ frisby.create('Register a user using the API with valid credentials to use for t
     })
     .expectStatus(200)
     .expectBodyContains('token')
+    .expectBodyContains('user_id')
+    .expectBodyContains('jwt_token')
     .toss();
   })
   .toss();
