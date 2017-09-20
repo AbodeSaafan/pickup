@@ -47,7 +47,7 @@ function validateAndCleanCreateGameRequest(data){
 }
 
 function validateAndCleanJoinRequest(data){
-    validate(data.game_id, regex.idRegex);
+    validate(data.params.game_id, regex.idRegex);
     return data;
 }
 
