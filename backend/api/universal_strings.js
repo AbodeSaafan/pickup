@@ -27,6 +27,7 @@ var invalidGameCreation = "Error creating the game";
 var invalidGameSkillOffset = "The game skill offset you have entered is invalid";
 var invalidGameScheduleConflict = "The game you are trying to create can not be created because the time conflicts with another game you have created";
 var invalidGame = "The game you are trying to join does not exist";
+var problemWithGameCreation = "The game you tried to create had some errors"
 
 module.exports = {
 	uniqueEmailError,
@@ -57,5 +58,6 @@ module.exports = {
 	invalidGameCreation,
 	invalidGameSkillOffset,
 	invalidGameScheduleConflict,
-	invalidGame
+	invalidGame,
+	problemWithGameCreation
 }
