@@ -2,10 +2,8 @@ var express = require('express');
 var router = express.Router();
 var requestHelper = require('../helpers/requestHelper');
 var databaseHelper = require('../helpers/databaseHelper');
-
-/////// Messages ///////
-var loginError = "Username or password is not valid";
-var loginSuccess = "Log in successful";
+var tokenHelper = require('../helpers/tokenHelper');
+var strings = require('./universal_strings');
 
 /**
 * @api {post} /login Log into the app
@@ -36,8 +34,6 @@ var loginSuccess = "Log in successful";
 * @apiSampleRequest /api/login
 */
 router.post('/', function(req, res){
-	// Access to parameters is done through req.query (GET and PUT)
-	// Access to parameters is done through req.body (POST and DELETE
     try{
         var user = requestHelper.validateAndCleanLoginRequest(req.body);
     }
@@ -47,10 +43,11 @@ router.post('/', function(req, res){
 
 	databaseHelper.checkPassword(user.email, user.password, (refreshToken, userId) => {
 		if (refreshToken != null) {
-			res.status(200).json({'token':refreshToken, 'user_id':userId});
+			var newJwt = tokenHelper.createTokenForUser(userId, user.email);
+			res.status(200).json({'token':newJwt, 'user_id':userId});
 			return;
 		} else {
-			res.status(400).json({'error': loginError});
+			res.status(400).json({'error': strings.loginError});
 			return;
 		}
 	})
