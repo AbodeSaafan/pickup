@@ -1,0 +1,50 @@
+search/:QUERY
+query=
+game
+user
+
+body:
+- # oof results 
+game:
+location
+age
+skill
+gender
+
+friend:
+
+Friend system 
+Use case:
+	- Request friend by user id or username through search 
+	- Request friend by clicking add on post-game review 
+
+Invite to game system:
+Use cases:
+	- Invite a friend to a game from friends list
+
+
+Things we need to store:
+	user 1 | user 2 | status | 
+	
+    5		| 6		| friend request
+    6  |5 | blocked
+
+    status codes:
+    	pending
+    	accepted
+    	blocked
+    convetion: user 1 is 
+
+
+API: 
+/api/friends/add
+/api/friends/remove
+/api/friends/block
+/api/friends/accept
+
+/api/friends/requests
+
+
+for all above
+jwt
+friend id
