@@ -5,4 +5,5 @@ BEGIN;
 \i games_table.sql
 \i reviews_table.sql
 \i gamers_table.sql
+\i friends_table.sql
 COMMIT;
