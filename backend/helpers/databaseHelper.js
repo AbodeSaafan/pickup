@@ -18,9 +18,24 @@ function checkEmailUniqueness(user, callback){
 		});
 }
 
+function checkUsernameUniqueness(user, callback){
+		var queryString = "SELECT * FROM users WHERE username = $1;";
+		var queryParams = [user.username];
+
+		const pool = new pg.Pool({connectionString: conString});
+
+		pool.connect((err, client, done) => {
+			client.query(queryString, queryParams, (err, res) => {
+  				callback(!(res.rows[0] || err));
+  				done();
+				pool.end();
+			});
+		});
+}
+
 function registerUser(user, callback){
-		var queryString = "INSERT INTO users(nickname, fname, lname, dob, gender, email, password, salt) VALUES($1, $2, $3, $4, $5, $6, $7, $8)";
-		var queryParams = [user.nickname, user.fname, user.lname, user.dob, user.gender, user.email, user.hashedPassword, user.salt];
+		var queryString = "INSERT INTO users(username, fname, lname, dob, gender, email, password, salt) VALUES($1, $2, $3, $4, $5, $6, $7, $8)";
+		var queryParams = [user.username, user.fname, user.lname, user.dob, user.gender, user.email, user.hashedPassword, user.salt];
 
 		const pool = new pg.Pool({connectionString: conString});
 
@@ -34,8 +49,8 @@ function registerUser(user, callback){
 }
 
 function updateUser(user, callback){
-        var queryString = "update users SET nickname = $2, fname = $3, lname = $4, dob = $5 where user_id = $1";
-        var queryParams = [user['user_id'], user['nickname'], user['fname'], user['lname'], user['dob']];
+        var queryString = "UPDATE users SET fname = $2, lname = $3, dob = $4 where user_id = $1";
+        var queryParams = [user['user_id'], user['fname'], user['lname'], user['dob']];
 
         const pool = new pg.Pool({connectionString: conString});
 
@@ -314,6 +329,7 @@ function ensureGameIsValid (game, userId, callback){
 
 module.exports = {
 	checkEmailUniqueness,
+	checkUsernameUniqueness,
 	registerUser,
     updateUser,
 	getUserId,

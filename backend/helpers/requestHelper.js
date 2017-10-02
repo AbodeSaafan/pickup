@@ -2,7 +2,7 @@ var regex = require('../api/universal_regex');
 var strings = require('../api/universal_strings');
 
 function validateAndCleanRegisterRequest(data){
-	validate(data.nickname, regex.nicknameRegex, strings.invalidNickname);
+	validate(data.username, regex.usernameRegex, strings.invalidUsername);
 	validate(data.password, regex.passwordRegex, strings.invalidPassword);
 	validate(data.fname, regex.nameRegex, strings.invalidName);
 	validate(data.lname, regex.nameRegex, strings.invalidName);
@@ -13,7 +13,6 @@ function validateAndCleanRegisterRequest(data){
 }
 
 function validateAndCleanUpdateRequest(data){
-	validate(data.nickname, regex.nicknameRegex, strings.invalidNickname);
 	validate(data.fname, regex.nameRegex, strings.invalidName);
 	validate(data.lname, regex.nameRegex, strings.invalidName);
 	validate(data.dob, regex.dateRegex, strings.invalidDob);

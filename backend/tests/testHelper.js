@@ -13,44 +13,48 @@ function randomEmail(){
 	return crypto.randomBytes(4).toString('hex') + "@mail.com";
 }
 
+function randomUsername(){
+  return crypto.randomBytes(4).toString('hex');
+}
+
 function createGenericUser(){
 	return {
-    	nickname:'abode',
-    	password:'password123',
-    	fname:'abode',
-    	lname:'saafan',
-    	gender:'m',
-    	dob:'25/03/1996',
-        email:randomEmail()
-	};
+    username:randomUsername(),
+    password:'password123',
+    fname:'abode',
+    lname:'saafan',
+    gender:'m',
+    dob:'25/03/1996',
+    email:randomEmail()
+  };
 }
 
 function createGenericGame(jwt, start, duration){
 	return {
-      	name: "abode's game",
-      	type: "casual",
-      	skill_offset: 5,
-      	total_players_required: 6,
-      	start_time: start,
-	    duration: duration,
-      	location: {lat: 500.50, lng:-500.50},
-	  	location_notes: "Come around the back and knock on the blue door",
-      	description: "Casual basketball game",
-      	gender: "A",
-      	age_range: [20, 30],
-    	enforced_params: ["gender", "age"],
-    	jwt: jwt
-    };
+   name: "abode's game",
+   type: "casual",
+   skill_offset: 5,
+   total_players_required: 6,
+   start_time: start,
+   duration: duration,
+   location: {lat: 500.50, lng:-500.50},
+   location_notes: "Come around the back and knock on the blue door",
+   description: "Casual basketball game",
+   gender: "A",
+   age_range: [20, 30],
+   enforced_params: ["gender", "age"],
+   jwt: jwt
+ };
 }
 
 module.exports = {
 	refreshEndpoint,
 	registerEndpoint,
-    loginEndpoint,
-	randomEmail,
-	extendedProfileEndpoint,
-	createGenericUser,
-	createGameEndpoint,
-	createGenericGame,
-    joinGameEndpoint
+  loginEndpoint,
+  randomEmail,
+  extendedProfileEndpoint,
+  createGenericUser,
+  createGameEndpoint,
+  createGenericGame,
+  joinGameEndpoint
 }

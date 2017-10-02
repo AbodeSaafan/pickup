@@ -28,7 +28,7 @@ frisby.create('Attempt to register a user using the API with missing parameters'
   .expectStatus(400)
   .expectHeaderContains('content-type', 'application/json')
   .expectJSON({
-    error: strings.invalidNickname
+    error: strings.invalidUsername
   })
 .toss();
 

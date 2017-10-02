@@ -1,7 +1,7 @@
 var uniqueEmailError = "Register failed: Email is not unique";
 var registerFailError = "Failed to register user into the database";
 var userIdFail = "Failed to retrieve user id";
-var invalidNickname = "Invalid Nickname. Nicknames are Alphanumerical, lowercase and 4 to 10 characters";
+var invalidUsername = "Invalid Username. Usernames are Alphanumerical, lowercase and 4 to 10 characters and can include '_'.";
 var invalidPassword = "Invalid password. Passwords are Alphanumerical and must be between 6 to 80 characters";
 var wrongEmailPassword = "Username or password is not valid";
 var invalidName = "Invalid name. Names must be Alphabetical.";
@@ -34,7 +34,7 @@ module.exports = {
 	uniqueEmailError,
 	registerFailError,
 	userIdFail,
-	invalidNickname,
+	invalidUsername,
 	invalidPassword,
     wrongEmailPassword,
 	invalidName,

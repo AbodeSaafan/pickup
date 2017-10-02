@@ -1,4 +1,4 @@
-var nicknameRegex = /^[a-z0-9]{4,10}$/; // Alphanumerical lowercase 4 to 10 characters
+var usernameRegex = /^[a-z0-9\_]{4,10}$/; // Alphanumerical lowercase 4 to 10 characters
 var passwordRegex = /^[a-z0-9A-Z]{6,80}$/; // Alphanumerical 6 to 80 characters
 var nameRegex = /^[a-zA-Z\'\-]*$/; // Alphabetical
 var genderRegex = /^[m|f|o]$/i; // m/M for Male, f/F for Female, o/O for Other
@@ -15,7 +15,7 @@ var gameEnforcedParamRegex = /^age|gender$/i; // Skill, age or gender can be enf
 var idRegex = /^[0-9]*$/; // Any integer number for now
 
 module.exports = {
-	nicknameRegex,
+	usernameRegex,
 	passwordRegex,
 	nameRegex,
 	genderRegex,

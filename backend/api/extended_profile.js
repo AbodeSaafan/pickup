@@ -35,7 +35,7 @@ router.put('/:user_id', function (req, res) {
   var userID = req.params.user_id;
   var skill_level = req.query.skill_level;
   var location = req.query.location;
-  //tokenHelper.verifyToken(req.headers.token);
+  tokenHelper.verifyToken(req.headers.token);
   try {
     databaseHelper.getExtendedProfile(userID, (user_id) => {
         if(user_id) {

@@ -215,8 +215,8 @@ define({ "api": [
             "group": "Parameter",
             "type": "String",
             "optional": false,
-            "field": "nickname",
-            "description": "<p>The nickname of the user</p>"
+            "field": "username",
+            "description": "<p>The unique username of the user</p>"
           },
           {
             "group": "Parameter",
@@ -312,7 +312,7 @@ define({ "api": [
     "examples": [
       {
         "title": "Example call:",
-        "content": "{\n  \"nickname\": \"abode\",\n  \"fname\": \"Abode\",\n  \"lname\": \"Saafan\",\n  \"gender\": \"M\",\n  \"dob\": \"25/03/1996\",\n  \"email\": \"abodesaafan@hotmail.com\",\n  \"password\": \"password123\"\n}",
+        "content": "{\n  \"username\": \"abode_5\",\n  \"fname\": \"Abode\",\n  \"lname\": \"Saafan\",\n  \"gender\": \"M\",\n  \"dob\": \"25/03/1996\",\n  \"email\": \"abodesaafan@hotmail.com\",\n  \"password\": \"password123\"\n}",
         "type": "json"
       }
     ],
@@ -520,6 +520,63 @@ define({ "api": [
     "sampleRequest": [
       {
         "url": "/api/games/:123"
+      }
+    ],
+    "version": "0.0.0",
+    "filename": "api/games_api.js",
+    "groupTitle": "Games"
+  },
+  {
+    "type": "put",
+    "url": "games/:GAMEID/join/",
+    "title": "Join a game",
+    "name": "JoinGame",
+    "group": "Games",
+    "description": "<p>API used to join a game.</p>",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "int",
+            "optional": false,
+            "field": "game_id",
+            "description": "<p>The id of the game.</p>"
+          }
+        ]
+      }
+    },
+    "error": {
+      "fields": {
+        "Error 4xx": [
+          {
+            "group": "Error 4xx",
+            "optional": false,
+            "field": "error",
+            "description": "<p>The error field has a string with an exact error</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "     HTTP/1.1 200 OK\n  {\n   \"token\": \"b43a545f90ec60bf5ed2a4bd45d81a711de7ba658faa6899d8240343b857664fc967a76cd622235313db8e2ec053fe34c26c\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "examples": [
+      {
+        "title": "Example call::",
+        "content": "{\n  \"game_id\": \"1\",\n  \"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMjQwIiwiZW1haWwiOiJhZHNzYWRhQG1haWwuY29tIiwiaWF0IjoxNTA1MTU3NTA3LCJleHAiOjE1MDUxNTg0MDd9.r7h31S_wQTypjiSLh7TgeRZYnRNqJpCJCqUFoSUvxqI\"\n}",
+        "type": "json"
+      }
+    ],
+    "sampleRequest": [
+      {
+        "url": "/api/games/:GAMEID/join/"
       }
     ],
     "version": "0.0.0",

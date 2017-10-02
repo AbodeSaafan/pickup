@@ -15,7 +15,7 @@ var strings = require('./universal_strings');
 *
 * @apiDescription API used to register for a new account.
 *
-* @apiParam {String} nickname The nickname of the user
+* @apiParam {String} username The unique username of the user
 * @apiParam {String} fname The first name of the user
 * @apiParam {String} lname The last name of the user
 * @apiParam {String} gender The gender of the user (F/M/O)
@@ -31,7 +31,7 @@ var strings = require('./universal_strings');
 *
 * @apiExample Example call:
 *     {
-*       "nickname": "abode",
+*       "username": "abode_5",
 *       "fname": "Abode",
 *       "lname": "Saafan",
 *       "gender": "M",
@@ -63,22 +63,27 @@ router.post('/', function(req, res){
 			res.status(400).json({'error': strings.uniqueEmailError}); return;
 		}
 		else {
-			user.salt = generateSalt();
-			user.hashedPassword = md5(user.salt + user.password);
-
-			databaseHelper.registerUser(user, (registerSuccess) => {
-				if(!registerSuccess){
-					res.status(400).json({'error': strings.registerFailError}); return;
+			databaseHelper.checkUsernameUniqueness(user, (uniqueUsername) => {
+				if(!uniqueUsername){
+					res.status(400).json({'error': strings.uniqueUsernameError}); return;
 				}
+				else {
+					user.salt = generateSalt();
+					user.hashedPassword = md5(user.salt + user.password);
 
-				databaseHelper.getUserId(user.email, (userId) => {
-					if(userId){
-						user.userId = userId;
-						databaseHelper.populateExtendedProfile(user, (populateSuccess) => {
-							if(!populateSuccess){
-								res.status(400).json({'error': "Unable to populate extended profile database"}); return;
-							}
-						});
+					databaseHelper.registerUser(user, (registerSuccess) => {
+						if(!registerSuccess){
+							res.status(400).json({'error': strings.registerFailError}); return;
+						}
+
+						databaseHelper.getUserId(user.email, (userId) => {
+							if(userId){
+								user.userId = userId;
+								databaseHelper.populateExtendedProfile(user, (populateSuccess) => {
+									if(!populateSuccess){
+										res.status(400).json({'error': "Unable to populate extended profile database"}); return;
+									}
+								});
 
 						var token = tokenHelper.createTokenForUser(userId, user.email); // Auth token
 
@@ -92,7 +97,10 @@ router.post('/', function(req, res){
 						res.status(400).json({'error': strings.userIdFail }); return;	
 					}
 				});
+					});
+				}
 			});
+			
 		}
 	});
 });
