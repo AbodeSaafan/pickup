@@ -14,19 +14,19 @@ var strings = require('./universal_strings');
 *
 * @apiDescription API used for creating games. Games must not conflict with previous games the user has already created. Valid options for enforced_params are: gender, age
 *
-* @apiParam {String} jwt Valid JWT
-* @apiParam {String} name The name of the game you are creating
-* @apiParam {String} type The type of the game you are creating (Serious, casual, ..)
+* @apiParam {string} jwt Valid JWT
+* @apiParam {string} name The name of the game you are creating
+* @apiParam {string} type The type of the game you are creating (Serious, casual, ..)
 * @apiParam {int} skill_offset The intended skill offset range for this game (0-10)
 * @apiParam {int} total_players The total required players for the game
 * @apiParam {int} start_time The time the game starts (in unix epoch time)
 * @apiParam {int} duration The duration of the game (in seconds as an int)
-* @apiParam {location} location The location of the game represented in location point object (lat/lng)
-* @apiParam {location_notes} string how to get into the court
-* @apiParam {String} description Short description for the game (less than 250 characters)
-* @apiParam {String} gender The preferred for the game (if any)
+* @apiParam {point} location The location of the game represented in location point object (lat/lng)
+* @apiParam {string} location_notes how to get into the court
+* @apiParam {string} description Short description for the game (less than 250 characters)
+* @apiParam {string} gender The preferred for the game (if any)
 * @apiParam {int[]} age_range The preferred age range for the game (if any)
-* @apiParam {String[]]} enforced_params List of parmeters that the creator wants to enforce
+* @apiParam {string[]]} enforced_params List of parmeters that the creator wants to enforce
 * 
 * 	
 * @apiSuccess {int} gameId The id of the game that has been created
@@ -43,7 +43,7 @@ var strings = require('./universal_strings');
 *       "start_time": 1504272395,
 *       "duration": 5400,
 *       "location": {lat: 500.50, lng:500.50},
-*		    "location_notes": "Come around the back and knock on the blue door",
+*       "location_notes": "Come around the back and knock on the blue door",
 *       "description": "Casual basketball game",
 *       "gender": "A",
 *       "age_range": "[20, 30]",
