@@ -1,4 +1,4 @@
-package com.example.npeng.pickup;
+package sotifc2017.pickup;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -67,7 +67,6 @@ public class SignUpActivity extends AppCompatActivity implements LoaderCallbacks
     private EditText mFirstnameView;
     private EditText mLastnameView;
     private RadioGroup radioSexGroup;
-    private RadioButton radioSexButton;
     private EditText cPasswordView;
 
     @Override
@@ -218,6 +217,20 @@ public class SignUpActivity extends AppCompatActivity implements LoaderCallbacks
         if (TextUtils.isEmpty(lastname)) {
             mLastnameView.setError(getString(R.string.error_field_required));
             focusView = mLastnameView;
+            cancel = true;
+        }
+
+        // Check for password.
+        if (TextUtils.isEmpty(password)) {
+            mPasswordView.setError(getString(R.string.error_field_required));
+            focusView = mPasswordView;
+            cancel = true;
+        }
+
+        // Check for confirm password.
+        if (TextUtils.isEmpty(confirmPassword)) {
+            cPasswordView.setError(getString(R.string.error_field_required));
+            focusView = cPasswordView;
             cancel = true;
         }
 

@@ -43,7 +43,7 @@ public class SignInActivity extends AppCompatActivity {
 
     public void newAccount(View view) {
         Toast.makeText(this, "New Account...", Toast.LENGTH_SHORT).show();
-        Intent intent = new Intent(this, MapActivity.class);
+        Intent intent = new Intent(this, SignUpActivity.class);
         startActivity(intent);
     }
 
