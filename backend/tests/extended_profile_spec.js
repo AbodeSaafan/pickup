@@ -2,32 +2,34 @@ var frisby = require('frisby');
 var strings = require('../api/universal_strings');
 var testHelper = require('./testHelper');
 
-var genericUserDetails = {
-  userID: 2,
-  skill_level: 4,
-  location: 'guelph'
-};
+// Creating a user with valid creds for testing
+frisby.create('Register a user using the API with valid credentials to use for extendedProfile testing')
+ .post(testHelper.registerEndpoint, testHelper.createGenericUser())
+ .expectStatus(200)
+ .expectHeaderContains('content-type', 'application/json')
+ .expectBodyContains('token')
+ .expectBodyContains('user_id')
+ .expectBodyContains('refresh')
+ .afterJSON(function (body) {
+   frisby.create('Get extendedProfile of user')
+   .get(extendedProfileEndpoint+"?jwt="+body.token)
+   .expectStatus(200)
+   .toss();
+ })
+.toss();
 
-// Get User's extended_profile (Valid User)
-frisby.create('Attempt to get user extended profile with user_id')
-    .get(testHelper.extendedProfileEndpoint+"/"+genericUserDetails.userID)
-    .expectStatus(200)
-    .expectHeaderContains('content-type', 'application/json')
-    .toss();
-
-// Get User's extended_profile (Invalid User)
-frisby.create('Attempt to get user extended profile with user_id')
-    .get(testHelper.extendedProfileEndpoint+"/0")
-    .expectStatus(400)
-    .expectHeaderContains('content-type', 'application/json')
-    .expectJSON({
-      error: strings.userIdFail
-    })
-    .toss();
-
-//Update skill_level and Location for valid User
-frisby.create('Attempt to update skill_level and location for user extended profile')
-    .put(testHelper.extendedProfileEndpoint+"/"+genericUserDetails.userID+"?skilllevel=" + genericUserDetails.skill_level + "&location=" + genericUserDetails.location)
-    .expectStatus(200)
-    .expectHeaderContains('content-type', 'application/json')
-    .toss();
+// Creating a user with valid creds for testing
+frisby.create('Register a user using the API with valid credentials to use for extendedProfile testing')
+ .post(testHelper.registerEndpoint, testHelper.createGenericUser())
+ .expectStatus(200)
+ .expectHeaderContains('content-type', 'application/json')
+ .expectBodyContains('token')
+ .expectBodyContains('user_id')
+ .expectBodyContains('refresh')
+ .afterJSON(function (body) {
+   frisby.create('Update extendedProfile of user')
+   .put(extendedProfileEndpoint+"?jwt="+body.token+"&skillevel=5&location=oakville")
+   .expectStatus(200)
+   .toss();
+ })
+.toss();

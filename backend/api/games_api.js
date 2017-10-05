@@ -61,7 +61,13 @@ var strings = require('./universal_strings');
 router.post('/', function(req, res){
 	try{
 		var game = requestHelper.validateAndCleanCreateGameRequest(req.body);
-    var tok = tokenHelper.verifyToken(req.body.jwt);
+    try {
+      var tok = tokenHelper.verifyToken(req.body.jwt);  
+    }
+    catch(err) {
+      res.status(400).json(requestHelper.jsonError(err)); return;
+    }
+    
 
     databaseHelper.ensureGameIsValid(game, tok.user_id, (valid) => {
       if(!valid){
