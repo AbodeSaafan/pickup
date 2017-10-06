@@ -1,3 +1,5 @@
+CREATE TYPE enforced_param_type AS ENUM ('gender', 'age');
+
 CREATE TABLE IF NOT EXISTS Games (
 	game_id BIGSERIAL PRIMARY KEY,
 	name varchar(255),
@@ -12,6 +14,6 @@ CREATE TABLE IF NOT EXISTS Games (
 	location_notes varchar(255),
 	gender varchar(255),
 	age_range int[2],
-	enforced_params varchar(255)[3],
+	enforced_params enforced_param_type[2],
 	time_created int DEFAULT extract(epoch from now())
 );
