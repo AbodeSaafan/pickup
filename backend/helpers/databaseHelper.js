@@ -304,7 +304,7 @@ function createGame (userId, name, type, skill, totalPlayers, startTime, duratio
 	});
 }
 
-function ensureGameIsValid (game, userId, callback){
+function ensureGameIsValidToBeCreated (game, userId, callback){
 	var queryString = "SELECT start_time, end_time " +
 		"FROM (games FULL OUTER JOIN gamers ON games.game_id=gamers.game_id) " +
 		"WHERE (creator_id = $1 OR user_id = $1) AND (($2 >= start_time AND $2 <= end_time) OR ($3 >= start_time AND $3 <= end_time) OR (start_time >= $2 AND start_time <= $3) OR (end_time >= $2 AND end_time <= $3))";
@@ -326,6 +326,11 @@ function ensureGameIsValid (game, userId, callback){
 	});
 }
 
+function ensureGameIsJoinableByPlayer(game_id, user_id, callback){
+	// 1. Make sure theres space in the game
+	// 2. Get enforced params and go through enforced params and verify that user meets requirements (if any)
+	return true; 
+}
 
 module.exports = {
 	checkEmailUniqueness,
@@ -344,9 +349,10 @@ module.exports = {
 	getUsers,
 	addReview,
 	createGame,
-	ensureGameIsValid,
+	ensureGameIsValidToBeCreated,
     verifyGameId,
-	addGamer
+	addGamer,
+	ensureGameIsJoinableByPlayer
 }
 
 //////////////// Helpers ////////////////

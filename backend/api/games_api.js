@@ -68,12 +68,11 @@ router.post('/', function(req, res){
       res.status(400).json(requestHelper.jsonError(err)); return;
     }
     
-
-    databaseHelper.ensureGameIsValid(game, tok.user_id, (valid) => {
+    databaseHelper.ensureGameIsValidToBeCreated(game, tok.user_id, (valid) => {
       if(!valid){
         res.status(400).json({'error': strings.invalidGameScheduleConflict});
       } else {
-        databaseHelper.createGame(tok.user_id, game.name, game.type, game.skill, 
+        databaseHelper.createGame(tok.user_id, game.name, game.type, game.skill_offset, 
           game.total_players_required, game.start_time, 
           game.duration, game.location, game.location_notes,
           game.description, game.gender, game.age_range, game.enforced_params, 
@@ -177,10 +176,9 @@ router.put('/:game_id/join', function(req, res){
   var gameId = req.params.game_id;
   var token = req.query.jwt;
 
-  tokenHelper.verifyToken(token);
-
   try{
-    var userId = tokenHelper.getUserFromToken(token).user_id;
+    var tok = tokenHelper.verifyToken(token);
+    var userId = tok.user_id;
   } catch(err){
     res.status(400).json(requestHelper.jsonError(err)); return;
   }
