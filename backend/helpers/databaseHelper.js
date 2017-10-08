@@ -369,6 +369,14 @@ function updateGame(gameId, numPlayers, callback){
     });
 }
 
+
+function leaveGame(gameId, numPlayers, callback){
+    // TODO: The following:
+    // 1) Delete user from the game
+    // 2) Update the number of players in the game by decreasing the number in the total_players_added column
+    callback(true);
+}
+
 module.exports = {
 	checkEmailUniqueness,
 	checkUsernameUniqueness,
@@ -390,7 +398,8 @@ module.exports = {
     verifyGameId,
 	addGamer,
 	ensureGameIsJoinableByPlayer,
-    updateGame
+    updateGame,
+    leaveGame
 }
 
 //////////////// Helpers ////////////////

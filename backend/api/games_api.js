@@ -207,27 +207,21 @@ router.put('/:game_id/join', function(req, res){
 
 router.delete('/:game_id/leave', function(req, res){
   try{
-    var user = requestHelper.validateAndCleanJoinRequest(req.body);
+      var user = requestHelper.validateAndCleanJoinRequest(req.body);
+      var gameId = req.params.game_id;
+      var token = req.query.jwt;
+      var tok = tokenHelper.verifyToken(token)
+      console.log(token);
+      var userId = tok.user_id;
   }
   catch (err){
     res.status(400).json(requestHelper.jsonError(err)); return;
   }
 
-  var gameId = req.params.game_id;
-  var token = req.query.jwt;
-  print(token);
-  tokenHelper.verifyToken(token);
-
-  try{
-    var userId = tokenHelper.getUserFromToken(token).user_id;
-  } catch(err){
-    res.status(400).json(requestHelper.jsonError(err)); return;
-  }
-
   databaseHelper.verifyGameId(userId, gameId, (gameExists) => {
     if (gameExists) {
-      databaseHelper.leaveGame(userId, gameId, (querySuccess) => {
-        if (querySuccess) {
+      databaseHelper.leaveGame(userId, gameId, (hasLeftGame) => {
+        if (hasLeftGame) {
           res.status(200).json({'token': token, 'game_id': gameId});
           return;
         }
