@@ -6,6 +6,7 @@ CREATE TABLE IF NOT EXISTS Games (
 	type varchar(255),
 	skill int,
 	total_players_required int,
+	total_players_added int DEFAULT 0,
 	start_time int,
 	end_time int,
 	location point,

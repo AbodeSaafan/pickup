@@ -166,36 +166,42 @@ router.post('/', function(req, res){
 * @apiSampleRequest /api/games/:GAMEID/join/
 */
 router.put('/:game_id/join', function(req, res){
-  try{
-    var user = requestHelper.validateAndCleanJoinRequest(req);
-  }
-  catch (err){
-    res.status(400).json(requestHelper.jsonError(err)); return;
-  }
-
-  var gameId = req.params.game_id;
-  var token = req.query.jwt;
-
-  try{
+    try {
+    requestHelper.validateAndCleanJoinRequest(req);
+    var gameId = req.params.game_id;
+    var token = req.query.jwt;
     var tok = tokenHelper.verifyToken(token);
     var userId = tok.user_id;
-  } catch(err){
-    res.status(400).json(requestHelper.jsonError(err)); return;
-  }
+    } catch (err){
+        res.status(400).json(requestHelper.jsonError(err)); return;
+    }
 
-  databaseHelper.verifyGameId(gameId, (gameExists) => {
+    databaseHelper.verifyGameId(gameId, (gameExists) => {
     if (gameExists) {
-      databaseHelper.addGamer(userId, gameId, (querySuccess) => {
-        if (querySuccess) {
-          res.status(200).json({'token': token, 'game_id': gameId});
-          return;
-        }
-      })
+        databaseHelper.ensureGameIsJoinableByPlayer(gameId, userId, (joinable) => {
+            if (joinable) {
+                databaseHelper.addGamer(userId, gameId, (playerAdded) => {
+                    if (playerAdded) {
+                        var num_players = 0;
+                        databaseHelper.updateGame(gameId, num_players, (gameUpdated) => {
+                            if (gameUpdated) {
+                                res.status(200).json({'token': token, 'game_id': gameId});
+                            } else {
+                                res.status(400).json({'error': "strings.errorname"});
+                            }
+                        });
+                    } else {
+                        res.status(400).json({'error': "strings.errorname"});
+                    }
+                })
+
+            } else {
+                res.status(400).json({'error': "strings.errorname"});
+            }
+        });
+    } else {
+        res.status(400).json({'error': "strings.errorname"});
     }
-    else{
-      res.status(400).json({'error': "strings.errorname"});  
-    }
-    return;
   })
 });
 

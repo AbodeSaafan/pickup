@@ -206,7 +206,7 @@ function verifyGameId(gameIdIn, callback){
 }
 
 function addGamer(userIdIn, gameIdIn, callback){
-    var queryString = "INSERT INTO gamers(user_id, game_id) VALUES($1, $2) RETURNING game_id";;
+    var queryString = "INSERT INTO gamers(user_id, game_id) VALUES($1, $2) RETURNING game_id";
     var queryParams = [userIdIn, gameIdIn];
 
     const pool = new pg.Pool({connectionString: conString});
@@ -326,10 +326,47 @@ function ensureGameIsValidToBeCreated (game, userId, callback){
 	});
 }
 
-function ensureGameIsJoinableByPlayer(game_id, user_id, callback){
-	// 1. Make sure theres space in the game
-	// 2. Get enforced params and go through enforced params and verify that user meets requirements (if any)
-	return true; 
+function ensureGameIsJoinableByPlayer(gameId, userId, callback){
+    var queryString = "SELECT total_players_required, total_players_added, enforced_params FROM games WHERE game_id = $1";
+    var queryParams = [gameId];
+
+    const pool = new pg.Pool({connectionString: conString});
+    pool.connect((err, client, done) => {
+        client.query(queryString, queryParams, (err, res) => {
+            // Check space in the game
+            if (res.rows[0].total_players_required - res.rows[0].total_players_added > 0){
+                // TODO: Go through enforced params and verify that user meets requirements (if any)
+                callback(true);
+            }
+            else {
+                callback(false);
+            }
+
+            done();
+            pool.end();
+        });
+    });
+}
+
+function updateGame(gameId, numPlayers, callback){
+    var newNumPlayers = numPlayers + 1;
+    var queryString = "UPDATE games SET total_players_added = $1 WHERE game_id = $2 RETURNING total_players_added";
+    var queryParams = [newNumPlayers, gameId];
+
+    const pool = new pg.Pool({connectionString: conString});
+    pool.connect((err, client, done) => {
+        client.query(queryString, queryParams, (err, res) => {
+            if (res.rows[0].total_players_added == newNumPlayers) {
+                callback(true);
+            }
+            else {
+                callback(false);
+            }
+
+            done();
+            pool.end();
+        });
+    });
 }
 
 module.exports = {
@@ -352,7 +389,8 @@ module.exports = {
 	ensureGameIsValidToBeCreated,
     verifyGameId,
 	addGamer,
-	ensureGameIsJoinableByPlayer
+	ensureGameIsJoinableByPlayer,
+    updateGame
 }
 
 //////////////// Helpers ////////////////
