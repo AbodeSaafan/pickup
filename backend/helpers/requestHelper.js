@@ -50,6 +50,19 @@ function validateAndCleanJoinRequest(data){
     return data;
 }
 
+function validateAndCleanSearchRequest(data){
+	validate(data.search_object, regex.searchObject, strings.invalidSearchObject);
+	data.results_max = validateMaxResults(data.results_max);
+	if(data.search_object == 'game'){
+		// Game param validation
+	}
+	else if(data.search_object == 'user'){
+		// User param validation
+	}
+
+	return data;
+}
+
 function jsonError(Error){
     return {'error': Error.toString().substring(7)};
 }
@@ -60,6 +73,7 @@ module.exports = {
     validateAndCleanLoginRequest,
     validateAndCleanCreateGameRequest,
     validateAndCleanJoinRequest,
+    validateAndCleanSearchRequest,
     jsonError,
 }
 
@@ -105,4 +119,11 @@ function validateEnforcedParamsList(enforcedList){
 
 function validateSkillOffset(skill){
 	return (skill && skill >= 0 && skill <=10);
+}
+
+function validateMaxResults(maxResult){
+	if(maxResult && maxResult > 0 && maxResult < 100){
+		return maxResult;
+	}
+	return 20;
 }

@@ -16,8 +16,8 @@ var strings = require('./universal_strings');
 * @apiDescription API used searching such as searching for games 
 *
 * @apiParam {string} jwt Valid JWT
-* @apiParam {string} object The object you are searching for (game, user)
-* @apiParam {int} results_max The maximum number of results you want back
+* @apiParam {string} search_object The object you are searching for (game, user)
+* @apiParam {int} results_max The maximum number of results you want back (default is 20)
 // Game params
 * @apiParam {string} game_id The id of the game
 * @apiParam {string} game_name The name of the game
@@ -39,14 +39,14 @@ var strings = require('./universal_strings');
 * @apiExample Example call:
 *     {
 *       "jwt": Encrypted_JWT_Token,
-*       "object": "user",
+*       "search_object": "user",
 *       "username": "abode25"
 *     }
 *
 * @apiExample Example call:
 *     {
 *       "jwt": Encrypted_JWT_Token,
-*       "object": "game",
+*       "search_object": "game",
 *       "game_start_time": 1506996322
 *       "game_type" : "serious"
 *     }
@@ -56,7 +56,7 @@ var strings = require('./universal_strings');
 * {
 *   [
 *       {
-*       "object" : "game",
+*       "search_object" : "game",
 *       "name": "abode's game",
 *       "type": "casual",
 *       "skill": 5,
@@ -71,7 +71,7 @@ var strings = require('./universal_strings');
 *       "enforced_params": ["gender", "age"]
 *       },
 *       {
-*       "object" : "game",
+*       "search_object" : "game",
 *       "name": "abode's game pt II",
 *       "type": "serious",
 *       "skill": 5,
@@ -94,6 +94,18 @@ var strings = require('./universal_strings');
 
 router.get('/', function(req, res){
 	// TODO Filter out "invalid" games that the player can not play
+	try{
+		var game = requestHelper.validateAndCleanSearchRequest(req.body);
+		try {
+			var tok = tokenHelper.verifyToken(req.body.jwt);  
+		}
+		catch(err) {
+			res.status(400).json(requestHelper.jsonError(err)); return;
+		}
+	}
+	catch (err){
+		res.status(400).json(requestHelper.jsonError(err)); return;
+	}
 });
 
 module.exports = router;
