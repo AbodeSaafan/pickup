@@ -7,4 +7,5 @@ BEGIN;
 \i gamers_table.sql
 \i friends_table.sql
 \i invite_table.sql
+\i triggers.sql
 COMMIT;
