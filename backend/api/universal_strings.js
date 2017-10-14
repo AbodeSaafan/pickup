@@ -25,10 +25,14 @@ var invalidGameDescription = "The game description you specified is not valid";
 var invalidEnforcedParamList = "The enforced parameters list you have specified is not valid";
 var invalidGameCreation = "Error creating the game";
 var invalidGameSkillOffset = "The game skill offset you have entered is invalid";
+var invalidGameSkill = "The game skill value you have entered is invalid";
 var invalidGameScheduleConflict = "The game you are trying to create can not be created because the time conflicts with another game you have created";
 var invalidGame = "The game you are trying to join does not exist";
 var problemWithGameCreation = "The game you tried to create had some errors";
 var loginError = "Username or password is not valid";
+var invalidSearchObject = "The search object is invalid. You must specify 'game' or 'user' as a search object";
+var invalidGameId = "The game ID you entered is invalid. Game ID's are natural numbers";
+var invalidGameLocationRange = "The location range must be within 1 and 500 KMs";
 
 module.exports = {
 	uniqueEmailError,
@@ -58,8 +62,12 @@ module.exports = {
 	invalidEnforcedParamList,
 	invalidGameCreation,
 	invalidGameSkillOffset,
+	invalidGameSkill,
 	invalidGameScheduleConflict,
 	invalidGame,
 	problemWithGameCreation,
-	loginError
+	loginError,
+	invalidSearchObject,
+	invalidGameId,
+	invalidGameLocationRange
 }

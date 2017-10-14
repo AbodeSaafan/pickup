@@ -22,10 +22,10 @@ var strings = require('./universal_strings');
 * @apiParam {string} game_id The id of the game
 * @apiParam {string} game_name The name of the game
 * @apiParam {string} game_type The type of the game
-* @apiParam {int} game_skill The skill of the game
-* @apiParam {int} game_total_players The total players of the game
+* @apiParam {int} game_skill_min The minimum skill of the game (creator - offset)
+* @apiParam {int} game_skill_max The maximum skill of the game (creator + offset)
+* @apiParam {int} game_total_players The total players of the game 
 * @apiParam {int} game_start_time The time the game starts
-* @apiParam {int} game_end_time The time the game ends
 * @apiParam {int} game_duration The duration of the game
 * @apiParam {point} game_location The location of the game represented in location point object (lat/lng)
 * @apiParam {int} game_location_range The range of location in KM
@@ -95,13 +95,14 @@ var strings = require('./universal_strings');
 router.get('/', function(req, res){
 	// TODO Filter out "invalid" games that the player can not play
 	try{
-		var game = requestHelper.validateAndCleanSearchRequest(req.body);
 		try {
 			var tok = tokenHelper.verifyToken(req.body.jwt);  
 		}
 		catch(err) {
 			res.status(400).json(requestHelper.jsonError(err)); return;
 		}
+		var game = requestHelper.validateAndCleanSearchRequest(req.body);
+
 	}
 	catch (err){
 		res.status(400).json(requestHelper.jsonError(err)); return;

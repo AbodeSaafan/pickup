@@ -51,15 +51,31 @@ function validateAndCleanJoinRequest(data){
 }
 
 function validateAndCleanSearchRequest(data){
-	validate(data.search_object, regex.searchObject, strings.invalidSearchObject);
+	validate(data.search_object, regex.searchObjectRegex, strings.invalidSearchObject);
 	data.results_max = validateMaxResults(data.results_max);
 	if(data.search_object == 'game'){
 		// Game param validation
+		validate(data.game_id, regex.idRegex, strings.invalidGameId);
+		validate(data.game_name, regex.gameNameRegex, strings.invalidGameName);
+		validate(data.game_type, regex.gameTypeRegex, strings.invalidGameType);
+		data.game_skill_min = game_skill_min - 0; // quick convert to int
+		data.game_skill_max = game_skill_max - 0; // quick convert to int
+		validateSkillLevel(data.game_skill_min);
+		validateSkillLevel(data.game_skill_max);
+		data.game_total_players = data.game_total_players - 0; // quick convert to int
+		validate(data.game_total_players, regex.gameTotalPlayersRegex, strings.invalidGameTotalPlayers);
+		data.game_start_time = data.game_start_time - 0; // quick convert to int
+		validateStartTime(data.game_start_time);
+		data.game_duration = data.game_duration - 0; // quick convert to int
+		validate(data.game_duration, regex.gameDurationRegex, strings.invalidGameDuration);
+		validateLocation(data.game_location);
+		data.game_location_range = data.game_location_range - 0;
+		validateLocationRange(data.game_location_range);
 	}
 	else if(data.search_object == 'user'){
 		// User param validation
+		validate(data.username, regex.usernameRegex, strings.invalidUsername);
 	}
-
 	return data;
 }
 
@@ -118,12 +134,31 @@ function validateEnforcedParamsList(enforcedList){
 }
 
 function validateSkillOffset(skill){
-	return (skill && skill >= 0 && skill <=10);
+	if(!(skill && isInt(skill) && skill >= 0 && skill <=10)){
+		throw new Error(strings.invalidGameSkillOffset);
+	}
+}
+
+function validateSkill(skill){
+	if(!(skill && isInt(skill) && skill >= 0 && skill <=10)){
+		throw new Error(strings.invalidGameSkill);
+	}
 }
 
 function validateMaxResults(maxResult){
-	if(maxResult && maxResult > 0 && maxResult < 100){
+	if(maxResult && isInt(maxResult) && maxResult > 0 && maxResult < 100){
 		return maxResult;
 	}
 	return 20;
+}
+
+function validateLocationRange(locationRange){
+	if(!(locationRange && isInt(locationRange) && locationRange > 0 && location < 100)){
+		throw new Error(strings.invalidGameLocationRange);
+	}
+}
+
+function isInt(number){
+	number = number - 0;
+	return (typeof number==='number' && (number%1)===0);
 }
