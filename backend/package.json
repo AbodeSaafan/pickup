@@ -27,7 +27,8 @@
     "dev": "nodemon server.js",
     "test": "jasmine-node ./tests/",
     "generate": "apidoc -i ./api/ -o apidoc/",
-    "postinstall": "node createPrivate.js"
+    "postinstall": "node createPrivate.js",
+    "ManualCommand_HerokuPush": "git subtree push --prefix backend heroku master"
   },
   "license": "ISC"
 }
