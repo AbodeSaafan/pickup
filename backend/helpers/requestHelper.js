@@ -55,22 +55,22 @@ function validateAndCleanSearchRequest(data){
 	data.results_max = validateMaxResults(data.results_max);
 	if(data.search_object == 'game'){
 		// Game param validation
-		validate(data.game_id, regex.idRegex, strings.invalidGameId);
-		validate(data.game_name, regex.gameNameRegex, strings.invalidGameName);
-		validate(data.game_type, regex.gameTypeRegex, strings.invalidGameType);
+		searchValidate(data.game_id, regex.idRegex, strings.invalidGameId, data, 'game_id');
+		searchValidate(data.game_name, regex.gameNameRegex, strings.invalidGameName, data, 'game_name');
+		searchValidate(data.game_type, regex.gameTypeRegex, strings.invalidGameType, data, 'game_type');
+		searchValidateSkillLevel(data.game_skill_min);
+		searchValidateSkillLevel(data.game_skill_max);
 		data.game_skill_min = game_skill_min - 0; // quick convert to int
 		data.game_skill_max = game_skill_max - 0; // quick convert to int
-		validateSkillLevel(data.game_skill_min);
-		validateSkillLevel(data.game_skill_max);
+		searchValidate(data.game_total_players, regex.gameTotalPlayersRegex, strings.invalidGameTotalPlayers, data, 'game_total_players');
 		data.game_total_players = data.game_total_players - 0; // quick convert to int
-		validate(data.game_total_players, regex.gameTotalPlayersRegex, strings.invalidGameTotalPlayers);
+		searchValidateStartTime(data.game_start_time, data, 'game_start_time');
 		data.game_start_time = data.game_start_time - 0; // quick convert to int
-		validateStartTime(data.game_start_time);
+		searchValidate(data.game_duration, regex.gameDurationRegex, strings.invalidGameDuration, data, 'game_duration');
 		data.game_duration = data.game_duration - 0; // quick convert to int
-		validate(data.game_duration, regex.gameDurationRegex, strings.invalidGameDuration);
-		validateLocation(data.game_location);
+		searchValidateLocation(data.game_location, data, 'game_location');
+		searchValidateLocationRange(data.game_location_range, data, 'game_location_range');
 		data.game_location_range = data.game_location_range - 0;
-		validateLocationRange(data.game_location_range);
 	}
 	else if(data.search_object == 'user'){
 		// User param validation
@@ -104,10 +104,24 @@ function validate(param, regexPattern, errorMessage){
 	}
 }
 
+function searchValidate(param, regexPattern, errorMessage, obj, objParamString){
+	if(!(param.trim())){
+		delete obj[objParamString]; return; // Clear non-applicable term
+	}
+	validate(param, regexPattern, errorMessage);
+}
+
 function validateStartTime(startTime){
 	if (startTime == null || startTime < (Date.now / 1000)){
 		throw new Error(strings.invalidGameStartTime)
 	}
+}
+
+function searchValidateStartTime(startTime, obj, objParamString){
+	if(!(startTime.trim())){
+		delete obj[objParamString]; return; 
+	}
+	validateStartTime(startTime);
 }
 
 function validateAgeRange(ageRange){
@@ -121,6 +135,13 @@ function validateLocation(location){
 	if (location == null || location.lng == null || location.lat == null){
 		throw new Error(strings.invalidGameLocation);
 	}
+}
+
+function searchValidateLocation(location, obj, objParamString){
+	if(location == null){
+		delete obj[objParamString]; return;
+	}
+	validateLocation(location);
 }
 
 function validateEnforcedParamsList(enforcedList){
@@ -145,6 +166,13 @@ function validateSkill(skill){
 	}
 }
 
+function searchValidateSkillLevel(skill, obj, objParamString){
+	if(!(skill.trim())){
+		delete obj[objParamString]; return;
+	}
+	validateSkill(skill);
+}
+
 function validateMaxResults(maxResult){
 	if(maxResult && isInt(maxResult) && maxResult > 0 && maxResult < 100){
 		return maxResult;
@@ -152,8 +180,12 @@ function validateMaxResults(maxResult){
 	return 20;
 }
 
-function validateLocationRange(locationRange){
-	if(!(locationRange && isInt(locationRange) && locationRange > 0 && location < 100)){
+function searchValidateLocationRange(locationRange, obj, objParamString){
+	if(!locationRange){
+		delete obj[objParamString]; return; 
+	}
+
+	if(!(isInt(locationRange) && locationRange > 0 && location < 100)){
 		throw new Error(strings.invalidGameLocationRange);
 	}
 }
