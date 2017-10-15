@@ -348,32 +348,10 @@ function ensureGameIsJoinableByPlayer(gameId, userId, callback){
     });
 }
 
-function updateGame(gameId, numPlayers, callback){
-    var newNumPlayers = numPlayers + 1;
-    var queryString = "UPDATE games SET total_players_added = $1 WHERE game_id = $2 RETURNING total_players_added";
-    var queryParams = [newNumPlayers, gameId];
-
-    const pool = new pg.Pool({connectionString: conString});
-    pool.connect((err, client, done) => {
-        client.query(queryString, queryParams, (err, res) => {
-            if (res.rows[0].total_players_added == newNumPlayers) {
-                callback(true);
-            }
-            else {
-                callback(false);
-            }
-
-            done();
-            pool.end();
-        });
-    });
-}
-
 
 function leaveGame(gameId, numPlayers, callback){
     // TODO: The following:
     // 1) Delete user from the game
-    // 2) Update the number of players in the game by decreasing the number in the total_players_added column
     callback(true);
 }
 
@@ -398,7 +376,6 @@ module.exports = {
     verifyGameId,
 	addGamer,
 	ensureGameIsJoinableByPlayer,
-    updateGame,
     leaveGame
 }
 

@@ -182,19 +182,11 @@ router.put('/:game_id/join', function(req, res){
             if (joinable) {
                 databaseHelper.addGamer(userId, gameId, (playerAdded) => {
                     if (playerAdded) {
-                        var num_players = 0;
-                        databaseHelper.updateGame(gameId, num_players, (gameUpdated) => {
-                            if (gameUpdated) {
-                                res.status(200).json({'token': token, 'game_id': gameId});
-                            } else {
-                                res.status(400).json({'error': "strings.errorname"});
-                            }
-                        });
+                        res.status(200).json({'token': token, 'game_id': gameId});
                     } else {
                         res.status(400).json({'error': "strings.errorname"});
                     }
                 })
-
             } else {
                 res.status(400).json({'error': "strings.errorname"});
             }
