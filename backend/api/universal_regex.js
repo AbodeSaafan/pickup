@@ -14,6 +14,8 @@ var gameLocationNotesRegex = /^[a-zA-Z0-9\'\-\: ]*$/ // Alphanumerical with : - 
 var gameEnforcedParamRegex = /^age|gender$/i; // Skill, age or gender can be enforced
 var idRegex = /^[0-9]*$/; // Any integer number for now
 var searchObjectRegex = /^(game)|(user)$/;
+var ratingRegex = /^[0-9]*$/; // Any integer number for now
+var reviewTagRegex = /^[0-9]*$/; // Any integer number for now
 
 module.exports = {
 	usernameRegex,
@@ -31,5 +33,7 @@ module.exports = {
 	gameLocationNotesRegex,
 	gameEnforcedParamRegex,
     idRegex,
-    searchObjectRegex
+    searchObjectRegex,
+   	ratingRegex,
+    reviewTagRegex
 }

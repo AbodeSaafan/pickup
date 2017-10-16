@@ -50,6 +50,14 @@ function validateAndCleanJoinRequest(data){
     return data;
 }
 
+function validateAndCleanReviewRequest(data){
+	validate(data.UserId, regex.idRegex, strings.invalidUserId);
+	validate(data.gameId, regex.idRegex, strings.invalidGameId);
+	validate(data.rating, regex.ratingRegex, strings.invalidRating);
+	validate(data.tags, regex.reviewTagRegex, strings.invalidReviewTag);
+	return data;
+}
+
 function validateAndCleanSearchRequest(data){
 	validate(data.search_object, regex.searchObjectRegex, strings.invalidSearchObject);
 	data.results_max = validateMaxResults(data.results_max);
@@ -90,6 +98,7 @@ module.exports = {
     validateAndCleanCreateGameRequest,
     validateAndCleanJoinRequest,
     validateAndCleanSearchRequest,
+    validateAndCleanReviewRequest,
     jsonError,
 }
 
