@@ -11,6 +11,7 @@ function checkEmailUniqueness(user, callback){
 
 		pool.connect((err, client, done) => {
 			client.query(queryString, (err, res) => {
+				  console.log(err);
   				callback(!(res.rows[0] || err));
   				done();
 				pool.end();
@@ -346,7 +347,8 @@ module.exports = {
 	createGame,
 	ensureGameIsValid,
     verifyGameId,
-	addGamer
+	addGamer,
+	leaveGame
 }
 
 //////////////// Helpers ////////////////
