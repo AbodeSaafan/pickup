@@ -61,40 +61,40 @@ var strings = require('./universal_strings');
 router.post('/', function(req, res){
 	try{
 		var game = requestHelper.validateAndCleanCreateGameRequest(req.body);
-    try {
-      var tok = tokenHelper.verifyToken(req.body.jwt);
-    }
-    catch(err) {
-      res.status(400).json(requestHelper.jsonError(err)); return;
-    }
+	try {
+	  var tok = tokenHelper.verifyToken(req.body.jwt);
+	}
+	catch(err) {
+	  res.status(400).json(requestHelper.jsonError(err)); return;
+	}
 
-    databaseHelper.ensureGameIsValidToBeCreated(game, tok.user_id, (valid) => {
-      if(!valid){
-        res.status(400).json({'error': strings.invalidGameScheduleConflict});
-      } else {
-        databaseHelper.createGame(tok.user_id, game.name, game.type, game.skill_offset,
-          game.total_players_required, game.start_time,
-          game.duration, game.location, game.location_notes,
-          game.description, game.gender, game.age_range, game.enforced_params,
-          (game_id) => {
-            if(game_id){
-              databaseHelper.addGamer(tok.user_id, game_id, (joinSuccess) => {
-                if (joinSuccess) {
-                  res.status(200).json({'game_id': game_id});
-                  return;
-                } else {
-                  res.status(505).json({'error': strings.problemWithGameCreation});
-                }
-              });
-            } else {
-              res.status(400).json({'error': strings.invalidGameCreation});
-            }
-          });
-      }
-    });
+	databaseHelper.ensureGameIsValidToBeCreated(game, tok.user_id, (valid) => {
+	  if(!valid){
+		res.status(400).json({'error': strings.invalidGameScheduleConflict});
+	  } else {
+		databaseHelper.createGame(tok.user_id, game.name, game.type, game.skill_offset,
+		  game.total_players_required, game.start_time,
+		  game.duration, game.location, game.location_notes,
+		  game.description, game.gender, game.age_range, game.enforced_params,
+		  (game_id) => {
+			if(game_id){
+			  databaseHelper.addGamer(tok.user_id, game_id, (joinSuccess) => {
+				if (joinSuccess) {
+				  res.status(200).json({'game_id': game_id});
+				  return;
+				} else {
+				  res.status(505).json({'error': strings.problemWithGameCreation});
+				}
+			  });
+			} else {
+			  res.status(400).json({'error': strings.invalidGameCreation});
+			}
+		  });
+	  }
+	});
   }
   catch (err){
-    res.status(400).json(requestHelper.jsonError(err)); return;
+	res.status(400).json(requestHelper.jsonError(err)); return;
   }
 });
 
@@ -123,9 +123,8 @@ router.post('/', function(req, res){
 * @apiSampleRequest /api/games/:gameid
 */
  router.get('/:game_id', function(req, res){
- 	var gameid = req.params.game_id;
- 	try {
-
+	var gameid = req.params.game_id;
+	try {
      	tokenHelper.verifyToken(req.headers.token);
       databaseHelper.getUsers(gameid , (user_id) => {
       	if(user_id) {
@@ -139,8 +138,8 @@ router.post('/', function(req, res){
     }
     catch(err){
 
-     res.status(400).json({'error': strings.invalidJwt});
-     return;
+	 res.status(400).json({'error': strings.invalidJwt});
+	 return;
    }
  });
 
@@ -172,34 +171,34 @@ router.post('/', function(req, res){
 * @apiSampleRequest /api/games/:GAMEID/join/
 */
 router.put('/:game_id/join', function(req, res){
-    try {
-    requestHelper.validateAndCleanJoinRequest(req);
-    var gameId = req.params.game_id;
-    var token = req.query.jwt;
-    var tok = tokenHelper.verifyToken(token);
-    var userId = tok.user_id;
-    } catch (err){
-        res.status(400).json(requestHelper.jsonError(err)); return;
-    }
+	try {
+	requestHelper.validateAndCleanJoinRequest(req);
+	var gameId = req.params.game_id;
+	var token = req.query.jwt;
+	var tok = tokenHelper.verifyToken(token);
+	var userId = tok.user_id;
+	} catch (err){
+		res.status(400).json(requestHelper.jsonError(err)); return;
+	}
 
-    databaseHelper.verifyGameId(gameId, (gameExists) => {
-    if (gameExists) {
-        databaseHelper.ensureGameIsJoinableByPlayer(gameId, userId, (joinable) => {
-            if (joinable) {
-                databaseHelper.addGamer(userId, gameId, (playerAdded) => {
-                    if (playerAdded) {
-                        res.status(200).json({'token': token, 'game_id': gameId});
-                    } else {
-                        res.status(400).json({'error': "strings.errorname"});
-                    }
-                })
-            } else {
-                res.status(400).json({'error': "strings.errorname"});
-            }
-        });
-    } else {
-        res.status(400).json({'error': "strings.errorname"});
-    }
+	databaseHelper.verifyGameId(gameId, (gameExists) => {
+	if (gameExists) {
+		databaseHelper.ensureGameIsJoinableByPlayer(gameId, userId, (joinable) => {
+			if (joinable) {
+				databaseHelper.addGamer(userId, gameId, (playerAdded) => {
+					if (playerAdded) {
+						res.status(200).json({'token': token, 'game_id': gameId});
+					} else {
+						res.status(400).json({'error': "strings.errorname"});
+					}
+				})
+			} else {
+				res.status(400).json({'error': "strings.errorname"});
+			}
+		});
+	} else {
+		res.status(400).json({'error': "strings.errorname"});
+	}
   })
 });
 
@@ -234,50 +233,35 @@ router.put('/:game_id/join', function(req, res){
 
 router.delete('/:game_id/leave', function(req, res){
 
-	/*
   try{
-      var user = requestHelper.validateAndCleanJoinRequest(req.body);
-      var gameId = req.params.game_id;
-      var token = req.query.jwt;
-      var tok = tokenHelper.verifyToken(token)
-      console.log(token);
-      var userId = tok.user_id;
+	var token = req.query.jwt;
+
+	var tok = tokenHelper.verifyToken(token);
+	var userId = tok.user_id;
+
+	var game = requestHelper.validateAndCleanLeaveRequest(req.query);
+	var gameId = game.game_id;
+
+	console.log(userId)
+
+	databaseHelper.verifyGameId(gameId, (gameExists) => {
+	  if (gameExists) {
+		databaseHelper.leaveGame(userId, gameId, (hasLeftGame) => {
+		  if (hasLeftGame) {
+			res.status(200); return;
+		  }
+		  else {
+		   console.log(userId)
+		   console.log(gameId)
+		   throw new Error(strings.invalidGame);
+		 }
+	   })
+	  }
+	})
   }
-  catch (err){
-    res.status(400).json(requestHelper.jsonError(err)); return;
+  catch(err){
+	res.status(400).json(requestHelper.jsonError(err)); return;
   }
-	*/
-
-
-  var gameId = req.params.game_id;
-  var token = req.query.jwt;
-
-  tokenHelper.verifyToken(token);
-
-  try{
-    var userId = tokenHelper.getUserFromToken(token).user_id;
-  } catch(err){
-    res.status(400).json(requestHelper.jsonError(err)); return;
-  }
-
-  console.log(userId)
-
-  databaseHelper.verifyGameId(gameId, (gameExists) => {
-		if (gameExists) {
-      databaseHelper.leaveGame(userId, gameId, (hasLeftGame) => {
-        if (hasLeftGame) {
-          res.status(200).json({'token': token, 'game_id': gameId});
-          return;
-        }
-				else {
-					console.log(userId)
-					console.log(gameId)
-				}
-      })
-    }
-    res.status(400).json({'error': "strings.error"});
-    return;
-  })
 });
 
 

@@ -50,6 +50,11 @@ function validateAndCleanJoinRequest(data){
     return data;
 }
 
+function validateAndCleanLeaveRequest(data){
+	validate(data.game_id, regex.idRegex);
+    return data;	
+}
+
 function validateAndCleanReviewRequest(data){
 	validate(data.UserId, regex.idRegex, strings.invalidUserId);
 	validate(data.gameId, regex.idRegex, strings.invalidGameId);
@@ -99,6 +104,7 @@ module.exports = {
     validateAndCleanJoinRequest,
     validateAndCleanSearchRequest,
     validateAndCleanReviewRequest,
+    validateAndCleanLeaveRequest,
     jsonError,
 }
 
