@@ -228,7 +228,7 @@ function leaveGame(userIdIn, gameIdIn, callback){
 
     pool.connect((err, client, done) => {
         client.query(queryString, queryParams, (err, res) => {
-            callback(res.rows.length > 0);
+            callback(!err && (res && res.rowCount != 0));
             done();
             pool.end();
         });
@@ -346,13 +346,6 @@ function ensureGameIsJoinableByPlayer(gameId, userId, callback){
             pool.end();
         });
     });
-}
-
-
-function leaveGame(gameId, numPlayers, callback){
-    // TODO: The following:
-    // 1) Delete user from the game
-    callback(true);
 }
 
 module.exports = {
