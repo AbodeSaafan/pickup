@@ -99,34 +99,40 @@ router.post('/', function(req, res){
 });
 
 /**
- * @api {get} /games/:gameid Get users of a game
- * @apiName Get game
- * @apiGroup Games
- *
- * @apiParam {int} id of the game
- *
- * @apiError error The error field has a string with an exact error
- *
- * @apiSuccessExample Success-Response:
- *      HTTP/1.1 200 OK
- *     {
+* @api {get} /games/:gameid Get users of a game
+* @apiName Get game
+* @apiGroup Games
+*
+* @apiDescription API used for getting the user of a game. Game id has to correspond to a game actually created.
+*
+* @apiParam {int} id of the game
+*
+* @apiError error The error field has a string with an exact error
+*
+* @apiSuccessExample Success-Response:
+*      HTTP/1.1 200 OK
+*     {
 *       "user_id":[ "1", "2", "3" ]
 *      }
- *
- * @apiSampleRequest /api/games/:123
- */
+* @apiExample Example call::
+*   {
+*     "game_id": "1",
+*     "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMjQwIiwiZW1haWwiOiJhZHNzYWRhQG1haWwuY29tIiwiaWF0IjoxNTA1MTU3NTA3LCJleHAiOjE1MDUxNTg0MDd9.r7h31S_wQTypjiSLh7TgeRZYnRNqJpCJCqUFoSUvxqI"
+*   }
+*
+* @apiSampleRequest /api/games/:gameid
+*/
  router.get('/:game_id', function(req, res){
  	var gameid = req.params.game_id;
  	try {
 
-      //	tokenHelper.verifyToken(req.headers.token);
+     	tokenHelper.verifyToken(req.headers.token);
       databaseHelper.getUsers(gameid , (user_id) => {
       	if(user_id) {
-      		console.log(user_id);
       		res.status(200).json(user_id);
       		return;
       	}else{
-      		res.status(400).json({'error': strings.userIdFail});
+      		res.status(400).json({'error': strings.usersFail});
       		return;
       	}
       })

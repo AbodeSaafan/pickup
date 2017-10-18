@@ -1,6 +1,7 @@
 var uniqueEmailError = "Register failed: Email is not unique";
 var registerFailError = "Failed to register user into the database";
 var userIdFail = "Failed to retrieve user id";
+var usersFail = "Failed to retrieve users";
 var invalidUsername = "Invalid Username. Usernames are Alphanumerical, lowercase and 4 to 10 characters and can include '_'.";
 var invalidPassword = "Invalid password. Passwords are Alphanumerical and must be between 6 to 80 characters";
 var wrongEmailPassword = "Username or password is not valid";
@@ -33,9 +34,9 @@ var loginError = "Username or password is not valid";
 var invalidSearchObject = "The search object is invalid. You must specify 'game' or 'user' as a search object";
 var invalidGameId = "The game ID you entered is invalid. Game ID's are natural numbers";
 var invalidGameLocationRange = "The location range must be within 1 and 500 KMs";
-var invalidUserId = "The user ID you entered is invalid. Game ID's are natural numbers";
-var invalidRating = "The rating you entered is invalid. Game ID's are natural numbers";
-var invalidReviewTag = "The review tag you entered is invalid. Game ID's are natural numbers";
+var invalidUserId = "The user ID you entered is invalid. User ID's are natural numbers";
+var invalidRating = "The rating you entered is invalid. Ratings are natural numbers";
+var invalidReviewTag = "The review tag you entered is invalid. Review tags are natural numbers";
 module.exports = {
 	uniqueEmailError,
 	registerFailError,
@@ -74,5 +75,6 @@ module.exports = {
 	invalidGameLocationRange,
 	invalidUserId,
 	invalidRating,
-	invalidReviewTag
+	invalidReviewTag,
+	usersFail
 }
