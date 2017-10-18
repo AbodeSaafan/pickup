@@ -207,7 +207,7 @@ function verifyGameId(gameIdIn, callback){
 }
 
 function addGamer(userIdIn, gameIdIn, callback){
-    var queryString = "INSERT INTO gamers(user_id, game_id) VALUES($1, $2) RETURNING game_id";;
+    var queryString = "INSERT INTO gamers(user_id, game_id) VALUES($1, $2) RETURNING game_id";
     var queryParams = [userIdIn, gameIdIn];
 
     const pool = new pg.Pool({connectionString: conString});
@@ -305,7 +305,7 @@ function createGame (userId, name, type, skill, totalPlayers, startTime, duratio
 	});
 }
 
-function ensureGameIsValid (game, userId, callback){
+function ensureGameIsValidToBeCreated (game, userId, callback){
 	var queryString = "SELECT start_time, end_time " +
 		"FROM (games FULL OUTER JOIN gamers ON games.game_id=gamers.game_id) " +
 		"WHERE (creator_id = $1 OR user_id = $1) AND (($2 >= start_time AND $2 <= end_time) OR ($3 >= start_time AND $3 <= end_time) OR (start_time >= $2 AND start_time <= $3) OR (end_time >= $2 AND end_time <= $3))";
@@ -327,6 +327,34 @@ function ensureGameIsValid (game, userId, callback){
 	});
 }
 
+function ensureGameIsJoinableByPlayer(gameId, userId, callback){
+    var queryString = "SELECT total_players_required, total_players_added, enforced_params FROM games WHERE game_id = $1";
+    var queryParams = [gameId];
+
+    const pool = new pg.Pool({connectionString: conString});
+    pool.connect((err, client, done) => {
+        client.query(queryString, queryParams, (err, res) => {
+            // Check space in the game
+            if (res.rows[0].total_players_required - res.rows[0].total_players_added > 0){
+                // TODO: Go through enforced params and verify that user meets requirements (if any)
+                callback(true);
+            }
+            else {
+                callback(false);
+            }
+
+            done();
+            pool.end();
+        });
+    });
+}
+
+
+function leaveGame(gameId, numPlayers, callback){
+    // TODO: The following:
+    // 1) Delete user from the game
+    callback(true);
+}
 
 module.exports = {
 	checkEmailUniqueness,
@@ -345,10 +373,15 @@ module.exports = {
 	getUsers,
 	addReview,
 	createGame,
-	ensureGameIsValid,
+	ensureGameIsValidToBeCreated,
     verifyGameId,
 	addGamer,
+<<<<<<< HEAD
 	leaveGame
+=======
+	ensureGameIsJoinableByPlayer,
+    leaveGame
+>>>>>>> fd659cc8d4c97ec22fd4d9ef92af7eb5e5287ffd
 }
 
 //////////////// Helpers ////////////////

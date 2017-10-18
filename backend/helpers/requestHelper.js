@@ -50,6 +50,43 @@ function validateAndCleanJoinRequest(data){
     return data;
 }
 
+function validateAndCleanReviewRequest(data){
+	validate(data.UserId, regex.idRegex, strings.invalidUserId);
+	validate(data.gameId, regex.idRegex, strings.invalidGameId);
+	validate(data.rating, regex.ratingRegex, strings.invalidRating);
+	validate(data.tags, regex.reviewTagRegex, strings.invalidReviewTag);
+	return data;
+}
+
+function validateAndCleanSearchRequest(data){
+	validate(data.search_object, regex.searchObjectRegex, strings.invalidSearchObject);
+	data.results_max = validateMaxResults(data.results_max);
+	if(data.search_object == 'game'){
+		// Game param validation
+		searchValidate(data.game_id, regex.idRegex, strings.invalidGameId, data, 'game_id');
+		searchValidate(data.game_name, regex.gameNameRegex, strings.invalidGameName, data, 'game_name');
+		searchValidate(data.game_type, regex.gameTypeRegex, strings.invalidGameType, data, 'game_type');
+		searchValidateSkillLevel(data.game_skill_min);
+		searchValidateSkillLevel(data.game_skill_max);
+		data.game_skill_min = game_skill_min - 0; // quick convert to int
+		data.game_skill_max = game_skill_max - 0; // quick convert to int
+		searchValidate(data.game_total_players, regex.gameTotalPlayersRegex, strings.invalidGameTotalPlayers, data, 'game_total_players');
+		data.game_total_players = data.game_total_players - 0; // quick convert to int
+		searchValidateStartTime(data.game_start_time, data, 'game_start_time');
+		data.game_start_time = data.game_start_time - 0; // quick convert to int
+		searchValidate(data.game_duration, regex.gameDurationRegex, strings.invalidGameDuration, data, 'game_duration');
+		data.game_duration = data.game_duration - 0; // quick convert to int
+		searchValidateLocation(data.game_location, data, 'game_location');
+		searchValidateLocationRange(data.game_location_range, data, 'game_location_range');
+		data.game_location_range = data.game_location_range - 0;
+	}
+	else if(data.search_object == 'user'){
+		// User param validation
+		validate(data.username, regex.usernameRegex, strings.invalidUsername);
+	}
+	return data;
+}
+
 function jsonError(Error){
     return {'error': Error.toString().substring(7)};
 }
@@ -60,6 +97,8 @@ module.exports = {
     validateAndCleanLoginRequest,
     validateAndCleanCreateGameRequest,
     validateAndCleanJoinRequest,
+    validateAndCleanSearchRequest,
+    validateAndCleanReviewRequest,
     jsonError,
 }
 
@@ -74,10 +113,24 @@ function validate(param, regexPattern, errorMessage){
 	}
 }
 
+function searchValidate(param, regexPattern, errorMessage, obj, objParamString){
+	if(!(param.trim())){
+		delete obj[objParamString]; return; // Clear non-applicable term
+	}
+	validate(param, regexPattern, errorMessage);
+}
+
 function validateStartTime(startTime){
 	if (startTime == null || startTime < (Date.now / 1000)){
 		throw new Error(strings.invalidGameStartTime)
 	}
+}
+
+function searchValidateStartTime(startTime, obj, objParamString){
+	if(!(startTime.trim())){
+		delete obj[objParamString]; return; 
+	}
+	validateStartTime(startTime);
 }
 
 function validateAgeRange(ageRange){
@@ -93,6 +146,13 @@ function validateLocation(location){
 	}
 }
 
+function searchValidateLocation(location, obj, objParamString){
+	if(location == null){
+		delete obj[objParamString]; return;
+	}
+	validateLocation(location);
+}
+
 function validateEnforcedParamsList(enforcedList){
 	if (enforcedList != null){
 		for (let param of enforcedList){
@@ -104,5 +164,42 @@ function validateEnforcedParamsList(enforcedList){
 }
 
 function validateSkillOffset(skill){
-	return (skill && skill >= 0 && skill <=10);
+	if(!(skill && isInt(skill) && skill >= 0 && skill <=10)){
+		throw new Error(strings.invalidGameSkillOffset);
+	}
+}
+
+function validateSkill(skill){
+	if(!(skill && isInt(skill) && skill >= 0 && skill <=10)){
+		throw new Error(strings.invalidGameSkill);
+	}
+}
+
+function searchValidateSkillLevel(skill, obj, objParamString){
+	if(!(skill.trim())){
+		delete obj[objParamString]; return;
+	}
+	validateSkill(skill);
+}
+
+function validateMaxResults(maxResult){
+	if(maxResult && isInt(maxResult) && maxResult > 0 && maxResult < 100){
+		return maxResult;
+	}
+	return 20;
+}
+
+function searchValidateLocationRange(locationRange, obj, objParamString){
+	if(!locationRange){
+		delete obj[objParamString]; return; 
+	}
+
+	if(!(isInt(locationRange) && locationRange > 0 && location < 100)){
+		throw new Error(strings.invalidGameLocationRange);
+	}
+}
+
+function isInt(number){
+	number = number - 0;
+	return (typeof number==='number' && (number%1)===0);
 }

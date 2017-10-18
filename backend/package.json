@@ -27,7 +27,8 @@
     "dev": "nodemon server.js",
     "test": "jasmine-node ./tests/",
     "generate": "apidoc -i ./api/ -o apidoc/",
-    "postinstall": "node createPrivate.js"
+    "postinstall": "node createPrivate.js",
+    "ManualCommand_HerokuPush": "heroku git:remote radiant-temple-45023; git subtree push --prefix backend heroku master"
   },
   "license": "ISC"
 }

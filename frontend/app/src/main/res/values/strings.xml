@@ -5,7 +5,7 @@
     <string name="sign_in">Sign In</string>
     <string name="email">Email</string>
     <string name="password">Password</string>
-    
+
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>
     <string name="prompt_firstName">First Name</string>
@@ -27,5 +27,9 @@
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
-    
+
+    <!-- string for the profile page -->
+    <string name="header_name">Pickup Dude</string>
+    <string name="profile_description">This is a basketball lover who outscores Michael Jordan easily... in 2k!</string>
+
 </resources>

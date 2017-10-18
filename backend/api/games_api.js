@@ -61,14 +61,24 @@ var strings = require('./universal_strings');
 router.post('/', function(req, res){
 	try{
 		var game = requestHelper.validateAndCleanCreateGameRequest(req.body);
-    var tok = tokenHelper.verifyToken(req.body.jwt);
+    try {
+      var tok = tokenHelper.verifyToken(req.body.jwt);
+    }
+    catch(err) {
+      res.status(400).json(requestHelper.jsonError(err)); return;
+    }
 
-    databaseHelper.ensureGameIsValid(game, tok.user_id, (valid) => {
+    databaseHelper.ensureGameIsValidToBeCreated(game, tok.user_id, (valid) => {
       if(!valid){
         res.status(400).json({'error': strings.invalidGameScheduleConflict});
       } else {
+<<<<<<< HEAD
         databaseHelper.createGame(tok.user_id, game.name, game.type, game.skill,
           game.total_players_required, game.start_time,
+=======
+        databaseHelper.createGame(tok.user_id, game.name, game.type, game.skill_offset,
+          game.total_players_required, game.start_time,
+>>>>>>> fd659cc8d4c97ec22fd4d9ef92af7eb5e5287ffd
           game.duration, game.location, game.location_notes,
           game.description, game.gender, game.age_range, game.enforced_params,
           (game_id) => {
@@ -161,26 +171,19 @@ router.post('/', function(req, res){
 * @apiSampleRequest /api/games/:GAMEID/join/
 */
 router.put('/:game_id/join', function(req, res){
-  try{
-    var user = requestHelper.validateAndCleanJoinRequest(req);
-  }
-  catch (err){
-    res.status(400).json(requestHelper.jsonError(err)); return;
-  }
+    try {
+    requestHelper.validateAndCleanJoinRequest(req);
+    var gameId = req.params.game_id;
+    var token = req.query.jwt;
+    var tok = tokenHelper.verifyToken(token);
+    var userId = tok.user_id;
+    } catch (err){
+        res.status(400).json(requestHelper.jsonError(err)); return;
+    }
 
-  var gameId = req.params.game_id;
-  var token = req.query.jwt;
-
-  tokenHelper.verifyToken(token);
-
-  try{
-    var userId = tokenHelper.getUserFromToken(token).user_id;
-  } catch(err){
-    res.status(400).json(requestHelper.jsonError(err)); return;
-  }
-
-  databaseHelper.verifyGameId(gameId, (gameExists) => {
+    databaseHelper.verifyGameId(gameId, (gameExists) => {
     if (gameExists) {
+<<<<<<< HEAD
       databaseHelper.addGamer(userId, gameId, (querySuccess) => {
         if (querySuccess) {
           res.status(200).json({'token': token, 'game_id': gameId});
@@ -190,8 +193,24 @@ router.put('/:game_id/join', function(req, res){
     }
     else{
       res.status(400).json({'error': "strings.errorname"});
+=======
+        databaseHelper.ensureGameIsJoinableByPlayer(gameId, userId, (joinable) => {
+            if (joinable) {
+                databaseHelper.addGamer(userId, gameId, (playerAdded) => {
+                    if (playerAdded) {
+                        res.status(200).json({'token': token, 'game_id': gameId});
+                    } else {
+                        res.status(400).json({'error': "strings.errorname"});
+                    }
+                })
+            } else {
+                res.status(400).json({'error': "strings.errorname"});
+            }
+        });
+    } else {
+        res.status(400).json({'error': "strings.errorname"});
+>>>>>>> fd659cc8d4c97ec22fd4d9ef92af7eb5e5287ffd
     }
-    return;
   })
 });
 
@@ -228,12 +247,18 @@ router.delete('/:game_id/leave', function(req, res){
 
 	/*
   try{
-    var user = requestHelper.validateAndCleanJoinRequest(req.body);
+      var user = requestHelper.validateAndCleanJoinRequest(req.body);
+      var gameId = req.params.game_id;
+      var token = req.query.jwt;
+      var tok = tokenHelper.verifyToken(token)
+      console.log(token);
+      var userId = tok.user_id;
   }
   catch (err){
     res.status(400).json(requestHelper.jsonError(err)); return;
   }
 	*/
+
 
   var gameId = req.params.game_id;
   var token = req.query.jwt;
@@ -249,9 +274,9 @@ router.delete('/:game_id/leave', function(req, res){
   console.log(userId)
 
   databaseHelper.verifyGameId(gameId, (gameExists) => {
-    if (gameExists) {
-      databaseHelper.leaveGame(userId, gameId, (querySuccess) => {
-        if (querySuccess) {
+		if (gameExists) {
+      databaseHelper.leaveGame(userId, gameId, (hasLeftGame) => {
+        if (hasLeftGame) {
           res.status(200).json({'token': token, 'game_id': gameId});
           return;
         }

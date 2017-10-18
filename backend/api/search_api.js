@@ -16,16 +16,16 @@ var strings = require('./universal_strings');
 * @apiDescription API used searching such as searching for games 
 *
 * @apiParam {string} jwt Valid JWT
-* @apiParam {string} object The object you are searching for (game, user)
-* @apiParam {int} results_max The maximum number of results you want back
+* @apiParam {string} search_object The object you are searching for (game, user)
+* @apiParam {int} results_max The maximum number of results you want back (default is 20)
 // Game params
 * @apiParam {string} game_id The id of the game
 * @apiParam {string} game_name The name of the game
 * @apiParam {string} game_type The type of the game
-* @apiParam {int} game_skill The skill of the game
-* @apiParam {int} game_total_players The total players of the game
+* @apiParam {int} game_skill_min The minimum skill of the game (creator - offset)
+* @apiParam {int} game_skill_max The maximum skill of the game (creator + offset)
+* @apiParam {int} game_total_players The total players of the game 
 * @apiParam {int} game_start_time The time the game starts
-* @apiParam {int} game_end_time The time the game ends
 * @apiParam {int} game_duration The duration of the game
 * @apiParam {point} game_location The location of the game represented in location point object (lat/lng)
 * @apiParam {int} game_location_range The range of location in KM
@@ -39,14 +39,14 @@ var strings = require('./universal_strings');
 * @apiExample Example call:
 *     {
 *       "jwt": Encrypted_JWT_Token,
-*       "object": "user",
+*       "search_object": "user",
 *       "username": "abode25"
 *     }
 *
 * @apiExample Example call:
 *     {
 *       "jwt": Encrypted_JWT_Token,
-*       "object": "game",
+*       "search_object": "game",
 *       "game_start_time": 1506996322
 *       "game_type" : "serious"
 *     }
@@ -56,7 +56,7 @@ var strings = require('./universal_strings');
 * {
 *   [
 *       {
-*       "object" : "game",
+*       "search_object" : "game",
 *       "name": "abode's game",
 *       "type": "casual",
 *       "skill": 5,
@@ -71,7 +71,7 @@ var strings = require('./universal_strings');
 *       "enforced_params": ["gender", "age"]
 *       },
 *       {
-*       "object" : "game",
+*       "search_object" : "game",
 *       "name": "abode's game pt II",
 *       "type": "serious",
 *       "skill": 5,
@@ -94,6 +94,19 @@ var strings = require('./universal_strings');
 
 router.get('/', function(req, res){
 	// TODO Filter out "invalid" games that the player can not play
+	try{
+		try {
+			var tok = tokenHelper.verifyToken(req.body.jwt);  
+		}
+		catch(err) {
+			res.status(400).json(requestHelper.jsonError(err)); return;
+		}
+		var game = requestHelper.validateAndCleanSearchRequest(req.body);
+
+	}
+	catch (err){
+		res.status(400).json(requestHelper.jsonError(err)); return;
+	}
 });
 
 module.exports = router;
