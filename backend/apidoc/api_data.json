@@ -326,6 +326,156 @@
     "groupTitle": "Authorization"
   },
   {
+    "type": "get",
+    "url": "/extendedProfile",
+    "title": "Get User's extendedProfile",
+    "name": "getExtendedProfile",
+    "group": "ExtendedProfile",
+    "description": "<p>API used for getting a user's extended Profile.</p>",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "jwt",
+            "description": "<p>The JWT you have currently</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "User",
+            "description": "<p>'s extendedProfile entry (userId, skill_level, age, gender, location)</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "     HTTP/1.1 200 OK\n\t\t{\n\t\t  \"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkc3NhZGFAbWFpbC5jb20iLCJpYXQiOjE1MDUxNTc2NjQsImV4cCI6MTUwNTE1ODU2NH0.HmhW4y-AZ1D5rMHbQ8RY0eBIGfo-8Lb_sFL1FrruFoc\"\n\t\t}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "fields": {
+        "Error 4xx": [
+          {
+            "group": "Error 4xx",
+            "optional": false,
+            "field": "error",
+            "description": "<p>An error is given for invalid user_ID</p>"
+          }
+        ]
+      }
+    },
+    "examples": [
+      {
+        "title": "Example call:",
+        "content": "{\n  \"jwt\": Encrypted_JWT_Token,\n}",
+        "type": "json"
+      }
+    ],
+    "sampleRequest": [
+      {
+        "url": "/api/extendedProfile"
+      }
+    ],
+    "version": "0.0.0",
+    "filename": "api/extended_profile.js",
+    "groupTitle": "ExtendedProfile"
+  },
+  {
+    "type": "put",
+    "url": "/refresh",
+    "title": "Update User's Extended Profile",
+    "name": "updateExtendedUser",
+    "group": "ExtendedProfile",
+    "description": "<p>API used for updating user's extended profile.</p>",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "jwt",
+            "description": "<p>The JWT you have currently</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "skill_level",
+            "description": "<p>The skill level of the user</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "location",
+            "description": "<p>The location of the user</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "token",
+            "description": "<p>A JWT token that can be used to authenticate futher API calls</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "     HTTP/1.1 200 OK\n\t\t{\n\t\t  \"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkc3NhZGFAbWFpbC5jb20iLCJpYXQiOjE1MDUxNTc2NjQsImV4cCI6MTUwNTE1ODU2NH0.HmhW4y-AZ1D5rMHbQ8RY0eBIGfo-8Lb_sFL1FrruFoc\"\n\t\t}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "fields": {
+        "Error 4xx": [
+          {
+            "group": "Error 4xx",
+            "optional": false,
+            "field": "error",
+            "description": "<p>The error field has a string with an exact error</p>"
+          }
+        ]
+      }
+    },
+    "examples": [
+      {
+        "title": "Example call:",
+        "content": "{\n  \"jwt\": Encrypted_JWT_Token,\n    \"skill_level\": 3,\n    \"location\": Mississauga\n}",
+        "type": "json"
+      }
+    ],
+    "sampleRequest": [
+      {
+        "url": "/api/extendedProfile"
+      }
+    ],
+    "version": "0.0.0",
+    "filename": "api/extended_profile.js",
+    "groupTitle": "ExtendedProfile"
+  },
+  {
     "type": "post",
     "url": "/games",
     "title": "Create a new game",
@@ -464,7 +614,7 @@
     "examples": [
       {
         "title": "Example call:",
-        "content": "    {\n      \"jwt\": Encrypted_JWT_Token,\n      \"name\": \"abode's game\",\n      \"type\": \"casual\",\n      \"skill\": 5,\n      \"total_players_required\": 6,\n      \"start_time\": 1504272395,\n      \"duration\": 5400,\n      \"location\": {lat: 500.50, lng:500.50},\n\t\t    \"location_notes\": \"Come around the back and knock on the blue door\",\n      \"description\": \"Casual basketball game\",\n      \"gender\": \"A\",\n      \"age_range\": \"[20, 30]\",\n      \"enforced_params\": [\"gender\", \"age\"]\n    }",
+        "content": "{\n  \"jwt\": Encrypted_JWT_Token,\n  \"name\": \"abode's game\",\n  \"type\": \"casual\",\n  \"skill\": 5,\n  \"total_players_required\": 6,\n  \"start_time\": 1504272395,\n  \"duration\": 5400,\n  \"location\": {lat: 500.50, lng:500.50},\n  \"location_notes\": \"Come around the back and knock on the blue door\",\n  \"description\": \"Casual basketball game\",\n  \"gender\": \"A\",\n  \"age_range\": \"[20, 30]\",\n  \"enforced_params\": [\"gender\", \"age\"]\n}",
         "type": "json"
       }
     ],
@@ -483,6 +633,7 @@
     "title": "Get users of a game",
     "name": "Get_game",
     "group": "Games",
+    "description": "<p>API used for getting the user of a game. Game id has to correspond to a game actually created.</p>",
     "parameter": {
       "fields": {
         "Parameter": [
@@ -517,9 +668,16 @@
         }
       ]
     },
+    "examples": [
+      {
+        "title": "Example call::",
+        "content": "{\n  \"game_id\": \"1\",\n  \"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMjQwIiwiZW1haWwiOiJhZHNzYWRhQG1haWwuY29tIiwiaWF0IjoxNTA1MTU3NTA3LCJleHAiOjE1MDUxNTg0MDd9.r7h31S_wQTypjiSLh7TgeRZYnRNqJpCJCqUFoSUvxqI\"\n}",
+        "type": "json"
+      }
+    ],
     "sampleRequest": [
       {
-        "url": "/api/games/:123"
+        "url": "/api/games/:gameid"
       }
     ],
     "version": "0.0.0",
@@ -584,6 +742,70 @@
     "groupTitle": "Games"
   },
   {
+    "type": "delete",
+    "url": "games/:GAMEID/leave/",
+    "title": "Leave a game",
+    "name": "LeaveGame",
+    "group": "Games",
+    "description": "<p>API used to leave a game.</p>",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "int",
+            "optional": false,
+            "field": "game_id",
+            "description": "<p>The id of the game.</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "jwt",
+            "description": "<p>The jwt of the current user.</p>"
+          }
+        ]
+      }
+    },
+    "error": {
+      "fields": {
+        "Error 4xx": [
+          {
+            "group": "Error 4xx",
+            "optional": false,
+            "field": "error",
+            "description": "<p>The error field has a string with an exact error</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "     HTTP/1.1 200 OK\n  {\n   \"token\": \"b43a545f90ec60bf5ed2a4bd45d81a711de7ba658faa6899d8240343b857664fc967a76cd622235313db8e2ec053fe34c26c\", \"game_id\": 2\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "examples": [
+      {
+        "title": "Example call::",
+        "content": "{\n  \"game_id\": \"1\",\n  \"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMjQwIiwiZW1haWwiOiJhZHNzYWRhQG1haWwuY29tIiwiaWF0IjoxNTA1MTU3NTA3LCJleHAiOjE1MDUxNTg0MDd9.r7h31S_wQTypjiSLh7TgeRZYnRNqJpCJCqUFoSUvxqI\"\n}",
+        "type": "json"
+      }
+    ],
+    "sampleRequest": [
+      {
+        "url": "/api/games/:GAMEID/leave/"
+      }
+    ],
+    "version": "0.0.0",
+    "filename": "api/games_api.js",
+    "groupTitle": "Games"
+  },
+  {
     "type": "get",
     "url": "/search",
     "title": "Search API",
@@ -604,7 +826,7 @@
             "group": "Parameter",
             "type": "string",
             "optional": false,
-            "field": "object",
+            "field": "search_object",
             "description": "<p>The object you are searching for (game, user)</p>"
           },
           {
@@ -612,7 +834,7 @@
             "type": "int",
             "optional": false,
             "field": "results_max",
-            "description": "<p>The maximum number of results you want back // Game params</p>"
+            "description": "<p>The maximum number of results you want back (default is 20) // Game params</p>"
           },
           {
             "group": "Parameter",
@@ -639,8 +861,15 @@
             "group": "Parameter",
             "type": "int",
             "optional": false,
-            "field": "game_skill",
-            "description": "<p>The skill of the game</p>"
+            "field": "game_skill_min",
+            "description": "<p>The minimum skill of the game (creator - offset)</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "int",
+            "optional": false,
+            "field": "game_skill_max",
+            "description": "<p>The maximum skill of the game (creator + offset)</p>"
           },
           {
             "group": "Parameter",
@@ -655,13 +884,6 @@
             "optional": false,
             "field": "game_start_time",
             "description": "<p>The time the game starts</p>"
-          },
-          {
-            "group": "Parameter",
-            "type": "int",
-            "optional": false,
-            "field": "game_end_time",
-            "description": "<p>The time the game ends</p>"
           },
           {
             "group": "Parameter",
@@ -709,7 +931,7 @@
       "examples": [
         {
           "title": "Success-Response:",
-          "content": "HTTP/1.1 200 OK\n{\n  [\n      {\n      \"object\" : \"game\",\n      \"name\": \"abode's game\",\n      \"type\": \"casual\",\n      \"skill\": 5,\n      \"total_players_required\": 6,\n      \"start_time\": 1504272395,\n      \"duration\": 5400,\n      \"location\": {lat: 500.50, lng:500.50},\n      \"location_notes\": \"Come around the back and knock on the blue door\",\n      \"description\": \"Casual basketball game\",\n      \"gender\": \"A\",\n      \"age_range\": \"[20, 30]\",\n      \"enforced_params\": [\"gender\", \"age\"]\n      },\n      {\n      \"object\" : \"game\",\n      \"name\": \"abode's game pt II\",\n      \"type\": \"serious\",\n      \"skill\": 5,\n      \"total_players_required\": 10,\n      \"start_time\": 1504276395,\n      \"duration\": 5410,\n      \"location\": {lat: 520.50, lng:509.50},\n      \"location_notes\": \"Come around the back and knock on the red door\",\n      \"description\": \"Casual basketball game pt II\",\n      \"gender\": \"A\",\n      \"age_range\": \"[20, 35]\",\n      \"enforced_params\": [\"age\"]\n      }\n  ]\n}",
+          "content": "HTTP/1.1 200 OK\n{\n  [\n      {\n      \"search_object\" : \"game\",\n      \"name\": \"abode's game\",\n      \"type\": \"casual\",\n      \"skill\": 5,\n      \"total_players_required\": 6,\n      \"start_time\": 1504272395,\n      \"duration\": 5400,\n      \"location\": {lat: 500.50, lng:500.50},\n      \"location_notes\": \"Come around the back and knock on the blue door\",\n      \"description\": \"Casual basketball game\",\n      \"gender\": \"A\",\n      \"age_range\": \"[20, 30]\",\n      \"enforced_params\": [\"gender\", \"age\"]\n      },\n      {\n      \"search_object\" : \"game\",\n      \"name\": \"abode's game pt II\",\n      \"type\": \"serious\",\n      \"skill\": 5,\n      \"total_players_required\": 10,\n      \"start_time\": 1504276395,\n      \"duration\": 5410,\n      \"location\": {lat: 520.50, lng:509.50},\n      \"location_notes\": \"Come around the back and knock on the red door\",\n      \"description\": \"Casual basketball game pt II\",\n      \"gender\": \"A\",\n      \"age_range\": \"[20, 35]\",\n      \"enforced_params\": [\"age\"]\n      }\n  ]\n}",
           "type": "json"
         }
       ]
@@ -729,12 +951,12 @@
     "examples": [
       {
         "title": "Example call:",
-        "content": "{\n  \"jwt\": Encrypted_JWT_Token,\n  \"object\": \"user\",\n  \"username\": \"abode25\"\n}",
+        "content": "{\n  \"jwt\": Encrypted_JWT_Token,\n  \"search_object\": \"user\",\n  \"username\": \"abode25\"\n}",
         "type": "json"
       },
       {
         "title": "Example call:",
-        "content": "{\n  \"jwt\": Encrypted_JWT_Token,\n  \"object\": \"game\",\n  \"game_start_time\": 1506996322\n  \"game_type\" : \"serious\"\n}",
+        "content": "{\n  \"jwt\": Encrypted_JWT_Token,\n  \"search_object\": \"game\",\n  \"game_start_time\": 1506996322\n  \"game_type\" : \"serious\"\n}",
         "type": "json"
       }
     ],
