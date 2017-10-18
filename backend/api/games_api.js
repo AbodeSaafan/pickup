@@ -233,35 +233,31 @@ router.put('/:game_id/join', function(req, res){
 
 router.delete('/:game_id/leave', function(req, res){
 
-  try{
-	var token = req.query.jwt;
+	try{
+		var token = req.query.jwt;
 
-	var tok = tokenHelper.verifyToken(token);
-	var userId = tok.user_id;
+		var tok = tokenHelper.verifyToken(token);
+		var userId = tok.user_id;
 
-	var game = requestHelper.validateAndCleanLeaveRequest(req.query);
-	var gameId = game.game_id;
+		var game = requestHelper.validateAndCleanLeaveRequest(req.params);
+		var gameId = game.game_id;
 
-	console.log(userId)
-
-	databaseHelper.verifyGameId(gameId, (gameExists) => {
-	  if (gameExists) {
-		databaseHelper.leaveGame(userId, gameId, (hasLeftGame) => {
-		  if (hasLeftGame) {
-			res.status(200); return;
-		  }
-		  else {
-		   console.log(userId)
-		   console.log(gameId)
-		   throw new Error(strings.invalidGame);
-		 }
-	   })
-	  }
-	})
-  }
-  catch(err){
-	res.status(400).json(requestHelper.jsonError(err)); return;
-  }
+		databaseHelper.verifyGameId(gameId, (gameExists) => {
+			if (gameExists) {
+				databaseHelper.leaveGame(userId, gameId, (hasLeftGame) => {
+					if (hasLeftGame) {
+						res.status(200).json(); return;
+					}
+					else {
+						res.status(400).json({'error': strings.invalidLeaveGame}); return;
+					}
+				})
+			}
+		})
+	}
+	catch(err){
+		res.status(400).json(requestHelper.jsonError(err)); return;
+	}
 });
 
 

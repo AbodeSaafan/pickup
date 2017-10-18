@@ -37,6 +37,8 @@ var invalidGameLocationRange = "The location range must be within 1 and 500 KMs"
 var invalidUserId = "The user ID you entered is invalid. User ID's are natural numbers";
 var invalidRating = "The rating you entered is invalid. Ratings are natural numbers";
 var invalidReviewTag = "The review tag you entered is invalid. Review tags are natural numbers";
+var invalidLeaveGame = "Failed to leave game specified. Please make sure you are a player in the game";
+
 module.exports = {
 	uniqueEmailError,
 	registerFailError,
@@ -76,5 +78,6 @@ module.exports = {
 	invalidUserId,
 	invalidRating,
 	invalidReviewTag,
-	usersFail
+	usersFail,
+	invalidLeaveGame
 }
