@@ -27,12 +27,12 @@ var strings = require('./universal_strings');
 * @apiParam {string} gender The preferred for the game (if any)
 * @apiParam {int[]} age_range The preferred age range for the game (if any)
 * @apiParam {string[]]} enforced_params List of parmeters that the creator wants to enforce
-*
-*
+* 
+* 	
 * @apiSuccess {int} gameId The id of the game that has been created
 *
 * @apiError error The error field has a string with an exact error
-*
+* 
 * @apiExample Example call:
 *     {
 *       "jwt": Encrypted_JWT_Token,
@@ -62,25 +62,20 @@ router.post('/', function(req, res){
 	try{
 		var game = requestHelper.validateAndCleanCreateGameRequest(req.body);
     try {
-      var tok = tokenHelper.verifyToken(req.body.jwt);
+      var tok = tokenHelper.verifyToken(req.body.jwt);  
     }
     catch(err) {
       res.status(400).json(requestHelper.jsonError(err)); return;
     }
-
+    
     databaseHelper.ensureGameIsValidToBeCreated(game, tok.user_id, (valid) => {
       if(!valid){
         res.status(400).json({'error': strings.invalidGameScheduleConflict});
       } else {
-<<<<<<< HEAD
-        databaseHelper.createGame(tok.user_id, game.name, game.type, game.skill,
-          game.total_players_required, game.start_time,
-=======
-        databaseHelper.createGame(tok.user_id, game.name, game.type, game.skill_offset,
-          game.total_players_required, game.start_time,
->>>>>>> fd659cc8d4c97ec22fd4d9ef92af7eb5e5287ffd
+        databaseHelper.createGame(tok.user_id, game.name, game.type, game.skill_offset, 
+          game.total_players_required, game.start_time, 
           game.duration, game.location, game.location_notes,
-          game.description, game.gender, game.age_range, game.enforced_params,
+          game.description, game.gender, game.age_range, game.enforced_params, 
           (game_id) => {
             if(game_id){
               databaseHelper.addGamer(tok.user_id, game_id, (joinSuccess) => {
@@ -167,7 +162,7 @@ router.post('/', function(req, res){
 *     "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMjQwIiwiZW1haWwiOiJhZHNzYWRhQG1haWwuY29tIiwiaWF0IjoxNTA1MTU3NTA3LCJleHAiOjE1MDUxNTg0MDd9.r7h31S_wQTypjiSLh7TgeRZYnRNqJpCJCqUFoSUvxqI"
 *   }
 *
-*
+* 
 * @apiSampleRequest /api/games/:GAMEID/join/
 */
 router.put('/:game_id/join', function(req, res){
@@ -183,17 +178,6 @@ router.put('/:game_id/join', function(req, res){
 
     databaseHelper.verifyGameId(gameId, (gameExists) => {
     if (gameExists) {
-<<<<<<< HEAD
-      databaseHelper.addGamer(userId, gameId, (querySuccess) => {
-        if (querySuccess) {
-          res.status(200).json({'token': token, 'game_id': gameId});
-          return;
-        }
-      })
-    }
-    else{
-      res.status(400).json({'error': "strings.errorname"});
-=======
         databaseHelper.ensureGameIsJoinableByPlayer(gameId, userId, (joinable) => {
             if (joinable) {
                 databaseHelper.addGamer(userId, gameId, (playerAdded) => {
@@ -209,43 +193,11 @@ router.put('/:game_id/join', function(req, res){
         });
     } else {
         res.status(400).json({'error': "strings.errorname"});
->>>>>>> fd659cc8d4c97ec22fd4d9ef92af7eb5e5287ffd
     }
   })
 });
 
-
-/**
-* @api {delete} games/:GAMEID/leave/ Leave a game
-* @apiName LeaveGame
-* @apiGroup Games
-*
-* @apiDescription API used to leave a game.
-*
-* @apiParam {int} game_id The id of the game.
-* @apiParam {String} jwt The jwt of the current user.
-*
-* @apiError error The error field has a string with an exact error
-*
-* @apiSuccessExample Success-Response:
-*      HTTP/1.1 200 OK
-*   {
-*    "token": "b43a545f90ec60bf5ed2a4bd45d81a711de7ba658faa6899d8240343b857664fc967a76cd622235313db8e2ec053fe34c26c", "game_id": 2
-* }
-*
-* @apiExample Example call::
-*   {
-*     "game_id": "1",
-*     "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMjQwIiwiZW1haWwiOiJhZHNzYWRhQG1haWwuY29tIiwiaWF0IjoxNTA1MTU3NTA3LCJleHAiOjE1MDUxNTg0MDd9.r7h31S_wQTypjiSLh7TgeRZYnRNqJpCJCqUFoSUvxqI"
-*   }
-*
-*
-* @apiSampleRequest /api/games/:GAMEID/leave/
-*/
-
 router.delete('/:game_id/leave', function(req, res){
-
-	/*
   try{
       var user = requestHelper.validateAndCleanJoinRequest(req.body);
       var gameId = req.params.game_id;
@@ -257,33 +209,14 @@ router.delete('/:game_id/leave', function(req, res){
   catch (err){
     res.status(400).json(requestHelper.jsonError(err)); return;
   }
-	*/
 
-
-  var gameId = req.params.game_id;
-  var token = req.query.jwt;
-
-  tokenHelper.verifyToken(token);
-
-  try{
-    var userId = tokenHelper.getUserFromToken(token).user_id;
-  } catch(err){
-    res.status(400).json(requestHelper.jsonError(err)); return;
-  }
-
-  console.log(userId)
-
-  databaseHelper.verifyGameId(gameId, (gameExists) => {
-		if (gameExists) {
+  databaseHelper.verifyGameId(userId, gameId, (gameExists) => {
+    if (gameExists) {
       databaseHelper.leaveGame(userId, gameId, (hasLeftGame) => {
         if (hasLeftGame) {
           res.status(200).json({'token': token, 'game_id': gameId});
           return;
         }
-				else {
-					console.log(userId)
-					console.log(gameId)
-				}
       })
     }
     res.status(400).json({'error': "strings.error"});
