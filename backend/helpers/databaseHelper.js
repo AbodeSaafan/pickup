@@ -11,6 +11,7 @@ function checkEmailUniqueness(user, callback){
 
 		pool.connect((err, client, done) => {
 			client.query(queryString, (err, res) => {
+				  console.log(err);
   				callback(!(res.rows[0] || err));
   				done();
 				pool.end();
@@ -359,11 +360,11 @@ module.exports = {
 	checkEmailUniqueness,
 	checkUsernameUniqueness,
 	registerUser,
-    updateUser,
+  updateUser,
 	getUserId,
 	getUserRowById,
 	getRefreshToken,
-    createRefreshToken,
+  createRefreshToken,
 	deleteRefreshToken,
 	populateExtendedProfile,
 	getExtendedProfile,
@@ -373,10 +374,10 @@ module.exports = {
 	addReview,
 	createGame,
 	ensureGameIsValidToBeCreated,
-    verifyGameId,
+  verifyGameId,
 	addGamer,
 	ensureGameIsJoinableByPlayer,
-    leaveGame
+  leaveGame
 }
 
 //////////////// Helpers ////////////////
