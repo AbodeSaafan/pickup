@@ -83,18 +83,14 @@ function getUserId(email, callback){
 }
 
 function getUserRowById(userId, callback){
-		var queryString = "SELECT * FROM users WHERE user_id = $1";
+		var queryString = "SELECT user_id, username, fname, lname, dob, gender, email FROM users WHERE user_id = $1";
 		var queryParams = [userId];
 
 		const pool = new pg.Pool({connectionString: conString});
 
 		pool.connect((err, client, done) => {
 			client.query(queryString, queryParams, (err, res) => {
-  				if(!err && res.rows[0]){
-	  				callback(res.rows[0]);
-  				} else {
-					callback(false);
-  				}
+          callback(!err && (res && res.rows[0]));
   				done();
   				pool.end();
 			});

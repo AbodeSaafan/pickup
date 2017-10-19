@@ -9,6 +9,7 @@ var extendedProfileEndpoint = baseApi + '/extended_profile';
 var createGameEndpoint = baseApi + '/games';
 var joinGameEndpoint = baseApi + '/games/%s/join?jwt=%s';
 var leaveGameEndpoint = baseApi + '/games/%s/leave?jwt=%s';
+var adminProfileEndpoint = baseApi + '/profile';
 
 function randomEmail(){
 	return crypto.randomBytes(4).toString('hex') + "@mail.com";
@@ -58,5 +59,6 @@ module.exports = {
   createGameEndpoint,
   createGenericGame,
   joinGameEndpoint,
-  leaveGameEndpoint
+  leaveGameEndpoint,
+  adminProfileEndpoint
 }
