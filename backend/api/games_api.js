@@ -218,8 +218,7 @@ router.put('/:game_id/join', function(req, res){
 * @apiSuccessExample Success-Response:
 *      HTTP/1.1 200 OK
 *   {
-*    "token": "b43a545f90ec60bf5ed2a4bd45d81a711de7ba658faa6899d8240343b857664fc967a76cd622235313db8e2ec053fe34c26c", "game_id": 2
-* }
+* 	}
 *
 * @apiExample Example call::
 *   {
@@ -232,19 +231,15 @@ router.put('/:game_id/join', function(req, res){
 */
 
 router.delete('/:game_id/leave', function(req, res){
-
 	try{
-		var token = req.query.jwt;
-
-		var tok = tokenHelper.verifyToken(token);
-		var userId = tok.user_id;
+		var tok = tokenHelper.verifyToken(req.query.jwt);
 
 		var game = requestHelper.validateAndCleanLeaveRequest(req.params);
 		var gameId = game.game_id;
 
 		databaseHelper.verifyGameId(gameId, (gameExists) => {
 			if (gameExists) {
-				databaseHelper.leaveGame(userId, gameId, (hasLeftGame) => {
+				databaseHelper.leaveGame(tok.user_id, gameId, (hasLeftGame) => {
 					if (hasLeftGame) {
 						res.status(200).json(); return;
 					}
@@ -259,6 +254,5 @@ router.delete('/:game_id/leave', function(req, res){
 		res.status(400).json(requestHelper.jsonError(err)); return;
 	}
 });
-
 
 module.exports = router;
