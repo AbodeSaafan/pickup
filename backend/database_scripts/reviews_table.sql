@@ -4,5 +4,5 @@ CREATE TABLE IF NOT EXISTS Reviews (
 	reviewer_id int,
 	rating int, 
 	tags int[],
-	PRIMARY KEY(user_id)
+	PRIMARY KEY(user_id, reviewer_id)
 );

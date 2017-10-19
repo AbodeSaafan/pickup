@@ -16,7 +16,19 @@ END;
 $BODY$
 language plpgsql;
 
+CREATE OR REPLACE FUNCTION update_player_avg_review() RETURNS TRIGGER AS 
+$BODY$
+BEGIN
+	
+	UPDATE extended_profile SET average_review = (SELECT AVG(rating) from Reviews WHERE user_id = new.user_id) 
+	WHERE user_id = new.user_id;
+	RETURN new;
+END;
+$BODY$
+language plpgsql;
 
+CREATE TRIGGER review_change_for_player AFTER INSERT OR DELETE OR UPDATE ON reviews
+FOR EACH ROW EXECUTE PROCEDURE update_player_avg_review();
 
 CREATE TRIGGER player_joined_game_trigger BEFORE INSERT ON gamers 
 FOR EACH ROW EXECUTE PROCEDURE add_to_player_count_function(); 
