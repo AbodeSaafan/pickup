@@ -1,21 +1,14 @@
 var express = require('express');
 var router = express.Router();
-var body = require('body-parser');
 var tokenHelper = require('../helpers/tokenHelper');
 var requestHelper = require('../helpers/requestHelper');
 var databaseHelper = require('../helpers/databaseHelper');
-var md5 = require('md5');
-var crypto = require('crypto');
 var strings = require('./universal_strings');
-
-// endpoint should be -> /api/extendedProfile
-//api to get extended profile
-
 
 /**
 * @api {get} /extendedProfile Get User's extendedProfile
 * @apiName getExtendedProfile
-* @apiGroup ExtendedProfile
+* @apiGroup Profiles
 *
 * @apiDescription API used for getting a user's extended Profile.
 *
@@ -40,35 +33,27 @@ var strings = require('./universal_strings');
 */
 
 router.get('/', function (req, res) {
+	try {
+		var tok = tokenHelper.verifyToken(req.query.jwt);
 
-  try {
-    var token = req.query.jwt;
-    var tok = tokenHelper.verifyToken(token);
-    var userId = tok.user_id;
-    databaseHelper.getExtendedProfile(userId, (user_id) => {
-        if(user_id) {
-            console.log(user_id);
-            res.status(200).json(user_id);
-            return;
-        }else{
-            res.status(400).json({'error': strings.userIdFail});
-            return;
-        }
-      })
-  }
+		databaseHelper.getExtendedProfile(tok.user_id, (user_id) => {
+			if(user_id) {
+				res.status(200).json(user_id); return;
+			}else{
+				res.status(400).json({'error': strings.userIdFail}); return;
+			}
+		})
+	}
 
-  catch(err){
-    res.status(400).json(requestHelper.jsonError(err)); return;
-  }
+	catch(err){
+		res.status(400).json(requestHelper.jsonError(err)); return;
+	}
 });
-
-// endpoint should be -> /api/extendedProfile/:user_id?skill_level=&location=
-//api to update extended profile (skill_level)
 
 /**
 * @api {put} /refresh Update User's Extended Profile
 * @apiName updateExtendedUser
-* @apiGroup ExtendedProfile
+* @apiGroup Profiles
 *
 * @apiDescription API used for updating user's extended profile.
 *
@@ -83,8 +68,8 @@ router.get('/', function (req, res) {
 * @apiExample Example call:
 *     {
 *       "jwt": Encrypted_JWT_Token,
-        "skill_level": 3,
-        "location": Mississauga
+		"skill_level": 3,
+		"location": Mississauga
 *     }
 *
 * @apiSuccessExample Success-Response:
@@ -98,38 +83,30 @@ router.get('/', function (req, res) {
 
 router.put('/', function (req, res) {
 
-  try {
-    var token = req.query.jwt;
-    var tok = tokenHelper.verifyToken(token);
-    var userId = tok.user_id;
+	try {
+		var tok = tokenHelper.verifyToken(req.query.jwt);
+		var userId = tok.user_id;
 
-    var skill_level = req.query.skill_level;
-    var location = req.query.location;
+		var skill_level = req.query.skill_level;
+		var location = req.query.location;
 
-    databaseHelper.getExtendedProfile(userId, (user_id) => {
-        if(user_id) {
-            databaseHelper.updateExtendedUser(userId, skill_level, location, (update) => {
-              if (update) {
-                console.log()
-                res.status(200).json(update);
-              } else {
-                res.status(400).json({'error': strings.userIdFail});
-                return;
-              }
-            })
-            return;
-        }else{
-            res.status(400).json({'error': strings.userIdFail});
-            return;
-        }
-    })
-  }
-
-  catch(err){
-    res.status(400).json(requestHelper.jsonError(err)); return;
-  }
-
-
+		databaseHelper.getExtendedProfile(userId, (user_id) => {
+			if(user_id) {
+				databaseHelper.updateExtendedUser(userId, skill_level, location, (update) => {
+					if (update) {
+						res.status(200).json(update); return;
+					} else {
+						res.status(400).json({'error': strings.userIdFail}); return;
+					}
+				})
+			}else{
+				res.status(400).json({'error': strings.userIdFail}); return;
+			}
+		})
+	}
+	catch(err){
+		res.status(400).json(requestHelper.jsonError(err)); return;
+	}
 });
 
 module.exports = router;
