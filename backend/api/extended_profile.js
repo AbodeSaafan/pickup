@@ -82,31 +82,43 @@ router.get('/', function (req, res) {
 */
 
 router.put('/', function (req, res) {
+ try {
+	 var details = requestHelper.validateAndCleanUpdateExtendedProfileRequest(req.body);
 
-	try {
-		var tok = tokenHelper.verifyToken(req.query.jwt);
-		var userId = tok.user_id;
+	 console.log(details)
 
-		var skill_level = req.query.skill_level;
-		var location = req.query.location;
+	 try {
+ 	  var tok = tokenHelper.verifyToken(req.body.jwt);
+	} catch(err) {
+ 	  res.status(400).json(requestHelper.jsonError(err)); return;
+ 	}
 
-		databaseHelper.getExtendedProfile(userId, (user_id) => {
-			if(user_id) {
-				databaseHelper.updateExtendedUser(userId, skill_level, location, (update) => {
-					if (update) {
-						res.status(200).json(update); return;
-					} else {
-						res.status(400).json({'error': strings.userIdFail}); return;
-					}
-				})
-			}else{
-				res.status(400).json({'error': strings.userIdFail}); return;
-			}
-		})
-	}
-	catch(err){
-		res.status(400).json(requestHelper.jsonError(err)); return;
-	}
+
+	var userId = tok.user_id;
+	console.log(userId)
+	var skill_level = details.skill_level;
+	var location = details.location;
+
+	databaseHelper.getExtendedProfile(userId, (user_id) => {
+		if(user_id) {
+			databaseHelper.updateExtendedUser(userId, skill_level, location, (update) => {
+				if (update) {
+					res.status(200).json(update); return;
+				} else {
+					console.log('reached here');
+					res.status(400).json({'error': strings.userIdFail}); return;
+				}
+			})
+		}else{
+			console.log('reached here1');
+			res.status(400).json({'error': strings.userIdFail}); return;
+		}
+	})
+
+ } catch (err) {
+	 console.log('reached here2');
+	 res.status(400).json(requestHelper.jsonError(err)); return;
+ }
 });
 
 module.exports = router;

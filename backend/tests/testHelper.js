@@ -31,7 +31,7 @@ function randomDob(){
 }
 
 function randomSkillLevel(){
-	return (Math.random() * (10)).toFixed(0) * 1 
+	return (Math.random() * (10)).toFixed(0) * 1
 }
 
 function createGenericUser(){
@@ -64,6 +64,14 @@ function createGenericGame(jwt, start, duration){
 	};
 }
 
+function createGenericExtendedProfile (jwt) {
+	return {
+		jwt: jwt,
+		skill_level: randomSkillLevel(),
+		location: randomLocation(),
+	}
+}
+
 module.exports = {
 	refreshEndpoint,
 	registerEndpoint,
@@ -75,5 +83,6 @@ module.exports = {
 	createGenericGame,
 	joinGameEndpoint,
 	leaveGameEndpoint,
-	adminProfileEndpoint
+	adminProfileEndpoint,
+	createGenericExtendedProfile
 }

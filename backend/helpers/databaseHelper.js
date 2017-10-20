@@ -233,7 +233,8 @@ function leaveGame(userIdIn, gameIdIn, callback){
 
 function updateExtendedUser (userId, skill_level, location, callback) {
 		var queryString = "UPDATE extended_profile SET skilllevel = $1, location = $2 WHERE user_id = $3;"
-		var queryParams = [skill_level, location, userId]
+		var dblocation = '(' + location.lat + ',' + location.lng + ')';
+		var queryParams = [skill_level, dblocation, userId]
 
 		const pool = new pg.Pool({connectionString: conString});
 		pool.connect((err, client, done) => {

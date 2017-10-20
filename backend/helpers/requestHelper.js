@@ -52,7 +52,7 @@ function validateAndCleanJoinRequest(data){
 
 function validateAndCleanLeaveRequest(data){
 	validate(data.game_id, regex.idRegex);
-    return data;	
+    return data;
 }
 
 function validateAndCleanReviewRequest(data){
@@ -62,6 +62,7 @@ function validateAndCleanReviewRequest(data){
 	validate(data.tags, regex.reviewTagRegex, strings.invalidReviewTag);
 	return data;
 }
+
 
 function validateAndCleanSearchRequest(data){
 	validate(data.search_object, regex.searchObjectRegex, strings.invalidSearchObject);
@@ -92,6 +93,12 @@ function validateAndCleanSearchRequest(data){
 	return data;
 }
 
+function validateAndCleanUpdateExtendedProfileRequest (data) {
+	validateLocation (data.location);
+	validateSkill (data.skill_level);
+	return data;
+}
+
 function jsonError(Error){
     return {'error': Error.toString().substring(7)};
 }
@@ -105,6 +112,7 @@ module.exports = {
     validateAndCleanSearchRequest,
     validateAndCleanReviewRequest,
     validateAndCleanLeaveRequest,
+		validateAndCleanUpdateExtendedProfileRequest,
     jsonError,
 }
 
@@ -134,13 +142,13 @@ function validateStartTime(startTime){
 
 function searchValidateStartTime(startTime, obj, objParamString){
 	if(!(startTime.trim())){
-		delete obj[objParamString]; return; 
+		delete obj[objParamString]; return;
 	}
 	validateStartTime(startTime);
 }
 
 function validateAgeRange(ageRange){
-	if (ageRange == null || ageRange.length != 2 || 
+	if (ageRange == null || ageRange.length != 2 ||
 		ageRange[0] > ageRange[1]){
 		throw new Error(strings.invalidGameAgeRange);
 	}
@@ -148,6 +156,7 @@ function validateAgeRange(ageRange){
 
 function validateLocation(location){
 	if (location == null || location.lng == null || location.lat == null){
+		console.log('location failed');
 		throw new Error(strings.invalidGameLocation);
 	}
 }
@@ -177,6 +186,7 @@ function validateSkillOffset(skill){
 
 function validateSkill(skill){
 	if(!(skill && isInt(skill) && skill >= 0 && skill <=10)){
+		console.log('skill_level failed');
 		throw new Error(strings.invalidGameSkill);
 	}
 }
@@ -197,7 +207,7 @@ function validateMaxResults(maxResult){
 
 function searchValidateLocationRange(locationRange, obj, objParamString){
 	if(!locationRange){
-		delete obj[objParamString]; return; 
+		delete obj[objParamString]; return;
 	}
 
 	if(!(isInt(locationRange) && locationRange > 0 && location < 100)){
