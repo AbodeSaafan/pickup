@@ -19,6 +19,17 @@ function randomUsername(){
   return crypto.randomBytes(4).toString('hex');
 }
 
+function randomLocation(){
+  return {
+    lat: (Math.random() * (180 - (-180)) - 180).toFixed(3) * 1,
+    lng: (Math.random() * (180 - (-180)) - 180).toFixed(3) * 1
+  }
+}
+
+function randomDob(){
+  return '25/03/' + (Math.random() * (2000 - 1950) + 1950).toFixed(0) * 1
+}
+
 function createGenericUser(){
 	return {
     username:randomUsername(),
@@ -26,7 +37,7 @@ function createGenericUser(){
     fname:'abode',
     lname:'saafan',
     gender:'m',
-    dob:'25/03/1996',
+    dob:randomDob(),
     email:randomEmail()
   };
 }
@@ -39,7 +50,7 @@ function createGenericGame(jwt, start, duration){
    total_players_required: 6,
    start_time: start,
    duration: duration,
-   location: {lat: 500.50, lng:-500.50},
+   location: randomLocation(),
    location_notes: "Come around the back and knock on the blue door",
    description: "Casual basketball game",
    gender: "A",
