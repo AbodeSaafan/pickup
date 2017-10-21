@@ -94,8 +94,8 @@ function validateAndCleanSearchRequest(data){
 }
 
 function validateAndCleanUpdateExtendedProfileRequest (data) {
-	validateLocation (data.location);
-	validateSkill (data.skill_level);
+	validateLocation(data.location);
+	validateSkill(data.skill_level);
 	return data;
 }
 

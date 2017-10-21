@@ -326,156 +326,6 @@
     "groupTitle": "Authorization"
   },
   {
-    "type": "get",
-    "url": "/extendedProfile",
-    "title": "Get User's extendedProfile",
-    "name": "getExtendedProfile",
-    "group": "ExtendedProfile",
-    "description": "<p>API used for getting a user's extended Profile.</p>",
-    "parameter": {
-      "fields": {
-        "Parameter": [
-          {
-            "group": "Parameter",
-            "type": "String",
-            "optional": false,
-            "field": "jwt",
-            "description": "<p>The JWT you have currently</p>"
-          }
-        ]
-      }
-    },
-    "success": {
-      "fields": {
-        "Success 200": [
-          {
-            "group": "Success 200",
-            "type": "String",
-            "optional": false,
-            "field": "User",
-            "description": "<p>'s extendedProfile entry (userId, skill_level, age, gender, location)</p>"
-          }
-        ]
-      },
-      "examples": [
-        {
-          "title": "Success-Response:",
-          "content": "     HTTP/1.1 200 OK\n\t\t{\n\t\t  \"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkc3NhZGFAbWFpbC5jb20iLCJpYXQiOjE1MDUxNTc2NjQsImV4cCI6MTUwNTE1ODU2NH0.HmhW4y-AZ1D5rMHbQ8RY0eBIGfo-8Lb_sFL1FrruFoc\"\n\t\t}",
-          "type": "json"
-        }
-      ]
-    },
-    "error": {
-      "fields": {
-        "Error 4xx": [
-          {
-            "group": "Error 4xx",
-            "optional": false,
-            "field": "error",
-            "description": "<p>An error is given for invalid user_ID</p>"
-          }
-        ]
-      }
-    },
-    "examples": [
-      {
-        "title": "Example call:",
-        "content": "{\n  \"jwt\": Encrypted_JWT_Token,\n}",
-        "type": "json"
-      }
-    ],
-    "sampleRequest": [
-      {
-        "url": "/api/extendedProfile"
-      }
-    ],
-    "version": "0.0.0",
-    "filename": "api/extended_profile.js",
-    "groupTitle": "ExtendedProfile"
-  },
-  {
-    "type": "put",
-    "url": "/refresh",
-    "title": "Update User's Extended Profile",
-    "name": "updateExtendedUser",
-    "group": "ExtendedProfile",
-    "description": "<p>API used for updating user's extended profile.</p>",
-    "parameter": {
-      "fields": {
-        "Parameter": [
-          {
-            "group": "Parameter",
-            "type": "String",
-            "optional": false,
-            "field": "jwt",
-            "description": "<p>The JWT you have currently</p>"
-          },
-          {
-            "group": "Parameter",
-            "type": "String",
-            "optional": false,
-            "field": "skill_level",
-            "description": "<p>The skill level of the user</p>"
-          },
-          {
-            "group": "Parameter",
-            "type": "String",
-            "optional": false,
-            "field": "location",
-            "description": "<p>The location of the user</p>"
-          }
-        ]
-      }
-    },
-    "success": {
-      "fields": {
-        "Success 200": [
-          {
-            "group": "Success 200",
-            "type": "String",
-            "optional": false,
-            "field": "token",
-            "description": "<p>A JWT token that can be used to authenticate futher API calls</p>"
-          }
-        ]
-      },
-      "examples": [
-        {
-          "title": "Success-Response:",
-          "content": "     HTTP/1.1 200 OK\n\t\t{\n\t\t  \"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkc3NhZGFAbWFpbC5jb20iLCJpYXQiOjE1MDUxNTc2NjQsImV4cCI6MTUwNTE1ODU2NH0.HmhW4y-AZ1D5rMHbQ8RY0eBIGfo-8Lb_sFL1FrruFoc\"\n\t\t}",
-          "type": "json"
-        }
-      ]
-    },
-    "error": {
-      "fields": {
-        "Error 4xx": [
-          {
-            "group": "Error 4xx",
-            "optional": false,
-            "field": "error",
-            "description": "<p>The error field has a string with an exact error</p>"
-          }
-        ]
-      }
-    },
-    "examples": [
-      {
-        "title": "Example call:",
-        "content": "{\n  \"jwt\": Encrypted_JWT_Token,\n    \"skill_level\": 3,\n    \"location\": Mississauga\n}",
-        "type": "json"
-      }
-    ],
-    "sampleRequest": [
-      {
-        "url": "/api/extendedProfile"
-      }
-    ],
-    "version": "0.0.0",
-    "filename": "api/extended_profile.js",
-    "groupTitle": "ExtendedProfile"
-  },
-  {
     "type": "post",
     "url": "/games",
     "title": "Create a new game",
@@ -784,7 +634,7 @@
       "examples": [
         {
           "title": "Success-Response:",
-          "content": "     HTTP/1.1 200 OK\n  {\n   \"token\": \"b43a545f90ec60bf5ed2a4bd45d81a711de7ba658faa6899d8240343b857664fc967a76cd622235313db8e2ec053fe34c26c\", \"game_id\": 2\n}",
+          "content": "     HTTP/1.1 200 OK\n  {\n\t}",
           "type": "json"
         }
       ]
@@ -804,6 +654,213 @@
     "version": "0.0.0",
     "filename": "api/games_api.js",
     "groupTitle": "Games"
+  },
+  {
+    "type": "get",
+    "url": "profile/",
+    "title": "Get private profile",
+    "name": "GetAdminProfile",
+    "group": "Profiles",
+    "description": "<p>API used to get your own administrative profile</p>",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "jwt",
+            "description": "<p>The jwt of the current user.</p>"
+          }
+        ]
+      }
+    },
+    "error": {
+      "fields": {
+        "Error 4xx": [
+          {
+            "group": "Error 4xx",
+            "optional": false,
+            "field": "error",
+            "description": "<p>The error field has a string with an exact error</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "     HTTP/1.1 200 OK\n  {\n    \"user_id\" : 1\n\t  \"username\" : \"abode1\"\n\t  \"fname\" : \"abode\"\n\t  \"lname\" : \"saafan\"\n\t  \"dob\" : 01/01/1996\n\t  \"gender\" : \"M\"\n\t  \"email\" : \"abode@mail.com\"\n\t}",
+          "type": "json"
+        }
+      ]
+    },
+    "examples": [
+      {
+        "title": "Example call::",
+        "content": "{\n  \"jwt\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMjQwIiwiZW1haWwiOiJhZHNzYWRhQG1haWwuY29tIiwiaWF0IjoxNTA1MTU3NTA3LCJleHAiOjE1MDUxNTg0MDd9.r7h31S_wQTypjiSLh7TgeRZYnRNqJpCJCqUFoSUvxqI\"\n}",
+        "type": "json"
+      }
+    ],
+    "sampleRequest": [
+      {
+        "url": "/api/games/:GAMEID/leave/"
+      }
+    ],
+    "version": "0.0.0",
+    "filename": "api/profile_api.js",
+    "groupTitle": "Profiles"
+  },
+  {
+    "type": "get",
+    "url": "/extendedProfile",
+    "title": "Get User's extendedProfile",
+    "name": "getExtendedProfile",
+    "group": "Profiles",
+    "description": "<p>API used for getting a user's extended Profile.</p>",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "jwt",
+            "description": "<p>The JWT you have currently</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "User",
+            "description": "<p>'s extended profile entry (user_id, skilllevel, age, gender, location, average_review, top_tag)</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "     HTTP/1.1 200 OK\n\t\t{\n\t\t\"user_id\": 164\n\t\t\"skilllevel\": 7 \n\t\t\"age\": 24\n\t\t\"gender\": M \n\t\t\"location\": {lat: 124.32 lng: -96.23} \n\t\t\"average_review\": 3.76\n\t\t\"top_tag\": 4\n\t\t}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "fields": {
+        "Error 4xx": [
+          {
+            "group": "Error 4xx",
+            "optional": false,
+            "field": "error",
+            "description": "<p>An error is given for invalid user_ID</p>"
+          }
+        ]
+      }
+    },
+    "examples": [
+      {
+        "title": "Example call:",
+        "content": "{\n  \"jwt\": Encrypted_JWT_Token,\n}",
+        "type": "json"
+      }
+    ],
+    "sampleRequest": [
+      {
+        "url": "/api/extendedProfile"
+      }
+    ],
+    "version": "0.0.0",
+    "filename": "api/extended_profile.js",
+    "groupTitle": "Profiles"
+  },
+  {
+    "type": "put",
+    "url": "/extendedProfile",
+    "title": "Update User's Extended Profile",
+    "name": "updateExtendedProfile",
+    "group": "Profiles",
+    "description": "<p>API used for updating user's extended profile.</p>",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "jwt",
+            "description": "<p>The JWT you have currently</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "skill_level",
+            "description": "<p>The skill level of the user</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "location",
+            "description": "<p>The location of the user</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "token",
+            "description": "<p>A JWT token that can be used to authenticate futher API calls</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "     HTTP/1.1 200 OK\n\t\t{\n\t\t}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "fields": {
+        "Error 4xx": [
+          {
+            "group": "Error 4xx",
+            "optional": false,
+            "field": "error",
+            "description": "<p>The error field has a string with an exact error</p>"
+          }
+        ]
+      }
+    },
+    "examples": [
+      {
+        "title": "Example call:",
+        "content": "    {\n      \"jwt\": Encrypted_JWT_Token,\n\t\t\"skill_level\": 3,\n\t\t\"location\": Mississauga\n    }",
+        "type": "json"
+      }
+    ],
+    "sampleRequest": [
+      {
+        "url": "/api/extendedProfile"
+      }
+    ],
+    "version": "0.0.0",
+    "filename": "api/extended_profile.js",
+    "groupTitle": "Profiles"
   },
   {
     "type": "get",
