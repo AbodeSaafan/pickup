@@ -15,10 +15,10 @@ var strings = require('./universal_strings');
 * @apiDescription API used for sending friend requests.
 *
 * @apiParam {string} jwt Valid JWT
-* @apiParam {int} user_ID The user, your sending friend request to.
+* @apiParam {int} user_Id The user, your sending friend request to
 *
 *
-* @apiSuccess {string} status The status of the request should be 'invite'
+* @apiSuccess {string} status The status of the request should be 'invite' or 'friends'
 *
 * @apiError error The error field has a string with an exact error
 *
@@ -59,11 +59,11 @@ router.post('/', function(req, res){
 
 
 /**
-* @api {put} /friends Block an existing friend or a different user
+* @api {put} /friends Block a user
 * @apiName BlockFriend
 * @apiGroup Friends
 *
-* @apiDescription API used for blocking existing friends or unknown people.
+* @apiDescription API used for blocking users
 *
 * @apiParam {string} jwt Valid JWT
 * @apiParam {int} user_ID The user whome you want to block.
@@ -102,17 +102,17 @@ router.put('/', function (req, res) {
 })
 
 /**
-* @api {delete} /friends Decline a friend request or Unfriend an existing friend
+* @api {delete} /friends Decline a friend request, cancel a friend request, or delete a friend
 * @apiName DeclineFriend
 * @apiGroup Friends
 *
-* @apiDescription API used for declining friend requests or removing existing friends.
+* @apiDescription API used for declining friend requests, cancelling them, or removing existing friends.
 *
 * @apiParam {string} jwt Valid JWT
-* @apiParam {int} user_ID The user whome you want to remove/decline.
+* @apiParam {int} user_Id The user whome you want to remove/decline.
 *
 *
-* @apiSuccess {string} status The status of the request should be 'removed'
+* @apiSuccess {string} status The status of the request should be 'declined', 'cancelled', or 'removed'
 *
 * @apiError error The error field has a string with an exact error
 *
@@ -141,7 +141,7 @@ router.put('/', function (req, res) {
 * @apiDescription API used for accepting friend requests.
 *
 * @apiParam {string} jwt Valid JWT
-* @apiParam {int} user_ID The user whome you want to block.
+* @apiParam {int} user_Id The user whome you want to block.
 *
 *
 * @apiSuccess {string} status The status of the request should be 'accepted'
