@@ -345,6 +345,59 @@ function ensureGameIsJoinableByPlayer(gameId, userId, callback){
     });
 }
 
+function sendFriendInvite(sender, receiver, callback) {
+		var queryString = "INSERT INTO friends(user_1, user_2, status) VALUES($1, $2, 'requested');";
+		var queryParams = [sender, receiver];
+    console.log(sender)
+		console.log(receiver)
+		const pool = new pg.Pool({connectionString: conString});
+
+		pool.connect((err, client, done) => {
+			client.query(queryString, queryParams, (err, res) => {
+  				callback(!err);
+  				done();
+				pool.end();
+			});
+		});
+}
+
+function sendFriendInvite(sender, receiver, callback) {
+		var queryString = "INSERT INTO friends(user_1, user_2, status) VALUES($1, $2, 'requested');";
+		var queryParams = [sender, receiver];
+    console.log(sender)
+		console.log(receiver)
+		const pool = new pg.Pool({connectionString: conString});
+
+		pool.connect((err, client, done) => {
+			client.query(queryString, queryParams, (err, res) => {
+  				callback(!err);
+  				done();
+				pool.end();
+			});
+		});
+}
+function declineFriend(sender, receiver, callback) {
+		var queryString = "DELETE FROM friends WHERE user_1 = $1 OR user_1 = $2 AND user_2 = $1 OR user_1 = $2";
+		var queryParams = [sender, receiver];
+    console.log(sender)
+		console.log(receiver)
+		const pool = new pg.Pool({connectionString: conString});
+
+		pool.connect((err, client, done) => {
+				client.query(queryString, queryParams, (err, res) => {
+						callback(!err && (res && res.rowCount != 0));
+						done();
+						pool.end();
+				});
+		});
+}
+
+function blockingFriend (sender, receiver, callback) {
+	var queryString = "UPDATE friends WHERE user"
+}
+
+
+
 module.exports = {
 	checkEmailUniqueness,
 	checkUsernameUniqueness,
@@ -366,7 +419,8 @@ module.exports = {
   verifyGameId,
 	addGamer,
 	ensureGameIsJoinableByPlayer,
-  leaveGame
+  leaveGame,
+	sendFriendInvite
 }
 
 //////////////// Helpers ////////////////

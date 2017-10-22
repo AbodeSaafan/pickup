@@ -10,6 +10,7 @@ var createGameEndpoint = baseApi + '/games';
 var joinGameEndpoint = baseApi + '/games/%s/join?jwt=%s';
 var leaveGameEndpoint = baseApi + '/games/%s/leave?jwt=%s';
 var adminProfileEndpoint = baseApi + '/profile';
+var sendfriendsEndpoint = baseApi + '/friends';
 
 function randomEmail(){
 	return crypto.randomBytes(4).toString('hex') + "@mail.com";
@@ -72,6 +73,13 @@ function createGenericExtendedProfile (jwt) {
 	}
 }
 
+function createGenericFriendRequest (jwt, userID) {
+	return {
+		jwt: jwt,
+		userID: userID
+	}
+}
+
 module.exports = {
 	refreshEndpoint,
 	registerEndpoint,
@@ -84,5 +92,7 @@ module.exports = {
 	joinGameEndpoint,
 	leaveGameEndpoint,
 	adminProfileEndpoint,
-	createGenericExtendedProfile
+	createGenericExtendedProfile,
+	sendfriendsEndpoint,
+	createGenericFriendRequest
 }
