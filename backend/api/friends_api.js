@@ -108,16 +108,33 @@ router.put('/block', function (req, res) {
 	/*TODO verify user_2's ID*/
   var friend = req.query.userID
 
-
-	//blocking a user after they send a friend request
-	//block a friend
-	databaseHelper.blockFriendUpdateEntry(tok.user_id, friend, (blockFriendSuccess) => {
-		if (blockFriendSuccess) {
-			res.status(200).json({'status': 'blocked'});
-		} else {
-			console.log('reached here1');
-			res.status(400).json({'error': strings.BlockFriendFailed});
-		}
+	databaseHelper.checkFriendEntryValidationForBlock(tok.user_id, friend, (EntryExists) => {
+		if (EntryExists) {
+			//blocking a user after they send a friend request
+			//block a friend
+			databaseHelper.blockFriendUpdateEntry(tok.user_id, friend, (blockFriendSuccess) => {
+				if (blockFriendSuccess) {
+					res.status(200).json({'status': 'blocked'});
+					return;
+				} else {
+					console.log('reached here1');
+					res.status(400).json({'error': strings.BlockFriendFailed});
+					return;
+				}
+			})
+	} else if (EntryExists = 'insert') {
+			databaseHelper.blockFriendNewEntry(tok.user_id, friend, (insertSuccess) => {
+				if (insertSuccess) {
+					res.status(200).json({'status': 'blocked'});
+					return;
+				} else {
+					res.status(400).json({'error': strings.BlockFriendFailed});
+					return;
+				}
+			})
+	} else {
+		res.status(400).json({'error': strings.BlockFriendFailed});
+	}
 	})
 })
 
