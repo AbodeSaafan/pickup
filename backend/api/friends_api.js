@@ -88,7 +88,7 @@ router.post('/', function(req, res){
 * @apiSampleRequest /api/friends
 */
 
-router.put('/', function (req, res) {
+router.put('/block', function (req, res) {
 	try {
 	  var tok = tokenHelper.verifyToken(req.body.jwt);
 	}
@@ -131,6 +131,36 @@ router.put('/', function (req, res) {
 * @apiSampleRequest /api/friends
 */
 
+router.delete ('/delete', function (req, res) {
+	try {
+	  var tok = tokenHelper.verifyToken(req.query.jwt);
+	}
+	catch(err) {
+		console.log('reached here0');
+	  res.status(400).json(requestHelper.jsonError(err)); return;
+	}
+
+	/*TODO verify user_2's ID*/
+
+  var friend = req.query.userID
+	databaseHelper.checkFriendEntryValidationForDelete(friend, tok.user_id, (friendRequestSuccess) => {
+		if (friendRequestSuccess) {
+			databaseHelper.declineFriend(tok.user_id, friend, (acceptFriendSuccess) => {
+				if (acceptFriendSuccess) {
+					res.status(200).json({'status': 'declined'});
+				} else {
+					console.log('reached here1');
+					res.status(400).json({'error': strings.DeleteFriendFailed});
+				}
+			})
+		} else {
+			console.log('reached here2');
+			res.status(400).json({'error': strings.InvalidFriendRequest});
+		}
+	})
+
+
+})
 
 
 /**
@@ -162,5 +192,38 @@ router.put('/', function (req, res) {
 *
 * @apiSampleRequest /api/friends
 */
+
+router.put('/accept', function (req, res) {
+	try {
+	  var tok = tokenHelper.verifyToken(req.query.jwt);
+	}
+	catch(err) {
+		console.log('reached here0');
+	  res.status(400).json(requestHelper.jsonError(err)); return;
+	}
+	
+
+	/*TODO verify user_2's ID*/
+
+  var friend = req.query.userID
+
+	//check if (friend request entry exists in DB)
+	databaseHelper.checkFriendRequestValidation(friend, tok.user_id, (friendRequestSuccess) => {
+		if (friendRequestSuccess) {
+			databaseHelper.acceptFriendInvite(tok.user_id, friend, (acceptFriendSuccess) => {
+				if (acceptFriendSuccess) {
+					res.status(200).json({'status': 'accepted'});
+				} else {
+					console.log('reached here1');
+					console.log(acceptFriendSuccess)
+					res.status(400).json({'error': strings.AcceptFriendFailed});
+				}
+			})
+		} else {
+			console.log('reached here2');
+			res.status(400).json({'error': strings.InvalidFriendRequest});
+		}
+	})
+})
 
 module.exports = router;

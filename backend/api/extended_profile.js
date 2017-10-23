@@ -27,10 +27,10 @@ var strings = require('./universal_strings');
 *      HTTP/1.1 200 OK
 *		{
 *		"user_id": 164
-* 		"skilllevel": 7 
+* 		"skilllevel": 7
 * 		"age": 24
-*		"gender": M 
-*		"location": {lat: 124.32 lng: -96.23} 
+*		"gender": M
+*		"location": {lat: 124.32 lng: -96.23}
 *		"average_review": 3.76
 *		"top_tag": 4
 *		}
@@ -103,7 +103,7 @@ router.put('/', function (req, res) {
 					if (update) {
 						res.status(200).json(); return;
 					} else {
-						res.status(400).json({'error': strings.userIdFail}); return;
+						res.status(400).json({'error': strings.UpdateFailed}); return;
 					}
 				})
 			} else {

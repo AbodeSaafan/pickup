@@ -361,23 +361,64 @@ function sendFriendInvite(sender, receiver, callback) {
 		});
 }
 
-function sendFriendInvite(sender, receiver, callback) {
-		var queryString = "INSERT INTO friends(user_1, user_2, status) VALUES($1, $2, 'requested');";
-		var queryParams = [sender, receiver];
-    console.log(sender)
-		console.log(receiver)
+function checkFriendRequestValidation(sender, invited_friend, callback) {
+	var queryString = "SELECT * FROM friends WHERE user_1 = $1 AND user_2 = $2 AND status = 'requested'";
+	var queryParams = [sender, invited_friend];
+
+
+	const pool = new pg.Pool({connectionString: conString});
+
+	pool.connect((err, client, done) => {
+		client.query(queryString, queryParams, (err, res) => {
+				if(!err && res.rows[0]){
+					callback(res.rows[0]);
+				} else {
+				callback(false);
+				}
+				done();
+				pool.end();
+		});
+	});
+}
+
+function acceptFriendInvite(invited_friend, sender, callback) {
+		var queryString = "UPDATE friends SET user_1 = $2, user_2 = $1, status = 'accepted' WHERE user_1 = $1 AND user_2 = $2";
+		var queryParams = [sender, invited_friend];
+    console.log(invited_friend)
+		console.log(sender)
 		const pool = new pg.Pool({connectionString: conString});
 
 		pool.connect((err, client, done) => {
 			client.query(queryString, queryParams, (err, res) => {
-  				callback(!err);
-  				done();
+				callback(!err);
+				done();
 				pool.end();
 			});
 		});
 }
+
+function checkFriendEntryValidationForDelete(sender, invited_friend, callback) {
+	var queryString = "SELECT * FROM friends WHERE (user_1 = $1 OR user_1 = $2) AND (user_2 = $1 OR user_2 = $2) AND (status = 'requested' OR status = 'accepted');";
+	var queryParams = [sender, invited_friend];
+
+
+	const pool = new pg.Pool({connectionString: conString});
+
+	pool.connect((err, client, done) => {
+		client.query(queryString, queryParams, (err, res) => {
+				if(!err && res.rows[0]){
+					callback(res.rows[0]);
+				} else {
+				callback(false);
+				}
+				done();
+				pool.end();
+		});
+	});
+}
+
 function declineFriend(sender, receiver, callback) {
-		var queryString = "DELETE FROM friends WHERE user_1 = $1 OR user_1 = $2 AND user_2 = $1 OR user_1 = $2";
+		var queryString = "DELETE FROM friends WHERE (user_1 = $1 OR user_1 = $2) AND (user_2 = $1 OR user_2 = $2)";
 		var queryParams = [sender, receiver];
     console.log(sender)
 		console.log(receiver)
@@ -420,7 +461,11 @@ module.exports = {
 	addGamer,
 	ensureGameIsJoinableByPlayer,
   leaveGame,
-	sendFriendInvite
+	sendFriendInvite,
+	checkFriendRequestValidation,
+	acceptFriendInvite,
+	checkFriendEntryValidationForDelete,
+	declineFriend
 }
 
 //////////////// Helpers ////////////////
