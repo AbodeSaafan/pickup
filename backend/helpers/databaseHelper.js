@@ -147,14 +147,18 @@ function populateExtendedProfile(user, callback) {
 }
 
 function getExtendedProfile(userID, callback) {
-		var queryString = "SELECT * FROM extended_profile WHERE user_id = $1";
+		var queryString = "(SELECT * FROM "
+			+ "(SELECT tag top_tag, count(tag) top_tag_count from tags where review_id in " + 
+			"(SELECT review_id from reviews where user_id = $1) group by top_tag ORDER BY top_tag_count DESC LIMIT 1)" + 
+			" AS top_tag_row CROSS JOIN (SELECT * FROM extended_profile WHERE user_id = $1) ext_profile_row);"
+
 		var queryParams = [userID];
 		const pool = new pg.Pool({connectionString: conString});
 
 		pool.connect((err, client, done) => {
 			client.query(queryString, queryParams, (err, res) => {
-  				if(!err && res.rows[0]){
-	  				callback(res.rows[0]);
+  				if(!err && res.fields){
+	  				callback(res.fields);
   				} else {
 					callback(false);
   				}
