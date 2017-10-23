@@ -38,7 +38,7 @@ var invalidUserId = "The user ID you entered is invalid. User ID's are natural n
 var invalidRating = "The rating you entered is invalid. Ratings are natural numbers";
 var invalidReviewTag = "The review tag you entered is invalid. Review tags are natural numbers";
 var invalidLeaveGame = "Failed to leave game specified. Please make sure you are a player in the game";
-var gameNotAdded = "Failed to add the game";
+var gamerNotAdded = "Failed to add user to the game";
 var cannotJoinGame = "Lack necessary requirements for the user to join the game";
 var invalidLFriendInvite = "Failed to send a friend invite.";
 var AcceptFriendFailed = 'Failed to accept the friend request'
@@ -87,7 +87,7 @@ module.exports = {
 	invalidReviewTag,
 	usersFail,
 	invalidLeaveGame,
-	gameNotAdded,
+	gamerNotAdded,
     cannotJoinGame,
 	invalidLFriendInvite,
 	AcceptFriendFailed,

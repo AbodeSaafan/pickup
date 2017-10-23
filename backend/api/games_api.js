@@ -189,7 +189,7 @@ router.put('/:game_id/join', function(req, res){
 					if (playerAdded) {
 						res.status(200).json({'token': token, 'game_id': gameId}); return;
 					} else {
-						res.status(400).json({'error': strings.gameNotAdded}); return;
+						res.status(400).json({'error': strings.gamerNotAdded}); return;
 					}
 				})
 			} else {
