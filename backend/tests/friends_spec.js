@@ -26,6 +26,37 @@ frisby.create('Sending a Friend Request: Creating a user to send a friend reques
 .toss();
 
 
+//Invalid Test Case - Check that if User1 sends friend invite to user2
+//User2 can't send friend invite to user1
+
+frisby.create('Invalid Test Case: Sending Bi-directional Friend Requests: Creating a user to send a friend request')
+.post(testHelper.registerEndpoint, testHelper.createGenericUser())
+.expectStatus(200)
+.expectBodyContains('token')
+.afterJSON(function (user) {
+  frisby.create('Creating a new user to send the request to')
+  .post(testHelper.registerEndpoint, testHelper.createGenericUser())
+  .expectStatus(200)
+  .expectBodyContains('user_id')
+  .afterJSON(function (friend) {
+    frisby.create("User1 sends a friend request to User2")
+    .post(testHelper.sendfriendsEndpoint, testHelper.createGenericFriendRequest(user.token, friend.user_id))
+    .expectStatus(200)
+    .afterJSON(function(error) {
+      frisby.create("User2 sends a friend request to User1")
+      .post(testHelper.sendfriendsEndpoint, testHelper.createGenericFriendRequest(friend.token, user.user_id))
+      .expectStatus(400)
+      .expectJSON({
+        error: strings.FriendRequestExists
+      })
+      .toss()
+    })
+    .toss();
+  })
+  .toss();
+})
+.toss();
+
 
 //Accept a friend request with Valid credentials
 

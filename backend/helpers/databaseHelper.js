@@ -148,8 +148,8 @@ function populateExtendedProfile(user, callback) {
 
 function getExtendedProfile(userID, callback) {
 		var queryString = "(SELECT * FROM "
-			+ "(SELECT tag top_tag, count(tag) top_tag_count from tags where review_id in " + 
-			"(SELECT review_id from reviews where user_id = $1) group by top_tag ORDER BY top_tag_count DESC LIMIT 1)" + 
+			+ "(SELECT tag top_tag, count(tag) top_tag_count from tags where review_id in " +
+			"(SELECT review_id from reviews where user_id = $1) group by top_tag ORDER BY top_tag_count DESC LIMIT 1)" +
 			" AS top_tag_row CROSS JOIN (SELECT * FROM extended_profile WHERE user_id = $1) ext_profile_row);"
 
 		var queryParams = [userID];
@@ -484,8 +484,24 @@ function blockFriend (person_blocking, blocked_user, callback) {
 			pool.end();
 		});
 	});
+}
 
+function checkIfFriendRequestExists (sender, invited_person, callback) {
+	var queryString = "Select * From friends WHERE user_1 = $1 AND user_2 = $2 AND status = 'requested'";
+	var queryParams = [sender, invited_person]
 
+	const pool = new pg.Pool({connectionString: conString});
+	pool.connect((err, client, done) => {
+		client.query(queryString, queryParams, (err, res) => {
+				if (!err && res.rows[0]) {
+					callback (res.rows[0])
+				} else {
+					callback (false)
+				}
+				done();
+				pool.end();
+		});
+	});
 }
 
 module.exports = {
@@ -515,7 +531,8 @@ module.exports = {
 	acceptFriendInvite,
 	checkFriendEntryValidationForDelete,
 	declineFriend,
-	blockFriend
+	blockFriend,
+	checkIfFriendRequestExists
 }
 
 //////////////// Helpers ////////////////

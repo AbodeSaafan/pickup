@@ -46,17 +46,26 @@ router.post('/', function(req, res){
 	}
 
 /*TODO verify user_2's ID*/
-
 	var friend = req.body.userID
-	databaseHelper.sendFriendInvite(tok.user_id, friend, (inviteSuccess) => {
-		if (inviteSuccess) {
-			res.status(200).json({'status': 'invite'});
+
+	databaseHelper.checkIfFriendRequestExists(friend, tok.user_id, (EntryExists) => {
+		if (EntryExists) {
+			res.status(400).json({'error': strings.FriendRequestExists});
 		} else {
-			res.status(400).json({'error': strings.invalidLFriendInvite});
+			//successfully send the friend invite
+			databaseHelper.sendFriendInvite(tok.user_id, friend, (inviteSuccess) => {
+					if (inviteSuccess) {
+						res.status(200).json({'status': 'invited'});
+						return;
+					} else {
+						res.status(400).json({'error': strings.invalidLFriendInvite});
+						return;
+					}
+			})
 		}
 	})
-});
 
+});
 
 /**
 * @api {put} /friends Block a user
