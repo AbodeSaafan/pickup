@@ -5,7 +5,7 @@ var testHelper = require('./testHelper');
 const util = require('util');
 
 //Send a friend request to valid User
-/*
+
 frisby.create('Sending a Friend Request: Creating a user to send a friend request')
 .post(testHelper.registerEndpoint, testHelper.createGenericUser())
 .expectStatus(200)
@@ -54,7 +54,7 @@ frisby.create('Accept a Friend Request: Creating a user to send a friend request
 })
 .toss();
 
-/*
+
 //Accept a friend request when there is no friend request/no entry in DB
 frisby.create('Invalid Accept Request: Creating a user to send a friend request')
 .post(testHelper.registerEndpoint, testHelper.createGenericUser())
@@ -109,8 +109,7 @@ frisby.create('Invalid Accept Request: Creating a user to send a friend request'
 })
 .toss()
 
-*/
-/*
+
 //Decline a friend request (When recieving user declines the request)
 frisby.create('Decline a Friend Request: Creating a user to send a friend request')
 .post(testHelper.registerEndpoint, testHelper.createGenericUser())
@@ -169,7 +168,7 @@ frisby.create('Remove a Friend: Creating a user to send a friend request')
   .toss()
 })
 .toss()
-*/
+
 
 //User2 blocks User1 upon recieving request from User1 (Success)
 frisby.create('Block a Friend after Friend Request: Creating a user to send a friend request')

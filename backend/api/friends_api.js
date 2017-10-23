@@ -90,16 +90,16 @@ router.post('/', function(req, res){
 
 router.put('/block', function (req, res) {
 	try {
-	  var tok = tokenHelper.verifyToken(req.body.jwt);
+	  var tok = tokenHelper.verifyToken(req.query.jwt);
 	}
 	catch(err) {
 	  res.status(400).json(requestHelper.jsonError(err)); return;
 	}
 
 	/*TODO verify user_2's ID*/
-  var friend = req.body.userID
+  var friend = req.query.userID
 
-	databaseHelper.blockFriendFriend(tok.user_id, friend, (blockFriendSuccess) => {
+	databaseHelper.blockFriend(tok.user_id, friend, (blockFriendSuccess) => {
 		if (blockFriendSuccess) {
 			res.status(200).json({'status': 'blocked'});
 		} else {
@@ -107,7 +107,6 @@ router.put('/block', function (req, res) {
 			res.status(400).json({'error': strings.BlockFriendFailed});
 		}
 	})
-
 })
 
 /**

@@ -466,7 +466,7 @@ function declineFriend(sender, receiver, callback) {
 }
 
 function blockFriend (person_blocking, blocked_user, callback) {
-	var queryString = "UPDATE friends SET user_1 = $2, user_2 = $1, status = 'blocked' WHERE (user_1 = $1 or user_1 = $2) AND (user_2 = $1 OR user_2 = $2)"
+	var queryString = "UPDATE friends SET user_1 = $1, user_2 = $2, status = 'blocked' WHERE (user_1 = $1 or user_1 = $2) AND (user_2 = $1 OR user_2 = $2)"
 	var queryParams = [person_blocking, blocked_user];
 	console.log(person_blocking)
 	console.log(blocked_user)
