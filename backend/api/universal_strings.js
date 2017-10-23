@@ -7,7 +7,7 @@ var invalidPassword = "Invalid password. Passwords are Alphanumerical and must b
 var wrongEmailPassword = "Username or password is not valid";
 var invalidName = "Invalid name. Names must be Alphabetical.";
 var invalidGender = "Invalid gender parameter. Gender can be specified as M/m, F/f, O/o.";
-var invalidDob = "Invalid date of birth. Dates must be entered in as DD/MM/YYYY";
+var invalidDob = "Invalid date of birth. Dates must be entered in as MM/DD/YYYY";
 var invalidEmail = "Invalid email. Email must be in valid format.";
 var emailNotRegistered = "Invalid email. Email not registered.";
 var noRefreshToken = "No refresh token has been found for you, please attempt to login to acquire a new token";
@@ -38,6 +38,8 @@ var invalidUserId = "The user ID you entered is invalid. User ID's are natural n
 var invalidRating = "The rating you entered is invalid. Ratings are natural numbers";
 var invalidReviewTag = "The review tag you entered is invalid. Review tags are natural numbers";
 var invalidLeaveGame = "Failed to leave game specified. Please make sure you are a player in the game";
+var gamerNotAdded = "Failed to add user to the game";
+var cannotJoinGame = "Lack necessary requirements for the user to join the game";
 var invalidLFriendInvite = "Failed to send a friend invite.";
 var AcceptFriendFailed = 'Failed to accept the friend request'
 var InvalidFriendRequest = "The friend request does not exist"
@@ -86,6 +88,8 @@ module.exports = {
 	invalidReviewTag,
 	usersFail,
 	invalidLeaveGame,
+	gamerNotAdded,
+    cannotJoinGame,
 	invalidLFriendInvite,
 	AcceptFriendFailed,
 	InvalidFriendRequest,

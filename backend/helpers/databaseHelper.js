@@ -133,7 +133,7 @@ function deleteRefreshToken(userId, refreshToken, callback){
 
 function populateExtendedProfile(user, callback) {
         var queryString = "INSERT INTO extended_profile(user_id, age, gender) VALUES($1, $2, $3);";
-        var age = calculateAge(new Date(user.dob.substring(6)));
+        var age = calculateAge(user.dob);
         var queryParams = [user.userId, age, user.gender];
 
         const pool = new pg.Pool({connectionString: conString});
@@ -209,7 +209,7 @@ function addGamer(userIdIn, gameIdIn, callback){
 
     pool.connect((err, client, done) => {
         client.query(queryString, queryParams, (err, res) => {
-            callback(res.rows.length > 0);
+            callback(err === null && res.rows.length > 0);
             done();
             pool.end();
         });
@@ -324,25 +324,57 @@ function ensureGameIsValidToBeCreated (game, userId, callback){
 }
 
 function ensureGameIsJoinableByPlayer(gameId, userId, callback){
-    var queryString = "SELECT total_players_required, total_players_added, enforced_params FROM games WHERE game_id = $1";
+    var queryString = "SELECT total_players_required, total_players_added, enforced_params, gender, age_range FROM games WHERE game_id = $1";
     var queryParams = [gameId];
 
     const pool = new pg.Pool({connectionString: conString});
     pool.connect((err, client, done) => {
         client.query(queryString, queryParams, (err, res) => {
-            // Check space in the game
-            if (res.rows[0].total_players_required - res.rows[0].total_players_added > 0){
-                // TODO: Go through enforced params and verify that user meets requirements (if any)
-                callback(true);
+			var resQuery = res.rows[0];
+            if (resQuery.total_players_required - resQuery.total_players_added > 0){ // Check space in the game
+                // Go through enforced params and verify that user meets requirements (if any)
+				if (resQuery.enforced_params !== null){
+                    var queryString = "SELECT gender, dob FROM users WHERE user_id = $1";
+                    var queryParams = [userId];
+
+                    const pool = new pg.Pool({connectionString: conString});
+                    pool.connect((err, client, done) => {
+                        client.query(queryString, queryParams, (err, res) => {
+                            var params = resQuery.enforced_params.replace("{", "").replace("}", "").split(",");
+                            for (i = 0; i < params.length; i++) {
+                                var validParam = params[i] === "gender" ? resQuery.gender === res.rows[0].gender :
+									                                     validAge(resQuery.age_range, res.rows[0].dob);
+                                if (!validParam) {
+                                    callback(false);
+                                    break;
+                                }
+                            }
+
+                            if (validParam) { // only if all requirements are fulfilled
+								callback(true);
+                            }
+                            done();
+                            pool.end();
+                        });
+                    });
+				} else {
+                    callback(false);
+				}
             }
             else {
                 callback(false);
             }
-
             done();
             pool.end();
         });
     });
+}
+
+function validAge(gameAgeRange, userDob){
+	var startAge = gameAgeRange[0];
+    var endAge = gameAgeRange[1];
+    var userAge = calculateAge(userDob);
+    return startAge <= userAge && userAge <= endAge;
 }
 
 function sendFriendInvite(sender, receiver, callback) {
@@ -452,17 +484,15 @@ function blockFriend (person_blocking, blocked_user, callback) {
 
 }
 
-
-
 module.exports = {
 	checkEmailUniqueness,
 	checkUsernameUniqueness,
 	registerUser,
-  updateUser,
+    updateUser,
 	getUserId,
 	getUserRowById,
 	getRefreshToken,
-  createRefreshToken,
+    createRefreshToken,
 	deleteRefreshToken,
 	populateExtendedProfile,
 	getExtendedProfile,
@@ -472,10 +502,10 @@ module.exports = {
 	addReview,
 	createGame,
 	ensureGameIsValidToBeCreated,
-  verifyGameId,
+    verifyGameId,
 	addGamer,
 	ensureGameIsJoinableByPlayer,
-  leaveGame,
+    leaveGame,
 	sendFriendInvite,
 	checkFriendRequestValidation,
 	acceptFriendInvite,
@@ -486,11 +516,11 @@ module.exports = {
 
 //////////////// Helpers ////////////////
 
-// Taken mostly from https://stackoverflow.com/questions/4060004/calculate-age-given-the-birth-date-in-the-format-yyyymmdd
-function calculateAge(birthday) {
-    var ageDifMs = Date.now() - birthday.getTime();
-    var ageDate = new Date(ageDifMs); // miliseconds from epoch
-    return Math.abs(ageDate.getUTCFullYear() - 1970);
+function calculateAge(userDob) {
+    var birth = new Date(userDob);
+    var curr = new Date();
+    var diff = Math.abs(birth.getTime() - curr.getTime());
+    return Math.ceil(diff / (1000 * 3600 * 24 * 365));
 }
 
 function createRefreshToken(userId, callback){
