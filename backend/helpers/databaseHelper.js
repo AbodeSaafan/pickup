@@ -133,7 +133,7 @@ function deleteRefreshToken(userId, refreshToken, callback){
 
 function populateExtendedProfile(user, callback) {
         var queryString = "INSERT INTO extended_profile(user_id, age, gender) VALUES($1, $2, $3);";
-        var age = calculateAge(new Date(user.dob.substring(6)));
+        var age = calculateAge(user.dob);
         var queryParams = [user.userId, age, user.gender];
 
         const pool = new pg.Pool({connectionString: conString});
@@ -373,13 +373,101 @@ function ensureGameIsJoinableByPlayer(gameId, userId, callback){
 function validAge(gameAgeRange, userDob){
 	var startAge = gameAgeRange[0];
     var endAge = gameAgeRange[1];
-    var birth = new Date(userDob);
-    var curr = new Date();
-    var diff = Math.abs(birth.getTime() - curr.getTime());
-    var years = Math.ceil(diff / (1000 * 3600 * 24 * 365));
-    return startAge <= years && years <= endAge;
+    var userAge = calculateAge(userDob);
+    return startAge <= userAge && userAge <= endAge;
 }
 
+function sendFriendInvite(sender, receiver, callback) {
+		var queryString = "INSERT INTO friends(user_1, user_2, status) VALUES($1, $2, 'requested');";
+		var queryParams = [sender, receiver];
+    console.log(sender)
+		console.log(receiver)
+		const pool = new pg.Pool({connectionString: conString});
+
+		pool.connect((err, client, done) => {
+			client.query(queryString, queryParams, (err, res) => {
+  				callback(!err);
+  				done();
+				pool.end();
+			});
+		});
+}
+
+function checkFriendRequestValidation(sender, invited_friend, callback) {
+	var queryString = "SELECT * FROM friends WHERE user_1 = $1 AND user_2 = $2 AND status = 'requested'";
+	var queryParams = [sender, invited_friend];
+
+
+	const pool = new pg.Pool({connectionString: conString});
+
+	pool.connect((err, client, done) => {
+		client.query(queryString, queryParams, (err, res) => {
+				if(!err && res.rows[0]){
+					callback(res.rows[0]);
+				} else {
+				callback(false);
+				}
+				done();
+				pool.end();
+		});
+	});
+}
+
+function acceptFriendInvite(invited_friend, sender, callback) {
+		var queryString = "UPDATE friends SET user_1 = $2, user_2 = $1, status = 'accepted' WHERE user_1 = $1 AND user_2 = $2";
+		var queryParams = [sender, invited_friend];
+    console.log(invited_friend)
+		console.log(sender)
+		const pool = new pg.Pool({connectionString: conString});
+
+		pool.connect((err, client, done) => {
+			client.query(queryString, queryParams, (err, res) => {
+				callback(!err);
+				done();
+				pool.end();
+			});
+		});
+}
+
+function checkFriendEntryValidationForDelete(sender, invited_friend, callback) {
+	var queryString = "SELECT * FROM friends WHERE (user_1 = $1 OR user_1 = $2) AND (user_2 = $1 OR user_2 = $2) AND (status = 'requested' OR status = 'accepted');";
+	var queryParams = [sender, invited_friend];
+
+
+	const pool = new pg.Pool({connectionString: conString});
+
+	pool.connect((err, client, done) => {
+		client.query(queryString, queryParams, (err, res) => {
+				if(!err && res.rows[0]){
+					callback(res.rows[0]);
+				} else {
+				callback(false);
+				}
+				done();
+				pool.end();
+		});
+	});
+}
+
+function declineFriend(sender, receiver, callback) {
+		var queryString = "DELETE FROM friends WHERE (user_1 = $1 OR user_1 = $2) AND (user_2 = $1 OR user_2 = $2)";
+		var queryParams = [sender, receiver];
+    console.log(sender)
+		console.log(receiver)
+		const pool = new pg.Pool({connectionString: conString});
+
+		pool.connect((err, client, done) => {
+				client.query(queryString, queryParams, (err, res) => {
+						callback(!err && (res && res.rowCount != 0));
+						done();
+						pool.end();
+				});
+		});
+}
+
+function blockingFriend (sender, receiver, callback) {
+	var queryString = "UPDATE friends WHERE user"
+}
 
 module.exports = {
 	checkEmailUniqueness,
@@ -402,16 +490,21 @@ module.exports = {
     verifyGameId,
 	addGamer,
 	ensureGameIsJoinableByPlayer,
-    leaveGame
+    leaveGame,
+	sendFriendInvite,
+	checkFriendRequestValidation,
+	acceptFriendInvite,
+	checkFriendEntryValidationForDelete,
+	declineFriend
 }
 
 //////////////// Helpers ////////////////
 
-// Taken mostly from https://stackoverflow.com/questions/4060004/calculate-age-given-the-birth-date-in-the-format-yyyymmdd
-function calculateAge(birthday) {
-    var ageDifMs = Date.now() - birthday.getTime();
-    var ageDate = new Date(ageDifMs); // miliseconds from epoch
-    return Math.abs(ageDate.getUTCFullYear() - 1970);
+function calculateAge(userDob) {
+    var birth = new Date(userDob);
+    var curr = new Date();
+    var diff = Math.abs(birth.getTime() - curr.getTime());
+    return Math.ceil(diff / (1000 * 3600 * 24 * 365));
 }
 
 function createRefreshToken(userId, callback){

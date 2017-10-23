@@ -40,6 +40,11 @@ var invalidReviewTag = "The review tag you entered is invalid. Review tags are n
 var invalidLeaveGame = "Failed to leave game specified. Please make sure you are a player in the game";
 var gameNotAdded = "Failed to add the game";
 var cannotJoinGame = "Lack necessary requirements for the user to join the game";
+var invalidLFriendInvite = "Failed to send a friend invite.";
+var AcceptFriendFailed = 'Failed to accept the friend request'
+var InvalidFriendRequest = "The friend request does not exist"
+var DeleteFriendFailed = "Failed to delete this request or remove this friend"
+var UpdateFailed = "Failed to update your extended profile"
 
 module.exports = {
 	uniqueEmailError,
@@ -83,5 +88,10 @@ module.exports = {
 	usersFail,
 	invalidLeaveGame,
 	gameNotAdded,
-    cannotJoinGame
+    cannotJoinGame,
+	invalidLFriendInvite,
+	AcceptFriendFailed,
+	InvalidFriendRequest,
+	DeleteFriendFailed,
+	UpdateFailed
 }
