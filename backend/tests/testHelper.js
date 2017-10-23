@@ -27,7 +27,7 @@ function randomLocation(){
 }
 
 function randomDob(){
-	return '25/03/' + (Math.random() * (2000 - 1950) + 1950).toFixed(0) * 1
+	return '03/25/' + (Math.random() * (2000 - 1950) + 1950).toFixed(0) * 1
 }
 
 function randomSkillLevel(){
@@ -46,6 +46,19 @@ function createGenericUser(){
 	};
 }
 
+
+function createGenericUserFixedBirth(){
+    return {
+        username:randomUsername(),
+        password:'password123',
+        fname:'abode',
+        lname:'saafan',
+        gender:'m',
+        dob:'03/25/1992',
+        email:randomEmail()
+    };
+}
+
 function createGenericGame(jwt, start, duration){
 	return {
 		name: "abode's game",
@@ -57,7 +70,7 @@ function createGenericGame(jwt, start, duration){
 		location: randomLocation(),
 		location_notes: "Come around the back and knock on the blue door",
 		description: "Casual basketball game",
-		gender: "A",
+		gender: "m",
 		age_range: [20, 30],
 		enforced_params: ["gender", "age"],
 		jwt: jwt
@@ -84,5 +97,6 @@ module.exports = {
 	joinGameEndpoint,
 	leaveGameEndpoint,
 	adminProfileEndpoint,
-	createGenericExtendedProfile
+	createGenericExtendedProfile,
+    createGenericUserFixedBirth
 }

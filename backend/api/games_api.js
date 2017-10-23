@@ -172,11 +172,11 @@ router.post('/', function(req, res){
 */
 router.put('/:game_id/join', function(req, res){
 	try {
-	requestHelper.validateAndCleanJoinRequest(req);
-	var gameId = req.params.game_id;
-	var token = req.query.jwt;
-	var tok = tokenHelper.verifyToken(token);
-	var userId = tok.user_id;
+		requestHelper.validateAndCleanJoinRequest(req);
+		var gameId = req.params.game_id;
+		var token = req.query.jwt;
+		var tok = tokenHelper.verifyToken(token);
+		var userId = tok.user_id;
 	} catch (err){
 		res.status(400).json(requestHelper.jsonError(err)); return;
 	}
@@ -187,17 +187,17 @@ router.put('/:game_id/join', function(req, res){
 			if (joinable) {
 				databaseHelper.addGamer(userId, gameId, (playerAdded) => {
 					if (playerAdded) {
-						res.status(200).json({'token': token, 'game_id': gameId});
+						res.status(200).json({'token': token, 'game_id': gameId}); return;
 					} else {
-						res.status(400).json({'error': "strings.errorname"});
+						res.status(400).json({'error': strings.gameNotAdded}); return;
 					}
 				})
 			} else {
-				res.status(400).json({'error': "strings.errorname"});
+				res.status(400).json({'error': strings.cannotJoinGame}); return;
 			}
 		});
 	} else {
-		res.status(400).json({'error': "strings.errorname"});
+		res.status(400).json({'error': strings.invalidGame}); return;
 	}
   })
 });

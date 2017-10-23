@@ -95,71 +95,78 @@ frisby.create('Register a user using the API with valid credentials to use for c
 })
 .toss();
 
-// Joining a game
+// Joining and leaving game
 frisby.create('Joining a game: Creating a user to create a game')
-.post(testHelper.registerEndpoint, testHelper.createGenericUser())
-.expectStatus(200)
-.expectBodyContains('token')
-.afterJSON(function (body) {
-  frisby.create('Creating a new game')
-  .post(testHelper.createGameEndpoint, testHelper.createGenericGame(body.token, 100, 200))
-  .expectStatus(200)
-  .expectBodyContains('game_id')
-  .afterJSON(function (game) {
-    frisby.create("Creating a new user to join the game")
-    .post(testHelper.registerEndpoint, testHelper.createGenericUser())
+    .post(testHelper.registerEndpoint, testHelper.createGenericUserFixedBirth())
     .expectStatus(200)
     .expectBodyContains('token')
-    .afterJSON(function (newUser) {
-      frisby.create('Join a game using the API with valid credentials')
-      .put(util.format(testHelper.joinGameEndpoint, game.game_id, newUser.token), newUser.token)
-      .expectStatus(200)
-      .expectBodyContains('token')
-      .expectBodyContains('game_id')
-      .toss();
+    .afterJSON(function (body) {
+        frisby.create('Creating a new game')
+            .post(testHelper.createGameEndpoint, testHelper.createGenericGame(body.token, 100, 200))
+            .expectStatus(200)
+            .expectBodyContains('game_id')
+            .afterJSON(function (body) {
+                var gameId = body.game_id;
+                frisby.create("Creating a new user to join the game")
+                .post(testHelper.registerEndpoint, testHelper.createGenericUserFixedBirth())
+                .expectStatus(200)
+                .expectBodyContains('token')
+                .afterJSON(function (body) {
+                    frisby.create('Join a game using the API with valid credentials')
+                        .put(util.format(testHelper.joinGameEndpoint, gameId, body.token), body.token)
+                        .expectStatus(200)
+                        .expectBodyContains('token')
+                        .expectBodyContains('game_id')
+                        .afterJSON(function (body) {
+                            frisby.create('Leaving a game using API - valid case')
+                                .delete(util.format(testHelper.leaveGameEndpoint, body.game_id, body.token), body.token)
+                                .expectStatus(200)
+                                .toss();
+                        })
+                        .toss();
+                })
+                .toss();
+            })
+            .toss();
     })
     .toss();
-  })
-  .toss();
-})
-.toss();
 
 
-// Leaving a game that user is actually in
-frisby.create('Leaving a game valid: Creating a user to create a game')
-.post(testHelper.registerEndpoint, testHelper.createGenericUser())
-.expectStatus(200)
-.expectBodyContains('token')
-.afterJSON(function (body) {
-  frisby.create('Creating a new game')
-  .post(testHelper.createGameEndpoint, testHelper.createGenericGame(body.token, 100, 200))
-  .expectStatus(200)
-  .expectBodyContains('game_id')
-  .afterJSON(function (game) {
-    frisby.create("Creating a new user to join the game")
-    .post(testHelper.registerEndpoint, testHelper.createGenericUser())
-    .expectStatus(200)
-    .expectBodyContains('token')
-    .afterJSON(function (newUser) {
-      frisby.create('Join a game using the API with valid credentials')
-      .put(util.format(testHelper.joinGameEndpoint, game.game_id, newUser.token), newUser.token)
-      .expectStatus(200)
-      .expectBodyContains('token')
-      .expectBodyContains('game_id')
-      .afterJSON(function () {
-        frisby.create('Leaving a game using API - valid case')
-        .delete(util.format(testHelper.leaveGameEndpoint, game.game_id, newUser.token), newUser.token)
-        .expectStatus(200)
-        .toss();
-      })
-      .toss();
-    })
-    .toss();
-  })
-  .toss();
-})
-.toss();
-
+// // Leaving a game that user is actually in
+// frisby.create('Leaving a game valid: Creating a user to create a game')
+// .post(testHelper.registerEndpoint, testHelper.createGenericUser())
+// .expectStatus(200)
+// .expectBodyContains('token')
+// .afterJSON(function (body) {
+//   frisby.create('Creating a new game')
+//   .post(testHelper.createGameEndpoint, testHelper.createGenericGame(body.token, 100, 200))
+//   .expectStatus(200)
+//   .expectBodyContains('game_id')
+//   .afterJSON(function (game) {
+//     frisby.create("Creating a new user to join the game")
+//     .post(testHelper.registerEndpoint, testHelper.createGenericUser())
+//     .expectStatus(200)
+//     .expectBodyContains('token')
+//     .afterJSON(function (newUser) {
+//       frisby.create('Join a game using the API with valid credentials')
+//       .put(util.format(testHelper.joinGameEndpoint, game.game_id, newUser.token), newUser.token)
+//       .expectStatus(200)
+//       .expectBodyContains('token')
+//       .expectBodyContains('game_id')
+//       .afterJSON(function () {
+//         frisby.create('Leaving a game using API - valid case')
+//         .delete(util.format(testHelper.leaveGameEndpoint, game.game_id, newUser.token), newUser.token)
+//         .expectStatus(200)
+//         .toss();
+//       })
+//       .toss();
+//     })
+//     .toss();
+//   })
+//   .toss();
+// })
+// .toss();
+//
 // Leaving a game that user is not actually in
 frisby.create('Leaving a game invalid: Creating a user to create a game')
 .post(testHelper.registerEndpoint, testHelper.createGenericUser())

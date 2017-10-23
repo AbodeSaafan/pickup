@@ -19,7 +19,7 @@ var strings = require('./universal_strings');
 * @apiParam {String} fname The first name of the user
 * @apiParam {String} lname The last name of the user
 * @apiParam {String} gender The gender of the user (F/M/O)
-* @apiParam {String} dob The date of birth of the user (DD/MM/YYYY)
+* @apiParam {String} dob The date of birth of the user (MM/DD/YYYY)
 * @apiParam {String} email The email of the user
 * @apiParam {String} password The password of the user
 *
@@ -35,7 +35,7 @@ var strings = require('./universal_strings');
 *       "fname": "Abode",
 *       "lname": "Saafan",
 *       "gender": "M",
-*       "dob": "25/03/1996",
+*       "dob": "03/25/1996",
 *       "email": "abodesaafan@hotmail.com",
 *       "password": "password123"
 *     }
