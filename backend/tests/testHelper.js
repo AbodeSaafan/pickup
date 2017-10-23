@@ -13,6 +13,7 @@ var adminProfileEndpoint = baseApi + '/profile';
 var sendfriendsEndpoint = baseApi + '/friends';
 var acceptFriendEndpoint = baseApi + '/friends/accept'
 var deleteFriendEndpoint = baseApi + '/friends/delete'
+var blockFriendEndpoint = baseApi + '/friends/block'
 
 function randomEmail(){
 	return crypto.randomBytes(4).toString('hex') + "@mail.com";
@@ -116,5 +117,6 @@ module.exports = {
 	acceptFriendEndpoint,
 	deleteFriendEndpoint,
 	createInvalidSkillLevelForExtendedProfile,
-	createInvalidLocationForExtendedProfile
+	createInvalidLocationForExtendedProfile,
+	blockFriendEndpoint
 }

@@ -43,6 +43,7 @@ var AcceptFriendFailed = 'Failed to accept the friend request'
 var InvalidFriendRequest = "The friend request does not exist"
 var DeleteFriendFailed = "Failed to delete this request or remove this friend"
 var UpdateFailed = "Failed to update your extended profile"
+var BlockFriendFailed = "Failed to block this user"
 
 module.exports = {
 	uniqueEmailError,
@@ -89,5 +90,6 @@ module.exports = {
 	AcceptFriendFailed,
 	InvalidFriendRequest,
 	DeleteFriendFailed,
-	UpdateFailed
+	UpdateFailed,
+	BlockFriendFailed
 }

@@ -99,6 +99,15 @@ router.put('/block', function (req, res) {
 	/*TODO verify user_2's ID*/
   var friend = req.body.userID
 
+	databaseHelper.blockFriendFriend(tok.user_id, friend, (blockFriendSuccess) => {
+		if (blockFriendSuccess) {
+			res.status(200).json({'status': 'blocked'});
+		} else {
+			console.log('reached here1');
+			res.status(400).json({'error': strings.BlockFriendFailed});
+		}
+	})
+
 })
 
 /**
@@ -201,7 +210,7 @@ router.put('/accept', function (req, res) {
 		console.log('reached here0');
 	  res.status(400).json(requestHelper.jsonError(err)); return;
 	}
-	
+
 
 	/*TODO verify user_2's ID*/
 

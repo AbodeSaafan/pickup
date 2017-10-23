@@ -25,7 +25,7 @@ frisby.create('Sending a Friend Request: Creating a user to send a friend reques
 })
 .toss();
 
-*/
+
 
 //Accept a friend request with Valid credentials
 
@@ -112,7 +112,7 @@ frisby.create('Invalid Accept Request: Creating a user to send a friend request'
 */
 /*
 //Decline a friend request (When recieving user declines the request)
-frisby.create('Accept a Friend Request: Creating a user to send a friend request')
+frisby.create('Decline a Friend Request: Creating a user to send a friend request')
 .post(testHelper.registerEndpoint, testHelper.createGenericUser())
 .expectStatus(200)
 .expectBodyContains('token')
@@ -170,3 +170,29 @@ frisby.create('Remove a Friend: Creating a user to send a friend request')
 })
 .toss()
 */
+
+//User2 blocks User1 upon recieving request from User1 (Success)
+frisby.create('Block a Friend after Friend Request: Creating a user to send a friend request')
+.post(testHelper.registerEndpoint, testHelper.createGenericUser())
+.expectStatus(200)
+.expectBodyContains('token')
+.afterJSON(function (user1) {
+  frisby.create('Creating a new user to send the request to')
+  .post(testHelper.registerEndpoint, testHelper.createGenericUser())
+  .expectStatus(200)
+  .expectBodyContains('user_id')
+  .afterJSON(function (user2) {
+    frisby.create("Send a friend request")
+    .post(testHelper.sendfriendsEndpoint, testHelper.createGenericFriendRequest(user1.token, user2.user_id))
+    .expectStatus(200)
+    .afterJSON(function (blockFriend) {
+      frisby.create("User2 blocks user1 after recieving the friend request")
+      .put(testHelper.blockFriendEndpoint+"?jwt="+user2.token+"&userID="+user1.user_id)
+      .expectStatus(200)
+      .toss()
+    })
+    .toss()
+  })
+  .toss()
+})
+.toss()

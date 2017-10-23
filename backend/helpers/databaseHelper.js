@@ -433,8 +433,23 @@ function declineFriend(sender, receiver, callback) {
 		});
 }
 
-function blockingFriend (sender, receiver, callback) {
-	var queryString = "UPDATE friends WHERE user"
+function blockFriend (person_blocking, blocked_user, callback) {
+	var queryString = "UPDATE friends SET user_1 = $2, user_2 = $1, status = 'blocked' WHERE (user_1 = $1 or user_1 = $2) AND (user_2 = $1 OR user_2 = $2)"
+	var queryParams = [person_blocking, blocked_user];
+	console.log(person_blocking)
+	console.log(blocked_user)
+
+	const pool = new pg.Pool({connectionString: conString});
+
+	pool.connect((err, client, done) => {
+		client.query(queryString, queryParams, (err, res) => {
+			callback(!err);
+			done();
+			pool.end();
+		});
+	});
+
+
 }
 
 
@@ -465,7 +480,8 @@ module.exports = {
 	checkFriendRequestValidation,
 	acceptFriendInvite,
 	checkFriendEntryValidationForDelete,
-	declineFriend
+	declineFriend,
+	blockFriend
 }
 
 //////////////// Helpers ////////////////
