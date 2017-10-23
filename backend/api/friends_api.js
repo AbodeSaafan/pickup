@@ -108,7 +108,10 @@ router.put('/block', function (req, res) {
 	/*TODO verify user_2's ID*/
   var friend = req.query.userID
 
-	databaseHelper.blockFriend(tok.user_id, friend, (blockFriendSuccess) => {
+
+	//blocking a user after they send a friend request
+	//block a friend
+	databaseHelper.blockFriendUpdateEntry(tok.user_id, friend, (blockFriendSuccess) => {
 		if (blockFriendSuccess) {
 			res.status(200).json({'status': 'blocked'});
 		} else {

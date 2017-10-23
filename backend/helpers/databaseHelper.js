@@ -469,7 +469,29 @@ function declineFriend(sender, receiver, callback) {
 		});
 }
 
-function blockFriend (person_blocking, blocked_user, callback) {
+function checkFriendEntryValidationForBlock(sender, invited_friend, callback) {
+	var queryString = "SELECT * FROM friends WHERE (user_1 = $1 OR user_1 = $2) AND (user_2 = $1 OR user_2 = $2) AND (status = 'requested' OR status = 'accepted');";
+	var queryParams = [sender, invited_friend];
+
+	const pool = new pg.Pool({connectionString: conString});
+
+	pool.connect((err, client, done) => {
+			client.query(queryString, queryParams, (err, res) => {
+				if (!err && res.rows[0]) {
+					callback(res.rows[0])
+				} else if (res.rowCount == 0){
+					callback('insert')
+				} else {
+					callback (false)
+				}
+				done();
+				pool.end();
+			});
+	});
+
+}
+
+function blockFriendUpdateEntry (person_blocking, blocked_user, callback) {
 	var queryString = "UPDATE friends SET user_1 = $1, user_2 = $2, status = 'blocked' WHERE (user_1 = $1 or user_1 = $2) AND (user_2 = $1 OR user_2 = $2)"
 	var queryParams = [person_blocking, blocked_user];
 	console.log(person_blocking)
@@ -481,6 +503,20 @@ function blockFriend (person_blocking, blocked_user, callback) {
 		client.query(queryString, queryParams, (err, res) => {
 			callback(!err);
 			done();
+			pool.end();
+		});
+	});
+}
+
+function blockFriendNewEntry (person_blocking, blocked_user, callback) {
+	var queryString = "INSERT INTO friends(user_1, user_2, status) VALUES($1, $2, 'blocked');"
+	var queryParams = [person_blocking, blocked_user]
+
+	const pool = new pg.Pool({connectionString: conString});
+	pool.connect((err, client, done) => {
+		client.query(queryString, queryParams, (err, res) => {
+				callback(!err);
+				done();
 			pool.end();
 		});
 	});
@@ -531,8 +567,10 @@ module.exports = {
 	acceptFriendInvite,
 	checkFriendEntryValidationForDelete,
 	declineFriend,
-	blockFriend,
-	checkIfFriendRequestExists
+	checkIfFriendRequestExists,
+	checkFriendEntryValidationForBlock,
+	blockFriendUpdateEntry,
+	blockFriendNewEntry
 }
 
 //////////////// Helpers ////////////////
