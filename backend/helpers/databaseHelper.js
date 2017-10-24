@@ -540,6 +540,20 @@ function checkIfFriendRequestExists (sender, invited_person, callback) {
 	});
 }
 
+function listAllFriends (user, callback) {
+	var queryString = "(SELECT user_1 from friends WHERE user_2 = $1 AND status = 'accepted') UNION ALL (select user_2 from friends WHERE user_1 = $1 AND status = 'accepted')"
+	var queryParams = [user]
+
+	const pool = new pg.Pool({connectionString: conString});
+	pool.connect((err, client, done) => {
+		client.query(queryString, queryParams, (err, res) => {
+				callback (!err)
+				done();
+				pool.end();
+		});
+	});
+}
+
 module.exports = {
 	checkEmailUniqueness,
 	checkUsernameUniqueness,
@@ -570,7 +584,8 @@ module.exports = {
 	checkIfFriendRequestExists,
 	checkFriendEntryValidationForBlock,
 	blockFriendUpdateEntry,
-	blockFriendNewEntry
+	blockFriendNewEntry,
+	listAllFriends
 }
 
 //////////////// Helpers ////////////////
