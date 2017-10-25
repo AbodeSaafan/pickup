@@ -48,6 +48,7 @@ var UpdateFailed = "Failed to update your extended profile"
 var BlockFriendFailed = "Failed to block this user"
 var FriendRequestExists = "The friend request already exists"
 var checkFriendEntryValidationForBlock = "Entry validation for Block Failed"
+var ListFriendRequestFailed = "List all friends have failed"
 
 module.exports = {
 	uniqueEmailError,
@@ -99,5 +100,6 @@ module.exports = {
 	UpdateFailed,
 	BlockFriendFailed,
 	FriendRequestExists,
-	checkFriendEntryValidationForBlock
+	checkFriendEntryValidationForBlock,
+	ListFriendRequestFailed
 }

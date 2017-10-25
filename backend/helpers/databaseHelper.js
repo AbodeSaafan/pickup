@@ -541,15 +541,26 @@ function checkIfFriendRequestExists (sender, invited_person, callback) {
 }
 
 function listAllFriends (user, callback) {
-	var queryString = "(SELECT user_1 from friends WHERE user_2 = $1 AND status = 'accepted') UNION ALL (select user_2 from friends WHERE user_1 = $1 AND status = 'accepted')"
+
+	var queryString = "select user_id, fname, lname from (" +
+										"SELECT user_1 AS user from friends WHERE user_2 = $1 AND status = 'accepted' " +
+										"UNION ALL " +
+										"SELECT user_2 AS user from friends WHERE user_1 = $1 AND status = 'accepted') t1 " +
+										"INNER JOIN users ON users.user_id = t1.user"
+
 	var queryParams = [user]
 
 	const pool = new pg.Pool({connectionString: conString});
 	pool.connect((err, client, done) => {
 		client.query(queryString, queryParams, (err, res) => {
-				callback (!err)
-				done();
-				pool.end();
+			if (!err && res.rowCount >= 0) {
+				callback(res.rows)
+			}
+			else {
+				callback(false)
+			}
+			done();
+			pool.end();
 		});
 	});
 }
