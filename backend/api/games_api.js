@@ -61,41 +61,36 @@ var strings = require('./universal_strings');
 router.post('/', function(req, res){
 	try{
 		var game = requestHelper.validateAndCleanCreateGameRequest(req.body);
-	try {
-	  var tok = tokenHelper.verifyToken(req.body.jwt);
-	}
-	catch(err) {
-	  res.status(400).json(requestHelper.jsonError(err)); return;
-	}
-
-	databaseHelper.ensureGameIsValidToBeCreated(game, tok.user_id, (valid) => {
-	  if(!valid){
-		res.status(400).json({'error': strings.invalidGameScheduleConflict});
-	  } else {
-		databaseHelper.createGame(tok.user_id, game.name, game.type, game.skill_offset,
-		  game.total_players_required, game.start_time,
-		  game.duration, game.location, game.location_notes,
-		  game.description, game.gender, game.age_range, game.enforced_params,
-		  (game_id) => {
-			if(game_id){
-			  databaseHelper.addGamer(tok.user_id, game_id, (joinSuccess) => {
-				if (joinSuccess) {
-				  res.status(200).json({'game_id': game_id});
-				  return;
-				} else {
-				  res.status(505).json({'error': strings.problemWithGameCreation});
-				}
-			  });
+		var tok = tokenHelper.verifyToken(req.body.jwt);
+		
+		databaseHelper.ensureGameIsValidToBeCreated(game, tok.user_id, (valid) => {
+			if(!valid){
+				res.status(400).json({'error': strings.invalidGameScheduleConflict});
 			} else {
-			  res.status(400).json({'error': strings.invalidGameCreation});
+				databaseHelper.createGame(tok.user_id, game.name, game.type, game.skill_offset,
+					game.total_players_required, game.start_time,
+					game.duration, game.location, game.location_notes,
+					game.description, game.gender, game.age_range, game.enforced_params,
+					(game_id) => {
+						if(game_id){
+							databaseHelper.addGamer(tok.user_id, game_id, (joinSuccess) => {
+								if (joinSuccess) {
+									res.status(200).json({'game_id': game_id});
+									return;
+								} else {
+									res.status(505).json({'error': strings.problemWithGameCreation});
+								}
+							});
+						} else {
+							res.status(400).json({'error': strings.invalidGameCreation});
+						}
+					});
 			}
-		  });
-	  }
-	});
-  }
-  catch (err){
-	res.status(400).json(requestHelper.jsonError(err)); return;
-  }
+		});
+	}
+	catch (err){
+		res.status(400).json(requestHelper.jsonError(err)); return;
+	}
 });
 
 /**
