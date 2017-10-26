@@ -112,22 +112,20 @@ frisby.create('Joining a game: Creating a user to create a game')
 .post(testHelper.registerEndpoint, testHelper.createGenericUserFixedBirth())
 .expectStatus(200)
 .expectBodyContains('token')
-.afterJSON(function (body) {
+.afterJSON(function (user) {
 	frisby.create('Creating a new game')
-	.post(testHelper.createGameEndpoint, testHelper.createGenericGame(body.token, 100, 200))
+	.post(testHelper.createGameEndpoint, testHelper.createGenericGame(user.token, 100, 200))
 	.expectStatus(200)
 	.expectBodyContains('game_id')
-	.afterJSON(function (body) {
-		var gameId = body.game_id;
+	.afterJSON(function (game) {
+		var gameId = game.game_id;
 		frisby.create("Creating a new user to join the game")
 		.post(testHelper.registerEndpoint, testHelper.createGenericUserFixedBirth())
 		.expectStatus(200)
-		.expectBodyContains('token')
-		.afterJSON(function (body) {
+		.afterJSON(function (newUser) {
 			frisby.create('Join a game using the API with valid credentials')
-			.put(util.format(testHelper.joinGameEndpoint, gameId, body.token), body.token)
+			.put(util.format(testHelper.joinGameEndpoint, gameId, newUser.token), newUser.token)
 			.expectStatus(200)
-			.expectBodyContains('token')
 			.expectBodyContains('game_id')
 			.toss();
 		})
@@ -147,26 +145,24 @@ frisby.create('Joining a game: Creating a user to create a game')
     .post(testHelper.registerEndpoint, testHelper.createGenericUserFixedBirth())
     .expectStatus(200)
     .expectBodyContains('token')
-    .afterJSON(function (body) {
+    .afterJSON(function (user) {
         frisby.create('Creating a new game')
-            .post(testHelper.createGameEndpoint, testHelper.createGenericGame(body.token, 100, 200))
+            .post(testHelper.createGameEndpoint, testHelper.createGenericGame(user.token, 100, 200))
             .expectStatus(200)
             .expectBodyContains('game_id')
-            .afterJSON(function (body) {
-                var gameId = body.game_id;
+            .afterJSON(function (game) {
+                var gameId = game.game_id;
                 frisby.create("Creating a new user to join the game")
                     .post(testHelper.registerEndpoint, testHelper.createGenericUserFixedBirth())
                     .expectStatus(200)
-                    .expectBodyContains('token')
-                    .afterJSON(function (body) {
+                    .afterJSON(function (newUser) {
                         frisby.create('Join a game using the API with valid credentials')
-                            .put(util.format(testHelper.joinGameEndpoint, gameId, body.token), body.token)
+                            .put(util.format(testHelper.joinGameEndpoint, gameId, newUser.token), newUser.token)
                             .expectStatus(200)
-                            .expectBodyContains('token')
                             .expectBodyContains('game_id')
-                            .afterJSON(function (body) {
+                            .afterJSON(function (joinedGame) {
                                 frisby.create('Leaving a game using API - valid case')
-                                    .delete(util.format(testHelper.leaveGameEndpoint, body.game_id, body.token), body.token)
+                                    .delete(util.format(testHelper.leaveGameEndpoint, joinedGame.game_id, newUser.token), newUser.token)
                                     .expectStatus(200)
                                     .toss();
                             })
@@ -183,20 +179,19 @@ frisby.create('Joining a game: Creating a user to create a game')
     .post(testHelper.registerEndpoint, testHelper.createGenericUserFixedBirth())
     .expectStatus(200)
     .expectBodyContains('token')
-    .afterJSON(function (body) {
+    .afterJSON(function (user) {
         frisby.create('Creating a new game')
-            .post(testHelper.createGameEndpoint, testHelper.createGenericGame(body.token, 100, 200))
+            .post(testHelper.createGameEndpoint, testHelper.createGenericGame(user.token, 100, 200))
             .expectStatus(200)
             .expectBodyContains('game_id')
-            .afterJSON(function (body) {
-                var gameId = body.game_id;
+            .afterJSON(function (game) {
+                var gameId = game.game_id;
                 frisby.create("Creating a new user that will not join the game")
                     .post(testHelper.registerEndpoint, testHelper.createGenericUserFixedBirth())
                     .expectStatus(200)
-                    .expectBodyContains('token')
-                    .afterJSON(function (body) {
+                    .afterJSON(function (newUser) {
                         frisby.create('Leaving a game using API - user tries to leave a game the user has not joined')
-                            .delete(util.format(testHelper.leaveGameEndpoint, body.game_id, body.token), body.token)
+                            .delete(util.format(testHelper.leaveGameEndpoint, game.game_id, newUser.token), newUser.token)
                             .expectStatus(400)
                             .toss();
                     })
@@ -205,30 +200,3 @@ frisby.create('Joining a game: Creating a user to create a game')
             .toss();
     })
     .toss();
-
-//TODO: This test may need to be refactored or deleted if it is a duplicate of the test above
-frisby.create('Leaving a game invalid: Creating a user to create a game')
-.post(testHelper.registerEndpoint, testHelper.createGenericUser())
-.expectStatus(200)
-.expectBodyContains('token')
-.afterJSON(function (body) {
-	frisby.create('Creating a new game')
-	.post(testHelper.createGameEndpoint, testHelper.createGenericGame(body.token, 100, 200))
-	.expectStatus(200)
-	.expectBodyContains('game_id')
-	.afterJSON(function (game) {
-		frisby.create("Creating a new user to leave the game")
-		.post(testHelper.registerEndpoint, testHelper.createGenericUser())
-		.expectStatus(200)
-		.expectBodyContains('token')
-		.afterJSON(function (newUser) {
-			frisby.create('Leaving a game using API - invalid case')
-			.delete(util.format(testHelper.leaveGameEndpoint, game.game_id, newUser.token), newUser.token)
-			.expectStatus(400)
-			.toss();
-		})
-		.toss();
-	})
-	.toss();
-})
-.toss();
