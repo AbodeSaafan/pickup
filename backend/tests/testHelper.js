@@ -1,4 +1,5 @@
 var crypto = require('crypto');
+var rNameg = require('random-name')
 
 var baseApi = 'http://localhost:3000/api';
 
@@ -39,12 +40,22 @@ function randomSkillLevel(){
 	return (Math.random() * (10)).toFixed(0) * 1
 }
 
+
+function randomPassword(){
+	return crypto.randomBytes(4).toString('hex');
+}
+
+function randomName(){
+	var nameIndex = Math.floor(Math.random() * list.length);
+
+}
+
 function createGenericUser(){
 	return {
 		username:randomUsername(),
-		password:'password123',
-		fname:'abode',
-		lname:'saafan',
+		password:randomPassword(),
+        fname:rNameg.first(),
+        lname:rNameg.last(),
 		gender:'m',
 		dob:randomDob(),
 		email:randomEmail()
@@ -55,9 +66,9 @@ function createGenericUser(){
 function createGenericUserFixedBirth(){
     return {
         username:randomUsername(),
-        password:'password123',
-        fname:'abode',
-        lname:'saafan',
+        password:randomPassword(),
+        fname:rNameg.first(),
+        lname:rNameg.last(),
         gender:'m',
         dob:'03/25/1992',
         email:randomEmail()
@@ -66,10 +77,10 @@ function createGenericUserFixedBirth(){
 
 function createGenericGame(jwt, start, duration){
 	return {
-		name: "abode's game",
+		name: rNameg.place() + " game",
 		type: "casual",
-		skill_offset: 5,
-		total_players_required: 6,
+		skill_offset: randomSkillLevel(),
+		total_players_required: randomSkillLevel(),
 		start_time: start,
 		duration: duration,
 		location: randomLocation(),
