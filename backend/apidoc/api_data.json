@@ -244,7 +244,7 @@
             "type": "String",
             "optional": false,
             "field": "dob",
-            "description": "<p>The date of birth of the user (DD/MM/YYYY)</p>"
+            "description": "<p>The date of birth of the user (MM/DD/YYYY)</p>"
           },
           {
             "group": "Parameter",
@@ -312,7 +312,7 @@
     "examples": [
       {
         "title": "Example call:",
-        "content": "{\n  \"username\": \"abode_5\",\n  \"fname\": \"Abode\",\n  \"lname\": \"Saafan\",\n  \"gender\": \"M\",\n  \"dob\": \"25/03/1996\",\n  \"email\": \"abodesaafan@hotmail.com\",\n  \"password\": \"password123\"\n}",
+        "content": "{\n  \"username\": \"abode_5\",\n  \"fname\": \"Abode\",\n  \"lname\": \"Saafan\",\n  \"gender\": \"M\",\n  \"dob\": \"03/25/1996\",\n  \"email\": \"abodesaafan@hotmail.com\",\n  \"password\": \"password123\"\n}",
         "type": "json"
       }
     ],
@@ -324,6 +324,306 @@
     "version": "0.0.0",
     "filename": "api/register_api.js",
     "groupTitle": "Authorization"
+  },
+  {
+    "type": "put",
+    "url": "/friends",
+    "title": "Accept a friend request",
+    "name": "AcceptFriend",
+    "group": "Friends",
+    "description": "<p>API used for accepting friend requests.</p>",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "string",
+            "optional": false,
+            "field": "jwt",
+            "description": "<p>Valid JWT</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "int",
+            "optional": false,
+            "field": "user_Id",
+            "description": "<p>The user whome you want to block.</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "status",
+            "description": "<p>The status of the request should be 'accepted'</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "HTTP/1.1 200 OK\n{\n  \"status\": \"accepted\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "fields": {
+        "Error 4xx": [
+          {
+            "group": "Error 4xx",
+            "optional": false,
+            "field": "error",
+            "description": "<p>The error field has a string with an exact error</p>"
+          }
+        ]
+      }
+    },
+    "examples": [
+      {
+        "title": "Example call:",
+        "content": "{\n  \"jwt\": Encrypted_JWT_Token,\n  \"user_id\": 3,\n}",
+        "type": "json"
+      }
+    ],
+    "sampleRequest": [
+      {
+        "url": "/api/friends"
+      }
+    ],
+    "version": "0.0.0",
+    "filename": "api/friends_api.js",
+    "groupTitle": "Friends"
+  },
+  {
+    "type": "put",
+    "url": "/friends",
+    "title": "Block a user",
+    "name": "BlockFriend",
+    "group": "Friends",
+    "description": "<p>API used for blocking users</p>",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "string",
+            "optional": false,
+            "field": "jwt",
+            "description": "<p>Valid JWT</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "int",
+            "optional": false,
+            "field": "user_ID",
+            "description": "<p>The user whome you want to block.</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "status",
+            "description": "<p>The status of the request should be 'blocked'</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "HTTP/1.1 200 OK\n{\n  \"status\": \"blocked\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "fields": {
+        "Error 4xx": [
+          {
+            "group": "Error 4xx",
+            "optional": false,
+            "field": "error",
+            "description": "<p>The error field has a string with an exact error</p>"
+          }
+        ]
+      }
+    },
+    "examples": [
+      {
+        "title": "Example call:",
+        "content": "{\n  \"jwt\": Encrypted_JWT_Token,\n  \"user_id\": 3,\n}",
+        "type": "json"
+      }
+    ],
+    "sampleRequest": [
+      {
+        "url": "/api/friends"
+      }
+    ],
+    "version": "0.0.0",
+    "filename": "api/friends_api.js",
+    "groupTitle": "Friends"
+  },
+  {
+    "type": "delete",
+    "url": "/friends",
+    "title": "Decline a friend request, cancel a friend request, or delete a friend",
+    "name": "DeclineFriend",
+    "group": "Friends",
+    "description": "<p>API used for declining friend requests, cancelling them, or removing existing friends.</p>",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "string",
+            "optional": false,
+            "field": "jwt",
+            "description": "<p>Valid JWT</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "int",
+            "optional": false,
+            "field": "user_Id",
+            "description": "<p>The user whome you want to remove/decline.</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "status",
+            "description": "<p>The status of the request should be 'declined', 'cancelled', or 'removed'</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "HTTP/1.1 200 OK\n{\n  \"status\": \"removed\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "fields": {
+        "Error 4xx": [
+          {
+            "group": "Error 4xx",
+            "optional": false,
+            "field": "error",
+            "description": "<p>The error field has a string with an exact error</p>"
+          }
+        ]
+      }
+    },
+    "examples": [
+      {
+        "title": "Example call:",
+        "content": "{\n  \"jwt\": Encrypted_JWT_Token,\n  \"user_id\": 3,\n}",
+        "type": "json"
+      }
+    ],
+    "sampleRequest": [
+      {
+        "url": "/api/friends"
+      }
+    ],
+    "version": "0.0.0",
+    "filename": "api/friends_api.js",
+    "groupTitle": "Friends"
+  },
+  {
+    "type": "post",
+    "url": "/friends",
+    "title": "Send a friend request",
+    "name": "SendFriendRequest",
+    "group": "Friends",
+    "description": "<p>API used for sending friend requests.</p>",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "string",
+            "optional": false,
+            "field": "jwt",
+            "description": "<p>Valid JWT</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "int",
+            "optional": false,
+            "field": "user_Id",
+            "description": "<p>The user, your sending friend request to</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "status",
+            "description": "<p>The status of the request should be 'invite' or 'friends'</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "HTTP/1.1 200 OK\n{\n  \"status\": \"invite\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "fields": {
+        "Error 4xx": [
+          {
+            "group": "Error 4xx",
+            "optional": false,
+            "field": "error",
+            "description": "<p>The error field has a string with an exact error</p>"
+          }
+        ]
+      }
+    },
+    "examples": [
+      {
+        "title": "Example call:",
+        "content": "{\n  \"jwt\": Encrypted_JWT_Token,\n  \"user_id\": 3,\n}",
+        "type": "json"
+      }
+    ],
+    "sampleRequest": [
+      {
+        "url": "/api/friends"
+      }
+    ],
+    "version": "0.0.0",
+    "filename": "api/friends_api.js",
+    "groupTitle": "Friends"
   },
   {
     "type": "post",
@@ -550,6 +850,13 @@
             "optional": false,
             "field": "game_id",
             "description": "<p>The id of the game.</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "string",
+            "optional": false,
+            "field": "jwt",
+            "description": "<p>Valid JWT</p>"
           }
         ]
       }
@@ -570,7 +877,7 @@
       "examples": [
         {
           "title": "Success-Response:",
-          "content": "     HTTP/1.1 200 OK\n  {\n   \"token\": \"b43a545f90ec60bf5ed2a4bd45d81a711de7ba658faa6899d8240343b857664fc967a76cd622235313db8e2ec053fe34c26c\"\n}",
+          "content": "     HTTP/1.1 200 OK\n  {\n   \"game_id\": \"1\"\n\t}",
           "type": "json"
         }
       ]
@@ -747,7 +1054,7 @@
       "examples": [
         {
           "title": "Success-Response:",
-          "content": "     HTTP/1.1 200 OK\n\t\t{\n\t\t\"user_id\": 164\n\t\t\"skilllevel\": 7 \n\t\t\"age\": 24\n\t\t\"gender\": M \n\t\t\"location\": {lat: 124.32 lng: -96.23} \n\t\t\"average_review\": 3.76\n\t\t\"top_tag\": 4\n\t\t}",
+          "content": "     HTTP/1.1 200 OK\n\t\t{\n\t\t\"user_id\": 164\n\t\t\"skilllevel\": 7\n\t\t\"age\": 24\n\t\t\"gender\": M\n\t\t\"location\": {lat: 124.32 lng: -96.23}\n\t\t\"average_review\": 3.76\n\t\t\"top_tag\": 4\n\t\t}",
           "type": "json"
         }
       ]
@@ -919,14 +1226,14 @@
             "type": "int",
             "optional": false,
             "field": "game_skill_min",
-            "description": "<p>The minimum skill of the game (creator - offset)</p>"
+            "description": "<p>The minimum skill of the game</p>"
           },
           {
             "group": "Parameter",
             "type": "int",
             "optional": false,
             "field": "game_skill_max",
-            "description": "<p>The maximum skill of the game (creator + offset)</p>"
+            "description": "<p>The maximum skill of the game</p>"
           },
           {
             "group": "Parameter",
@@ -988,7 +1295,7 @@
       "examples": [
         {
           "title": "Success-Response:",
-          "content": "HTTP/1.1 200 OK\n{\n  [\n      {\n      \"search_object\" : \"game\",\n      \"name\": \"abode's game\",\n      \"type\": \"casual\",\n      \"skill\": 5,\n      \"total_players_required\": 6,\n      \"start_time\": 1504272395,\n      \"duration\": 5400,\n      \"location\": {lat: 500.50, lng:500.50},\n      \"location_notes\": \"Come around the back and knock on the blue door\",\n      \"description\": \"Casual basketball game\",\n      \"gender\": \"A\",\n      \"age_range\": \"[20, 30]\",\n      \"enforced_params\": [\"gender\", \"age\"]\n      },\n      {\n      \"search_object\" : \"game\",\n      \"name\": \"abode's game pt II\",\n      \"type\": \"serious\",\n      \"skill\": 5,\n      \"total_players_required\": 10,\n      \"start_time\": 1504276395,\n      \"duration\": 5410,\n      \"location\": {lat: 520.50, lng:509.50},\n      \"location_notes\": \"Come around the back and knock on the red door\",\n      \"description\": \"Casual basketball game pt II\",\n      \"gender\": \"A\",\n      \"age_range\": \"[20, 35]\",\n      \"enforced_params\": [\"age\"]\n      }\n  ]\n}",
+          "content": "HTTP/1.1 200 OK\n{\n  [\n      {\n      \"search_object\" : \"game\",\n      \"name\": \"abode's game\",\n      \"type\": \"casual\",\n      \"skill_min\": 5,\n      \"skill_max\": 7,\n      \"total_players_required\": 6,\n      \"start_time\": 1504272395,\n      \"duration\": 5400,\n      \"location\": {lat: 500.50, lng:500.50},\n      \"location_notes\": \"Come around the back and knock on the blue door\",\n      \"description\": \"Casual basketball game\",\n      \"gender\": \"A\",\n      \"age_range\": \"[20, 30]\",\n      \"enforced_params\": [\"gender\", \"age\"]\n      },\n      {\n      \"search_object\" : \"game\",\n      \"name\": \"abode's game pt II\",\n      \"type\": \"serious\",\n      \"skill_min\": 5,\n      \"skill_max\": 10,\n      \"total_players_required\": 10,\n      \"start_time\": 1504276395,\n      \"duration\": 5410,\n      \"location\": {lat: 520.50, lng:509.50},\n      \"location_notes\": \"Come around the back and knock on the red door\",\n      \"description\": \"Casual basketball game pt II\",\n      \"gender\": \"A\",\n      \"age_range\": \"[20, 35]\",\n      \"enforced_params\": [\"age\"]\n      }\n  ]\n}",
           "type": "json"
         }
       ]
