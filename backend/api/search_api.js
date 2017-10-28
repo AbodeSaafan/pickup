@@ -95,20 +95,28 @@ var strings = require('./universal_strings');
 
 
 router.get('/', function(req, res){
-	// TODO Filter out "invalid" games that the player can not play
 	try{
 		var tok = tokenHelper.verifyToken(req.body.jwt);  
 		var search_request = requestHelper.validateAndCleanSearchRequest(req.body);
+		var final_results = [];
 
 		databaseHelper.searchObjects(search_request, (results) => {
 			if(data.search_object == 'game'){
-			// Loop through games returned and ensure player can join them
-
-				ensureGameIsJoinableByPlayer
-			}	
+				results.forEach(function(game, index){
+					databaseHelper.ensureGameIsJoinableByPlayer(game.game_id, tok.user_id, (playable) => {
+						if(playable){
+							final_results.push(game);
+						}
+						if(results.length == index){
+							res.status(200).json(final_results); return;
+						}
+					})	
+				});
+			}
+			else if(data.search_object == 'user'){
+				res.status(200).json(results); return;
+			}
 		});
-
-		
 
 	}
 	catch (err){

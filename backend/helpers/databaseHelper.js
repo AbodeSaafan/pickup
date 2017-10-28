@@ -3,6 +3,7 @@ var env = process.env.NODE_ENV || 'dev';
 const conString = process.env.DATABASE_URL ? process.env.DATABASE_URL : "postgres://postgres:123@localhost:5432/pickup";
 var crypto = require('crypto');
 var md5 = require('md5');
+const util = require('util');
 
 function checkEmailUniqueness(user, callback){
 		var queryString = "SELECT * FROM users WHERE email = '" + user.email +"';";
