@@ -227,3 +227,60 @@ frisby.create('Block a Friend after Friend Request: Creating a user to send a fr
   .toss()
 })
 .toss()
+
+
+
+//List all friends for a User
+
+frisby.create('List all friends of a user: Creating a user to send a friend request')
+.post(testHelper.registerEndpoint, testHelper.createGenericUser())
+.expectStatus(200)
+.expectBodyContains('token')
+.expectBodyContains('user_id')
+.afterJSON(function (user1) {
+  frisby.create('Creating a new user to send the request to')
+  .post(testHelper.registerEndpoint, testHelper.createGenericUser())
+  .expectStatus(200)
+  .expectBodyContains('token')
+  .expectBodyContains('user_id')
+  .afterJSON(function (user2) {
+    frisby.create('Creating another user')
+    .post(testHelper.registerEndpoint, testHelper.createGenericUser())
+    .expectStatus(200)
+    .expectBodyContains('token')
+    .expectBodyContains('user_id')
+    .afterJSON(function (user3) {
+      frisby.create("user1 sends a friend request to user2")
+      .post(testHelper.sendfriendsEndpoint, testHelper.createGenericFriendRequest(user1.token, user2.user_id))
+      .expectStatus(200)
+      .afterJSON(function (sendAnotherRequest) {
+        frisby.create("user3 sends a friend request to user1")
+        .post(testHelper.sendfriendsEndpoint, testHelper.createGenericFriendRequest(user3.token, user1.user_id))
+        .expectStatus(200)
+        .afterJSON(function (acceptFriend1) {
+          frisby.create("user2 accepts user1's friend request")
+          .put(testHelper.acceptFriendEndpoint+"?jwt="+user2.token+"&userID="+user1.user_id)
+          .expectStatus(200)
+          .afterJSON(function (acceptFriend2) {
+            frisby.create("user1 accepts user3's friend request")
+            .put(testHelper.acceptFriendEndpoint+"?jwt="+user1.token+"&userID="+user3.user_id)
+            .expectStatus(200)
+            .afterJSON(function (listALlFriends) {
+              frisby.create("List all friends for user1")
+              .get(testHelper.listFriendsEndpoint+"?jwt="+user1.token)
+              .expectStatus(200)
+              .toss();
+            })
+            .toss();
+          })
+          .toss();
+        })
+        .toss();
+      })
+      .toss();
+    })
+    .toss();
+  })
+  .toss();
+})
+.toss();

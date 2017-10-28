@@ -152,14 +152,15 @@ router.post('/', function(req, res){
 * @apiDescription API used to join a game.
 *
 * @apiParam {int} game_id The id of the game.
+* @apiParam {string} jwt Valid JWT
 *
 * @apiError error The error field has a string with an exact error
 *
 * @apiSuccessExample Success-Response:
 *      HTTP/1.1 200 OK
 *   {
-*    "token": "b43a545f90ec60bf5ed2a4bd45d81a711de7ba658faa6899d8240343b857664fc967a76cd622235313db8e2ec053fe34c26c"
-* }
+*    "game_id": "1"
+* 	}
 *
 * @apiExample Example call::
 *   {
@@ -172,34 +173,33 @@ router.post('/', function(req, res){
 */
 router.put('/:game_id/join', function(req, res){
 	try {
-		requestHelper.validateAndCleanJoinRequest(req);
-		var gameId = req.params.game_id;
-		var token = req.query.jwt;
-		var tok = tokenHelper.verifyToken(token);
+		var game = requestHelper.validateAndCleanJoinRequest(req.params);
+		var gameId = game.game_id;
+		var tok = tokenHelper.verifyToken(req.query.jwt);
 		var userId = tok.user_id;
+
+		databaseHelper.verifyGameId(gameId, (gameExists) => {
+			if (gameExists) {
+				databaseHelper.ensureGameIsJoinableByPlayer(gameId, userId, (joinable) => {
+					if (joinable) {
+						databaseHelper.addGamer(userId, gameId, (playerAdded) => {
+							if (playerAdded) {
+								res.status(200).json({'game_id': gameId}); return;
+							} else {
+								res.status(400).json({'error': strings.gamerNotAdded}); return;
+							}
+						})
+					} else {
+						res.status(400).json({'error': strings.cannotJoinGame}); return;
+					}
+				});
+			} else {
+				res.status(400).json({'error': strings.invalidGame}); return;
+			}
+		})
 	} catch (err){
 		res.status(400).json(requestHelper.jsonError(err)); return;
 	}
-
-	databaseHelper.verifyGameId(gameId, (gameExists) => {
-	if (gameExists) {
-		databaseHelper.ensureGameIsJoinableByPlayer(gameId, userId, (joinable) => {
-			if (joinable) {
-				databaseHelper.addGamer(userId, gameId, (playerAdded) => {
-					if (playerAdded) {
-						res.status(200).json({'token': token, 'game_id': gameId}); return;
-					} else {
-						res.status(400).json({'error': strings.gamerNotAdded}); return;
-					}
-				})
-			} else {
-				res.status(400).json({'error': strings.cannotJoinGame}); return;
-			}
-		});
-	} else {
-		res.status(400).json({'error': strings.invalidGame}); return;
-	}
-  })
 });
 
 

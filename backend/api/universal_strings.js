@@ -3,7 +3,7 @@ var registerFailError = "Failed to register user into the database";
 var userIdFail = "Failed to retrieve user id";
 var usersFail = "Failed to retrieve users";
 var invalidUsername = "Invalid Username. Usernames are Alphanumerical, lowercase and 4 to 10 characters and can include '_'.";
-var invalidPassword = "Invalid password. Passwords are Alphanumerical and must be between 6 to 80 characters";
+var invalidPassword = "Invalid password. Passwords are Alphanumerical, can include '? ! ~ $ # % *', and must be between 6 to 80 characters";
 var wrongEmailPassword = "Username or password is not valid";
 var invalidName = "Invalid name. Names must be Alphabetical.";
 var invalidGender = "Invalid gender parameter. Gender can be specified as M/m, F/f, O/o.";
@@ -29,7 +29,7 @@ var invalidGameSkillOffset = "The game skill offset you have entered is invalid"
 var invalidGameSkill = "The game skill value you have entered is invalid";
 var invalidGameScheduleConflict = "The game you are trying to create can not be created because the time conflicts with another game you have created";
 var invalidGame = "The game you specified does not exist";
-var problemWithGameCreation = "The game you tried to create had some errors";
+var problemWithGameCreation = "The game you tried to create had some errors. Game created but user could not join in own game";
 var loginError = "Username or password is not valid";
 var invalidSearchObject = "The search object is invalid. You must specify 'game' or 'user' as a search object";
 var invalidGameId = "The game ID you entered is invalid. Game ID's are natural numbers";
@@ -48,6 +48,7 @@ var UpdateFailed = "Failed to update your extended profile"
 var BlockFriendFailed = "Failed to block this user"
 var FriendRequestExists = "The friend request already exists"
 var checkFriendEntryValidationForBlock = "Entry validation for Block Failed"
+var ListFriendRequestFailed = "List all friends have failed"
 
 module.exports = {
 	uniqueEmailError,
@@ -99,5 +100,6 @@ module.exports = {
 	UpdateFailed,
 	BlockFriendFailed,
 	FriendRequestExists,
-	checkFriendEntryValidationForBlock
+	checkFriendEntryValidationForBlock,
+	ListFriendRequestFailed
 }

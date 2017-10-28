@@ -263,4 +263,25 @@ router.put('/accept', function (req, res) {
 	})
 })
 
+router.get('/listFriends', function(req, res) {
+	try {
+	  var tok = tokenHelper.verifyToken(req.query.jwt);
+	}
+	catch(err) {
+	  res.status(400).json(requestHelper.jsonError(err)); return;
+	}
+
+	databaseHelper.listAllFriends(tok.user_id, (listFriendSuccess) => {
+		if (listFriendSuccess) {
+			console.log(listFriendSuccess)
+			res.status(200).json({'status': 'success'});
+			return;
+		}
+		else {
+			res.status(400).json({'error': strings.ListFriendRequestFailed});
+			return;
+		}
+	})
+})
+
 module.exports = router;

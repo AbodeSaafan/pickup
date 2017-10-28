@@ -213,7 +213,7 @@ function addGamer(userIdIn, gameIdIn, callback){
 
     pool.connect((err, client, done) => {
         client.query(queryString, queryParams, (err, res) => {
-            callback(err === null && res.rows.length > 0);
+            callback(err === null && res.rowCount > 0);
             done();
             pool.end();
         });
@@ -565,13 +565,38 @@ function searchObjects(search_request, callback){
 	const pool = new pg.Pool({connectionString: conString});
 	pool.connect((err, client, done) => {
 		client.query(queryString, [], (err, res) => {
-				if (!err && res.rows[0]) {
-					callback (res.rows)
-				} else {
-					callback (false)
-				}
-				done();
-				pool.end();
+			if (!err && res.rows[0]) {
+				callback (res.rows)
+			} else {
+				callback (false)
+			}
+			done();
+			pool.end();
+		});
+	});
+}
+
+function listAllFriends (user, callback) {
+
+	var queryString = "select user_id, fname, lname from (" +
+										"SELECT user_1 AS user from friends WHERE user_2 = $1 AND status = 'accepted' " +
+										"UNION ALL " +
+										"SELECT user_2 AS user from friends WHERE user_1 = $1 AND status = 'accepted') t1 " +
+										"INNER JOIN users ON users.user_id = t1.user"
+
+	var queryParams = [user]
+
+	const pool = new pg.Pool({connectionString: conString});
+	pool.connect((err, client, done) => {
+		client.query(queryString, queryParams, (err, res) => {
+			if (!err && res.rowCount >= 0) {
+				callback(res.rows)
+			}
+			else {
+				callback(false)
+			}
+			done();
+			pool.end();
 		});
 	});
 }
@@ -607,7 +632,8 @@ module.exports = {
 	checkFriendEntryValidationForBlock,
 	blockFriendUpdateEntry,
 	blockFriendNewEntry,
-	getUserSkilllevel
+	getUserSkilllevel,
+	listAllFriends
 }
 
 //////////////// Helpers ////////////////

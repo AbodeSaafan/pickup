@@ -1,5 +1,5 @@
 var usernameRegex = /^[a-z0-9\_]{4,10}$/; // Alphanumerical lowercase 4 to 10 characters
-var passwordRegex = /^[a-z0-9A-Z]{6,80}$/; // Alphanumerical 6 to 80 characters
+var passwordRegex = /^[a-z0-9A-Z\?\!\~\$\#\%\*]{6,80}$/; // Alphanumerical 6 to 80 characters with ? ! ~ $ # % * allowed
 var nameRegex = /^[a-zA-Z\'\-]*$/; // Alphabetical
 var genderRegex = /^[m|f|o]$/i; // m/M for Male, f/F for Female, o/O for Other
 var dateRegex = /^[0-1][0-9]\/[0-3][0-9]\/[0-9]{4}$/; // MM/DD/YYYY
