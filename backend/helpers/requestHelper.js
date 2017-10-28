@@ -70,12 +70,13 @@ function validateAndCleanSearchRequest(data){
 	if(data.search_object == 'game'){
 		// Game param validation
 		searchValidate(data.game_id, regex.idRegex, strings.invalidGameId, data, 'game_id');
+		data.game_id = data.game_id - 0; //quick convert to int
 		searchValidate(data.game_name, regex.gameNameRegex, strings.invalidGameName, data, 'game_name');
 		searchValidate(data.game_type, regex.gameTypeRegex, strings.invalidGameType, data, 'game_type');
 		searchValidateSkillLevel(data.game_skill_min);
 		searchValidateSkillLevel(data.game_skill_max);
-		data.game_skill_min = game_skill_min - 0; // quick convert to int
-		data.game_skill_max = game_skill_max - 0; // quick convert to int
+		data.game_skill_min = data.game_skill_min - 0; // quick convert to int
+		data.game_skill_max = data.game_skill_max - 0; // quick convert to int
 		searchValidate(data.game_total_players, regex.gameTotalPlayersRegex, strings.invalidGameTotalPlayers, data, 'game_total_players');
 		data.game_total_players = data.game_total_players - 0; // quick convert to int
 		searchValidateStartTime(data.game_start_time, data, 'game_start_time');
@@ -112,7 +113,7 @@ module.exports = {
     validateAndCleanSearchRequest,
     validateAndCleanReviewRequest,
     validateAndCleanLeaveRequest,
-		validateAndCleanUpdateExtendedProfileRequest,
+	validateAndCleanUpdateExtendedProfileRequest,
     jsonError,
 }
 
@@ -156,7 +157,6 @@ function validateAgeRange(ageRange){
 
 function validateLocation(location){
 	if (location == null || location.lng == null || location.lat == null){
-		console.log('location failed');
 		throw new Error(strings.invalidGameLocation);
 	}
 }

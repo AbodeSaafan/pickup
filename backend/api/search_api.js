@@ -22,8 +22,8 @@ var strings = require('./universal_strings');
 * @apiParam {string} game_id The id of the game
 * @apiParam {string} game_name The name of the game
 * @apiParam {string} game_type The type of the game
-* @apiParam {int} game_skill_min The minimum skill of the game (creator - offset)
-* @apiParam {int} game_skill_max The maximum skill of the game (creator + offset)
+* @apiParam {int} game_skill_min The minimum skill of the game
+* @apiParam {int} game_skill_max The maximum skill of the game
 * @apiParam {int} game_total_players The total players of the game 
 * @apiParam {int} game_start_time The time the game starts
 * @apiParam {int} game_duration The duration of the game
@@ -59,7 +59,8 @@ var strings = require('./universal_strings');
 *       "search_object" : "game",
 *       "name": "abode's game",
 *       "type": "casual",
-*       "skill": 5,
+*       "skill_min": 5,
+*       "skill_max": 7,
 *       "total_players_required": 6,
 *       "start_time": 1504272395,
 *       "duration": 5400,
@@ -74,7 +75,8 @@ var strings = require('./universal_strings');
 *       "search_object" : "game",
 *       "name": "abode's game pt II",
 *       "type": "serious",
-*       "skill": 5,
+*       "skill_min": 5,
+*       "skill_max": 10,
 *       "total_players_required": 10,
 *       "start_time": 1504276395,
 *       "duration": 5410,
@@ -95,13 +97,18 @@ var strings = require('./universal_strings');
 router.get('/', function(req, res){
 	// TODO Filter out "invalid" games that the player can not play
 	try{
-		try {
-			var tok = tokenHelper.verifyToken(req.body.jwt);  
-		}
-		catch(err) {
-			res.status(400).json(requestHelper.jsonError(err)); return;
-		}
-		var game = requestHelper.validateAndCleanSearchRequest(req.body);
+		var tok = tokenHelper.verifyToken(req.body.jwt);  
+		var search_request = requestHelper.validateAndCleanSearchRequest(req.body);
+
+		databaseHelper.searchObjects(search_request, (results) => {
+			if(data.search_object == 'game'){
+			// Loop through games returned and ensure player can join them
+
+				ensureGameIsJoinableByPlayer
+			}	
+		});
+
+		
 
 	}
 	catch (err){

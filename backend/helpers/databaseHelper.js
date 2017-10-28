@@ -284,11 +284,12 @@ function addReview (userId, gameId, reviewerId, rating, tags, callback){
 		});
 }
 
-function createGame (userId, name, type, skill, totalPlayers, startTime, duration, location, locationNotes, description, gender, ageRange, enforcedParams, callback){
-	var queryString =  "INSERT INTO games(creator_id, name, type, skill, total_players_required, start_time, end_time, location, location_notes, description, gender, age_range, enforced_params)"
-		+ "VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13) RETURNING game_id;"
+function createGame (userId, name, type, min_skill, max_skill, totalPlayers, startTime, duration, location, locationNotes, description, gender, ageRange, enforcedParams, callback){
+
+	var queryString =  "INSERT INTO games(creator_id, name, type, min_skill, max_skill, total_players_required, start_time, end_time, location, location_notes, description, gender, age_range, enforced_params)"
+		+ "VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14) RETURNING game_id;"
 		var dblocation = '(' + location.lat + ',' + location.lng + ')';
-	var queryParams = [userId, name, type, skill, totalPlayers, startTime, startTime+duration, dblocation, locationNotes, description, gender, ageRange, enforcedParams];
+	var queryParams = [userId, name, type, min_skill, max_skill, totalPlayers, startTime, startTime+duration, dblocation, locationNotes, description, gender, ageRange, enforcedParams];
 
 	const pool = new pg.Pool({connectionString: conString});
 
@@ -540,6 +541,41 @@ function checkIfFriendRequestExists (sender, invited_person, callback) {
 	});
 }
 
+function getUserSkilllevel(user_id, callback){
+	var queryString = "SELECT skilllevel FROM extended_profile WHERE user_id = $1";
+	var queryParams = [user_id];
+
+	const pool = new pg.Pool({connectionString: conString});
+	pool.connect((err, client, done) => {
+		client.query(queryString, queryParams, (err, res) => {
+				if (!err && res.rows[0]) {
+					callback (res.rows[0].skilllevel)
+				} else {
+					callback (false)
+				}
+				done();
+				pool.end();
+		});
+	});
+}
+
+function searchObjects(search_request, callback){
+	var queryString = getConstraintQuery(search_request);
+
+	const pool = new pg.Pool({connectionString: conString});
+	pool.connect((err, client, done) => {
+		client.query(queryString, [], (err, res) => {
+				if (!err && res.rows[0]) {
+					callback (res.rows)
+				} else {
+					callback (false)
+				}
+				done();
+				pool.end();
+		});
+	});
+}
+
 module.exports = {
 	checkEmailUniqueness,
 	checkUsernameUniqueness,
@@ -570,7 +606,8 @@ module.exports = {
 	checkIfFriendRequestExists,
 	checkFriendEntryValidationForBlock,
 	blockFriendUpdateEntry,
-	blockFriendNewEntry
+	blockFriendNewEntry,
+	getUserSkilllevel
 }
 
 //////////////// Helpers ////////////////
@@ -597,4 +634,50 @@ function createRefreshToken(userId, callback){
             pool.end();
         });
     });
+}
+
+function getConstraintQuery(search_request){
+	var query = "";
+	if(search_request.search_object == 'game'){
+		// Game param validation
+		query += "SELECT * FROM games WHERE ";
+		var queryConstraint = [];
+		if(search_request.game_id && search_request.game_id > 0){
+			query += "game_id = " + search_request.game_id + "LIMIT " + search_request.results_max + ";";
+			return query;
+		}
+		else if(search_request.game_name && search_request.game_name != ""){
+			queryConstraint.push("name = '" + search_request.game_name + "' ");
+		}
+		if(search_request.game_type && search_request.game_type != ""){
+			queryConstraint.push("type = '" + search_request.game_type + "'");
+		}
+		if(search_request.game_skill_min && search_request.game_skill_min > 0){
+			queryConstraint.push("min_skill >= " + search_request.game_skill_min);
+		}
+		if(search_request.game_skill_max && search_request.game_skill_max < 10){
+			queryConstraint.push("max_skill <= " + search_request.game_skill_max);
+		}
+		if(search_request.game_total_players && search_request.game_total_players > 0){
+			queryConstraint.push("total_players_required >= " + search_request.game_total_players);
+		}
+		if(search_request.game_start_time && search_request.game_start_time > 0){
+			queryConstraint.push("start_time >= " + search_request.game_start_time);
+		}
+		if(search_request.game_duration && search_request.game_duration){
+			queryConstraint.push("end_time >= start_time + " + search_request.game_duration);
+		}
+		if(search_request.game_location && search_request.game_location_range && search_request.game_location_range > 0){
+			var search_point = util.format("(%d, %d)", search_request.game_location.lng, search_request.game_location.lat);
+			queryConstraint.push("(SELECT distance(point" + search_point +", point location)) > " + search_request.game_location_range);
+		}
+
+		query += queryConstraint.join(' ') + "LIMIT " + search_request.results_max + ";";
+		
+	}
+	else if(search_request.search_object == 'user'){
+		// User param validation
+		query += "SELECT user_id, username, fname FROM user WHERE username = " + search_request.username;
+	}
+	return query;
 }

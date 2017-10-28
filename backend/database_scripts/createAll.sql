@@ -8,4 +8,5 @@ BEGIN;
 \i friends_table.sql
 \i invite_table.sql
 \i triggers.sql
+\i search.sql
 COMMIT;
