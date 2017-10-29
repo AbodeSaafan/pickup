@@ -59,7 +59,7 @@ function validateAndCleanReviewRequest(data){
 	validate(data.UserId, regex.idRegex, strings.invalidUserId);
 	validate(data.gameId, regex.idRegex, strings.invalidGameId);
 	validate(data.rating, regex.ratingRegex, strings.invalidRating);
-	validate(data.tags, regex.reviewTagRegex, strings.invalidReviewTag);
+	validateRatings(data.tags);
 	return data;
 }
 
@@ -173,6 +173,16 @@ function validateEnforcedParamsList(enforcedList){
 		for (let param of enforcedList){
 			if (!(regex.gameEnforcedParamRegex.test(param))){
 				throw new Error(strings.invalidEnforcedParamList);
+			}
+		}
+	}
+}
+
+function validateRatings(ratings){
+	if (ratings != null){
+		for (let param of ratings){
+			if (!(regex.ratingRegex.test(param))){
+				throw new Error(strings.invalidRating);
 			}
 		}
 	}
