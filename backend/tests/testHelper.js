@@ -145,5 +145,5 @@ module.exports = {
 	createInvalidSkillLevelForExtendedProfile,
 	createInvalidLocationForExtendedProfile,
 	blockFriendEndpoint,
-	listFriendsEndpoint
+	listFriendsEndpoint,
 }

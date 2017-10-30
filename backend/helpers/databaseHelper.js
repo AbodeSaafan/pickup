@@ -480,7 +480,7 @@ function checkFriendEntryValidationForBlock(sender, invited_friend, callback) {
 	pool.connect((err, client, done) => {
 			client.query(queryString, queryParams, (err, res) => {
 				if (!err && res.rows[0]) {
-					callback(res.rows[0])
+					callback('update')
 				} else if (res.rowCount == 0){
 					callback('insert')
 				} else {
@@ -513,6 +513,9 @@ function blockFriendUpdateEntry (person_blocking, blocked_user, callback) {
 function blockFriendNewEntry (person_blocking, blocked_user, callback) {
 	var queryString = "INSERT INTO friends(user_1, user_2, status) VALUES($1, $2, 'blocked');"
 	var queryParams = [person_blocking, blocked_user]
+
+	console.log(person_blocking)
+	console.log(blocked_user)
 
 	const pool = new pg.Pool({connectionString: conString});
 	pool.connect((err, client, done) => {
@@ -577,15 +580,17 @@ function searchObjects(search_request, callback){
 	});
 }
 
-function listAllFriends (user, callback) {
+function listAllFriends (user, status, callback) {
+	//list all friends
+	//list all blocked users
 
 	var queryString = "select user_id, fname, lname from (" +
-										"SELECT user_1 AS user from friends WHERE user_2 = $1 AND status = 'accepted' " +
-										"UNION ALL " +
-										"SELECT user_2 AS user from friends WHERE user_1 = $1 AND status = 'accepted') t1 " +
-										"INNER JOIN users ON users.user_id = t1.user"
+											"SELECT user_1 AS user from friends WHERE user_2 = $1 AND status = $2 " +
+											"UNION ALL " +
+											"SELECT user_2 AS user from friends WHERE user_1 = $1 AND status = $2) t1 " +
+											"INNER JOIN users ON users.user_id = t1.user"
 
-	var queryParams = [user]
+	var queryParams = [user, status]
 
 	const pool = new pg.Pool({connectionString: conString});
 	pool.connect((err, client, done) => {
@@ -601,6 +606,7 @@ function listAllFriends (user, callback) {
 		});
 	});
 }
+
 
 module.exports = {
 	checkEmailUniqueness,
@@ -634,7 +640,7 @@ module.exports = {
 	blockFriendUpdateEntry,
 	blockFriendNewEntry,
 	getUserSkilllevel,
-	listAllFriends
+	listAllFriends,
 }
 
 //////////////// Helpers ////////////////
@@ -700,7 +706,7 @@ function getConstraintQuery(search_request){
 		}
 
 		query += queryConstraint.join(' ') + "LIMIT " + search_request.results_max + ";";
-		
+
 	}
 	else if(search_request.search_object == 'user'){
 		// User param validation

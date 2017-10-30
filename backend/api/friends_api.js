@@ -109,20 +109,24 @@ router.put('/block', function (req, res) {
   var friend = req.query.userID
 
 	databaseHelper.checkFriendEntryValidationForBlock(tok.user_id, friend, (EntryExists) => {
-		if (EntryExists) {
+		if (EntryExists == 'update') {
 			//blocking a user after they send a friend request
 			//block a friend
 			databaseHelper.blockFriendUpdateEntry(tok.user_id, friend, (blockFriendSuccess) => {
 				if (blockFriendSuccess) {
+					console.log('reached here1')
 					res.status(200).json({'status': 'blocked'});
 					return;
 				} else {
-					console.log('reached here1');
+					console.log('reached here2');
 					res.status(400).json({'error': strings.BlockFriendFailed});
 					return;
 				}
 			})
-	} else if (EntryExists = 'insert') {
+	}
+	//blocking a user after deleting their request
+	else if (EntryExists == 'insert') {
+		console.log('reached here3')
 			databaseHelper.blockFriendNewEntry(tok.user_id, friend, (insertSuccess) => {
 				if (insertSuccess) {
 					res.status(200).json({'status': 'blocked'});
@@ -132,7 +136,9 @@ router.put('/block', function (req, res) {
 					return;
 				}
 			})
-	} else {
+	}
+
+	else {
 		res.status(400).json({'error': strings.BlockFriendFailed});
 	}
 	})
@@ -263,6 +269,42 @@ router.put('/accept', function (req, res) {
 	})
 })
 
+/**
+* @api {get} /friends Lists all friends or blocked people for a user
+* @apiName ListFriends
+* @apiGroup Friends
+*
+* @apiDescription API used for listing friends or blocked users.
+*
+* @apiParam {string} jwt Valid JWT
+* @apiParam {string} status The status will be either 'accepted' or 'blocked'.
+*
+*
+* @apiSuccess {object} JSON The list of users with userId, firstName, lastName
+*
+* @apiError error The error field has a string with an exact error
+*
+* @apiExample Example call:
+*     {
+*       "jwt": Encrypted_JWT_Token,
+*       "status": accepted,
+*     }
+*
+*     {
+*       "jwt": Encrypted_JWT_Token,
+*       "status": blocked,
+*     }
+* @apiSuccessExample Success-Response:
+* HTTP/1.1 200 OK
+*			{
+*				"user_id": 34,
+*				"fname": 'Kattie',
+*				"lname": 'Katya'
+*			}
+*
+* @apiSampleRequest /api/friends
+*/
+
 router.get('/listFriends', function(req, res) {
 	try {
 	  var tok = tokenHelper.verifyToken(req.query.jwt);
@@ -270,10 +312,11 @@ router.get('/listFriends', function(req, res) {
 	catch(err) {
 	  res.status(400).json(requestHelper.jsonError(err)); return;
 	}
+	var status = req.query.status;
 
-	databaseHelper.listAllFriends(tok.user_id, (listFriendSuccess) => {
-		if (listFriendSuccess) {
-			console.log(listFriendSuccess)
+	databaseHelper.listAllFriends(tok.user_id, status, (listUserSuccess) => {
+		if (listUserSuccess) {
+			console.log(listUserSuccess)
 			res.status(200).json({'status': 'success'});
 			return;
 		}
