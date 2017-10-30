@@ -271,18 +271,43 @@ function getUsers (gameId, callback){
 }
 
 function addReview (userId, gameId, reviewerId, rating, tags, callback){
-		var queryString = "INSERT INTO reviews(user_id, game_id, reviewer_id, rating, tags) VALUES($1, $2, $3, $4, $5)";
-		var queryParams = [userId, gameId, reviewerId, rating, tags];
+		var queryString = "INSERT INTO reviews(user_id, game_id, reviewer_id, rating) VALUES($1, $2, $3, $4)";
+		var queryParams = [userId, gameId, reviewerId, rating];
 
 		const pool = new pg.Pool({connectionString: conString});
 
 		pool.connect((err, client, done) => {
 			client.query(queryString, queryParams, (err, res) => {
-  				callback(!err);
+				if(!err && res && res.rows && res.rows[0] && res.rows[0].review_id){
+					callback(res.rows[0].review_id)
+				}
+				else{
+					callback(false)
+				}
   				done();
 				pool.end();
 			});
 		});
+}
+
+function addTag(reviewId, tags, callback){
+	foreach(tag in tags){
+		var queryString = "INSERT INTO tags(review_id, tag) VALUES($1, $2)";
+		var queryPrams - [reviewId, tag];
+
+		const pool = new pg.Pool({connectionString: conString});
+
+			pool.connect((err, client, done) => {
+				client.query(queryString, queryParams, (err, res) => {
+					if(err){
+						callback(false);
+					}
+	  				done();
+					pool.end();
+				});
+			});
+	}
+	callback(true);
 }
 
 function createGame (userId, name, type, min_skill, max_skill, totalPlayers, startTime, duration, location, locationNotes, description, gender, ageRange, enforcedParams, callback){

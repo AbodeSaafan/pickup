@@ -8,19 +8,24 @@ router.post('/setReview', function(req, res){
 	try{
 		var review = requestHelper.validateAndCleanReviewRequest(req.body);
 		try {
-
 			var tok =tokenHelper.verifyToken(req.body.jwt);
 		}
 		catch(err){
-
 			res.status(400).json({'error': strings.invalidJwt});
 			return;
 		}
 
-		databaseHelper.addReview(review.userId, review.gameId, tok.reviewerId, review.rating, review.tags, (success) => {
-			if(success) {
-				res.status(200).json("Review added succesfully.");
-				return;
+		databaseHelper.addReview(review.userId, review.gameId, tok.reviewerId, review.rating, (reviewId) => {
+			if(reviewId) {
+				databaseHelper.addTag(reviewId, review.tags, (success) => {
+					if(success){
+						res.status(200).json("Review added succesfully.");
+						return;
+					}
+					else{
+						res.status(400).json("Adding tags failed");
+					}
+				})
 			}else{
 				res.status(400).json("Adding review failed");
 				return;
