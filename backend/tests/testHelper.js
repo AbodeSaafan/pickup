@@ -17,6 +17,7 @@ var deleteFriendEndpoint = baseApi + '/friends/delete'
 var blockFriendEndpoint = baseApi + '/friends/block'
 var listFriendsEndpoint = baseApi + '/friends/listFriends'
 var listBlockedUsersEndpoint = baseApi + '/friends/listBlockedUsers'
+var ListFriendRequestEndpoint = baseApi + '/friends/listFriendRequest'
 
 function randomEmail(){
 	return crypto.randomBytes(4).toString('hex') + "@mail.com";
@@ -147,5 +148,6 @@ module.exports = {
 	createInvalidLocationForExtendedProfile,
 	blockFriendEndpoint,
 	listFriendsEndpoint,
-	listBlockedUsersEndpoint
+	listBlockedUsersEndpoint,
+	ListFriendRequestEndpoint
 }

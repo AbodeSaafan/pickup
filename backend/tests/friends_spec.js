@@ -5,6 +5,7 @@ var testHelper = require('./testHelper');
 const util = require('util');
 
 
+
 //Send a friend request to valid User
 
 frisby.create('Sending a Friend Request: Creating a user to send a friend request')
@@ -422,3 +423,48 @@ frisby.create('List all blocked users for a user: Creating a user to send a frie
   .toss();
 })
 .toss();
+
+/*
+//List friend Requests
+
+frisby.create('List Friend Requests for a User: Creating a user to send a friend request')
+.post(testHelper.registerEndpoint, testHelper.createGenericUser())
+.expectStatus(200)
+.expectBodyContains('token')
+.expectBodyContains('user_id')
+.afterJSON(function (user1) {
+  frisby.create('Creating a new user to send the request to')
+  .post(testHelper.registerEndpoint, testHelper.createGenericUser())
+  .expectStatus(200)
+  .expectBodyContains('token')
+  .expectBodyContains('user_id')
+  .afterJSON(function (user2) {
+    frisby.create('Creating a new user to send the request to')
+    .post(testHelper.registerEndpoint, testHelper.createGenericUser())
+    .expectStatus(200)
+    .expectBodyContains('token')
+    .expectBodyContains('user_id')
+    .afterJSON(function (user3) {
+      frisby.create("User1 sends a friend request to user2")
+      .post(testHelper.sendfriendsEndpoint, testHelper.createGenericFriendRequest(user1.token, user2.user_id))
+      .expectStatus(200)
+      .afterJSON(function(SendFriendRequest) {
+        frisby.create("User3 sends a friend request to user1")
+        .post(testHelper.sendfriendsEndpoint, testHelper.createGenericFriendRequest(user3.token, user1.user_id))
+        .expectStatus(200)
+        .afterJSON(function(listFriendRequest) {
+          frisby.create("List all friend requests for User1")
+          .get(testHelper.ListFriendRequestEndpoint+"?jwt="+user1.token)
+          .expectStatus(200)
+          .toss()
+        })
+        .toss()
+      })
+      .toss();
+    })
+    .toss()
+  })
+  .toss();
+})
+.toss();
+*/
