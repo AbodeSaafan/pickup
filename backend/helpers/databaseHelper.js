@@ -290,6 +290,7 @@ function addReview (userId, gameId, reviewerId, rating, tags, callback){
 		});
 }
 
+/*
 function addTag(reviewId, tags, callback){
 	foreach(tag in tags){
 		var queryString = "INSERT INTO tags(review_id, tag) VALUES($1, $2)";
@@ -309,6 +310,7 @@ function addTag(reviewId, tags, callback){
 	}
 	callback(true);
 }
+*/
 
 function createGame (userId, name, type, min_skill, max_skill, totalPlayers, startTime, duration, location, locationNotes, description, gender, ageRange, enforcedParams, callback){
 
@@ -605,17 +607,16 @@ function searchObjects(search_request, callback){
 	});
 }
 
-function listAllFriends (user, status, callback) {
+function listAllFriends (user, callback) {
 	//list all friends
-	//list all blocked users
 
 	var queryString = "select user_id, fname, lname from (" +
-											"SELECT user_1 AS user from friends WHERE user_2 = $1 AND status = $2 " +
+											"SELECT user_1 AS user from friends WHERE user_2 = $1 AND status = 'accepted' " +
 											"UNION ALL " +
-											"SELECT user_2 AS user from friends WHERE user_1 = $1 AND status = $2) t1 " +
-											"INNER JOIN users ON users.user_id = t1.user"
+											"SELECT user_2 AS user from friends WHERE user_1 = $1 AND status = 'accepted') t1 " +
+											"INNER JOIN users ON users.user_id = t1.user";
 
-	var queryParams = [user, status]
+	var queryParams = [user];
 
 	const pool = new pg.Pool({connectionString: conString});
 	pool.connect((err, client, done) => {
@@ -625,6 +626,26 @@ function listAllFriends (user, status, callback) {
 			}
 			else {
 				callback(false)
+			}
+			done();
+			pool.end();
+		});
+	});
+}
+
+function listAllBlockedUsers (user, callback) {
+	var queryString = "select user_id, fname, lname from " +
+										"(Select user_2 from friends where user_1 = $1 AND status = 'blocked') t1 " +
+										"INNER JOIN users ON t1.user_2 = users.user_id";
+
+	var queryParams = [user];
+	const pool = new pg.Pool({connectionString: conString});
+	pool.connect((err, client, done) => {
+		client.query(queryString, queryParams, (err, res) => {
+			if (!err && res.rows[0]) {
+				callback (res.rows)
+			} else {
+				callback (false)
 			}
 			done();
 			pool.end();
@@ -666,6 +687,7 @@ module.exports = {
 	blockFriendNewEntry,
 	getUserSkilllevel,
 	listAllFriends,
+	listAllBlockedUsers
 }
 
 //////////////// Helpers ////////////////
