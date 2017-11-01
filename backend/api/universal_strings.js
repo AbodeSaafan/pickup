@@ -51,6 +51,7 @@ var checkFriendEntryValidationForBlock = "Entry validation for Block Failed"
 var ListFriendRequestFailed = "List all friends have failed"
 var ListBlockUserRequestFailed = "List all blocked users have failed"
 var emptySearchResults = "Nothing matches your search"
+var listFriendRequestFailed = "Listing all friend requests has failed"
 
 module.exports = {
 	uniqueEmailError,
@@ -105,5 +106,6 @@ module.exports = {
 	checkFriendEntryValidationForBlock,
 	ListFriendRequestFailed,
 	ListBlockUserRequestFailed,
-	emptySearchResults
+	emptySearchResults,
+	listFriendRequestFailed
 }

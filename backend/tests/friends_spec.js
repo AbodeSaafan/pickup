@@ -424,6 +424,7 @@ frisby.create('List all blocked users for a user: Creating a user to send a frie
 })
 .toss();
 
+
 /*
 //List friend Requests
 
@@ -454,7 +455,7 @@ frisby.create('List Friend Requests for a User: Creating a user to send a friend
         .expectStatus(200)
         .afterJSON(function(listFriendRequest) {
           frisby.create("List all friend requests for User1")
-          .get(testHelper.ListFriendRequestEndpoint+"?jwt="+user1.token)
+          .get(testHelper.listFriendRequestEndpoint+"?jwt="+user1.token)
           .expectStatus(200)
           .toss()
         })
