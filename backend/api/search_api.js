@@ -1,4 +1,3 @@
-// Coming soon 
 var express = require('express');
 var router = express.Router();
 var body = require('body-parser');
@@ -96,20 +95,23 @@ var strings = require('./universal_strings');
 
 router.get('/', function(req, res){
 	try{
-		var tok = tokenHelper.verifyToken(req.body.jwt);  
-		var search_request = requestHelper.validateAndCleanSearchRequest(req.body);
+		var tok = tokenHelper.verifyToken(req.query.jwt);  
+		var search_request = requestHelper.validateAndCleanSearchRequest(req.query);
 		var final_results = [];
 
 		databaseHelper.searchObjects(search_request, (results) => {
-			if(data.search_object == 'game'){
-				results.forEach(function(game, index){
+			if(search_request.search_object == 'game'){
+				var gamesChecked = 0;
+				results.forEach(function(game){
 					databaseHelper.ensureGameIsJoinableByPlayer(game.game_id, tok.user_id, (playable) => {
+						gamesChecked ++;
 						if(playable){
 							final_results.push(game);
 						}
-						if(results.length == index){
+
+						if(gamesChecked == results.length){
 							res.status(200).json(final_results); return;
-						}
+						};
 					})	
 				});
 			}
@@ -120,6 +122,7 @@ router.get('/', function(req, res){
 
 	}
 	catch (err){
+		console.log("error: " + err.message)
 		res.status(400).json(requestHelper.jsonError(err)); return;
 	}
 });

@@ -73,8 +73,8 @@ function validateAndCleanSearchRequest(data){
 		data.game_id = data.game_id - 0; //quick convert to int
 		searchValidate(data.game_name, regex.gameNameRegex, strings.invalidGameName, data, 'game_name');
 		searchValidate(data.game_type, regex.gameTypeRegex, strings.invalidGameType, data, 'game_type');
-		searchValidateSkillLevel(data.game_skill_min);
-		searchValidateSkillLevel(data.game_skill_max);
+		searchValidateSkillLevel(data.game_skill_min, data, 'game_skill_min');
+		searchValidateSkillLevel(data.game_skill_max, data, 'game_skill_max');
 		data.game_skill_min = data.game_skill_min - 0; // quick convert to int
 		data.game_skill_max = data.game_skill_max - 0; // quick convert to int
 		searchValidate(data.game_total_players, regex.gameTotalPlayersRegex, strings.invalidGameTotalPlayers, data, 'game_total_players');
@@ -129,10 +129,11 @@ function validate(param, regexPattern, errorMessage){
 }
 
 function searchValidate(param, regexPattern, errorMessage, obj, objParamString){
-	if(!(param.trim())){
+	if(!(param && param.trim())){
 		delete obj[objParamString]; return; // Clear non-applicable term
+	} else {
+		validate(param, regexPattern, errorMessage);
 	}
-	validate(param, regexPattern, errorMessage);
 }
 
 function validateStartTime(startTime){
@@ -142,10 +143,11 @@ function validateStartTime(startTime){
 }
 
 function searchValidateStartTime(startTime, obj, objParamString){
-	if(!(startTime.trim())){
+	if(!(startTime && startTime.trim())){
 		delete obj[objParamString]; return;
+	} else {
+		validateStartTime(startTime);
 	}
-	validateStartTime(startTime);
 }
 
 function validateAgeRange(ageRange){
@@ -164,8 +166,9 @@ function validateLocation(location){
 function searchValidateLocation(location, obj, objParamString){
 	if(location == null){
 		delete obj[objParamString]; return;
+	} else {
+		validateLocation(location);
 	}
-	validateLocation(location);
 }
 
 function validateEnforcedParamsList(enforcedList){
@@ -202,10 +205,11 @@ function validateSkill(skill){
 }
 
 function searchValidateSkillLevel(skill, obj, objParamString){
-	if(!(skill.trim())){
+	if(!(skill && skill.trim())){
 		delete obj[objParamString]; return;
+	} else {
+		validateSkill(skill);
 	}
-	validateSkill(skill);
 }
 
 function validateMaxResults(maxResult){

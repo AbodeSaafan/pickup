@@ -17,6 +17,7 @@ var deleteFriendEndpoint = baseApi + '/friends/delete'
 var blockFriendEndpoint = baseApi + '/friends/block'
 var listFriendsEndpoint = baseApi + '/friends/listFriends'
 var listBlockedUsersEndpoint = baseApi + '/friends/listBlockedUsers'
+var searchEndpoint = baseApi + '/search';
 
 function randomEmail(){
 	return crypto.randomBytes(4).toString('hex') + "@mail.com";
@@ -94,6 +95,12 @@ function createGenericGame(jwt, start, duration){
 	};
 }
 
+function createUnrestrictedGame(jwt, start, duration){
+	var game = createGenericGame(jwt, start, duration);
+	game.enforced_params = [];
+	return game;
+}
+
 function createGenericExtendedProfile (jwt) {
 	return {
 		jwt: jwt,
@@ -147,5 +154,7 @@ module.exports = {
 	createInvalidLocationForExtendedProfile,
 	blockFriendEndpoint,
 	listFriendsEndpoint,
-	listBlockedUsersEndpoint
+	listBlockedUsersEndpoint,
+	searchEndpoint,
+	createUnrestrictedGame
 }

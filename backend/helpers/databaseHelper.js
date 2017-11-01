@@ -391,7 +391,7 @@ function ensureGameIsJoinableByPlayer(gameId, userId, callback){
                         });
                     });
 				} else {
-                    callback(false);
+                    callback(true);
 				}
             }
             else {
@@ -596,7 +596,7 @@ function searchObjects(search_request, callback){
 	const pool = new pg.Pool({connectionString: conString});
 	pool.connect((err, client, done) => {
 		client.query(queryString, [], (err, res) => {
-			if (!err && res.rows[0]) {
+			if (!err && res.rows) {
 				callback (res.rows)
 			} else {
 				callback (false)
@@ -687,7 +687,8 @@ module.exports = {
 	blockFriendNewEntry,
 	getUserSkilllevel,
 	listAllFriends,
-	listAllBlockedUsers
+	listAllBlockedUsers,
+	searchObjects
 }
 
 //////////////// Helpers ////////////////
@@ -723,7 +724,7 @@ function getConstraintQuery(search_request){
 		query += "SELECT * FROM games WHERE ";
 		var queryConstraint = [];
 		if(search_request.game_id && search_request.game_id > 0){
-			query += "game_id = " + search_request.game_id + "LIMIT " + search_request.results_max + ";";
+			query += "game_id = " + search_request.game_id + " LIMIT " + search_request.results_max + ";";
 			return query;
 		}
 		else if(search_request.game_name && search_request.game_name != ""){
