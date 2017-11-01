@@ -592,6 +592,7 @@ function getUserSkilllevel(user_id, callback){
 
 function searchObjects(search_request, callback){
 	var queryString = getConstraintQuery(search_request);
+	console.log(queryString)
 
 	const pool = new pg.Pool({connectionString: conString});
 	pool.connect((err, client, done) => {
@@ -760,7 +761,7 @@ function getConstraintQuery(search_request){
 	}
 	else if(search_request.search_object == 'user'){
 		// User param validation
-		query += "SELECT user_id, username, fname FROM user WHERE username = " + search_request.username;
+		query += "SELECT user_id, username, fname FROM users WHERE username = '" + search_request.username + "';";
 	}
 	return query;
 }

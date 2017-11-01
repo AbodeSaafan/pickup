@@ -100,7 +100,10 @@ router.get('/', function(req, res){
 		var final_results = [];
 
 		databaseHelper.searchObjects(search_request, (results) => {
-			if(search_request.search_object == 'game'){
+			if(!results || results.length == 0){
+				res.status(400).json({error: strings.emptySearchResults}); return;
+			}
+			else if(search_request.search_object == 'game'){
 				var gamesChecked = 0;
 				results.forEach(function(game){
 					databaseHelper.ensureGameIsJoinableByPlayer(game.game_id, tok.user_id, (playable) => {
@@ -110,19 +113,19 @@ router.get('/', function(req, res){
 						}
 
 						if(gamesChecked == results.length){
-							res.status(200).json(final_results); return;
+							res.status(200).json({games: final_results}); return;
 						};
 					})	
 				});
+				
 			}
-			else if(data.search_object == 'user'){
-				res.status(200).json(results); return;
+			else if(search_request.search_object == 'user'){
+				res.status(200).json({users: results}); return;
 			}
 		});
 
 	}
 	catch (err){
-		console.log("error: " + err.message)
 		res.status(400).json(requestHelper.jsonError(err)); return;
 	}
 });
