@@ -391,7 +391,7 @@ function ensureGameIsJoinableByPlayer(gameId, userId, callback){
                         });
                     });
 				} else {
-                    callback(true);
+                    callback(false);
 				}
             }
             else {
@@ -596,7 +596,7 @@ function searchObjects(search_request, callback){
 	const pool = new pg.Pool({connectionString: conString});
 	pool.connect((err, client, done) => {
 		client.query(queryString, [], (err, res) => {
-			if (!err && res.rows) {
+			if (!err && res.rows[0]) {
 				callback (res.rows)
 			} else {
 				callback (false)
@@ -609,7 +609,7 @@ function searchObjects(search_request, callback){
 
 function listAllFriends (user, callback) {
 	//list all friends
-	//list all friend requests
+
 	var queryString = "select user_id, fname, lname from (" +
 											"SELECT user_1 AS user from friends WHERE user_2 = $1 AND status = 'accepted' " +
 											"UNION ALL " +
@@ -653,7 +653,24 @@ function listAllBlockedUsers (user, callback) {
 	});
 }
 
+function listAllFriendRequests (user, callback) {
+	var queryString = "SELECT * FROM friends WHERE (user_1 = $1 or user_2 = $1) AND status = 'requested'";
+	var queryParams = [user];
 
+
+	const pool = new pg.Pool({connectionString: conString});
+	pool.connect((err, client, done) => {
+		client.query(queryString, queryParams, (err, res) => {
+			if (!err && res.rows[0]) {
+				callback (res.rows)
+			} else {
+				callback (false)
+			}
+			done();
+			pool.end();
+		});
+	});
+}
 
 
 module.exports = {
@@ -690,7 +707,7 @@ module.exports = {
 	getUserSkilllevel,
 	listAllFriends,
 	listAllBlockedUsers,
-	searchObjects
+	listAllFriendRequests
 }
 
 //////////////// Helpers ////////////////
@@ -726,7 +743,7 @@ function getConstraintQuery(search_request){
 		query += "SELECT * FROM games WHERE ";
 		var queryConstraint = [];
 		if(search_request.game_id && search_request.game_id > 0){
-			query += "game_id = " + search_request.game_id + " LIMIT " + search_request.results_max + ";";
+			query += "game_id = " + search_request.game_id + "LIMIT " + search_request.results_max + ";";
 			return query;
 		}
 		else if(search_request.game_name && search_request.game_name != ""){

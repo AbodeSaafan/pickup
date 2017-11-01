@@ -325,7 +325,7 @@ router.get('/listFriends', function(req, res) {
 * @apiName listBlockedUsers
 * @apiGroup Friends
 *
-* @apiDescription API used for listing blocked users of a user.
+* @apiDescription API used for listing blocked users  of a user.
 *
 * @apiParam {string} jwt Valid JWT
 *
@@ -366,6 +366,57 @@ router.get('/listBlockedUsers', function(req, res) {
 		}
 		else {
 			res.status(400).json({'error': strings.ListBlockUserRequestFailed});
+			return;
+		}
+	})
+})
+
+/**
+* @api {get} /friends Lists all friend requests for a user
+* @apiName listFriendRequest
+* @apiGroup Friends
+*
+* @apiDescription API used for listing friend requests for a user.
+*
+* @apiParam {string} jwt Valid JWT
+*
+*
+* @apiSuccess {object} JSON The list of users with userId, firstName, lastName
+*
+* @apiError error The error field has a string with an exact error
+*
+* @apiExample Example call:
+*     {
+*       "jwt": Encrypted_JWT_Token,
+*     }
+*
+* @apiSuccessExample Success-Response:
+* HTTP/1.1 200 OK
+*			{
+*				"user_id": 34,
+*				"fname": 'Kattie',
+*				"lname": 'Katya'
+*			}
+*
+* @apiSampleRequest /api/friends
+*/
+
+router.get('/listFriendRequest', function(req, res) {
+	try {
+	  var tok = tokenHelper.verifyToken(req.query.jwt);
+	}
+	catch(err) {
+	  res.status(400).json(requestHelper.jsonError(err)); return;
+	}
+	console.log('reached here')
+	databaseHelper.listAllFriendRequests(tok.user_id, (listFriendRequestSuccess) => {
+		if (listFriendRequestSuccess) {
+			console.log(listFriendRequestSuccess)
+			res.status(200).json({'status': 'success'});
+			return;
+		}
+		else {
+			res.status(400).json({'error': strings.listFriendRequestFailed});
 			return;
 		}
 	})
