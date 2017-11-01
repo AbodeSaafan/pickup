@@ -5,7 +5,7 @@ var testHelper = require('./testHelper');
 const util = require('util');
 
 
-
+/*
 //Send a friend request to valid User
 
 frisby.create('Sending a Friend Request: Creating a user to send a friend request')
@@ -424,8 +424,8 @@ frisby.create('List all blocked users for a user: Creating a user to send a frie
 })
 .toss();
 
+*/
 
-/*
 //List friend Requests
 
 frisby.create('List Friend Requests for a User: Creating a user to send a friend request')
@@ -468,4 +468,3 @@ frisby.create('List Friend Requests for a User: Creating a user to send a friend
   .toss();
 })
 .toss();
-*/

@@ -48,7 +48,7 @@ var UpdateFailed = "Failed to update your extended profile"
 var BlockFriendFailed = "Failed to block this user"
 var FriendRequestExists = "The friend request already exists"
 var checkFriendEntryValidationForBlock = "Entry validation for Block Failed"
-var ListFriendRequestFailed = "List all friends have failed"
+var ListFriendFailed = "List all friends have failed"
 var ListBlockUserRequestFailed = "List all blocked users have failed"
 var emptySearchResults = "Nothing matches your search"
 var listFriendRequestFailed = "Listing all friend requests has failed"
@@ -104,7 +104,7 @@ module.exports = {
 	BlockFriendFailed,
 	FriendRequestExists,
 	checkFriendEntryValidationForBlock,
-	ListFriendRequestFailed,
+	ListFriendFailed,
 	ListBlockUserRequestFailed,
 	emptySearchResults,
 	listFriendRequestFailed

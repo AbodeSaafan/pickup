@@ -314,7 +314,7 @@ router.get('/listFriends', function(req, res) {
 			return;
 		}
 		else {
-			res.status(400).json({'error': strings.ListFriendRequestFailed});
+			res.status(400).json({'error': strings.ListFriendFailed});
 			return;
 		}
 	})
@@ -408,11 +408,35 @@ router.get('/listFriendRequest', function(req, res) {
 	catch(err) {
 	  res.status(400).json(requestHelper.jsonError(err)); return;
 	}
-	console.log('reached here')
+	var friendRequestSentToUser = {}
+	var friendRequestUserSent = {}
+
 	databaseHelper.listAllFriendRequests(tok.user_id, (listFriendRequestSuccess) => {
 		if (listFriendRequestSuccess) {
 			console.log(listFriendRequestSuccess)
-			res.status(200).json({'status': 'success'});
+			for (i = 0; i < listFriendRequestSuccess.length; i++) {
+				if (listFriendRequestSuccess[i].user_1 == tok.user_id) {
+					console.log('reached here')
+					var entry = {
+						user: listFriendRequestSuccess[i].user_2,
+						status: listFriendRequestSuccess[i].status
+					}
+					friendRequestUserSent[entry.user] = entry.status;
+				} else {
+					var entry = {
+						user: listFriendRequestSuccess[i].user_1,
+						status: listFriendRequestSuccess[i].status
+					}
+					friendRequestSentToUser[entry.user] = entry.status;
+				}
+			}
+			//console.log(listFriendRequestSuccess)
+			var result =  {
+				'Friend requests user has sent': friendRequestUserSent,
+				'Friend requests sent to user': friendRequestSentToUser
+			}
+			console.log(result)
+			res.status(200).json(result);
 			return;
 		}
 		else {
