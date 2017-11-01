@@ -129,7 +129,7 @@ function createInvalidLocationForExtendedProfile (jwt) {
 function createGenericFriendRequest (jwt, userID) {
 	return {
 		jwt: jwt,
-		userID: userID
+		userId: userID
 	}
 }
 

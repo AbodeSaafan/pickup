@@ -413,8 +413,7 @@ function validAge(gameAgeRange, userDob){
 function sendFriendInvite(sender, receiver, callback) {
 		var queryString = "INSERT INTO friends(user_1, user_2, status) VALUES($1, $2, 'requested');";
 		var queryParams = [sender, receiver];
-    console.log(sender)
-		console.log(receiver)
+
 		const pool = new pg.Pool({connectionString: conString});
 
 		pool.connect((err, client, done) => {
@@ -430,7 +429,6 @@ function checkFriendRequestValidation(sender, invited_friend, callback) {
 	var queryString = "SELECT * FROM friends WHERE user_1 = $1 AND user_2 = $2 AND status = 'requested'";
 	var queryParams = [sender, invited_friend];
 
-
 	const pool = new pg.Pool({connectionString: conString});
 
 	pool.connect((err, client, done) => {
@@ -438,7 +436,7 @@ function checkFriendRequestValidation(sender, invited_friend, callback) {
 				if(!err && res.rows[0]){
 					callback(res.rows[0]);
 				} else {
-				callback(false);
+					callback(false);
 				}
 				done();
 				pool.end();
@@ -449,8 +447,7 @@ function checkFriendRequestValidation(sender, invited_friend, callback) {
 function acceptFriendInvite(invited_friend, sender, callback) {
 		var queryString = "UPDATE friends SET user_1 = $2, user_2 = $1, status = 'accepted' WHERE user_1 = $1 AND user_2 = $2";
 		var queryParams = [sender, invited_friend];
-    console.log(invited_friend)
-		console.log(sender)
+
 		const pool = new pg.Pool({connectionString: conString});
 
 		pool.connect((err, client, done) => {
@@ -474,7 +471,7 @@ function checkFriendEntryValidationForDelete(sender, invited_friend, callback) {
 				if(!err && res.rows[0]){
 					callback(res.rows[0]);
 				} else {
-				callback(false);
+					callback(false);
 				}
 				done();
 				pool.end();
@@ -485,16 +482,15 @@ function checkFriendEntryValidationForDelete(sender, invited_friend, callback) {
 function declineFriend(sender, receiver, callback) {
 		var queryString = "DELETE FROM friends WHERE (user_1 = $1 OR user_1 = $2) AND (user_2 = $1 OR user_2 = $2)";
 		var queryParams = [sender, receiver];
-    console.log(sender)
-		console.log(receiver)
+    
 		const pool = new pg.Pool({connectionString: conString});
 
 		pool.connect((err, client, done) => {
-				client.query(queryString, queryParams, (err, res) => {
-						callback(!err && (res && res.rowCount != 0));
-						done();
-						pool.end();
-				});
+			client.query(queryString, queryParams, (err, res) => {
+				callback(!err && (res && res.rowCount != 0));
+				done();
+				pool.end();
+			});
 		});
 }
 
@@ -523,8 +519,6 @@ function checkFriendEntryValidationForBlock(sender, invited_friend, callback) {
 function blockFriendUpdateEntry (person_blocking, blocked_user, callback) {
 	var queryString = "UPDATE friends SET user_1 = $1, user_2 = $2, status = 'blocked' WHERE (user_1 = $1 or user_1 = $2) AND (user_2 = $1 OR user_2 = $2)"
 	var queryParams = [person_blocking, blocked_user];
-	console.log(person_blocking)
-	console.log(blocked_user)
 
 	const pool = new pg.Pool({connectionString: conString});
 
@@ -541,14 +535,11 @@ function blockFriendNewEntry (person_blocking, blocked_user, callback) {
 	var queryString = "INSERT INTO friends(user_1, user_2, status) VALUES($1, $2, 'blocked');"
 	var queryParams = [person_blocking, blocked_user]
 
-	console.log(person_blocking)
-	console.log(blocked_user)
-
 	const pool = new pg.Pool({connectionString: conString});
 	pool.connect((err, client, done) => {
 		client.query(queryString, queryParams, (err, res) => {
-				callback(!err);
-				done();
+			callback(!err);
+			done();
 			pool.end();
 		});
 	});
@@ -561,13 +552,13 @@ function checkIfFriendRequestExists (sender, invited_person, callback) {
 	const pool = new pg.Pool({connectionString: conString});
 	pool.connect((err, client, done) => {
 		client.query(queryString, queryParams, (err, res) => {
-				if (!err && res.rows[0]) {
-					callback (res.rows[0])
-				} else {
-					callback (false)
-				}
-				done();
-				pool.end();
+			if (!err && res.rows[0]) {
+				callback (res.rows[0])
+			} else {
+				callback (false)
+			}
+			done();
+			pool.end();
 		});
 	});
 }
@@ -612,10 +603,10 @@ function listAllFriends (user, callback) {
 	//list all friends
 
 	var queryString = "select user_id, fname, lname from (" +
-											"SELECT user_1 AS user from friends WHERE user_2 = $1 AND status = 'accepted' " +
-											"UNION ALL " +
-											"SELECT user_2 AS user from friends WHERE user_1 = $1 AND status = 'accepted') t1 " +
-											"INNER JOIN users ON users.user_id = t1.user";
+	"SELECT user_1 AS user from friends WHERE user_2 = $1 AND status = 'accepted' " +
+	"UNION ALL " +
+	"SELECT user_2 AS user from friends WHERE user_1 = $1 AND status = 'accepted') t1 " +
+	"INNER JOIN users ON users.user_id = t1.user";
 
 	var queryParams = [user];
 
@@ -636,8 +627,8 @@ function listAllFriends (user, callback) {
 
 function listAllBlockedUsers (user, callback) {
 	var queryString = "select user_id, fname, lname from " +
-										"(Select user_2 from friends where user_1 = $1 AND status = 'blocked') t1 " +
-										"INNER JOIN users ON t1.user_2 = users.user_id";
+	"(Select user_2 from friends where user_1 = $1 AND status = 'blocked') t1 " +
+	"INNER JOIN users ON t1.user_2 = users.user_id";
 
 	var queryParams = [user];
 	const pool = new pg.Pool({connectionString: conString});

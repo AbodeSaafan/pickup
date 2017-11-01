@@ -100,6 +100,11 @@ function validateAndCleanUpdateExtendedProfileRequest (data) {
 	return data;
 }
 
+function validateAndCleanFriendId (data) {
+	validate(data.userId, regex.idRegex, strings.invalidUserId);
+	return data;
+}
+
 function jsonError(Error){
     return {'error': Error.toString().substring(7)};
 }
@@ -114,6 +119,7 @@ module.exports = {
     validateAndCleanReviewRequest,
     validateAndCleanLeaveRequest,
 	validateAndCleanUpdateExtendedProfileRequest,
+	validateAndCleanFriendId,
     jsonError,
 }
 
