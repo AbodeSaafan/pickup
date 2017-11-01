@@ -609,7 +609,7 @@ function searchObjects(search_request, callback){
 
 function listAllFriends (user, callback) {
 	//list all friends
-
+	//list all friend requests
 	var queryString = "select user_id, fname, lname from (" +
 											"SELECT user_1 AS user from friends WHERE user_2 = $1 AND status = 'accepted' " +
 											"UNION ALL " +
@@ -652,6 +652,8 @@ function listAllBlockedUsers (user, callback) {
 		});
 	});
 }
+
+
 
 
 module.exports = {
