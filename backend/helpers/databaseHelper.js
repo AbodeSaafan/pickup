@@ -736,7 +736,7 @@ function getConstraintQuery(search_request){
 		query += "SELECT * FROM games WHERE ";
 		var queryConstraint = [];
 		if(search_request.game_id && search_request.game_id > 0){
-			query += "game_id = " + search_request.game_id + " LIMIT " + search_request.results_max + ";";
+			query += "game_id = " + search_request.game_id + " order by game_id DESC LIMIT " + search_request.results_max + ";";
 			return query;
 		}
 		else if(search_request.game_name && search_request.game_name != ""){
@@ -765,7 +765,7 @@ function getConstraintQuery(search_request){
 			queryConstraint.push("(SELECT distance(point" + search_point +", point location)) > " + search_request.game_location_range);
 		}
 
-		query += queryConstraint.join(' ') + "LIMIT " + search_request.results_max + ";";
+		query += queryConstraint.join(' ') + " order by game_id DESC LIMIT " + search_request.results_max + ";";
 
 	}
 	else if(search_request.search_object == 'user'){
