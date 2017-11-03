@@ -482,7 +482,7 @@ function checkFriendEntryValidationForDelete(sender, invited_friend, callback) {
 function declineFriend(sender, receiver, callback) {
 		var queryString = "DELETE FROM friends WHERE (user_1 = $1 OR user_1 = $2) AND (user_2 = $1 OR user_2 = $2)";
 		var queryParams = [sender, receiver];
-    
+
 		const pool = new pg.Pool({connectionString: conString});
 
 		pool.connect((err, client, done) => {
@@ -646,7 +646,16 @@ function listAllBlockedUsers (user, callback) {
 }
 
 function listAllFriendRequests (user, callback) {
-	var queryString = "SELECT * FROM friends WHERE (user_1 = $1 or user_2 = $1) AND status = 'requested'";
+	var queryString = "Select t3.user_1, t3.user_2, t3.fname, t3.lname, t3.status FROM ("+
+										"(select * FROM (" +
+										"select * from friends where user_1 = $1 AND status = 'requested') t1 " +
+										"INNER JOIN users ON users.user_id = t1.user_2) " +
+										"UNION ALL " +
+										"(select * FROM (" +
+										"select * from friends where user_2 = $1 AND status = 'requested') t2 " +
+										"INNER JOIN users ON users.user_id = t2.user_1)" +
+										") t3";
+
 	var queryParams = [user];
 
 

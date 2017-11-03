@@ -375,31 +375,41 @@ router.get('/listFriendRequest', function(req, res) {
 		var tok = tokenHelper.verifyToken(req.query.jwt);
 		var friendRequestSentToUser = {}
 		var friendRequestUserSent = {}
+		var counter_1 = 1;
+		var counter_2 = 1;
 
 		databaseHelper.listAllFriendRequests(tok.user_id, (listFriendRequestSuccess) => {
 			if (listFriendRequestSuccess) {
 				console.log(listFriendRequestSuccess)
 				for (i = 0; i < listFriendRequestSuccess.length; i++) {
 					if (listFriendRequestSuccess[i].user_1 == tok.user_id) {
-						console.log('reached here')
+						console.log('by user')
 						var entry = {
-							user: listFriendRequestSuccess[i].user_2,
+							user_id: listFriendRequestSuccess[i].user_2,
+							fname: listFriendRequestSuccess[i].fname,
+							lname: listFriendRequestSuccess[i].lname,
 							status: listFriendRequestSuccess[i].status
 						}
-						friendRequestUserSent[entry.user] = entry.status;
+						friendRequestUserSent[counter_1] = entry;
+						counter_1 ++;
+
 					} else {
+						console.log('for user')
 						var entry = {
-							user: listFriendRequestSuccess[i].user_1,
+							user_id: listFriendRequestSuccess[i].user_1,
+							fname: listFriendRequestSuccess[i].fname,
+							lname: listFriendRequestSuccess[i].lname,
 							status: listFriendRequestSuccess[i].status
 						}
-						friendRequestSentToUser[entry.user] = entry.status;
+						friendRequestSentToUser[counter_2] = entry;
+						counter_2 ++;
 					}
-				}
-			//console.log(listFriendRequestSuccess)
-			var result =  {
-				'Friend requests user has sent': friendRequestUserSent,
-				'Friend requests sent to user': friendRequestSentToUser
 			}
+			var result =  {
+				'ByUser': friendRequestUserSent,
+				'ForUser': friendRequestSentToUser
+			}
+			console.log(result)
 			res.status(200).json(result); return;
 		}
 		else {
