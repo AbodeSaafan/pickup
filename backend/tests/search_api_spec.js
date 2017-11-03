@@ -21,9 +21,9 @@ frisby.create('Searching for game using game id: Creating a user to create game'
 		.post(testHelper.registerEndpoint, testHelper.createGenericUser())
 		.expectStatus(200)
 		.expectBodyContains('token')
-		.waits(2000)
 		.afterJSON(function (new_user) {
 			frisby.create("Search for the game using game id")
+			.waits(2000)
 			.get(testHelper.searchEndpoint+"?jwt="+new_user.token+"&search_object=game&game_id="+game.game_id)
 			.expectStatus(200)
 			.expectJSON('games.0', {
@@ -62,9 +62,9 @@ frisby.create('Searching for game using game name: Creating a user to create gam
 		.post(testHelper.registerEndpoint, testHelper.createGenericUser())
 		.expectStatus(200)
 		.expectBodyContains('token')
-		.waits(2000)
 		.afterJSON(function (new_user) {
 			frisby.create("Search for the game using game name")
+			.waits(2000)
 			.get(testHelper.searchEndpoint+"?jwt="+new_user.token+"&search_object=game&results_max=1&game_name=" + gameDetails.name)
 			.expectStatus(200)
 			.expectJSON('games.0', {
@@ -103,9 +103,9 @@ frisby.create('Searching for game using game type: Creating a user to create gam
 		.post(testHelper.registerEndpoint, testHelper.createGenericUser())
 		.expectStatus(200)
 		.expectBodyContains('token')
-		.waits(2000)
 		.afterJSON(function (new_user) {
 			frisby.create("Search for the game using game type")
+			.waits(2000)
 			.get(testHelper.searchEndpoint+"?jwt="+new_user.token+"&search_object=game&results_max=1&game_type=" + gameDetails.type)
 			.expectStatus(200)
 			.expectJSON('games.0', {
@@ -116,6 +116,47 @@ frisby.create('Searching for game using game type: Creating a user to create gam
 		.afterJSON(function (new_user) {
 			frisby.create("Search for non-existent game using game type")
 			.get(testHelper.searchEndpoint+"?jwt="+new_user.token+"&search_object=game&game_type=subdg")
+			.expectJSON({
+				error: strings.invalidGameType
+			})
+			.expectStatus(400)
+			.toss();	
+		})
+		.toss();
+	})
+	.toss();
+})
+.toss();
+
+//Positive and negative case of searching for game by game_skill_min 
+frisby.create('Searching for game using game skill minimum: Creating a user to create game')
+.post(testHelper.registerEndpoint, testHelper.createGenericUser())
+.expectStatus(200)
+.expectBodyContains('token')
+.afterJSON(function (user) {
+	var gameDetails = testHelper.createUnrestrictedGame(user.token, 100, 200);
+	frisby.create('Creating the game')
+	.post(testHelper.createGameEndpoint, gameDetails)
+	.expectStatus(200)
+	.expectBodyContains('game_id')
+	.afterJSON(function (game) {
+		frisby.create("Create a user to search for the game")
+		.post(testHelper.registerEndpoint, testHelper.createGenericUser())
+		.expectStatus(200)
+		.expectBodyContains('token')
+		.afterJSON(function (new_user) {
+			frisby.create("Search for the game using game minimum skill level")
+			.waits(2000)
+			.get(testHelper.searchEndpoint+"?jwt="+new_user.token+"&search_object=game&results_max=1&game_skill_min=" + gameDetails.type)
+			.expectStatus(200)
+			.expectJSON('games.0', {
+				game_id: game.game_id
+			})
+			.toss();	
+		})
+		.afterJSON(function (new_user) {
+			frisby.create("Search for non-existent game using game minimum skill level")
+			.get(testHelper.searchEndpoint+"?jwt="+new_user.token+"&search_object=game&game_skill_min=11")
 			.expectJSON({
 				error: strings.invalidGameType
 			})
