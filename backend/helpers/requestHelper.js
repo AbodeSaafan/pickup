@@ -205,7 +205,6 @@ function validateSkillOffset(skill){
 
 function validateSkill(skill){
 	if(!(skill && isInt(skill) && skill >= 0 && skill <=10)){
-		console.log('skill_level failed');
 		throw new Error(strings.invalidGameSkill);
 	}
 }

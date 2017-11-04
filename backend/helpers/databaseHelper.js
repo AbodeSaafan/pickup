@@ -742,10 +742,10 @@ function getConstraintQuery(search_request){
 	var query = "";
 	if(search_request.search_object == 'game'){
 		// Game param validation
-		query += "SELECT * FROM games WHERE ";
+		query += "SELECT * FROM games ";
 		var queryConstraint = [];
 		if(search_request.game_id && search_request.game_id > 0){
-			query += "game_id = " + search_request.game_id + " order by game_id DESC LIMIT " + search_request.results_max + ";";
+			query += "WHERE game_id = " + search_request.game_id + " order by game_id DESC LIMIT " + search_request.results_max + ";";
 			return query;
 		}
 		else if(search_request.game_name && search_request.game_name != ""){
@@ -773,8 +773,10 @@ function getConstraintQuery(search_request){
 			var search_point = util.format("(%d, %d)", search_request.game_location.lng, search_request.game_location.lat);
 			queryConstraint.push("(SELECT distance(point" + search_point +", point location)) > " + search_request.game_location_range);
 		}
-
-		query += queryConstraint.join(' ') + " order by game_id DESC LIMIT " + search_request.results_max + ";";
+		if(queryConstraint.length > 0){
+			query += "WHERE " + queryConstraint.join(' ');
+		}
+		query += " order by game_id DESC LIMIT " + search_request.results_max + ";";
 
 	}
 	else if(search_request.search_object == 'user'){
