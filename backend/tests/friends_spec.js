@@ -466,32 +466,24 @@ frisby.create('List Friend Requests for a User: Creating a user to send a friend
               frisby.create("List all friend requests for User1")
               .get(testHelper.listFriendRequestEndpoint+"?jwt="+user1.token)
               .expectStatus(200)
-              /*
-              .expectJSONTypes({
-                ByUser: {
-                  '1': {
-                    user_id: Number(user2.user_id),
-                    fname: String,
-                    lname: String,
-                    status: 'requested'
-                  },
-                  '2': {
-                    user_id: Number(user3.user_id),
-                    fname: String,
-                    lname: String,
-                    status: 'requested'
-                  }
-                },
-                ForUser: {
-                  '1': {
-                    user_id:Number(user4.user_id),
-                    fname: String,
-                    lname: String,
-                    status: 'requested'
-                  }
-                }
+              .expectJSON('ByUser.1', {
+                user_id: user2.user_id - 0, // The - 0 is to force it as a number
+                fname: user2.fname,
+                lname: user2.lname,
+                status: 'requested'
               })
-              */
+              .expectJSON('ByUser.2', {
+                user_id: user4.user_id - 0, // The - 0 is to force it as a number
+                fname: user4.fname,
+                lname: user4.lname,
+                status: 'requested'
+              })
+              .expectJSON('ForUser.1', {
+                user_id: user3.user_id - 0, // The - 0 is to force it as a number
+                fname: user3.fname,
+                lname: user3.lname,
+                status: 'requested'
+              })
               .toss()
             })
             .toss()
