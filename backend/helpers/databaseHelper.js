@@ -290,11 +290,11 @@ function addReview (userId, gameId, reviewerId, rating, tags, callback){
 		});
 }
 
-/*
+
 function addTag(reviewId, tags, callback){
-	foreach(tag in tags){
+	for(let i = 0; i < tags.length; i++){
 		var queryString = "INSERT INTO tags(review_id, tag) VALUES($1, $2)";
-		var queryPrams - [reviewId, tag];
+		var queryPrams = [reviewId, tags[i]];
 
 		const pool = new pg.Pool({connectionString: conString});
 
@@ -310,7 +310,7 @@ function addTag(reviewId, tags, callback){
 	}
 	callback(true);
 }
-*/
+
 
 function createGame (userId, name, type, min_skill, max_skill, totalPlayers, startTime, duration, location, locationNotes, description, gender, ageRange, enforcedParams, callback){
 
