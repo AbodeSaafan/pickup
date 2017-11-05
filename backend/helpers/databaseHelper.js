@@ -770,8 +770,8 @@ function getConstraintQuery(search_request){
 			queryConstraint.push("end_time >= start_time + " + search_request.game_duration);
 		}
 		if(search_request.game_location && search_request.game_location_range && search_request.game_location_range > 0){
-			var search_point = util.format("(%d, %d)", search_request.game_location.lng, search_request.game_location.lat);
-			queryConstraint.push("(SELECT distance(point" + search_point +", point location)) > " + search_request.game_location_range);
+			var search_point = util.format("(%d, %d)", search_request.game_location.lat, search_request.game_location.lng);
+			queryConstraint.push("(SELECT distance(point" + search_point +", location)) <= " + search_request.game_location_range);
 		}
 		if(queryConstraint.length > 0){
 			query += "WHERE " + queryConstraint.join(' ');
