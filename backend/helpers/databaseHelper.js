@@ -414,6 +414,11 @@ function sendFriendInvite(sender, receiver, callback) {
 		var queryString = "INSERT INTO friends(user_1, user_2, status) VALUES($1, $2, 'requested');";
 		var queryParams = [sender, receiver];
 
+		/*
+		console.log(sender)
+		console.log(receiver)
+		*/
+		
 		const pool = new pg.Pool({connectionString: conString});
 
 		pool.connect((err, client, done) => {
@@ -447,6 +452,11 @@ function checkFriendRequestValidation(sender, invited_friend, callback) {
 function acceptFriendInvite(invited_friend, sender, callback) {
 		var queryString = "UPDATE friends SET user_1 = $2, user_2 = $1, status = 'accepted' WHERE user_1 = $1 AND user_2 = $2";
 		var queryParams = [sender, invited_friend];
+
+		/*
+		console.log(invited_friend)
+		console.log(sender)
+		*/
 
 		const pool = new pg.Pool({connectionString: conString});
 
@@ -482,6 +492,11 @@ function checkFriendEntryValidationForDelete(sender, invited_friend, callback) {
 function declineFriend(sender, receiver, callback) {
 		var queryString = "DELETE FROM friends WHERE (user_1 = $1 OR user_1 = $2) AND (user_2 = $1 OR user_2 = $2)";
 		var queryParams = [sender, receiver];
+
+		/*
+		console.log(sender)
+		console.log(receiver)
+		*/
 
 		const pool = new pg.Pool({connectionString: conString});
 
@@ -520,6 +535,11 @@ function blockFriendUpdateEntry (person_blocking, blocked_user, callback) {
 	var queryString = "UPDATE friends SET user_1 = $1, user_2 = $2, status = 'blocked' WHERE (user_1 = $1 or user_1 = $2) AND (user_2 = $1 OR user_2 = $2)"
 	var queryParams = [person_blocking, blocked_user];
 
+	/*
+	console.log(person_blocking)
+	console.log(blocked_user)
+	*/
+
 	const pool = new pg.Pool({connectionString: conString});
 
 	pool.connect((err, client, done) => {
@@ -534,6 +554,11 @@ function blockFriendUpdateEntry (person_blocking, blocked_user, callback) {
 function blockFriendNewEntry (person_blocking, blocked_user, callback) {
 	var queryString = "INSERT INTO friends(user_1, user_2, status) VALUES($1, $2, 'blocked');"
 	var queryParams = [person_blocking, blocked_user]
+
+	/*
+	console.log(person_blocking)
+	console.log(blocked_user)
+	*/
 
 	const pool = new pg.Pool({connectionString: conString});
 	pool.connect((err, client, done) => {

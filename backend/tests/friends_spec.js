@@ -243,6 +243,18 @@ frisby.create('List all friends of a user: Creating a user to send a friend requ
               frisby.create("List all friends for user1")
               .get(testHelper.listFriendsEndpoint+"?jwt="+user1.token)
               .expectStatus(200)
+              /*
+              .expectJSON('friends.?', {
+                user_id: user2.user_id - 0, // The - 0 is to force it as a number
+                fname: user2.fname,
+                lname: user2.lname,
+              })
+              .expectJSON('friends.?', {
+                user_id: user3.user_id - 0, // The - 0 is to force it as a number
+                fname: user3.fname,
+                lname: user3.lname,
+              })
+              */
               .toss();
             })
             .toss();
@@ -357,6 +369,7 @@ frisby.create('Block a user after deleting friend Request: Creating a user to se
 })
 .toss()
 
+
 //List all blocked friends for a User
 
 frisby.create('List all blocked users for a user: Creating a user to send a friend request')
@@ -404,6 +417,18 @@ frisby.create('List all blocked users for a user: Creating a user to send a frie
                   frisby.create("List Blocked Users for User1")
                   .get(testHelper.listBlockedUsersEndpoint+"?jwt="+user1.token)
                   .expectStatus(200)
+                  /*
+                  .expectJSON('blockedUsers.?', {
+                    user_id: user2.user_id - 0, // The - 0 is to force it as a number
+                    fname: user2.fname,
+                    lname: user2.lname,
+                  })
+                  .expectJSON('blockedUsers.?', {
+                    user_id: user3.user_id - 0, // The - 0 is to force it as a number
+                    fname: user3.fname,
+                    lname: user3.lname
+                  })
+                  */
                   .toss();
                 })
                 .toss()
@@ -423,7 +448,6 @@ frisby.create('List all blocked users for a user: Creating a user to send a frie
   .toss();
 })
 .toss();
-
 
 //List friend Requests
 
@@ -466,19 +490,19 @@ frisby.create('List Friend Requests for a User: Creating a user to send a friend
               frisby.create("List all friend requests for User1")
               .get(testHelper.listFriendRequestEndpoint+"?jwt="+user1.token)
               .expectStatus(200)
-              .expectJSON('ByUser.1', {
+              .expectJSON('ByUser.?', {
                 user_id: user2.user_id - 0, // The - 0 is to force it as a number
                 fname: user2.fname,
                 lname: user2.lname,
                 status: 'requested'
               })
-              .expectJSON('ByUser.2', {
+              .expectJSON('ByUser.?', {
                 user_id: user4.user_id - 0, // The - 0 is to force it as a number
                 fname: user4.fname,
                 lname: user4.lname,
                 status: 'requested'
               })
-              .expectJSON('ForUser.1', {
+              .expectJSON('ForUser.?', {
                 user_id: user3.user_id - 0, // The - 0 is to force it as a number
                 fname: user3.fname,
                 lname: user3.lname,
