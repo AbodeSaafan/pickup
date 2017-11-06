@@ -1,5 +1,76 @@
 [
   {
+    "type": "delete",
+    "url": "/delete",
+    "title": "Delete account from pickup",
+    "name": "delete_account",
+    "group": "Account",
+    "description": "<p>API used to delete your pickup account</p>",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "jwt",
+            "description": "<p>User's jwt</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "email",
+            "description": "<p>The email of the user</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "password",
+            "description": "<p>Password of the user</p>"
+          }
+        ]
+      }
+    },
+    "error": {
+      "fields": {
+        "Error 4xx": [
+          {
+            "group": "Error 4xx",
+            "optional": false,
+            "field": "error",
+            "description": "<p>The error field has a string with an exact error</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "     HTTP/1.1 200 OK\n\t{\n\t}",
+          "type": "json"
+        }
+      ]
+    },
+    "examples": [
+      {
+        "title": "Example call::",
+        "content": "{\n  \"jwt\": \"b43a545f90ec60bf5ed2a4bd45d81a711de7ba658faa6899d8240343b857664fc967a76cd622235313db8e2ec053fe34c26c\",\n  \"password\": \"coolcars23\"\n}",
+        "type": "json"
+      }
+    ],
+    "sampleRequest": [
+      {
+        "url": "/api/delete"
+      }
+    ],
+    "version": "0.0.0",
+    "filename": "api/delete_account_api.js",
+    "groupTitle": "Account"
+  },
+  {
     "type": "post",
     "url": "/login",
     "title": "Log into the app",
@@ -551,6 +622,74 @@
     "groupTitle": "Friends"
   },
   {
+    "type": "get",
+    "url": "/friends",
+    "title": "Lists all friends for a user",
+    "name": "ListFriends",
+    "group": "Friends",
+    "description": "<p>API used for listing friends of a user.</p>",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "string",
+            "optional": false,
+            "field": "jwt",
+            "description": "<p>Valid JWT</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "object",
+            "optional": false,
+            "field": "JSON",
+            "description": "<p>The list of users with userId, firstName, lastName</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "HTTP/1.1 200 OK\n\t\t\t{\n\t\t\t\t\"user_id\": 34,\n\t\t\t\t\"fname\": 'Kattie',\n\t\t\t\t\"lname\": 'Katya'\n\t\t\t}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "fields": {
+        "Error 4xx": [
+          {
+            "group": "Error 4xx",
+            "optional": false,
+            "field": "error",
+            "description": "<p>The error field has a string with an exact error</p>"
+          }
+        ]
+      }
+    },
+    "examples": [
+      {
+        "title": "Example call:",
+        "content": "{\n  \"jwt\": Encrypted_JWT_Token,\n}",
+        "type": "json"
+      }
+    ],
+    "sampleRequest": [
+      {
+        "url": "/api/friends"
+      }
+    ],
+    "version": "0.0.0",
+    "filename": "api/friends_api.js",
+    "groupTitle": "Friends"
+  },
+  {
     "type": "post",
     "url": "/friends",
     "title": "Send a friend request",
@@ -572,7 +711,7 @@
             "type": "int",
             "optional": false,
             "field": "user_Id",
-            "description": "<p>The user, your sending friend request to</p>"
+            "description": "<p>The user, youre sending a friend request to</p>"
           }
         ]
       }
@@ -613,6 +752,142 @@
       {
         "title": "Example call:",
         "content": "{\n  \"jwt\": Encrypted_JWT_Token,\n  \"user_id\": 3,\n}",
+        "type": "json"
+      }
+    ],
+    "sampleRequest": [
+      {
+        "url": "/api/friends"
+      }
+    ],
+    "version": "0.0.0",
+    "filename": "api/friends_api.js",
+    "groupTitle": "Friends"
+  },
+  {
+    "type": "get",
+    "url": "/friends",
+    "title": "Lists all blocked users for a user",
+    "name": "listBlockedUsers",
+    "group": "Friends",
+    "description": "<p>API used for listing blocked users  of a user.</p>",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "string",
+            "optional": false,
+            "field": "jwt",
+            "description": "<p>Valid JWT</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "object",
+            "optional": false,
+            "field": "JSON",
+            "description": "<p>The list of users with userId, firstName, lastName</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "HTTP/1.1 200 OK\n\t\t\t{\n\t\t\t\t\"user_id\": 34,\n\t\t\t\t\"fname\": 'Kattie',\n\t\t\t\t\"lname\": 'Katya'\n\t\t\t}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "fields": {
+        "Error 4xx": [
+          {
+            "group": "Error 4xx",
+            "optional": false,
+            "field": "error",
+            "description": "<p>The error field has a string with an exact error</p>"
+          }
+        ]
+      }
+    },
+    "examples": [
+      {
+        "title": "Example call:",
+        "content": "{\n  \"jwt\": Encrypted_JWT_Token,\n}",
+        "type": "json"
+      }
+    ],
+    "sampleRequest": [
+      {
+        "url": "/api/friends"
+      }
+    ],
+    "version": "0.0.0",
+    "filename": "api/friends_api.js",
+    "groupTitle": "Friends"
+  },
+  {
+    "type": "get",
+    "url": "/friends",
+    "title": "Lists all friend requests for a user",
+    "name": "listFriendRequest",
+    "group": "Friends",
+    "description": "<p>API used for listing friend requests for a user.</p>",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "string",
+            "optional": false,
+            "field": "jwt",
+            "description": "<p>Valid JWT</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "object",
+            "optional": false,
+            "field": "JSON",
+            "description": "<p>The list of users with userId, firstName, lastName</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "HTTP/1.1 200 OK\n\t\t\t{\n\t\t\t\t\"user_id\": 34,\n\t\t\t\t\"fname\": 'Kattie',\n\t\t\t\t\"lname\": 'Katya'\n\t\t\t}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "fields": {
+        "Error 4xx": [
+          {
+            "group": "Error 4xx",
+            "optional": false,
+            "field": "error",
+            "description": "<p>The error field has a string with an exact error</p>"
+          }
+        ]
+      }
+    },
+    "examples": [
+      {
+        "title": "Example call:",
+        "content": "{\n  \"jwt\": Encrypted_JWT_Token,\n}",
         "type": "json"
       }
     ],
@@ -783,7 +1058,7 @@
     "title": "Get users of a game",
     "name": "Get_game",
     "group": "Games",
-    "description": "<p>API used for getting the user of a game. Game id has to correspond to a game actually created.</p>",
+    "description": "<p>API used for getting the user of a game and if you have a reviewed them before. Game id has to correspond to a game actually created.</p>",
     "parameter": {
       "fields": {
         "Parameter": [
@@ -813,7 +1088,7 @@
       "examples": [
         {
           "title": "Success-Response:",
-          "content": " HTTP/1.1 200 OK\n{\n  \"user_id\":[ \"1\", \"2\", \"3\" ]\n }",
+          "content": "     HTTP/1.1 200 OK\n    {\n      \"user_id\":[ \"1\", \"2\", \"3\" ]\n\t\t\"ifReviewed\":[ \"1\", \"0\", \"0\" ]\n     }",
           "type": "json"
         }
       ]
@@ -1168,6 +1443,84 @@
     "version": "0.0.0",
     "filename": "api/extended_profile.js",
     "groupTitle": "Profiles"
+  },
+  {
+    "type": "get",
+    "url": "/reviews/setReview",
+    "title": "Set the review of a player for a particular game.",
+    "name": "Set_Review",
+    "group": "Reviews",
+    "description": "<p>API used for setting the review of a user of a game.</p>",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "int",
+            "optional": false,
+            "field": "id",
+            "description": "<p>of the game</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "int",
+            "optional": false,
+            "field": "rating",
+            "description": "<p>of the user</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "int",
+            "optional": false,
+            "field": "tags",
+            "description": "<p>describing the user</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "string",
+            "optional": false,
+            "field": "jwt",
+            "description": "<p>Valid JWT</p>"
+          }
+        ]
+      }
+    },
+    "error": {
+      "fields": {
+        "Error 4xx": [
+          {
+            "group": "Error 4xx",
+            "optional": false,
+            "field": "error",
+            "description": "<p>The error field has a string with an exact error</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": " HTTP/1.1 200 OK\n{\n  \"Review added succesfully.\"\"\n }",
+          "type": "json"
+        }
+      ]
+    },
+    "examples": [
+      {
+        "title": "Example call::",
+        "content": "{\n  \"gameId\": \"1\",\n  \"userId\": \"1\",\n  \"rating\": \"1\",\n  \"tags\": [\"1\", \"2\"],\n  \"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMjQwIiwiZW1haWwiOiJhZHNzYWRhQG1haWwuY29tIiwiaWF0IjoxNTA1MTU3NTA3LCJleHAiOjE1MDUxNTg0MDd9.r7h31S_wQTypjiSLh7TgeRZYnRNqJpCJCqUFoSUvxqI\"\n}",
+        "type": "json"
+      }
+    ],
+    "sampleRequest": [
+      {
+        "url": "/api/reviews/setReview"
+      }
+    ],
+    "version": "0.0.0",
+    "filename": "api/reviews_api.js",
+    "groupTitle": "Reviews"
   },
   {
     "type": "get",

@@ -103,7 +103,7 @@ router.post('/', function(req, res){
 * @apiName Get game
 * @apiGroup Games
 *
-* @apiDescription API used for getting the user of a game. Game id has to correspond to a game actually created.
+* @apiDescription API used for getting the user of a game and if you have a reviewed them before. Game id has to correspond to a game actually created.
 *
 * @apiParam {int} id of the game
 *
@@ -113,6 +113,7 @@ router.post('/', function(req, res){
 *      HTTP/1.1 200 OK
 *     {
 *       "user_id":[ "1", "2", "3" ]
+*		"ifReviewed":[ "1", "0", "0" ]
 *      }
 * @apiExample Example call::
 *   {
@@ -128,8 +129,14 @@ router.post('/', function(req, res){
      	tokenHelper.verifyToken(req.headers.token);
       databaseHelper.getUsers(gameid , (user_id) => {
       	if(user_id) {
-      		res.status(200).json(user_id);
-      		return;
+      		databaseHelper.getIfReviewed(user_id, (ifReviewed)=>{
+				if(ifReviewed){
+						res.status(200).json(user_id, ifReviewed);
+					}
+				else{
+					res.status(400).json("Getting the review status failed.")
+				}
+			});
       	}else{
       		res.status(400).json({'error': strings.usersFail});
       		return;

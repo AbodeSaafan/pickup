@@ -270,6 +270,34 @@ function getUsers (gameId, callback){
 		});
 }
 
+function getIfReviewed(reviewerId, users, callback){
+	var userReviewed = [];
+	for(let i = 0; i < users.length; i++){
+		var queryString = "SELECT * FROM(reviews) WHERE(reviewer_id == $1 AND user_id == $2)";
+		var queryPrams = [reviewerId, users[i]];
+
+		const pool = new pg.Pool({connectionString: conString});
+
+			pool.connect((err, client, done) => {
+				client.query(queryString, queryParams, (err, res) => {
+					if(err){
+						callback(false);
+					}
+					if(res.rows[0]){
+						userReviewed.push(1);
+					}
+					else{
+						userReviewed.push(0);
+					}
+					
+	  				done();
+					pool.end();
+				});
+			});
+	}
+	callback(userReviewed);
+}
+
 function addReview (userId, gameId, reviewerId, rating, tags, callback){
 		var queryString = "INSERT INTO reviews(user_id, game_id, reviewer_id, rating) VALUES($1, $2, $3, $4)";
 		var queryParams = [userId, gameId, reviewerId, rating];
