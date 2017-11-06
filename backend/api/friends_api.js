@@ -279,10 +279,20 @@ router.put('/accept', function (req, res) {
 router.get('/listFriends', function(req, res) {
 	try {
 		var tok = tokenHelper.verifyToken(req.query.jwt);
-
+		var friends = [];
 		databaseHelper.listAllFriends(tok.user_id, (listUserSuccess) => {
 			if (listUserSuccess) {
-				res.status(200).json({'status': 'success'}); return;
+				console.log(listUserSuccess)
+				for (i = 0; i < listUserSuccess.length; i++) {
+					var entry = {
+						user_id: listUserSuccess[i].user_id,
+						fname: listUserSuccess[i].fname,
+						lname: listUserSuccess[i].lname
+					}
+					friends.push(entry)
+				}
+				console.log(friends)
+				res.status(200).json({'friends': friends}); return;
 			}
 			else {
 				res.status(400).json({'error': strings.ListFriendFailed}); return;
@@ -326,10 +336,20 @@ router.get('/listFriends', function(req, res) {
 router.get('/listBlockedUsers', function(req, res) {
 	try {
 		var tok = tokenHelper.verifyToken(req.query.jwt);
-
+		var blockedUsers = [];
 		databaseHelper.listAllBlockedUsers(tok.user_id, (listBlockUserSuccess) => {
 			if (listBlockUserSuccess) {
-				res.status(200).json({'status': 'success'}); return;
+				console.log(listBlockUserSuccess)
+				for (i = 0; i < listBlockUserSuccess.length; i++) {
+					var entry = {
+						user_id: listBlockUserSuccess[i].user_id,
+						fname: listBlockUserSuccess[i].fname,
+						lname: listBlockUserSuccess[i].lname
+					}
+					blockedUsers.push(entry)
+				}
+				console.log(blockedUsers)
+				res.status(200).json({'blockedUsers': blockedUsers}); return;
 			}
 			else {
 				res.status(400).json({'error': strings.ListBlockUserRequestFailed}); return;
@@ -373,10 +393,9 @@ router.get('/listBlockedUsers', function(req, res) {
 router.get('/listFriendRequest', function(req, res) {
 	try {
 		var tok = tokenHelper.verifyToken(req.query.jwt);
-		var friendRequestSentToUser = {}
-		var friendRequestUserSent = {}
-		var counter_1 = 1;
-		var counter_2 = 1;
+		var friendRequestSentToUser = []
+		var friendRequestUserSent = []
+
 
 		databaseHelper.listAllFriendRequests(tok.user_id, (listFriendRequestSuccess) => {
 			if (listFriendRequestSuccess) {
@@ -390,8 +409,7 @@ router.get('/listFriendRequest', function(req, res) {
 							lname: listFriendRequestSuccess[i].lname,
 							status: listFriendRequestSuccess[i].status
 						}
-						friendRequestUserSent[counter_1] = entry;
-						counter_1 ++;
+						friendRequestUserSent.push(entry);
 
 					} else {
 						console.log('for user')
@@ -401,8 +419,8 @@ router.get('/listFriendRequest', function(req, res) {
 							lname: listFriendRequestSuccess[i].lname,
 							status: listFriendRequestSuccess[i].status
 						}
-						friendRequestSentToUser[counter_2] = entry;
-						counter_2 ++;
+						friendRequestSentToUser.push(entry);
+
 					}
 			}
 			var result =  {

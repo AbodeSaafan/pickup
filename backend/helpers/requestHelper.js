@@ -83,7 +83,7 @@ function validateAndCleanSearchRequest(data){
 		data.game_start_time = data.game_start_time - 0; // quick convert to int
 		searchValidate(data.game_duration, regex.gameDurationRegex, strings.invalidGameDuration, data, 'game_duration');
 		data.game_duration = data.game_duration - 0; // quick convert to int
-		searchValidateLocation(data.game_location, data, 'game_location');
+		data.game_location = searchValidateLocation(data.game_location, data, 'game_location');
 		searchValidateLocationRange(data.game_location_range, data, 'game_location_range');
 		data.game_location_range = data.game_location_range - 0;
 	}
@@ -170,10 +170,12 @@ function validateLocation(location){
 }
 
 function searchValidateLocation(location, obj, objParamString){
-	if(location == null){
+	if(!location || location == ""){
 		delete obj[objParamString]; return;
 	} else {
-		validateLocation(location);
+		var loc = JSON.parse(location);
+		validateLocation(loc);
+		return loc;
 	}
 }
 
@@ -205,7 +207,6 @@ function validateSkillOffset(skill){
 
 function validateSkill(skill){
 	if(!(skill && isInt(skill) && skill >= 0 && skill <=10)){
-		console.log('skill_level failed');
 		throw new Error(strings.invalidGameSkill);
 	}
 }
@@ -230,7 +231,7 @@ function searchValidateLocationRange(locationRange, obj, objParamString){
 		delete obj[objParamString]; return;
 	}
 
-	if(!(isInt(locationRange) && locationRange > 0 && location < 100)){
+	if(!(isInt(locationRange) && locationRange > 0 && locationRange < 100)){
 		throw new Error(strings.invalidGameLocationRange);
 	}
 }

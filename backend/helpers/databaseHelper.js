@@ -414,6 +414,11 @@ function sendFriendInvite(sender, receiver, callback) {
 		var queryString = "INSERT INTO friends(user_1, user_2, status) VALUES($1, $2, 'requested');";
 		var queryParams = [sender, receiver];
 
+		/*
+		console.log(sender)
+		console.log(receiver)
+		*/
+		
 		const pool = new pg.Pool({connectionString: conString});
 
 		pool.connect((err, client, done) => {
@@ -447,6 +452,11 @@ function checkFriendRequestValidation(sender, invited_friend, callback) {
 function acceptFriendInvite(invited_friend, sender, callback) {
 		var queryString = "UPDATE friends SET user_1 = $2, user_2 = $1, status = 'accepted' WHERE user_1 = $1 AND user_2 = $2";
 		var queryParams = [sender, invited_friend];
+
+		/*
+		console.log(invited_friend)
+		console.log(sender)
+		*/
 
 		const pool = new pg.Pool({connectionString: conString});
 
@@ -482,6 +492,11 @@ function checkFriendEntryValidationForDelete(sender, invited_friend, callback) {
 function declineFriend(sender, receiver, callback) {
 		var queryString = "DELETE FROM friends WHERE (user_1 = $1 OR user_1 = $2) AND (user_2 = $1 OR user_2 = $2)";
 		var queryParams = [sender, receiver];
+
+		/*
+		console.log(sender)
+		console.log(receiver)
+		*/
 
 		const pool = new pg.Pool({connectionString: conString});
 
@@ -520,6 +535,11 @@ function blockFriendUpdateEntry (person_blocking, blocked_user, callback) {
 	var queryString = "UPDATE friends SET user_1 = $1, user_2 = $2, status = 'blocked' WHERE (user_1 = $1 or user_1 = $2) AND (user_2 = $1 OR user_2 = $2)"
 	var queryParams = [person_blocking, blocked_user];
 
+	/*
+	console.log(person_blocking)
+	console.log(blocked_user)
+	*/
+
 	const pool = new pg.Pool({connectionString: conString});
 
 	pool.connect((err, client, done) => {
@@ -534,6 +554,11 @@ function blockFriendUpdateEntry (person_blocking, blocked_user, callback) {
 function blockFriendNewEntry (person_blocking, blocked_user, callback) {
 	var queryString = "INSERT INTO friends(user_1, user_2, status) VALUES($1, $2, 'blocked');"
 	var queryParams = [person_blocking, blocked_user]
+
+	/*
+	console.log(person_blocking)
+	console.log(blocked_user)
+	*/
 
 	const pool = new pg.Pool({connectionString: conString});
 	pool.connect((err, client, done) => {
@@ -742,10 +767,10 @@ function getConstraintQuery(search_request){
 	var query = "";
 	if(search_request.search_object == 'game'){
 		// Game param validation
-		query += "SELECT * FROM games WHERE ";
+		query += "SELECT * FROM games ";
 		var queryConstraint = [];
 		if(search_request.game_id && search_request.game_id > 0){
-			query += "game_id = " + search_request.game_id + " order by game_id DESC LIMIT " + search_request.results_max + ";";
+			query += "WHERE game_id = " + search_request.game_id + " order by game_id DESC LIMIT " + search_request.results_max + ";";
 			return query;
 		}
 		else if(search_request.game_name && search_request.game_name != ""){
@@ -770,11 +795,13 @@ function getConstraintQuery(search_request){
 			queryConstraint.push("end_time >= start_time + " + search_request.game_duration);
 		}
 		if(search_request.game_location && search_request.game_location_range && search_request.game_location_range > 0){
-			var search_point = util.format("(%d, %d)", search_request.game_location.lng, search_request.game_location.lat);
-			queryConstraint.push("(SELECT distance(point" + search_point +", point location)) > " + search_request.game_location_range);
+			var search_point = util.format("(%d, %d)", search_request.game_location.lat, search_request.game_location.lng);
+			queryConstraint.push("(SELECT distance(point" + search_point +", location)) <= " + search_request.game_location_range);
 		}
-
-		query += queryConstraint.join(' ') + " order by game_id DESC LIMIT " + search_request.results_max + ";";
+		if(queryConstraint.length > 0){
+			query += "WHERE " + queryConstraint.join(' ');
+		}
+		query += " order by game_id DESC LIMIT " + search_request.results_max + ";";
 
 	}
 	else if(search_request.search_object == 'user'){

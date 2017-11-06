@@ -30,8 +30,8 @@ function randomUsername(){
 
 function randomLocation(){
 	return {
-		lat: (Math.random() * (180 - (-180)) - 180).toFixed(3) * 1,
-		lng: (Math.random() * (180 - (-180)) - 180).toFixed(3) * 1
+		lng: (Math.random() * (180 - (-180)) - 180).toFixed(3) * 1,
+		lat: (Math.random() * (180 - (-180)) - 180).toFixed(3) * 1
 	}
 }
 
