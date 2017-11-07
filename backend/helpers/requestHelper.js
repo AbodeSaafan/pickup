@@ -1,5 +1,7 @@
 var regex = require('../api/universal_regex');
 var strings = require('../api/universal_strings');
+var databaseHelper = require('../helpers/databaseHelper');
+var async = require('async')
 
 function validateAndCleanRegisterRequest(data){
 	validate(data.username, regex.usernameRegex, strings.invalidUsername);
@@ -105,6 +107,21 @@ function validateAndCleanFriendId (data) {
 	return data;
 }
 
+function filterGames(games, user_id, finished) {
+	var final_results = []
+	async.forEachOf(games, function (game, i, callback) {
+		databaseHelper.ensureGameIsJoinableByPlayer(game.game_id, user_id, (playable) => {
+			if(playable){
+				final_results.push(game);
+			}
+			callback();
+		});
+
+	}, function () {
+		finished(final_results);
+	});
+}
+
 function jsonError(Error){
     return {'error': Error.toString().substring(7)};
 }
@@ -120,6 +137,7 @@ module.exports = {
     validateAndCleanLeaveRequest,
 	validateAndCleanUpdateExtendedProfileRequest,
 	validateAndCleanFriendId,
+	filterGames,
     jsonError,
 }
 

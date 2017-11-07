@@ -1,11 +1,10 @@
 // Search api testing
 var frisby = require('frisby');
-var request = require('request');
 var strings = require('../api/universal_strings');
 var testHelper = require('./testHelper');
 const util = require('util');
 
-frisby.create('Searching for game using game id/name/type/min_skill/max_skill: Creating a user to create game')
+frisby.create('Searching for game using game id/name/type/min_skill/max_skill/total players/location and range/start time/duration: Creating a user to create game')
 .post(testHelper.registerEndpoint, testHelper.createGenericUser())
 .expectStatus(200)
 .expectBodyContains('token')
@@ -13,8 +12,8 @@ frisby.create('Searching for game using game id/name/type/min_skill/max_skill: C
 	var gameDetails = testHelper.createUnrestrictedGame(user.token, 100, 200);
 	frisby.create('Creating the game')
 	.post(testHelper.createGameEndpoint, gameDetails)
-	.expectStatus(200)
 	.expectBodyContains('game_id')
+	.waits(200)
 	.afterJSON(function (game) {
 		frisby.create("Create a user to search for the game")
 		.post(testHelper.registerEndpoint, testHelper.createGenericUser())
