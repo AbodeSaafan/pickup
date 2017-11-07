@@ -8,6 +8,7 @@ var registerEndpoint = baseApi + '/register';
 var loginEndpoint = baseApi + '/login';
 var extendedProfileEndpoint = baseApi + '/extended_profile';
 var createGameEndpoint = baseApi + '/games';
+var getUsersOfGameEndpoint = baseApi + '/games/getUsers';
 var joinGameEndpoint = baseApi + '/games/%s/join?jwt=%s';
 var leaveGameEndpoint = baseApi + '/games/%s/leave?jwt=%s';
 var adminProfileEndpoint = baseApi + '/profile';
@@ -133,6 +134,13 @@ function createGenericFriendRequest (jwt, userID) {
 	}
 }
 
+function createGenericUsersRequest (jwt, gameId){
+	return{
+		jwt: jwt,
+		game_id: gameId
+	}
+}
+
 module.exports = {
 	refreshEndpoint,
 	registerEndpoint,
@@ -158,5 +166,7 @@ module.exports = {
 	listBlockedUsersEndpoint,
 	searchEndpoint,
 	createUnrestrictedGame,
-	listFriendRequestEndpoint
+	listFriendRequestEndpoint,
+	getUsersOfGameEndpoint,
+	createGenericUsersRequest
 }

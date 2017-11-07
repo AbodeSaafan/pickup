@@ -104,6 +104,31 @@ frisby.create('Register a user using the API with valid credentials to use for c
 .toss();
 
 /*
+* Get users API test
+* */
+
+// Getting users of a game with valid input and successful response
+/*frisby.create('Joining a game: Creating a user to create a game')
+.post(testHelper.registerEndpoint, testHelper.createGenericUserFixedBirth())
+.expectStatus(200)
+.expectBodyContains('token')
+.afterJSON(function (user) {
+	frisby.create('Creating a new game')
+	.post(testHelper.createGameEndpoint, testHelper.createGenericGame(user.token, 100, 200))
+	.expectStatus(200)
+	.expectBodyContains('game_id')
+	.afterJSON(function (game) {
+		frisby.create('Get the users of the game')
+		.post(testHelper.getUsersOfGameEndpoint, testHelper.createGenericUsersRequest(user.token, game))
+		.expectBodyContains('user_id')
+		.expectBodyContains('ifReviewed')
+		.expectStatus(200)
+		.toss();
+	})
+	.toss();
+})
+.toss();*/
+/*
 * Join game API test
 * */
 

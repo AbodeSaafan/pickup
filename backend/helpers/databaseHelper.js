@@ -762,7 +762,8 @@ module.exports = {
 	listAllFriends,
 	listAllBlockedUsers,
 	searchObjects,
-	listAllFriendRequests
+	listAllFriendRequests,
+	getIfReviewed
 }
 
 //////////////// Helpers ////////////////
