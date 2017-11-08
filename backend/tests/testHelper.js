@@ -168,7 +168,7 @@ module.exports = {
 	searchEndpoint,
 	createUnrestrictedGame,
 	listFriendRequestEndpoint,
-	deleteAccountEndpoint
+	deleteAccountEndpoint,
 	getUsersOfGameEndpoint,
 	createGenericUsersRequest
 }
