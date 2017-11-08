@@ -1088,7 +1088,7 @@ define({ "api": [
       "examples": [
         {
           "title": "Success-Response:",
-          "content": "     HTTP/1.1 200 OK\n    {\n      \"user_id\":[ \"1\", \"2\", \"3\" ]\n\t\t\"ifReviewed\":[ \"1\", \"0\", \"0\" ]\n     }",
+          "content": "     HTTP/1.1 200 OK\n    {\n\t\t\"ifReviewed\":[ {1, true}, {4, false}]\n     }",
           "type": "json"
         }
       ]
@@ -1096,7 +1096,7 @@ define({ "api": [
     "examples": [
       {
         "title": "Example call::",
-        "content": "{\n  \"game_id\": \"1\",\n  \"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMjQwIiwiZW1haWwiOiJhZHNzYWRhQG1haWwuY29tIiwiaWF0IjoxNTA1MTU3NTA3LCJleHAiOjE1MDUxNTg0MDd9.r7h31S_wQTypjiSLh7TgeRZYnRNqJpCJCqUFoSUvxqI\"\n}",
+        "content": "  {\n    \"game_id\": \"1\",\n    \"jwt\": Encrypted_JWT_Token\n\t}",
         "type": "json"
       }
     ],
@@ -1509,7 +1509,7 @@ define({ "api": [
     "examples": [
       {
         "title": "Example call::",
-        "content": "{\n  \"gameId\": \"1\",\n  \"userId\": \"1\",\n  \"rating\": \"1\",\n  \"tags\": [\"1\", \"2\"],\n  \"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMjQwIiwiZW1haWwiOiJhZHNzYWRhQG1haWwuY29tIiwiaWF0IjoxNTA1MTU3NTA3LCJleHAiOjE1MDUxNTg0MDd9.r7h31S_wQTypjiSLh7TgeRZYnRNqJpCJCqUFoSUvxqI\"\n}",
+        "content": "{\n  \"gameId\": \"1\",\n  \"userId\": \"1\",\n  \"rating\": \"1\",\n  \"tags\": [\"1\", \"2\"],\n  \"jwt\": Encrypted_JWT_Token\n}",
         "type": "json"
       }
     ],
