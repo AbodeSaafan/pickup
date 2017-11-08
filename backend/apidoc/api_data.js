@@ -1054,7 +1054,7 @@ define({ "api": [
   },
   {
     "type": "get",
-    "url": "/games/:gameid",
+    "url": "/games/getUsers",
     "title": "Get users of a game",
     "name": "Get_game",
     "group": "Games",
@@ -1102,7 +1102,7 @@ define({ "api": [
     ],
     "sampleRequest": [
       {
-        "url": "/api/games/:gameid"
+        "url": "/api/games/getUsers"
       }
     ],
     "version": "0.0.0",
