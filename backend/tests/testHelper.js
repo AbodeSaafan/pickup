@@ -19,6 +19,7 @@ var listFriendsEndpoint = baseApi + '/friends/listFriends'
 var listBlockedUsersEndpoint = baseApi + '/friends/listBlockedUsers'
 var listFriendRequestEndpoint = baseApi + '/friends/listFriendRequest'
 var searchEndpoint = baseApi + '/search';
+var deleteAccountEndpoint = baseApi + '/delete'
 
 function randomEmail(){
 	return crypto.randomBytes(4).toString('hex') + "@mail.com";
@@ -158,5 +159,6 @@ module.exports = {
 	listBlockedUsersEndpoint,
 	searchEndpoint,
 	createUnrestrictedGame,
-	listFriendRequestEndpoint
+	listFriendRequestEndpoint,
+	deleteAccountEndpoint
 }

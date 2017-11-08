@@ -41,11 +41,15 @@ router.delete('/', function(req, res){
         databaseHelper.checkPassword(user.email, user.password, (refreshToken, userId) => {
 		if (refreshToken != null) {
 			// User verified, ready to delete
-			
-			return;
+			databaseHelper.disableAccount(userId, (success) => {
+				if(success){
+					res.status(200).json(); return;
+				} else {
+					res.status(400).json({'error': strings.deleteFailed}); return; 
+				}	
+			});
 		} else {
-			res.status(400).json({'error': strings.loginError});
-			return;
+			res.status(400).json({'error': strings.loginError}); return;
 		}
 	})
     }

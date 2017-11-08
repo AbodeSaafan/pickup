@@ -13,7 +13,6 @@ frisby.create('Searching for game using game id/name/type/min_skill/max_skill/to
 	frisby.create('Creating the game')
 	.post(testHelper.createGameEndpoint, gameDetails)
 	.expectBodyContains('game_id')
-	.waits(200)
 	.afterJSON(function (game) {
 		frisby.create("Create a user to search for the game")
 		.post(testHelper.registerEndpoint, testHelper.createGenericUser())

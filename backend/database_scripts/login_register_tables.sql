@@ -7,5 +7,6 @@ CREATE TABLE IF NOT EXISTS Users (
 	gender varchar(255),
 	email varchar(255) UNIQUE NOT NULL,
 	password varchar(255),
-	salt varchar(255)
+	salt varchar(255),
+	disabled boolean DEFAULT false
 );

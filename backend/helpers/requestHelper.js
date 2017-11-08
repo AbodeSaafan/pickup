@@ -122,6 +122,12 @@ function filterGames(games, user_id, finished) {
 	});
 }
 
+function validateAndCleanDeleteAccountRequest(data){
+	validate(data.password, regex.passwordRegex, strings.invalidPassword);
+	validate(data.email, regex.emailRegex, strings.invalidEmail);
+	return data;
+}
+
 function jsonError(Error){
     return {'error': Error.toString().substring(7)};
 }
@@ -138,7 +144,8 @@ module.exports = {
 	validateAndCleanUpdateExtendedProfileRequest,
 	validateAndCleanFriendId,
 	filterGames,
-    jsonError,
+	validateAndCleanDeleteAccountRequest,
+    jsonError
 }
 
 //////////////// Helpers ////////////////

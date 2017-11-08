@@ -52,6 +52,7 @@ var ListFriendFailed = "List all friends have failed"
 var ListBlockUserRequestFailed = "List all blocked users have failed"
 var emptySearchResults = "Nothing matches your search"
 var listFriendRequestFailed = "Listing all friend requests has failed"
+var deleteFailed = "Delete account failed"
 
 module.exports = {
 	uniqueEmailError,
@@ -107,5 +108,6 @@ module.exports = {
 	ListFriendFailed,
 	ListBlockUserRequestFailed,
 	emptySearchResults,
-	listFriendRequestFailed
+	listFriendRequestFailed,
+	deleteFailed
 }

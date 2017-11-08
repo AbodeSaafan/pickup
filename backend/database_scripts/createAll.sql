@@ -9,4 +9,5 @@ BEGIN;
 \i invite_table.sql
 \i triggers.sql
 \i search.sql
+\i stored_procedures.sql
 COMMIT;

@@ -6,7 +6,7 @@ var md5 = require('md5');
 const util = require('util');
 
 function checkEmailUniqueness(user, callback){
-		var queryString = "SELECT * FROM users WHERE email = '" + user.email +"';";
+		var queryString = "SELECT * FROM users WHERE email = '" + user.email +"' AND disabled = false;";
 
 		const pool = new pg.Pool({connectionString: conString});
 
@@ -18,6 +18,7 @@ function checkEmailUniqueness(user, callback){
 			});
 		});
 }
+
 
 function checkUsernameUniqueness(user, callback){
 		var queryString = "SELECT * FROM users WHERE username = $1;";
@@ -84,7 +85,7 @@ function getUserId(email, callback){
 }
 
 function getUserRowById(userId, callback){
-		var queryString = "SELECT user_id, username, fname, lname, dob, gender, email FROM users WHERE user_id = $1";
+		var queryString = "SELECT user_id, username, fname, lname, dob, gender, email FROM users WHERE user_id = $1 AND disbaled = false";
 		var queryParams = [userId];
 
 		const pool = new pg.Pool({connectionString: conString});
@@ -726,6 +727,20 @@ function listAllFriendRequests (user, callback) {
 	});
 }
 
+function disableAccount(user_id, callback){
+	var queryString = "SELECT * FROM delete_user($1);";
+	var queryParams = [user_id];
+
+	const pool = new pg.Pool({connectionString: conString});
+	pool.connect((err, client, done) => {
+		client.query(queryString, queryParams, (err, res) => {
+			callback(!err && res);
+			done();
+			pool.end();
+		});
+	});
+}
+
 
 module.exports = {
 	checkEmailUniqueness,
@@ -762,7 +777,8 @@ module.exports = {
 	listAllFriends,
 	listAllBlockedUsers,
 	searchObjects,
-	listAllFriendRequests
+	listAllFriendRequests,
+	disableAccount
 }
 
 //////////////// Helpers ////////////////
@@ -827,7 +843,7 @@ function getConstraintQuery(search_request){
 			queryConstraint.push("(SELECT distance(point" + search_point +", location)) <= " + search_request.game_location_range);
 		}
 		if(queryConstraint.length > 0){
-			query += "WHERE " + queryConstraint.join(' ');
+			query += "WHERE " + queryConstraint.join(' and ');
 		}
 		query += " order by game_id DESC LIMIT " + search_request.results_max + ";";
 

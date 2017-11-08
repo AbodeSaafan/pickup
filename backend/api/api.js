@@ -10,6 +10,7 @@ router.use('/games/', require('./games_api'));
 router.use('/reviews/', require('./reviews_api'));
 router.use('/search/', require('./search_api'));
 router.use('/friends/', require('./friends_api'));
+router.use('/delete/', require('./delete_account_api'));
 // Add more statements like the above to include other api files
 
 
