@@ -778,7 +778,8 @@ module.exports = {
 	listAllBlockedUsers,
 	searchObjects,
 	listAllFriendRequests,
-	disableAccount
+	disableAccount,
+	getIfReviewed
 }
 
 //////////////// Helpers ////////////////

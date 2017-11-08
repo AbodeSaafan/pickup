@@ -99,7 +99,7 @@ router.post('/', function(req, res){
 });
 
 /**
-* @api {get} /games/:gameid Get users of a game
+* @api {get} /games/getUsers Get users of a game
 * @apiName Get game
 * @apiGroup Games
 *
@@ -121,17 +121,17 @@ router.post('/', function(req, res){
 *     "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMjQwIiwiZW1haWwiOiJhZHNzYWRhQG1haWwuY29tIiwiaWF0IjoxNTA1MTU3NTA3LCJleHAiOjE1MDUxNTg0MDd9.r7h31S_wQTypjiSLh7TgeRZYnRNqJpCJCqUFoSUvxqI"
 *   }
 *
-* @apiSampleRequest /api/games/:gameid
+* @apiSampleRequest /api/games/getUsers
 */
- router.get('/:game_id', function(req, res){
-	var gameid = req.params.game_id;
+ router.get('/getUsers', function(req, res){
+	var gameid = req.query.game_id;
 	try {
-     	tokenHelper.verifyToken(req.headers.token);
-      databaseHelper.getUsers(gameid , (user_id) => {
-      	if(user_id) {
-      		databaseHelper.getIfReviewed(user_id, (ifReviewed)=>{
+		var tok = tokenHelper.verifyToken(req.query.jwt);
+      databaseHelper.getUsers(gameid , (userids) => {
+      	if(userids) {
+      		databaseHelper.getIfReviewed(tok.user_id, userids, (ifReviewed)=>{
 				if(ifReviewed){
-						res.status(200).json(user_id, ifReviewed);
+						res.status(200).json(userids, ifReviewed);
 					}
 				else{
 					res.status(400).json("Getting the review status failed.")
@@ -144,7 +144,6 @@ router.post('/', function(req, res){
       })
     }
     catch(err){
-
 	 res.status(400).json({'error': strings.invalidJwt});
 	 return;
    }
