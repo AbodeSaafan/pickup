@@ -21,6 +21,7 @@ var listBlockedUsersEndpoint = baseApi + '/friends/listBlockedUsers'
 var listFriendRequestEndpoint = baseApi + '/friends/listFriendRequest'
 var searchEndpoint = baseApi + '/search';
 var deleteAccountEndpoint = baseApi + '/delete'
+var setReviewEndpoint = baseApi + '/reviews/setReview';
 
 function randomEmail(){
 	return crypto.randomBytes(4).toString('hex') + "@mail.com";
@@ -137,9 +138,20 @@ function createGenericFriendRequest (jwt, userID) {
 
 function createGenericUsersRequest (jwt, gameId){
 	return{
-		jwt: jwt,
-		game_id: gameId
+		game_id: gameId,
+		jwt: jwt
 	}
+}
+
+function createGenericReviewRequest(jwt, gameId, userId){
+	return{
+		gameId: gameId,
+		userId: userId,
+		rating: 1,
+		tags: [1,1],
+		jwt: jwt
+	}
+
 }
 
 module.exports = {
@@ -170,5 +182,7 @@ module.exports = {
 	listFriendRequestEndpoint,
 	deleteAccountEndpoint,
 	getUsersOfGameEndpoint,
-	createGenericUsersRequest
+	createGenericUsersRequest,
+	setReviewEndpoint,
+	createGenericReviewRequest
 }

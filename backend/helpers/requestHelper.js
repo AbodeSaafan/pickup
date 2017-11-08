@@ -107,6 +107,18 @@ function validateAndCleanFriendId (data) {
 	return data;
 }
 
+function getIfReviewed(users, reviewerId, finished){
+	var final_results = []
+	async.forEachOf(users, function(user, i, callback){
+		databaseHelper.getIfReviewed(users.user_id, reviewerId, (reviewed)=>{
+				final_results.push({"user_id": users[i].user_id, "reviewed" : reviewed});
+				callback();
+		})
+	}, function () {
+		finished(final_results);
+	});
+}
+
 function filterGames(games, user_id, finished) {
 	var final_results = []
 	async.forEachOf(games, function (game, i, callback) {
@@ -145,7 +157,8 @@ module.exports = {
 	validateAndCleanFriendId,
 	filterGames,
 	validateAndCleanDeleteAccountRequest,
-    jsonError
+	jsonError,
+	getIfReviewed,
 }
 
 //////////////// Helpers ////////////////

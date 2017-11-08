@@ -108,7 +108,7 @@ frisby.create('Register a user using the API with valid credentials to use for c
 * */
 
 // Getting users of a game with valid input and successful response
-/*frisby.create('Joining a game: Creating a user to create a game')
+frisby.create('Joining a game: Creating a user to create a game')
 .post(testHelper.registerEndpoint, testHelper.createGenericUserFixedBirth())
 .expectStatus(200)
 .expectBodyContains('token')
@@ -118,16 +118,31 @@ frisby.create('Register a user using the API with valid credentials to use for c
 	.expectStatus(200)
 	.expectBodyContains('game_id')
 	.afterJSON(function (game) {
-		frisby.create('Get the users of the game')
-		.post(testHelper.getUsersOfGameEndpoint, testHelper.createGenericUsersRequest(user.token, game))
-		.expectBodyContains('user_id')
-		.expectBodyContains('ifReviewed')
+		var gameId = game.game_id;
+		frisby.create("Creating a new user to join the game")
+		.post(testHelper.registerEndpoint, testHelper.createGenericUserFixedBirth())
 		.expectStatus(200)
+		.afterJSON(function (newUser) {
+			frisby.create('Join a game using the API with valid credentials')
+			.put(util.format(testHelper.joinGameEndpoint, gameId, newUser.token), newUser.token)
+			.expectStatus(200)
+			.expectBodyContains('game_id')
+			.afterJSON(function (game) {
+				frisby.create('Get the users of the game')
+				.get(testHelper.getUsersOfGameEndpoint+"?jwt="+ user.token +"&game_id="+game.game_id)
+				.inspectResponse()
+				//.expectBodyContains('user_id')
+				//.expectBodyContains('ifReviewed')
+				.expectStatus(200)
+				.toss();
+			})
+			.toss();
+		})
 		.toss();
 	})
 	.toss();
 })
-.toss();*/
+.toss();
 /*
 * Join game API test
 * */

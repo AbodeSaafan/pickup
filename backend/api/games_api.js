@@ -112,26 +112,26 @@ router.post('/', function(req, res){
 * @apiSuccessExample Success-Response:
 *      HTTP/1.1 200 OK
 *     {
-*       "user_id":[ "1", "2", "3" ]
-*		"ifReviewed":[ "1", "0", "0" ]
+*		"ifReviewed":[ {1, true}, {4, false}]
 *      }
 * @apiExample Example call::
 *   {
 *     "game_id": "1",
-*     "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMjQwIiwiZW1haWwiOiJhZHNzYWRhQG1haWwuY29tIiwiaWF0IjoxNTA1MTU3NTA3LCJleHAiOjE1MDUxNTg0MDd9.r7h31S_wQTypjiSLh7TgeRZYnRNqJpCJCqUFoSUvxqI"
-*   }
+*     "jwt": Encrypted_JWT_Token
+*	}
 *
 * @apiSampleRequest /api/games/getUsers
 */
  router.get('/getUsers', function(req, res){
-	var gameid = req.query.game_id;
 	try {
+		var gameid = req.query.game_id;
 		var tok = tokenHelper.verifyToken(req.query.jwt);
       databaseHelper.getUsers(gameid , (userids) => {
       	if(userids) {
-      		databaseHelper.getIfReviewed(tok.user_id, userids, (ifReviewed)=>{
+      		requestHelper.getIfReviewed(userids, tok.user_id, (ifReviewed)=>{
 				if(ifReviewed){
-						res.status(200).json(userids, ifReviewed);
+						console.log(ifReviewed)
+						res.status(200).json(ifReviewed);
 					}
 				else{
 					res.status(400).json("Getting the review status failed.")

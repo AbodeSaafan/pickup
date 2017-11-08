@@ -30,7 +30,7 @@ var databaseHelper = require('../helpers/databaseHelper');
 *     "userId": "1",
 *     "rating": "1",
 *     "tags": ["1", "2"],
-*     "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMjQwIiwiZW1haWwiOiJhZHNzYWRhQG1haWwuY29tIiwiaWF0IjoxNTA1MTU3NTA3LCJleHAiOjE1MDUxNTg0MDd9.r7h31S_wQTypjiSLh7TgeRZYnRNqJpCJCqUFoSUvxqI"
+*     "jwt": Encrypted_JWT_Token
 *   }
 *
 * @apiSampleRequest /api/reviews/setReview

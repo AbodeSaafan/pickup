@@ -255,13 +255,12 @@ function updateExtendedUser (userId, skill_level, location, callback) {
 function getUsers (gameId, callback){
 	var queryString = "SELECT user_id FROM gamers WHERE game_id = $1;";
 	var queryParams = [gameId];
-
 	const pool = new pg.Pool({connectionString: conString});
 
 		pool.connect((err, client, done) => {
 			client.query(queryString, queryParams, (err, res) => {
-  				if(!err && res.rows.user_id){
-  					callback(res.rows.user_id);
+  				if(!err && res.rows){
+  					callback(res.rows);
   				} else {
 					callback(false);
   				}
@@ -271,33 +270,24 @@ function getUsers (gameId, callback){
 		});
 }
 
-function getIfReviewed(reviewerId, users, callback){
-	var userReviewed = [];
-	for(let i = 0; i < users.length; i++){
-		var queryString = "SELECT * FROM(reviews) WHERE(reviewer_id == $1 AND user_id == $2)";
-		var queryPrams = [reviewerId, users[i]];
-
+function getIfReviewed(reviewerId, user, callback){
+		var queryString = "SELECT * FROM reviews WHERE(reviewer_id = $1 AND user_id = $2);";
+		var queryParams = [reviewerId, user];
 		const pool = new pg.Pool({connectionString: conString});
-
-			pool.connect((err, client, done) => {
-				client.query(queryString, queryParams, (err, res) => {
-					if(err){
-						callback(false);
-					}
-					if(res.rows[0]){
-						userReviewed.push(1);
-					}
-					else{
-						userReviewed.push(0);
-					}
-					
-	  				done();
-					pool.end();
-				});
+		pool.connect((err, client, done) => {
+			client.query(queryString, queryParams, (err, res) => {
+				if(res && res.rows && res.rows[0]){
+					callback(true);
+				}
+				else{
+					callback(false)
+				}
+	  			done();
+				pool.end();
 			});
-	}
-	callback(userReviewed);
+		});
 }
+
 
 function addReview (userId, gameId, reviewerId, rating, tags, callback){
 		var queryString = "INSERT INTO reviews(user_id, game_id, reviewer_id, rating) VALUES($1, $2, $3, $4)";
