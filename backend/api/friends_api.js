@@ -282,7 +282,6 @@ router.get('/listFriends', function(req, res) {
 		var friends = [];
 		databaseHelper.listAllFriends(tok.user_id, (listUserSuccess) => {
 			if (listUserSuccess) {
-				console.log(listUserSuccess)
 				for (i = 0; i < listUserSuccess.length; i++) {
 					var entry = {
 						user_id: listUserSuccess[i].user_id,
@@ -291,7 +290,6 @@ router.get('/listFriends', function(req, res) {
 					}
 					friends.push(entry)
 				}
-				console.log(friends)
 				res.status(200).json({'friends': friends}); return;
 			}
 			else {
@@ -339,7 +337,6 @@ router.get('/listBlockedUsers', function(req, res) {
 		var blockedUsers = [];
 		databaseHelper.listAllBlockedUsers(tok.user_id, (listBlockUserSuccess) => {
 			if (listBlockUserSuccess) {
-				console.log(listBlockUserSuccess)
 				for (i = 0; i < listBlockUserSuccess.length; i++) {
 					var entry = {
 						user_id: listBlockUserSuccess[i].user_id,
@@ -348,7 +345,6 @@ router.get('/listBlockedUsers', function(req, res) {
 					}
 					blockedUsers.push(entry)
 				}
-				console.log(blockedUsers)
 				res.status(200).json({'blockedUsers': blockedUsers}); return;
 			}
 			else {
@@ -399,10 +395,8 @@ router.get('/listFriendRequest', function(req, res) {
 
 		databaseHelper.listAllFriendRequests(tok.user_id, (listFriendRequestSuccess) => {
 			if (listFriendRequestSuccess) {
-				console.log(listFriendRequestSuccess)
 				for (i = 0; i < listFriendRequestSuccess.length; i++) {
 					if (listFriendRequestSuccess[i].user_1 == tok.user_id) {
-						console.log('by user')
 						var entry = {
 							user_id: listFriendRequestSuccess[i].user_2,
 							fname: listFriendRequestSuccess[i].fname,
@@ -412,7 +406,6 @@ router.get('/listFriendRequest', function(req, res) {
 						friendRequestUserSent.push(entry);
 
 					} else {
-						console.log('for user')
 						var entry = {
 							user_id: listFriendRequestSuccess[i].user_1,
 							fname: listFriendRequestSuccess[i].fname,
@@ -427,7 +420,6 @@ router.get('/listFriendRequest', function(req, res) {
 				'ByUser': friendRequestUserSent,
 				'ForUser': friendRequestSentToUser
 			}
-			console.log(result)
 			res.status(200).json(result); return;
 		}
 		else {

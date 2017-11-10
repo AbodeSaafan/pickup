@@ -48,7 +48,6 @@ router.get('/', function(req, res){
 	
 	databaseHelper.getRefreshToken(user.user_id, req.query.refresh, (success) => {
 		if(!success){
-			console.log("No refresh token found");
 			res.status(400).json({'error' : strings.noRefreshToken}); return;
 		}
 
@@ -98,7 +97,6 @@ router.delete('/', function(req, res){
 	
 	databaseHelper.deleteRefreshToken(user.user_id, req.body.refresh, (success) => {
 		if(!success){
-			console.log("No refresh token found");
 			res.status(400).json({'error' : "The refresh token you want to delete does not exist"}); return;
 		} else{
 			res.status(200).json({'status': "Successful refresh token delete"}); return;	

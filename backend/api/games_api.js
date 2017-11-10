@@ -130,7 +130,6 @@ router.post('/', function(req, res){
       	if(userids) {
       		requestHelper.getIfReviewed(userids, tok.user_id, (ifReviewed)=>{
 				if(ifReviewed){
-						console.log(ifReviewed)
 						res.status(200).json(ifReviewed);
 					}
 				else{

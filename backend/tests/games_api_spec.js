@@ -130,7 +130,6 @@ frisby.create('Joining a game: Creating a user to create a game')
 			.afterJSON(function (game) {
 				frisby.create('Get the users of the game')
 				.get(testHelper.getUsersOfGameEndpoint+"?jwt="+ user.token +"&game_id="+game.game_id)
-				.inspectResponse()
 				//.expectBodyContains('user_id')
 				//.expectBodyContains('ifReviewed')
 				.expectStatus(200)
