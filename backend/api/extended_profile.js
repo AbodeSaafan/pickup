@@ -1,9 +1,9 @@
-var express = require('express');
+var express = require("express");
 var router = express.Router();
-var tokenHelper = require('../helpers/tokenHelper');
-var requestHelper = require('../helpers/requestHelper');
-var databaseHelper = require('../helpers/databaseHelper');
-var strings = require('./universal_strings');
+var tokenHelper = require("../helpers/tokenHelper");
+var requestHelper = require("../helpers/requestHelper");
+var databaseHelper = require("../helpers/databaseHelper");
+var strings = require("./universal_strings");
 
 /**
 * @api {get} /extendedProfile Get User's extendedProfile
@@ -38,7 +38,7 @@ var strings = require('./universal_strings');
 * @apiSampleRequest /api/extendedProfile
 */
 
-router.get('/', function (req, res) {
+router.get("/", function (req, res) {
 	try {
 		var tok = tokenHelper.verifyToken(req.query.jwt);
 
@@ -46,9 +46,9 @@ router.get('/', function (req, res) {
 			if(ext_profile) {
 				res.status(200).json(ext_profile); return;
 			}else{
-				res.status(400).json({'error': strings.userIdFail}); return;
+				res.status(400).json({"error": strings.userIdFail}); return;
 			}
-		})
+		});
 	}
 
 	catch(err){
@@ -86,7 +86,7 @@ router.get('/', function (req, res) {
 * @apiSampleRequest /api/extendedProfile
 */
 
-router.put('/', function (req, res) {
+router.put("/", function (req, res) {
 	try {
 		var details = requestHelper.validateAndCleanUpdateExtendedProfileRequest(req.body);
 
@@ -103,13 +103,13 @@ router.put('/', function (req, res) {
 					if (update) {
 						res.status(200).json(); return;
 					} else {
-						res.status(400).json({'error': strings.UpdateFailed}); return;
+						res.status(400).json({"error": strings.UpdateFailed}); return;
 					}
-				})
+				});
 			} else {
-				res.status(400).json({'error': strings.userIdFail}); return;
+				res.status(400).json({"error": strings.userIdFail}); return;
 			}
-		})
+		});
 
 	} catch (err) {
 		res.status(400).json(requestHelper.jsonError(err)); return;

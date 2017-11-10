@@ -1,255 +1,256 @@
-var pg = require('pg');
-var env = process.env.NODE_ENV || 'dev';
+var pg = require("pg");
+// eslint-disable-next-line no-unused-vars
+var env = process.env.NODE_ENV || "dev";
 const conString = process.env.DATABASE_URL ? process.env.DATABASE_URL : "postgres://postgres:123@localhost:5432/pickup";
-var crypto = require('crypto');
-var md5 = require('md5');
-const util = require('util');
+var crypto = require("crypto");
+var md5 = require("md5");
+const util = require("util");
 
 function checkEmailUniqueness(user, callback){
-		var queryString = "SELECT * FROM users WHERE email = '" + user.email +"' AND disabled = false;";
+	var queryString = "SELECT * FROM users WHERE email = '" + user.email +"' AND disabled = false;";
 
-		const pool = new pg.Pool({connectionString: conString});
+	const pool = new pg.Pool({connectionString: conString});
 
-		pool.connect((err, client, done) => {
-			client.query(queryString, (err, res) => {
-  				callback(!(res.rows[0] || err));
-  				done();
-				pool.end();
-			});
+	pool.connect((err, client, done) => {
+		client.query(queryString, (err, res) => {
+			callback(!(res.rows[0] || err));
+			done();
+			pool.end();
 		});
+	});
 }
 
 
 function checkUsernameUniqueness(user, callback){
-		var queryString = "SELECT * FROM users WHERE username = $1;";
-		var queryParams = [user.username];
+	var queryString = "SELECT * FROM users WHERE username = $1;";
+	var queryParams = [user.username];
 
-		const pool = new pg.Pool({connectionString: conString});
+	const pool = new pg.Pool({connectionString: conString});
 
-		pool.connect((err, client, done) => {
-			client.query(queryString, queryParams, (err, res) => {
-  				callback(!(res.rows[0] || err));
-  				done();
-				pool.end();
-			});
+	pool.connect((err, client, done) => {
+		client.query(queryString, queryParams, (err, res) => {
+			callback(!(res.rows[0] || err));
+			done();
+			pool.end();
 		});
+	});
 }
 
 function registerUser(user, callback){
-		var queryString = "INSERT INTO users(username, fname, lname, dob, gender, email, password, salt) VALUES($1, $2, $3, $4, $5, $6, $7, $8)";
-		var queryParams = [user.username, user.fname, user.lname, user.dob, user.gender, user.email, user.hashedPassword, user.salt];
+	var queryString = "INSERT INTO users(username, fname, lname, dob, gender, email, password, salt) VALUES($1, $2, $3, $4, $5, $6, $7, $8)";
+	var queryParams = [user.username, user.fname, user.lname, user.dob, user.gender, user.email, user.hashedPassword, user.salt];
 
-		const pool = new pg.Pool({connectionString: conString});
+	const pool = new pg.Pool({connectionString: conString});
 
-		pool.connect((err, client, done) => {
-			client.query(queryString, queryParams, (err, res) => {
-  				callback(!err);
-  				done();
-				pool.end();
-			});
+	pool.connect((err, client, done) => {
+		client.query(queryString, queryParams, (err, res) => {
+			callback(!err && res);
+			done();
+			pool.end();
 		});
+	});
 }
 
 function updateUser(user, callback){
-        var queryString = "UPDATE users SET fname = $2, lname = $3, dob = $4 where user_id = $1";
-        var queryParams = [user['user_id'], user['fname'], user['lname'], user['dob']];
+	var queryString = "UPDATE users SET fname = $2, lname = $3, dob = $4 where user_id = $1";
+	var queryParams = [user["user_id"], user["fname"], user["lname"], user["dob"]];
 
-        const pool = new pg.Pool({connectionString: conString});
+	const pool = new pg.Pool({connectionString: conString});
 
-        pool.connect((err, client, done) => {
-            client.query(queryString, queryParams, (err, res) => {
-            callback(!err);
-        	done();
-        	pool.end();
-			});
-    	});
+	pool.connect((err, client, done) => {
+		client.query(queryString, queryParams, (err, res) => {
+			callback(!err && res);
+			done();
+			pool.end();
+		});
+	});
 }
 
 function getUserId(email, callback){
-		var queryString = "SELECT user_id FROM users WHERE email =  $1;";
-		var queryParams = [email];
+	var queryString = "SELECT user_id FROM users WHERE email =  $1;";
+	var queryParams = [email];
 
-		const pool = new pg.Pool({connectionString: conString});
+	const pool = new pg.Pool({connectionString: conString});
 
-		pool.connect((err, client, done) => {
-			client.query(queryString, queryParams, (err, res) => {
-  				if(!err && res.rows[0].user_id){
-	  				callback(res.rows[0].user_id);
-  				} else {
-					callback(false);
-  				}
-  				done();
-  				pool.end();
-			});
+	pool.connect((err, client, done) => {
+		client.query(queryString, queryParams, (err, res) => {
+			if(!err && res.rows[0].user_id){
+				callback(res.rows[0].user_id);
+			} else {
+				callback(false);
+			}
+			done();
+			pool.end();
 		});
+	});
 }
 
 function getUserRowById(userId, callback){
-		var queryString = "SELECT user_id, username, fname, lname, dob, gender, email FROM users WHERE user_id = $1 AND disabled = false";
-		var queryParams = [userId];
+	var queryString = "SELECT user_id, username, fname, lname, dob, gender, email FROM users WHERE user_id = $1 AND disabled = false";
+	var queryParams = [userId];
 
-		const pool = new pg.Pool({connectionString: conString});
+	const pool = new pg.Pool({connectionString: conString});
 
-		pool.connect((err, client, done) => {
-			client.query(queryString, queryParams, (err, res) => {
-          callback(!err && (res && res.rows[0]));
-  				done();
-  				pool.end();
-			});
+	pool.connect((err, client, done) => {
+		client.query(queryString, queryParams, (err, res) => {
+			callback(!err && (res && res.rows[0]));
+			done();
+			pool.end();
 		});
+	});
 }
 
 function getRefreshToken(userId, refreshToken, callback){
-		var queryString = "SELECT * FROM refresh WHERE user_id = $1 and refresh_token = $2;";
-		var queryParams = [userId, refreshToken];
+	var queryString = "SELECT * FROM refresh WHERE user_id = $1 and refresh_token = $2;";
+	var queryParams = [userId, refreshToken];
 
-		const pool = new pg.Pool({connectionString: conString});
+	const pool = new pg.Pool({connectionString: conString});
 
-		pool.connect((err, client, done) => {
-			client.query(queryString, queryParams, (err, res) => {
-  				if(!err && res.rows[0].refresh_token){
-  					callback(res.rows[0].refresh_token);
-  				} else {
-					callback(false);
-  				}
-  				done();
-  				pool.end();
-			});
+	pool.connect((err, client, done) => {
+		client.query(queryString, queryParams, (err, res) => {
+			if(!err && res.rows[0].refresh_token){
+				callback(res.rows[0].refresh_token);
+			} else {
+				callback(false);
+			}
+			done();
+			pool.end();
 		});
+	});
 }
 
 function deleteRefreshToken(userId, refreshToken, callback){
-		var queryString = "DELETE FROM refresh WHERE user_id = $1 and refresh_token = $2;";
-		var queryParams = [userId, refreshToken];
+	var queryString = "DELETE FROM refresh WHERE user_id = $1 and refresh_token = $2;";
+	var queryParams = [userId, refreshToken];
 
-		const pool = new pg.Pool({connectionString: conString});
+	const pool = new pg.Pool({connectionString: conString});
 
-		pool.connect((err, client, done) => {
-			client.query(queryString, queryParams, (err, res) => {
-				callback(!err && (res && res.rowCount != 0));
-  				done();
-  				pool.end();
-			});
+	pool.connect((err, client, done) => {
+		client.query(queryString, queryParams, (err, res) => {
+			callback(!err && (res && res.rowCount != 0));
+			done();
+			pool.end();
 		});
+	});
 }
 
 function populateExtendedProfile(user, callback) {
-        var queryString = "INSERT INTO extended_profile(user_id, age, gender) VALUES($1, $2, $3);";
-        var age = calculateAge(user.dob);
-        var queryParams = [user.userId, age, user.gender];
+	var queryString = "INSERT INTO extended_profile(user_id, age, gender) VALUES($1, $2, $3);";
+	var age = calculateAge(user.dob);
+	var queryParams = [user.userId, age, user.gender];
 
-        const pool = new pg.Pool({connectionString: conString});
-		pool.connect((err, client, done) => {
-			client.query(queryString, queryParams, (err, res) => {
-  				callback(!err);
-  				done();
-				pool.end();
-			});
+	const pool = new pg.Pool({connectionString: conString});
+	pool.connect((err, client, done) => {
+		client.query(queryString, queryParams, (err, res) => {
+			callback(!err && res);
+			done();
+			pool.end();
 		});
+	});
 }
 
 function getExtendedProfile(userID, callback) {
-		var queryString = "(SELECT * FROM "
+	var queryString = "(SELECT * FROM "
 			+ "(SELECT tag top_tag, count(tag) top_tag_count from tags where review_id in " +
 			"(SELECT review_id from reviews where user_id = $1) group by top_tag ORDER BY top_tag_count DESC LIMIT 1)" +
-			" AS top_tag_row CROSS JOIN (SELECT * FROM extended_profile WHERE user_id = $1) ext_profile_row);"
+			" AS top_tag_row CROSS JOIN (SELECT * FROM extended_profile WHERE user_id = $1) ext_profile_row);";
 
-		var queryParams = [userID];
-		const pool = new pg.Pool({connectionString: conString});
+	var queryParams = [userID];
+	const pool = new pg.Pool({connectionString: conString});
 
-		pool.connect((err, client, done) => {
-			client.query(queryString, queryParams, (err, res) => {
-  				if(!err && res.fields){
-	  				callback(res.fields);
-  				} else {
-					callback(false);
-  				}
-  				done();
-  				pool.end();
-			});
+	pool.connect((err, client, done) => {
+		client.query(queryString, queryParams, (err, res) => {
+			if(!err && res.fields){
+				callback(res.fields);
+			} else {
+				callback(false);
+			}
+			done();
+			pool.end();
 		});
+	});
 }
 
 function checkPassword(emailIn, passIn, callback){
-        var queryString = "SELECT user_id, salt, password FROM users WHERE email = $1;";
-        var queryParams = [emailIn];
+	var queryString = "SELECT user_id, salt, password FROM users WHERE email = $1;";
+	var queryParams = [emailIn];
 
-        const pool = new pg.Pool({connectionString: conString});
+	const pool = new pg.Pool({connectionString: conString});
 
-        pool.connect((err, client, done) => {
-            client.query(queryString, queryParams, (err, res) => {
-                var rowsRes = res.rows;
-                if(rowsRes.length > 0 && md5(rowsRes[0].salt + passIn) === rowsRes[0].password){//Log in success
-                    createRefreshToken(rowsRes[0].user_id, (refreshToken) => {
-                        callback(refreshToken, rowsRes[0].user_id);
-                    });
-                } else {
-                    callback(null, null);
-                }
-                done();
-                pool.end();
-            });
-      });
+	pool.connect((err, client, done) => {
+		client.query(queryString, queryParams, (err, res) => {
+			var rowsRes = res.rows;
+			if(rowsRes.length > 0 && md5(rowsRes[0].salt + passIn) === rowsRes[0].password){//Log in success
+				createRefreshToken(rowsRes[0].user_id, (refreshToken) => {
+					callback(refreshToken, rowsRes[0].user_id);
+				});
+			} else {
+				callback(null, null);
+			}
+			done();
+			pool.end();
+		});
+	});
 }
 
 function verifyGameId(gameIdIn, callback){
-    var queryString = "SELECT game_id FROM games WHERE game_id = $1;";
-    var queryParams = [gameIdIn];
+	var queryString = "SELECT game_id FROM games WHERE game_id = $1;";
+	var queryParams = [gameIdIn];
 
-    const pool = new pg.Pool({connectionString: conString});
+	const pool = new pg.Pool({connectionString: conString});
 
-    pool.connect((err, client, done) => {
-        client.query(queryString, queryParams, (err, res) => {
-            callback(res.rows.length > 0);
-            done();
-            pool.end();
-        });
-    });
+	pool.connect((err, client, done) => {
+		client.query(queryString, queryParams, (err, res) => {
+			callback(res.rows.length > 0);
+			done();
+			pool.end();
+		});
+	});
 }
 
 function addGamer(userIdIn, gameIdIn, callback){
-    var queryString = "INSERT INTO gamers(user_id, game_id) VALUES($1, $2) RETURNING game_id";
-    var queryParams = [userIdIn, gameIdIn];
+	var queryString = "INSERT INTO gamers(user_id, game_id) VALUES($1, $2) RETURNING game_id";
+	var queryParams = [userIdIn, gameIdIn];
 
-    const pool = new pg.Pool({connectionString: conString});
+	const pool = new pg.Pool({connectionString: conString});
 
-    pool.connect((err, client, done) => {
-        client.query(queryString, queryParams, (err, res) => {
-            callback(err === null && res.rowCount > 0);
-            done();
-            pool.end();
-        });
-    });
+	pool.connect((err, client, done) => {
+		client.query(queryString, queryParams, (err, res) => {
+			callback(err === null && res.rowCount > 0);
+			done();
+			pool.end();
+		});
+	});
 }
 
 function leaveGame(userIdIn, gameIdIn, callback){
-    var queryString = "DELETE FROM gamers WHERE user_id = $1 AND game_id = $2;";
-    var queryParams = [userIdIn, gameIdIn];
+	var queryString = "DELETE FROM gamers WHERE user_id = $1 AND game_id = $2;";
+	var queryParams = [userIdIn, gameIdIn];
 
-    const pool = new pg.Pool({connectionString: conString});
+	const pool = new pg.Pool({connectionString: conString});
 
-    pool.connect((err, client, done) => {
-        client.query(queryString, queryParams, (err, res) => {
-            callback(!err && (res && res.rowCount != 0));
-            done();
-            pool.end();
-        });
-    });
+	pool.connect((err, client, done) => {
+		client.query(queryString, queryParams, (err, res) => {
+			callback(!err && (res && res.rowCount != 0));
+			done();
+			pool.end();
+		});
+	});
 }
 
 function updateExtendedUser (userId, skill_level, location, callback) {
-		var queryString = "UPDATE extended_profile SET skilllevel = $1, location = $2 WHERE user_id = $3;"
-		var dblocation = '(' + location.lat + ',' + location.lng + ')';
-		var queryParams = [skill_level, dblocation, userId]
+	var queryString = "UPDATE extended_profile SET skilllevel = $1, location = $2 WHERE user_id = $3;";
+	var dblocation = "(" + location.lat + "," + location.lng + ")";
+	var queryParams = [skill_level, dblocation, userId];
 
-		const pool = new pg.Pool({connectionString: conString});
-		pool.connect((err, client, done) => {
-			client.query(queryString, queryParams, (err, res) => {
-  				callback(!err);
-  				done();
-				pool.end();
-			});
+	const pool = new pg.Pool({connectionString: conString});
+	pool.connect((err, client, done) => {
+		client.query(queryString, queryParams, (err, res) => {
+			callback(!err && res);
+			done();
+			pool.end();
 		});
+	});
 }
 
 function getUsers (gameId, callback){
@@ -257,75 +258,75 @@ function getUsers (gameId, callback){
 	var queryParams = [gameId];
 	const pool = new pg.Pool({connectionString: conString});
 
-		pool.connect((err, client, done) => {
-			client.query(queryString, queryParams, (err, res) => {
-  				if(!err && res.rows){
-  					callback(res.rows);
-  				} else {
-					callback(false);
-  				}
-  				done();
-  				pool.end();
-			});
+	pool.connect((err, client, done) => {
+		client.query(queryString, queryParams, (err, res) => {
+			if(!err && res.rows){
+				callback(res.rows);
+			} else {
+				callback(false);
+			}
+			done();
+			pool.end();
 		});
+	});
 }
 
 function getIfReviewed(reviewerId, user, callback){
-		var queryString = "SELECT * FROM reviews WHERE(reviewer_id = $1 AND user_id = $2);";
-		var queryParams = [reviewerId, user];
-		const pool = new pg.Pool({connectionString: conString});
-		pool.connect((err, client, done) => {
-			client.query(queryString, queryParams, (err, res) => {
-				if(res && res.rows && res.rows[0]){
-					callback(true);
-				}
-				else{
-					callback(false)
-				}
-	  			done();
-				pool.end();
-			});
+	var queryString = "SELECT * FROM reviews WHERE(reviewer_id = $1 AND user_id = $2);";
+	var queryParams = [reviewerId, user];
+	const pool = new pg.Pool({connectionString: conString});
+	pool.connect((err, client, done) => {
+		client.query(queryString, queryParams, (err, res) => {
+			if(res && res.rows && res.rows[0]){
+				callback(true);
+			}
+			else{
+				callback(false);
+			}
+			done();
+			pool.end();
 		});
+	});
 }
 
 
 function addReview (userId, gameId, reviewerId, rating, tags, callback){
-		var queryString = "INSERT INTO reviews(user_id, game_id, reviewer_id, rating) VALUES($1, $2, $3, $4)";
-		var queryParams = [userId, gameId, reviewerId, rating];
+	var queryString = "INSERT INTO reviews(user_id, game_id, reviewer_id, rating) VALUES($1, $2, $3, $4)";
+	var queryParams = [userId, gameId, reviewerId, rating];
 
-		const pool = new pg.Pool({connectionString: conString});
+	const pool = new pg.Pool({connectionString: conString});
 
-		pool.connect((err, client, done) => {
-			client.query(queryString, queryParams, (err, res) => {
-				if(!err && res && res.rows && res.rows[0] && res.rows[0].review_id){
-					callback(res.rows[0].review_id)
-				}
-				else{
-					callback(false)
-				}
-  				done();
-				pool.end();
-			});
+	pool.connect((err, client, done) => {
+		client.query(queryString, queryParams, (err, res) => {
+			if(!err && res && res.rows && res.rows[0] && res.rows[0].review_id){
+				callback(res.rows[0].review_id);
+			}
+			else{
+				callback(false);
+			}
+			done();
+			pool.end();
 		});
+	});
 }
 
 
 function addTag(reviewId, tags, callback){
 	for(let i = 0; i < tags.length; i++){
 		var queryString = "INSERT INTO tags(review_id, tag) VALUES($1, $2)";
-		var queryPrams = [reviewId, tags[i]];
+		var queryParams = [reviewId, tags[i]];
 
 		const pool = new pg.Pool({connectionString: conString});
 
-			pool.connect((err, client, done) => {
-				client.query(queryString, queryParams, (err, res) => {
-					if(err){
-						callback(false);
-					}
-	  				done();
-					pool.end();
-				});
+		pool.connect((err, client, done) => {
+			client.query(queryString, queryParams, (err, res) => {
+				if(err || !res){
+					callback(false);
+				}
+				done();
+				pool.end();
 			});
+		});
 	}
 	callback(true);
 }
@@ -334,20 +335,20 @@ function addTag(reviewId, tags, callback){
 function createGame (userId, name, type, min_skill, max_skill, totalPlayers, startTime, duration, location, locationNotes, description, gender, ageRange, enforcedParams, callback){
 
 	var queryString =  "INSERT INTO games(creator_id, name, type, min_skill, max_skill, total_players_required, start_time, end_time, location, location_notes, description, gender, age_range, enforced_params)"
-		+ "VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14) RETURNING game_id;"
-		var dblocation = '(' + location.lat + ',' + location.lng + ')';
+		+ "VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14) RETURNING game_id;";
+	var dblocation = "(" + location.lat + "," + location.lng + ")";
 	var queryParams = [userId, name, type, min_skill, max_skill, totalPlayers, startTime, startTime+duration, dblocation, locationNotes, description, gender, ageRange, enforcedParams];
 
 	const pool = new pg.Pool({connectionString: conString});
 
 	pool.connect((err, client, done) => {
 		client.query(queryString, queryParams, (err, res) => {
-  			if(!err && res && res.rows && res.rows[0] && res.rows[0].game_id){
-  				callback(res.rows[0].game_id);
-  			} else {
-  				callback(false);
-  			}
-  			done();
+			if(!err && res && res.rows && res.rows[0] && res.rows[0].game_id){
+				callback(res.rows[0].game_id);
+			} else {
+				callback(false);
+			}
+			done();
 			pool.end();
 		});
 	});
@@ -376,72 +377,72 @@ function ensureGameIsValidToBeCreated (game, userId, callback){
 }
 
 function ensureGameIsJoinableByPlayer(gameId, userId, callback){
-    var queryString = "SELECT total_players_required, total_players_added, enforced_params, gender, age_range FROM games WHERE game_id = $1";
-    var queryParams = [gameId];
+	var queryString = "SELECT total_players_required, total_players_added, enforced_params, gender, age_range FROM games WHERE game_id = $1";
+	var queryParams = [gameId];
 
-    const pool = new pg.Pool({connectionString: conString});
-    pool.connect((err, client, done) => {
-        client.query(queryString, queryParams, (err, res) => {
+	const pool = new pg.Pool({connectionString: conString});
+	pool.connect((err, client, done) => {
+		client.query(queryString, queryParams, (err, res) => {
 			var resQuery = res.rows[0];
-            if (resQuery.total_players_required - resQuery.total_players_added > 0){ // Check space in the game
-                // Go through enforced params and verify that user meets requirements (if any)
+			if (resQuery.total_players_required - resQuery.total_players_added > 0){ // Check space in the game
+				// Go through enforced params and verify that user meets requirements (if any)
 				if (resQuery.enforced_params !== null){
-                    var queryString = "SELECT gender, dob FROM users WHERE user_id = $1";
-                    var queryParams = [userId];
+					var queryString = "SELECT gender, dob FROM users WHERE user_id = $1";
+					var queryParams = [userId];
 
-                    const pool = new pg.Pool({connectionString: conString});
-                    pool.connect((err, client, done) => {
-                        client.query(queryString, queryParams, (err, res) => {
-                            var params = resQuery.enforced_params.replace("{", "").replace("}", "").split(",");
-                            for (i = 0; i < params.length; i++) {
-                                var validParam = params[i] === "gender" ? resQuery.gender === res.rows[0].gender :
-									                                     validAge(resQuery.age_range, res.rows[0].dob);
-                                if (!validParam) {
-                                    callback(false);
-                                    break;
-                                }
-                            }
+					const pool = new pg.Pool({connectionString: conString});
+					pool.connect((err, client, done) => {
+						client.query(queryString, queryParams, (err, res) => {
+							var params = resQuery.enforced_params.replace("{", "").replace("}", "").split(",");
+							for (var i = 0; i < params.length; i++) {
+								var validParam = params[i] === "gender" ? resQuery.gender === res.rows[0].gender :
+									validAge(resQuery.age_range, res.rows[0].dob);
+								if (!validParam) {
+									callback(false);
+									break;
+								}
+							}
 
-                            if (validParam) { // only if all requirements are fulfilled
+							if (validParam) { // only if all requirements are fulfilled
 								callback(true);
-                            }
-                            done();
-                            pool.end();
-                        });
-                    });
+							}
+							done();
+							pool.end();
+						});
+					});
 				} else {
-                    callback(true);
+					callback(true);
 				}
-            }
-            else {
-                callback(false);
-            }
-            done();
-            pool.end();
-        });
-    });
+			}
+			else {
+				callback(false);
+			}
+			done();
+			pool.end();
+		});
+	});
 }
 
 function validAge(gameAgeRange, userDob){
 	var startAge = gameAgeRange[0];
-    var endAge = gameAgeRange[1];
-    var userAge = calculateAge(userDob);
-    return startAge <= userAge && userAge <= endAge;
+	var endAge = gameAgeRange[1];
+	var userAge = calculateAge(userDob);
+	return startAge <= userAge && userAge <= endAge;
 }
 
 function sendFriendInvite(sender, receiver, callback) {
-		var queryString = "INSERT INTO friends(user_1, user_2, status) VALUES($1, $2, 'requested');";
-		var queryParams = [sender, receiver];
+	var queryString = "INSERT INTO friends(user_1, user_2, status) VALUES($1, $2, 'requested');";
+	var queryParams = [sender, receiver];
 		
-		const pool = new pg.Pool({connectionString: conString});
+	const pool = new pg.Pool({connectionString: conString});
 
-		pool.connect((err, client, done) => {
-			client.query(queryString, queryParams, (err, res) => {
-  				callback(!err);
-  				done();
-				pool.end();
-			});
+	pool.connect((err, client, done) => {
+		client.query(queryString, queryParams, (err, res) => {
+			callback(!err && res);
+			done();
+			pool.end();
 		});
+	});
 }
 
 function checkFriendRequestValidation(sender, invited_friend, callback) {
@@ -452,30 +453,30 @@ function checkFriendRequestValidation(sender, invited_friend, callback) {
 
 	pool.connect((err, client, done) => {
 		client.query(queryString, queryParams, (err, res) => {
-				if(!err && res.rows[0]){
-					callback(res.rows[0]);
-				} else {
-					callback(false);
-				}
-				done();
-				pool.end();
+			if(!err && res.rows[0]){
+				callback(res.rows[0]);
+			} else {
+				callback(false);
+			}
+			done();
+			pool.end();
 		});
 	});
 }
 
 function acceptFriendInvite(invited_friend, sender, callback) {
-		var queryString = "UPDATE friends SET user_1 = $2, user_2 = $1, status = 'accepted' WHERE user_1 = $1 AND user_2 = $2";
-		var queryParams = [sender, invited_friend];
+	var queryString = "UPDATE friends SET user_1 = $2, user_2 = $1, status = 'accepted' WHERE user_1 = $1 AND user_2 = $2";
+	var queryParams = [sender, invited_friend];
 
-		const pool = new pg.Pool({connectionString: conString});
+	const pool = new pg.Pool({connectionString: conString});
 
-		pool.connect((err, client, done) => {
-			client.query(queryString, queryParams, (err, res) => {
-				callback(!err);
-				done();
-				pool.end();
-			});
+	pool.connect((err, client, done) => {
+		client.query(queryString, queryParams, (err, res) => {
+			callback(!err && res);
+			done();
+			pool.end();
 		});
+	});
 }
 
 function checkFriendEntryValidationForDelete(sender, invited_friend, callback) {
@@ -487,30 +488,30 @@ function checkFriendEntryValidationForDelete(sender, invited_friend, callback) {
 
 	pool.connect((err, client, done) => {
 		client.query(queryString, queryParams, (err, res) => {
-				if(!err && res.rows[0]){
-					callback(res.rows[0]);
-				} else {
-					callback(false);
-				}
-				done();
-				pool.end();
+			if(!err && res.rows[0]){
+				callback(res.rows[0]);
+			} else {
+				callback(false);
+			}
+			done();
+			pool.end();
 		});
 	});
 }
 
 function declineFriend(sender, receiver, callback) {
-		var queryString = "DELETE FROM friends WHERE (user_1 = $1 OR user_1 = $2) AND (user_2 = $1 OR user_2 = $2)";
-		var queryParams = [sender, receiver];
+	var queryString = "DELETE FROM friends WHERE (user_1 = $1 OR user_1 = $2) AND (user_2 = $1 OR user_2 = $2)";
+	var queryParams = [sender, receiver];
 
-		const pool = new pg.Pool({connectionString: conString});
+	const pool = new pg.Pool({connectionString: conString});
 
-		pool.connect((err, client, done) => {
-			client.query(queryString, queryParams, (err, res) => {
-				callback(!err && (res && res.rowCount != 0));
-				done();
-				pool.end();
-			});
+	pool.connect((err, client, done) => {
+		client.query(queryString, queryParams, (err, res) => {
+			callback(!err && (res && res.rowCount != 0));
+			done();
+			pool.end();
 		});
+	});
 }
 
 function checkFriendEntryValidationForBlock(sender, invited_friend, callback) {
@@ -520,30 +521,30 @@ function checkFriendEntryValidationForBlock(sender, invited_friend, callback) {
 	const pool = new pg.Pool({connectionString: conString});
 
 	pool.connect((err, client, done) => {
-			client.query(queryString, queryParams, (err, res) => {
-				if (!err && res.rows[0]) {
-					callback('update')
-				} else if (res.rowCount == 0){
-					callback('insert')
-				} else {
-					callback (false)
-				}
-				done();
-				pool.end();
-			});
+		client.query(queryString, queryParams, (err, res) => {
+			if (!err && res.rows[0]) {
+				callback("update");
+			} else if (res.rowCount == 0){
+				callback("insert");
+			} else {
+				callback (false);
+			}
+			done();
+			pool.end();
+		});
 	});
 
 }
 
 function blockFriendUpdateEntry (person_blocking, blocked_user, callback) {
-	var queryString = "UPDATE friends SET user_1 = $1, user_2 = $2, status = 'blocked' WHERE (user_1 = $1 or user_1 = $2) AND (user_2 = $1 OR user_2 = $2)"
+	var queryString = "UPDATE friends SET user_1 = $1, user_2 = $2, status = 'blocked' WHERE (user_1 = $1 or user_1 = $2) AND (user_2 = $1 OR user_2 = $2)";
 	var queryParams = [person_blocking, blocked_user];
 
 	const pool = new pg.Pool({connectionString: conString});
 
 	pool.connect((err, client, done) => {
 		client.query(queryString, queryParams, (err, res) => {
-			callback(!err);
+			callback(!err && res);
 			done();
 			pool.end();
 		});
@@ -551,13 +552,13 @@ function blockFriendUpdateEntry (person_blocking, blocked_user, callback) {
 }
 
 function blockFriendNewEntry (person_blocking, blocked_user, callback) {
-	var queryString = "INSERT INTO friends(user_1, user_2, status) VALUES($1, $2, 'blocked');"
-	var queryParams = [person_blocking, blocked_user]
+	var queryString = "INSERT INTO friends(user_1, user_2, status) VALUES($1, $2, 'blocked');";
+	var queryParams = [person_blocking, blocked_user];
 
-    const pool = new pg.Pool({connectionString: conString});
+	const pool = new pg.Pool({connectionString: conString});
 	pool.connect((err, client, done) => {
 		client.query(queryString, queryParams, (err, res) => {
-			callback(!err);
+			callback(!err && res);
 			done();
 			pool.end();
 		});
@@ -566,15 +567,15 @@ function blockFriendNewEntry (person_blocking, blocked_user, callback) {
 
 function checkIfFriendRequestExists (sender, invited_person, callback) {
 	var queryString = "Select * From friends WHERE user_1 = $1 AND user_2 = $2 AND status = 'requested'";
-	var queryParams = [sender, invited_person]
+	var queryParams = [sender, invited_person];
 
 	const pool = new pg.Pool({connectionString: conString});
 	pool.connect((err, client, done) => {
 		client.query(queryString, queryParams, (err, res) => {
 			if (!err && res.rows[0]) {
-				callback (res.rows[0])
+				callback (res.rows[0]);
 			} else {
-				callback (false)
+				callback (false);
 			}
 			done();
 			pool.end();
@@ -589,13 +590,13 @@ function getUserSkilllevel(user_id, callback){
 	const pool = new pg.Pool({connectionString: conString});
 	pool.connect((err, client, done) => {
 		client.query(queryString, queryParams, (err, res) => {
-				if (!err && res.rows[0]) {
-					callback (res.rows[0].skilllevel)
-				} else {
-					callback (false)
-				}
-				done();
-				pool.end();
+			if (!err && res.rows[0]) {
+				callback (res.rows[0].skilllevel);
+			} else {
+				callback (false);
+			}
+			done();
+			pool.end();
 		});
 	});
 }
@@ -607,9 +608,9 @@ function searchObjects(search_request, callback){
 	pool.connect((err, client, done) => {
 		client.query(queryString, [], (err, res) => {
 			if (!err && res.rows[0]) {
-				callback (res.rows)
+				callback (res.rows);
 			} else {
-				callback (false)
+				callback (false);
 			}
 			done();
 			pool.end();
@@ -632,10 +633,10 @@ function listAllFriends (user, callback) {
 	pool.connect((err, client, done) => {
 		client.query(queryString, queryParams, (err, res) => {
 			if (!err && res.rowCount >= 0) {
-				callback(res.rows)
+				callback(res.rows);
 			}
 			else {
-				callback(false)
+				callback(false);
 			}
 			done();
 			pool.end();
@@ -653,9 +654,9 @@ function listAllBlockedUsers (user, callback) {
 	pool.connect((err, client, done) => {
 		client.query(queryString, queryParams, (err, res) => {
 			if (!err && res.rows[0]) {
-				callback (res.rows)
+				callback (res.rows);
 			} else {
-				callback (false)
+				callback (false);
 			}
 			done();
 			pool.end();
@@ -681,9 +682,9 @@ function listAllFriendRequests (user, callback) {
 	pool.connect((err, client, done) => {
 		client.query(queryString, queryParams, (err, res) => {
 			if (!err && res.rows[0]) {
-				callback (res.rows)
+				callback (res.rows);
 			} else {
-				callback (false)
+				callback (false);
 			}
 			done();
 			pool.end();
@@ -710,11 +711,11 @@ module.exports = {
 	checkEmailUniqueness,
 	checkUsernameUniqueness,
 	registerUser,
-    updateUser,
+	updateUser,
 	getUserId,
 	getUserRowById,
 	getRefreshToken,
-    createRefreshToken,
+	createRefreshToken,
 	deleteRefreshToken,
 	populateExtendedProfile,
 	getExtendedProfile,
@@ -724,10 +725,10 @@ module.exports = {
 	addReview,
 	createGame,
 	ensureGameIsValidToBeCreated,
-    verifyGameId,
+	verifyGameId,
 	addGamer,
 	ensureGameIsJoinableByPlayer,
-    leaveGame,
+	leaveGame,
 	sendFriendInvite,
 	checkFriendRequestValidation,
 	acceptFriendInvite,
@@ -744,37 +745,37 @@ module.exports = {
 	listAllFriendRequests,
 	disableAccount,
 	getIfReviewed
-}
+};
 
 //////////////// Helpers ////////////////
 
 function calculateAge(userDob) {
-    var birth = new Date(userDob);
-    var curr = new Date();
-    var diff = Math.abs(birth.getTime() - curr.getTime());
-    return Math.ceil(diff / (1000 * 3600 * 24 * 365));
+	var birth = new Date(userDob);
+	var curr = new Date();
+	var diff = Math.abs(birth.getTime() - curr.getTime());
+	return Math.ceil(diff / (1000 * 3600 * 24 * 365));
 }
 
 function createRefreshToken(userId, callback){
-    var refreshToken = crypto.randomBytes(50).toString('hex');
-    var queryString = "INSERT INTO refresh(user_id, refresh_token) VALUES($1, $2);";
-    var queryParams = [userId, refreshToken];
+	var refreshToken = crypto.randomBytes(50).toString("hex");
+	var queryString = "INSERT INTO refresh(user_id, refresh_token) VALUES($1, $2);";
+	var queryParams = [userId, refreshToken];
 
-    const pool = new pg.Pool({connectionString: conString});
+	const pool = new pg.Pool({connectionString: conString});
 
-    pool.connect((err, client, done) => {
-        client.query(queryString, queryParams, (err, res) => {
-            var result = err ? null : refreshToken;
-            callback(result);
-            done();
-            pool.end();
-        });
-    });
+	pool.connect((err, client, done) => {
+		client.query(queryString, queryParams, (err, res) => {
+			var result = (err && res) ? null : refreshToken;
+			callback(result);
+			done();
+			pool.end();
+		});
+	});
 }
 
 function getConstraintQuery(search_request){
 	var query = "";
-	if(search_request.search_object == 'game'){
+	if(search_request.search_object == "game"){
 		// Game param validation
 		query += "SELECT * FROM games ";
 		var queryConstraint = [];
@@ -808,12 +809,12 @@ function getConstraintQuery(search_request){
 			queryConstraint.push("(SELECT distance(point" + search_point +", location)) <= " + search_request.game_location_range);
 		}
 		if(queryConstraint.length > 0){
-			query += "WHERE " + queryConstraint.join(' and ');
+			query += "WHERE " + queryConstraint.join(" and ");
 		}
 		query += " order by game_id DESC LIMIT " + search_request.results_max + ";";
 
 	}
-	else if(search_request.search_object == 'user'){
+	else if(search_request.search_object == "user"){
 		// User param validation
 		query += "SELECT user_id, username, fname FROM users WHERE username = '" + search_request.username + "';";
 	}

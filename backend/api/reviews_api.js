@@ -1,8 +1,9 @@
-var express = require('express');
+var express = require("express");
 var router = express.Router();
-var requestHelper = require('../helpers/requestHelper');
-var databaseHelper = require('../helpers/databaseHelper');
-
+var requestHelper = require("../helpers/requestHelper");
+var databaseHelper = require("../helpers/databaseHelper");
+var tokenHelper = require("../helpers/tokenHelper");
+var strings = require("./universal_strings");
 
 /**
 * @api {get} /reviews/setReview Set the review of a player for a particular game.
@@ -35,14 +36,14 @@ var databaseHelper = require('../helpers/databaseHelper');
 *
 * @apiSampleRequest /api/reviews/setReview
 */
-router.post('/setReview', function(req, res){
+router.post("/setReview", function(req, res){
 	try{
 		var review = requestHelper.validateAndCleanReviewRequest(req.body);
 		try {
-			var tok =tokenHelper.verifyToken(req.body.jwt);
+			var tok = tokenHelper.verifyToken(req.body.jwt);
 		}
 		catch(err){
-			res.status(400).json({'error': strings.invalidJwt});
+			res.status(400).json({"error": strings.invalidJwt});
 			return;
 		}
 
@@ -56,16 +57,16 @@ router.post('/setReview', function(req, res){
 					else{
 						res.status(400).json("Adding tags failed");
 					}
-				})
+				});
 			}else{
 				res.status(400).json("Adding review failed");
 				return;
 			}
-		})
+		});
 	}
-catch (err){
-	res.status(400).json(requestHelper.jsonError(err)); return;
-}
+	catch (err){
+		res.status(400).json(requestHelper.jsonError(err)); return;
+	}
 });
 
 module.exports = router;

@@ -41,18 +41,20 @@ var invalidLeaveGame = "Failed to leave game specified. Please make sure you are
 var gamerNotAdded = "Failed to add user to the game";
 var cannotJoinGame = "Lack necessary requirements for the user to join the game";
 var invalidLFriendInvite = "Failed to send a friend invite.";
-var AcceptFriendFailed = 'Failed to accept the friend request'
-var InvalidFriendRequest = "The friend request does not exist"
-var DeleteFriendFailed = "Failed to delete this request or remove this friend"
-var UpdateFailed = "Failed to update your extended profile"
-var BlockFriendFailed = "Failed to block this user"
-var FriendRequestExists = "The friend request already exists"
-var checkFriendEntryValidationForBlock = "Entry validation for Block Failed"
-var ListFriendFailed = "List all friends have failed"
-var ListBlockUserRequestFailed = "List all blocked users have failed"
-var emptySearchResults = "Nothing matches your search"
-var listFriendRequestFailed = "Listing all friend requests has failed"
-var deleteFailed = "Delete account failed"
+var AcceptFriendFailed = "Failed to accept the friend request";
+var InvalidFriendRequest = "The friend request does not exist";
+var DeleteFriendFailed = "Failed to delete this request or remove this friend";
+var UpdateFailed = "Failed to update your extended profile";
+var BlockFriendFailed = "Failed to block this user";
+var FriendRequestExists = "The friend request already exists";
+var checkFriendEntryValidationForBlock = "Entry validation for Block Failed";
+var ListFriendFailed = "List all friends have failed";
+var ListBlockUserRequestFailed = "List all blocked users have failed";
+var emptySearchResults = "Nothing matches your search";
+var listFriendRequestFailed = "Listing all friend requests has failed";
+var deleteFailed = "Delete account failed";
+var refreshDoesNotExist = "The refresh token you want to delete does not exist";
+var refreshMissingParams = "Please provide your current JWT and the refresh token you want revoked";
 
 module.exports = {
 	uniqueEmailError,
@@ -60,12 +62,12 @@ module.exports = {
 	userIdFail,
 	invalidUsername,
 	invalidPassword,
-    wrongEmailPassword,
+	wrongEmailPassword,
 	invalidName,
 	invalidGender,
 	invalidDob,
 	invalidEmail,
-    emailNotRegistered,
+	emailNotRegistered,
 	noRefreshToken,
 	createRefreshFail,
 	invalidJwt,
@@ -96,7 +98,7 @@ module.exports = {
 	usersFail,
 	invalidLeaveGame,
 	gamerNotAdded,
-    cannotJoinGame,
+	cannotJoinGame,
 	invalidLFriendInvite,
 	AcceptFriendFailed,
 	InvalidFriendRequest,
@@ -109,5 +111,7 @@ module.exports = {
 	ListBlockUserRequestFailed,
 	emptySearchResults,
 	listFriendRequestFailed,
-	deleteFailed
-}
+	deleteFailed,
+	refreshMissingParams,
+	refreshDoesNotExist
+};

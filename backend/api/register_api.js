@@ -1,12 +1,11 @@
-var express = require('express');
+var express = require("express");
 var router = express.Router();
-var body = require('body-parser');
-var tokenHelper = require('../helpers/tokenHelper');
-var requestHelper = require('../helpers/requestHelper');
-var databaseHelper = require('../helpers/databaseHelper');
-var md5 = require('md5');
-var crypto = require('crypto');
-var strings = require('./universal_strings');
+var tokenHelper = require("../helpers/tokenHelper");
+var requestHelper = require("../helpers/requestHelper");
+var databaseHelper = require("../helpers/databaseHelper");
+var md5 = require("md5");
+var crypto = require("crypto");
+var strings = require("./universal_strings");
 
 /**
 * @api {post} /register Register a user account
@@ -49,7 +48,7 @@ var strings = require('./universal_strings');
 * 	 }  
 * @apiSampleRequest /api/register
 */
-router.post('/', function(req, res){
+router.post("/", function(req, res){
 	try{
 		var user = requestHelper.validateAndCleanRegisterRequest(req.body);	
 	}
@@ -60,12 +59,12 @@ router.post('/', function(req, res){
 
 	databaseHelper.checkEmailUniqueness(user, (emailValid) => {
 		if(!emailValid){
-			res.status(400).json({'error': strings.uniqueEmailError}); return;
+			res.status(400).json({"error": strings.uniqueEmailError}); return;
 		}
 		else {
 			databaseHelper.checkUsernameUniqueness(user, (uniqueUsername) => {
 				if(!uniqueUsername){
-					res.status(400).json({'error': strings.uniqueUsernameError}); return;
+					res.status(400).json({"error": strings.uniqueUsernameError}); return;
 				}
 				else {
 					user.salt = generateSalt();
@@ -73,7 +72,7 @@ router.post('/', function(req, res){
 
 					databaseHelper.registerUser(user, (registerSuccess) => {
 						if(!registerSuccess){
-							res.status(400).json({'error': strings.registerFailError}); return;
+							res.status(400).json({"error": strings.registerFailError}); return;
 						}
 
 						databaseHelper.getUserId(user.email, (userId) => {
@@ -81,22 +80,22 @@ router.post('/', function(req, res){
 								user.userId = userId;
 								databaseHelper.populateExtendedProfile(user, (populateSuccess) => {
 									if(!populateSuccess){
-										res.status(400).json({'error': "Unable to populate extended profile database"}); return;
+										res.status(400).json({"error": "Unable to populate extended profile database"}); return;
 									}
 								});
 
-						var token = tokenHelper.createTokenForUser(userId, user.email); // Auth token
+								var token = tokenHelper.createTokenForUser(userId, user.email); // Auth token
 
-						databaseHelper.createRefreshToken(userId, (refreshToken) => {
-							if(!refreshToken){
-								res.status(400).json({'error': strings.createRefreshFail}); return;
+								databaseHelper.createRefreshToken(userId, (refreshToken) => {
+									if(!refreshToken){
+										res.status(400).json({"error": strings.createRefreshFail}); return;
+									}
+									res.status(200).json({"token":token, "refresh":refreshToken, "user_id":userId}); return;
+								});
+							} else {
+								res.status(400).json({"error": strings.userIdFail }); return;	
 							}
-							res.status(200).json({'token':token, 'refresh':refreshToken, 'user_id':userId}); return;
 						});
-					} else {
-						res.status(400).json({'error': strings.userIdFail }); return;	
-					}
-				});
 					});
 				}
 			});
@@ -107,7 +106,7 @@ router.post('/', function(req, res){
 
 /////// Register API helpers ///////
 function generateSalt(){
-	return crypto.randomBytes(40).toString('hex');
+	return crypto.randomBytes(40).toString("hex");
 }
 
 module.exports = router;

@@ -1,9 +1,9 @@
-var express = require('express');
+var express = require("express");
 var router = express.Router();
-var requestHelper = require('../helpers/requestHelper');
-var databaseHelper = require('../helpers/databaseHelper');
-var tokenHelper = require('../helpers/tokenHelper');
-var strings = require('./universal_strings');
+var requestHelper = require("../helpers/requestHelper");
+var databaseHelper = require("../helpers/databaseHelper");
+var tokenHelper = require("../helpers/tokenHelper");
+var strings = require("./universal_strings");
 
 /**
 * @api {delete} /delete Delete account from pickup
@@ -32,30 +32,33 @@ var strings = require('./universal_strings');
 * 
 * @apiSampleRequest /api/delete
 */
-router.delete('/', function(req, res){
-    try{
+router.delete("/", function(req, res){
+	try{
 		var tok = tokenHelper.verifyToken(req.query.jwt);
-        var user = requestHelper.validateAndCleanDeleteAccountRequest(req.query);
+		var user = requestHelper.validateAndCleanDeleteAccountRequest(req.query);
 
-        // Verify password
-        databaseHelper.checkPassword(user.email, user.password, (refreshToken, userId) => {
-		if (refreshToken != null) {
-			// User verified, ready to delete
-			databaseHelper.disableAccount(userId, (success) => {
-				if(success){
-					res.status(200).json(); return;
-				} else {
-					res.status(400).json({'error': strings.deleteFailed}); return; 
-				}	
-			});
-		} else {
-			res.status(400).json({'error': strings.loginError}); return;
+		if(tok.email != user.email){
+			res.status(400).json({"error": strings.deleteFailed}); return; 
 		}
-	})
-    }
-    catch (err){
-        res.status(400).json(requestHelper.jsonError(err)); return;
-    }
+		// Verify password
+		databaseHelper.checkPassword(user.email, user.password, (refreshToken, userId) => {
+			if (refreshToken && userId && userId == tok.user_id) {
+			// User verified, ready to delete
+				databaseHelper.disableAccount(userId, (success) => {
+					if(success){
+						res.status(200).json(); return;
+					} else {
+						res.status(400).json({"error": strings.deleteFailed}); return; 
+					}	
+				});
+			} else {
+				res.status(400).json({"error": strings.loginError}); return;
+			}
+		});
+	}
+	catch (err){
+		res.status(400).json(requestHelper.jsonError(err)); return;
+	}
 });
 
 

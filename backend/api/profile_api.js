@@ -1,12 +1,9 @@
-var express = require('express');
+var express = require("express");
 var router = express.Router();
-var body = require('body-parser');
-var tokenHelper = require('../helpers/tokenHelper');
-var requestHelper = require('../helpers/requestHelper');
-var databaseHelper = require('../helpers/databaseHelper');
-var md5 = require('md5');
-var crypto = require('crypto');
-var strings = require('./universal_strings');
+var tokenHelper = require("../helpers/tokenHelper");
+var requestHelper = require("../helpers/requestHelper");
+var databaseHelper = require("../helpers/databaseHelper");
+var strings = require("./universal_strings");
 
 /**
 * @api {get} profile/ Get private profile
@@ -39,7 +36,7 @@ var strings = require('./universal_strings');
 *
 * @apiSampleRequest /api/games/:GAMEID/leave/
 */
-router.get('/', function (req, res) {
+router.get("/", function (req, res) {
 	try {
 		var tok = tokenHelper.verifyToken(req.query.jwt);
 
@@ -47,9 +44,9 @@ router.get('/', function (req, res) {
 			if(user) {
 				res.status(200).json(user); return;
 			} else{
-				res.status(400).json({'error': strings.userIdFail}); return;
+				res.status(400).json({"error": strings.userIdFail}); return;
 			}
-		})
+		});
 	} catch(err){
 		res.status(400).json(requestHelper.jsonError(err)); return;
 	}

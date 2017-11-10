@@ -1,7 +1,7 @@
-var regex = require('../api/universal_regex');
-var strings = require('../api/universal_strings');
-var databaseHelper = require('../helpers/databaseHelper');
-var async = require('async')
+var regex = require("../api/universal_regex");
+var strings = require("../api/universal_strings");
+var databaseHelper = require("../helpers/databaseHelper");
+var async = require("async");
 
 function validateAndCleanRegisterRequest(data){
 	validate(data.username, regex.usernameRegex, strings.invalidUsername);
@@ -44,17 +44,17 @@ function validateAndCleanCreateGameRequest(data){
 	validate(data.location_notes, regex.gameLocationNotesRegex, strings.invalidLocationNotes);
 	validate(data.description, regex.gameDescriptionRegex, strings.invalidGameDescription);
 	validateEnforcedParamsList(data.enforced_params);
-    return data;
+	return data;
 }
 
 function validateAndCleanJoinRequest(data){
-    validate(data.game_id, regex.idRegex, strings.invalidGameId);
-    return data;
+	validate(data.game_id, regex.idRegex, strings.invalidGameId);
+	return data;
 }
 
 function validateAndCleanLeaveRequest(data){
 	validate(data.game_id, regex.idRegex);
-    return data;
+	return data;
 }
 
 function validateAndCleanReviewRequest(data){
@@ -69,27 +69,27 @@ function validateAndCleanReviewRequest(data){
 function validateAndCleanSearchRequest(data){
 	validate(data.search_object, regex.searchObjectRegex, strings.invalidSearchObject);
 	data.results_max = validateMaxResults(data.results_max);
-	if(data.search_object == 'game'){
+	if(data.search_object == "game"){
 		// Game param validation
-		searchValidate(data.game_id, regex.idRegex, strings.invalidGameId, data, 'game_id');
+		searchValidate(data.game_id, regex.idRegex, strings.invalidGameId, data, "game_id");
 		data.game_id = data.game_id - 0; //quick convert to int
-		searchValidate(data.game_name, regex.gameNameRegex, strings.invalidGameName, data, 'game_name');
-		searchValidate(data.game_type, regex.gameTypeRegex, strings.invalidGameType, data, 'game_type');
-		searchValidateSkillLevel(data.game_skill_min, data, 'game_skill_min');
-		searchValidateSkillLevel(data.game_skill_max, data, 'game_skill_max');
+		searchValidate(data.game_name, regex.gameNameRegex, strings.invalidGameName, data, "game_name");
+		searchValidate(data.game_type, regex.gameTypeRegex, strings.invalidGameType, data, "game_type");
+		searchValidateSkillLevel(data.game_skill_min, data, "game_skill_min");
+		searchValidateSkillLevel(data.game_skill_max, data, "game_skill_max");
 		data.game_skill_min = data.game_skill_min - 0; // quick convert to int
 		data.game_skill_max = data.game_skill_max - 0; // quick convert to int
-		searchValidate(data.game_total_players, regex.gameTotalPlayersRegex, strings.invalidGameTotalPlayers, data, 'game_total_players');
+		searchValidate(data.game_total_players, regex.gameTotalPlayersRegex, strings.invalidGameTotalPlayers, data, "game_total_players");
 		data.game_total_players = data.game_total_players - 0; // quick convert to int
-		searchValidateStartTime(data.game_start_time, data, 'game_start_time');
+		searchValidateStartTime(data.game_start_time, data, "game_start_time");
 		data.game_start_time = data.game_start_time - 0; // quick convert to int
-		searchValidate(data.game_duration, regex.gameDurationRegex, strings.invalidGameDuration, data, 'game_duration');
+		searchValidate(data.game_duration, regex.gameDurationRegex, strings.invalidGameDuration, data, "game_duration");
 		data.game_duration = data.game_duration - 0; // quick convert to int
-		data.game_location = searchValidateLocation(data.game_location, data, 'game_location');
-		searchValidateLocationRange(data.game_location_range, data, 'game_location_range');
+		data.game_location = searchValidateLocation(data.game_location, data, "game_location");
+		searchValidateLocationRange(data.game_location_range, data, "game_location_range");
 		data.game_location_range = data.game_location_range - 0;
 	}
-	else if(data.search_object == 'user'){
+	else if(data.search_object == "user"){
 		// User param validation
 		validate(data.username, regex.usernameRegex, strings.invalidUsername);
 	}
@@ -108,19 +108,19 @@ function validateAndCleanFriendId (data) {
 }
 
 function getIfReviewed(users, reviewerId, finished){
-	var final_results = []
+	var final_results = [];
 	async.forEachOf(users, function(user, i, callback){
 		databaseHelper.getIfReviewed(users.user_id, reviewerId, (reviewed)=>{
-				final_results.push({"user_id": users[i].user_id, "reviewed" : reviewed});
-				callback();
-		})
+			final_results.push({"user_id": users[i].user_id, "reviewed" : reviewed});
+			callback();
+		});
 	}, function () {
 		finished(final_results);
 	});
 }
 
 function filterGames(games, user_id, finished) {
-	var final_results = []
+	var final_results = [];
 	async.forEachOf(games, function (game, i, callback) {
 		databaseHelper.ensureGameIsJoinableByPlayer(game.game_id, user_id, (playable) => {
 			if(playable){
@@ -141,25 +141,25 @@ function validateAndCleanDeleteAccountRequest(data){
 }
 
 function jsonError(Error){
-    return {'error': Error.toString().substring(7)};
+	return {"error": Error.toString().substring(7)};
 }
 
 module.exports = {
-    validateAndCleanRegisterRequest,
-    validateAndCleanUpdateRequest,
-    validateAndCleanLoginRequest,
-    validateAndCleanCreateGameRequest,
-    validateAndCleanJoinRequest,
-    validateAndCleanSearchRequest,
-    validateAndCleanReviewRequest,
-    validateAndCleanLeaveRequest,
+	validateAndCleanRegisterRequest,
+	validateAndCleanUpdateRequest,
+	validateAndCleanLoginRequest,
+	validateAndCleanCreateGameRequest,
+	validateAndCleanJoinRequest,
+	validateAndCleanSearchRequest,
+	validateAndCleanReviewRequest,
+	validateAndCleanLeaveRequest,
 	validateAndCleanUpdateExtendedProfileRequest,
 	validateAndCleanFriendId,
 	filterGames,
 	validateAndCleanDeleteAccountRequest,
 	jsonError,
 	getIfReviewed,
-}
+};
 
 //////////////// Helpers ////////////////
 
@@ -182,7 +182,7 @@ function searchValidate(param, regexPattern, errorMessage, obj, objParamString){
 
 function validateStartTime(startTime){
 	if (startTime == null || startTime < (Date.now / 1000)){
-		throw new Error(strings.invalidGameStartTime)
+		throw new Error(strings.invalidGameStartTime);
 	}
 }
 
@@ -276,5 +276,5 @@ function searchValidateLocationRange(locationRange, obj, objParamString){
 
 function isInt(number){
 	number = number - 0;
-	return (typeof number==='number' && (number%1)===0);
+	return (typeof number==="number" && (number%1)===0);
 }

@@ -1,11 +1,9 @@
-var express = require('express');
+var express = require("express");
 var router = express.Router();
-var body = require('body-parser');
-var tokenHelper = require('../helpers/tokenHelper');
-var requestHelper = require('../helpers/requestHelper');
-var databaseHelper = require('../helpers/databaseHelper');
-var crypto = require('crypto');
-var strings = require('./universal_strings');
+var tokenHelper = require("../helpers/tokenHelper");
+var requestHelper = require("../helpers/requestHelper");
+var databaseHelper = require("../helpers/databaseHelper");
+var strings = require("./universal_strings");
 
 /**
 * @api {post} /games Create a new game
@@ -58,14 +56,14 @@ var strings = require('./universal_strings');
 *
 * @apiSampleRequest /api/games
 */
-router.post('/', function(req, res){
+router.post("/", function(req, res){
 	try{
 		var game = requestHelper.validateAndCleanCreateGameRequest(req.body);
 		var tok = tokenHelper.verifyToken(req.body.jwt);
 
 		databaseHelper.ensureGameIsValidToBeCreated(game, tok.user_id, (valid) => {
 			if(!valid){
-				res.status(400).json({'error': strings.invalidGameScheduleConflict});
+				res.status(400).json({"error": strings.invalidGameScheduleConflict});
 			} else {
 				databaseHelper.getUserSkilllevel(tok.user_id, (userSkill) => {
 					var minSkill = ((userSkill - game.skill_offset) < 0) ? 0 : userSkill-game.skill_offset;
@@ -79,17 +77,17 @@ router.post('/', function(req, res){
 							if(game_id){
 								databaseHelper.addGamer(tok.user_id, game_id, (joinSuccess) => {
 									if (joinSuccess) {
-										res.status(200).json({'game_id': game_id});
+										res.status(200).json({"game_id": game_id});
 										return;
 									} else {
-										res.status(505).json({'error': strings.problemWithGameCreation});
+										res.status(505).json({"error": strings.problemWithGameCreation});
 									}
 								});
 							} else {
-								res.status(400).json({'error': strings.invalidGameCreation});
+								res.status(400).json({"error": strings.invalidGameCreation});
 							}
 						});
-				})
+				});
 			}
 		});
 	}
@@ -122,31 +120,29 @@ router.post('/', function(req, res){
 *
 * @apiSampleRequest /api/games/getUsers
 */
- router.get('/getUsers', function(req, res){
+router.get("/getUsers", function(req, res){
 	try {
 		var gameid = req.query.game_id;
 		var tok = tokenHelper.verifyToken(req.query.jwt);
-      databaseHelper.getUsers(gameid , (userids) => {
-      	if(userids) {
-      		requestHelper.getIfReviewed(userids, tok.user_id, (ifReviewed)=>{
-				if(ifReviewed){
+		databaseHelper.getUsers(gameid , (userids) => {
+			if(userids) {
+				requestHelper.getIfReviewed(userids, tok.user_id, (ifReviewed)=>{
+					if(ifReviewed){
 						res.status(200).json(ifReviewed);
 					}
-				else{
-					res.status(400).json("Getting the review status failed.")
-				}
-			});
-      	}else{
-      		res.status(400).json({'error': strings.usersFail});
-      		return;
-      	}
-      })
-    }
-    catch(err){
-	 res.status(400).json({'error': strings.invalidJwt});
-	 return;
-   }
- });
+					else{
+						res.status(400).json("Getting the review status failed.");
+					}
+				});
+			}else{
+				res.status(400).json({"error": strings.usersFail}); return;
+			}
+		});
+	}
+	catch(err){
+		res.status(400).json({"error": strings.invalidJwt}); return;
+	}
+});
 
 
 /**
@@ -176,7 +172,7 @@ router.post('/', function(req, res){
 *
 * @apiSampleRequest /api/games/:GAMEID/join/
 */
-router.put('/:game_id/join', function(req, res){
+router.put("/:game_id/join", function(req, res){
 	try {
 		var game = requestHelper.validateAndCleanJoinRequest(req.params);
 		var gameId = game.game_id;
@@ -189,19 +185,19 @@ router.put('/:game_id/join', function(req, res){
 					if (joinable) {
 						databaseHelper.addGamer(userId, gameId, (playerAdded) => {
 							if (playerAdded) {
-								res.status(200).json({'game_id': gameId}); return;
+								res.status(200).json({"game_id": gameId}); return;
 							} else {
-								res.status(400).json({'error': strings.gamerNotAdded}); return;
+								res.status(400).json({"error": strings.gamerNotAdded}); return;
 							}
-						})
+						});
 					} else {
-						res.status(400).json({'error': strings.cannotJoinGame}); return;
+						res.status(400).json({"error": strings.cannotJoinGame}); return;
 					}
 				});
 			} else {
-				res.status(400).json({'error': strings.invalidGame}); return;
+				res.status(400).json({"error": strings.invalidGame}); return;
 			}
-		})
+		});
 	} catch (err){
 		res.status(400).json(requestHelper.jsonError(err)); return;
 	}
@@ -235,7 +231,7 @@ router.put('/:game_id/join', function(req, res){
 * @apiSampleRequest /api/games/:GAMEID/leave/
 */
 
-router.delete('/:game_id/leave', function(req, res){
+router.delete("/:game_id/leave", function(req, res){
 	try{
 		var tok = tokenHelper.verifyToken(req.query.jwt);
 
@@ -249,11 +245,11 @@ router.delete('/:game_id/leave', function(req, res){
 						res.status(200).json(); return;
 					}
 					else {
-						res.status(400).json({'error': strings.invalidLeaveGame}); return;
+						res.status(400).json({"error": strings.invalidLeaveGame}); return;
 					}
-				})
+				});
 			}
-		})
+		});
 	}
 	catch(err){
 		res.status(400).json(requestHelper.jsonError(err)); return;

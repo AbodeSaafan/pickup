@@ -1,9 +1,9 @@
-var express = require('express');
+var express = require("express");
 var router = express.Router();
-var tokenHelper = require('../helpers/tokenHelper');
-var requestHelper = require('../helpers/requestHelper');
-var databaseHelper = require('../helpers/databaseHelper');
-var strings = require('./universal_strings');
+var tokenHelper = require("../helpers/tokenHelper");
+var requestHelper = require("../helpers/requestHelper");
+var databaseHelper = require("../helpers/databaseHelper");
+var strings = require("./universal_strings");
 
 /**
 * @api {get} /search Search API
@@ -91,7 +91,7 @@ var strings = require('./universal_strings');
 */
 
 
-router.get('/', function(req, res){
+router.get("/", function(req, res){
 	try{
 		var tok = tokenHelper.verifyToken(req.query.jwt);  
 		var search_request = requestHelper.validateAndCleanSearchRequest(req.query);
@@ -100,13 +100,13 @@ router.get('/', function(req, res){
 			if(!results || results.length == 0){
 				res.status(400).json({error: strings.emptySearchResults}); return;
 			}
-			else if(search_request.search_object == 'game'){
+			else if(search_request.search_object == "game"){
 				requestHelper.filterGames(results, tok.user_id, (filtered_games) => {
 					res.status(200).json({games: filtered_games}); return;
-				})
+				});
 				
 			}
-			else if(search_request.search_object == 'user'){
+			else if(search_request.search_object == "user"){
 				res.status(200).json({users: results}); return;
 			}
 		});

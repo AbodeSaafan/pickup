@@ -1,11 +1,9 @@
-var express = require('express');
+var express = require("express");
 var router = express.Router();
-var body = require('body-parser');
-var tokenHelper = require('../helpers/tokenHelper');
-var requestHelper = require('../helpers/requestHelper');
-var databaseHelper = require('../helpers/databaseHelper');
-var crypto = require('crypto');
-var strings = require('./universal_strings');
+var tokenHelper = require("../helpers/tokenHelper");
+var requestHelper = require("../helpers/requestHelper");
+var databaseHelper = require("../helpers/databaseHelper");
+var strings = require("./universal_strings");
 
 /**
 * @api {post} /friends Send a friend request
@@ -36,7 +34,7 @@ var strings = require('./universal_strings');
 *
 * @apiSampleRequest /api/friends
 */
-router.post('/', function(req, res){
+router.post("/", function(req, res){
 	try {
 		var tok = tokenHelper.verifyToken(req.body.jwt);
 
@@ -45,18 +43,18 @@ router.post('/', function(req, res){
 
 		databaseHelper.checkIfFriendRequestExists(friend, tok.user_id, (EntryExists) => {
 			if (EntryExists) {
-				res.status(400).json({'error': strings.FriendRequestExists}); return;
+				res.status(400).json({"error": strings.FriendRequestExists}); return;
 			} else {
 			//successfully send the friend invite
-			databaseHelper.sendFriendInvite(tok.user_id, friend, (inviteSuccess) => {
-				if (inviteSuccess) {
-					res.status(200).json({'status': 'invited'}); return;
-				} else {
-					res.status(400).json({'error': strings.invalidLFriendInvite}); return;
-				}
-			})
-		}
-	})
+				databaseHelper.sendFriendInvite(tok.user_id, friend, (inviteSuccess) => {
+					if (inviteSuccess) {
+						res.status(200).json({"status": "invited"}); return;
+					} else {
+						res.status(400).json({"error": strings.invalidLFriendInvite}); return;
+					}
+				});
+			}
+		});
 	}
 	catch(err) {
 		res.status(400).json(requestHelper.jsonError(err)); return;
@@ -92,46 +90,46 @@ router.post('/', function(req, res){
 *
 * @apiSampleRequest /api/friends
 */
-router.put('/block', function (req, res) {
+router.put("/block", function (req, res) {
 	try {
 		var tok = tokenHelper.verifyToken(req.query.jwt);
 
 
 		var good_input = requestHelper.validateAndCleanFriendId(req.query);
-		var friend = good_input.userId
+		var friend = good_input.userId;
 
 		databaseHelper.checkFriendEntryValidationForBlock(tok.user_id, friend, (EntryExists) => {
-			if (EntryExists == 'update') {
+			if (EntryExists == "update") {
 			//blocking a user after they send a friend request
 			//block a friend
-			databaseHelper.blockFriendUpdateEntry(tok.user_id, friend, (blockFriendSuccess) => {
-				if (blockFriendSuccess) {
-					res.status(200).json({'status': 'blocked'}); return;
-				} else {
-					res.status(400).json({'error': strings.BlockFriendFailed}); return;
-				}
-			})
-		}
-	//blocking a user after deleting their request
-	else if (EntryExists == 'insert') {
-		databaseHelper.blockFriendNewEntry(tok.user_id, friend, (insertSuccess) => {
-			if (insertSuccess) {
-				res.status(200).json({'status': 'blocked'}); return;
-			} else {
-				res.status(400).json({'error': strings.BlockFriendFailed}); return;
+				databaseHelper.blockFriendUpdateEntry(tok.user_id, friend, (blockFriendSuccess) => {
+					if (blockFriendSuccess) {
+						res.status(200).json({"status": "blocked"}); return;
+					} else {
+						res.status(400).json({"error": strings.BlockFriendFailed}); return;
+					}
+				});
 			}
-		})
-	}
-	else {
-		res.status(400).json({'error': strings.BlockFriendFailed}); return;
-	}
-})
+			//blocking a user after deleting their request
+			else if (EntryExists == "insert") {
+				databaseHelper.blockFriendNewEntry(tok.user_id, friend, (insertSuccess) => {
+					if (insertSuccess) {
+						res.status(200).json({"status": "blocked"}); return;
+					} else {
+						res.status(400).json({"error": strings.BlockFriendFailed}); return;
+					}
+				});
+			}
+			else {
+				res.status(400).json({"error": strings.BlockFriendFailed}); return;
+			}
+		});
 	}
 	catch(err) {
 		res.status(400).json(requestHelper.jsonError(err)); return;
 	}
 
-})
+});
 
 /**
 * @api {delete} /friends Decline a friend request, cancel a friend request, or delete a friend
@@ -162,7 +160,7 @@ router.put('/block', function (req, res) {
 *
 * @apiSampleRequest /api/friends
 */
-router.delete ('/delete', function (req, res) {
+router.delete ("/delete", function (req, res) {
 	try {
 		var tok = tokenHelper.verifyToken(req.query.jwt);
 
@@ -173,20 +171,20 @@ router.delete ('/delete', function (req, res) {
 			if (friendRequestSuccess) {
 				databaseHelper.declineFriend(tok.user_id, friend, (acceptFriendSuccess) => {
 					if (acceptFriendSuccess) {
-						res.status(200).json({'status': 'declined'}); return;
+						res.status(200).json({"status": "declined"}); return;
 					} else {
-						res.status(400).json({'error': strings.DeleteFriendFailed}); return;
+						res.status(400).json({"error": strings.DeleteFriendFailed}); return;
 					}
-				})
+				});
 			} else {
-				res.status(400).json({'error': strings.InvalidFriendRequest}); return;
+				res.status(400).json({"error": strings.InvalidFriendRequest}); return;
 			}
-		})
+		});
 	}
 	catch(err) {
 		res.status(400).json(requestHelper.jsonError(err)); return;
 	}
-})
+});
 
 
 /**
@@ -219,7 +217,7 @@ router.delete ('/delete', function (req, res) {
 * @apiSampleRequest /api/friends
 */
 
-router.put('/accept', function (req, res) {
+router.put("/accept", function (req, res) {
 	try {
 		var tok = tokenHelper.verifyToken(req.query.jwt);
 
@@ -231,20 +229,20 @@ router.put('/accept', function (req, res) {
 			if (friendRequestSuccess) {
 				databaseHelper.acceptFriendInvite(tok.user_id, friend, (acceptFriendSuccess) => {
 					if (acceptFriendSuccess) {
-						res.status(200).json({'status': 'accepted'}); return;
+						res.status(200).json({"status": "accepted"}); return;
 					} else {
-						res.status(400).json({'error': strings.AcceptFriendFailed}); return;
+						res.status(400).json({"error": strings.AcceptFriendFailed}); return;
 					}
-				})
+				});
 			} else {
-				res.status(400).json({'error': strings.InvalidFriendRequest}); return;
+				res.status(400).json({"error": strings.InvalidFriendRequest}); return;
 			}
-		})
+		});
 	}
 	catch(err) {
 		res.status(400).json(requestHelper.jsonError(err)); return;
 	}
-})
+});
 
 /**
 * @api {get} /friends Lists all friends for a user
@@ -276,31 +274,31 @@ router.put('/accept', function (req, res) {
 * @apiSampleRequest /api/friends
 */
 
-router.get('/listFriends', function(req, res) {
+router.get("/listFriends", function(req, res) {
 	try {
 		var tok = tokenHelper.verifyToken(req.query.jwt);
 		var friends = [];
 		databaseHelper.listAllFriends(tok.user_id, (listUserSuccess) => {
 			if (listUserSuccess) {
-				for (i = 0; i < listUserSuccess.length; i++) {
+				for (var i = 0; i < listUserSuccess.length; i++) {
 					var entry = {
 						user_id: listUserSuccess[i].user_id,
 						fname: listUserSuccess[i].fname,
 						lname: listUserSuccess[i].lname
-					}
-					friends.push(entry)
+					};
+					friends.push(entry);
 				}
-				res.status(200).json({'friends': friends}); return;
+				res.status(200).json({"friends": friends}); return;
 			}
 			else {
-				res.status(400).json({'error': strings.ListFriendFailed}); return;
+				res.status(400).json({"error": strings.ListFriendFailed}); return;
 			}
-		})
+		});
 	}
 	catch(err) {
 		res.status(400).json(requestHelper.jsonError(err)); return;
 	}
-})
+});
 
 /**
 * @api {get} /friends Lists all blocked users for a user
@@ -331,31 +329,31 @@ router.get('/listFriends', function(req, res) {
 *
 * @apiSampleRequest /api/friends
 */
-router.get('/listBlockedUsers', function(req, res) {
+router.get("/listBlockedUsers", function(req, res) {
 	try {
 		var tok = tokenHelper.verifyToken(req.query.jwt);
 		var blockedUsers = [];
 		databaseHelper.listAllBlockedUsers(tok.user_id, (listBlockUserSuccess) => {
 			if (listBlockUserSuccess) {
-				for (i = 0; i < listBlockUserSuccess.length; i++) {
+				for (var i = 0; i < listBlockUserSuccess.length; i++) {
 					var entry = {
 						user_id: listBlockUserSuccess[i].user_id,
 						fname: listBlockUserSuccess[i].fname,
 						lname: listBlockUserSuccess[i].lname
-					}
-					blockedUsers.push(entry)
+					};
+					blockedUsers.push(entry);
 				}
-				res.status(200).json({'blockedUsers': blockedUsers}); return;
+				res.status(200).json({"blockedUsers": blockedUsers}); return;
 			}
 			else {
-				res.status(400).json({'error': strings.ListBlockUserRequestFailed}); return;
+				res.status(400).json({"error": strings.ListBlockUserRequestFailed}); return;
 			}
-		})
+		});
 	}
 	catch(err) {
 		res.status(400).json(requestHelper.jsonError(err)); return;
 	}
-})
+});
 
 /**
 * @api {get} /friends Lists all friend requests for a user
@@ -386,50 +384,50 @@ router.get('/listBlockedUsers', function(req, res) {
 *
 * @apiSampleRequest /api/friends
 */
-router.get('/listFriendRequest', function(req, res) {
+router.get("/listFriendRequest", function(req, res) {
 	try {
 		var tok = tokenHelper.verifyToken(req.query.jwt);
-		var friendRequestSentToUser = []
-		var friendRequestUserSent = []
+		var friendRequestSentToUser = [];
+		var friendRequestUserSent = [];
 
 
 		databaseHelper.listAllFriendRequests(tok.user_id, (listFriendRequestSuccess) => {
 			if (listFriendRequestSuccess) {
-				for (i = 0; i < listFriendRequestSuccess.length; i++) {
+				for (var i = 0; i < listFriendRequestSuccess.length; i++) {
 					if (listFriendRequestSuccess[i].user_1 == tok.user_id) {
 						var entry = {
 							user_id: listFriendRequestSuccess[i].user_2,
 							fname: listFriendRequestSuccess[i].fname,
 							lname: listFriendRequestSuccess[i].lname,
 							status: listFriendRequestSuccess[i].status
-						}
+						};
 						friendRequestUserSent.push(entry);
 
 					} else {
-						var entry = {
+						entry = {
 							user_id: listFriendRequestSuccess[i].user_1,
 							fname: listFriendRequestSuccess[i].fname,
 							lname: listFriendRequestSuccess[i].lname,
 							status: listFriendRequestSuccess[i].status
-						}
+						};
 						friendRequestSentToUser.push(entry);
 
 					}
+				}
+				var result =  {
+					"ByUser": friendRequestUserSent,
+					"ForUser": friendRequestSentToUser
+				};
+				res.status(200).json(result); return;
 			}
-			var result =  {
-				'ByUser': friendRequestUserSent,
-				'ForUser': friendRequestSentToUser
+			else {
+				res.status(400).json({"error": strings.listFriendRequestFailed}); return;
 			}
-			res.status(200).json(result); return;
-		}
-		else {
-			res.status(400).json({'error': strings.listFriendRequestFailed}); return;
-		}
-	})
+		});
 	}
 	catch(err) {
 		res.status(400).json(requestHelper.jsonError(err)); return;
 	}
-})
+});
 
 module.exports = router;

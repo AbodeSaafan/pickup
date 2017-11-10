@@ -1,9 +1,9 @@
-var express = require('express');
+var express = require("express");
 var router = express.Router();
-var requestHelper = require('../helpers/requestHelper');
-var databaseHelper = require('../helpers/databaseHelper');
-var tokenHelper = require('../helpers/tokenHelper');
-var strings = require('./universal_strings');
+var requestHelper = require("../helpers/requestHelper");
+var databaseHelper = require("../helpers/databaseHelper");
+var tokenHelper = require("../helpers/tokenHelper");
+var strings = require("./universal_strings");
 
 /**
 * @api {post} /login Log into the app
@@ -33,24 +33,24 @@ var strings = require('./universal_strings');
 * 
 * @apiSampleRequest /api/login
 */
-router.post('/', function(req, res){
-    try{
-        var user = requestHelper.validateAndCleanLoginRequest(req.body);
-    }
-    catch (err){
-        res.status(400).json(requestHelper.jsonError(err)); return;
-    }
+router.post("/", function(req, res){
+	try{
+		var user = requestHelper.validateAndCleanLoginRequest(req.body);
+	}
+	catch (err){
+		res.status(400).json(requestHelper.jsonError(err)); return;
+	}
 
 	databaseHelper.checkPassword(user.email, user.password, (refreshToken, userId) => {
 		if (refreshToken != null) {
 			var newJwt = tokenHelper.createTokenForUser(userId, user.email);
-			res.status(200).json({'token':refreshToken, 'user_id':userId, 'jwt_token':newJwt});
+			res.status(200).json({"token":refreshToken, "user_id":userId, "jwt_token":newJwt});
 			return;
 		} else {
-			res.status(400).json({'error': strings.loginError});
+			res.status(400).json({"error": strings.loginError});
 			return;
 		}
-	})
+	});
 });
 
 
