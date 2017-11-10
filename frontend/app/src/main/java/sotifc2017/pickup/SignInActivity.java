@@ -23,11 +23,6 @@ public class SignInActivity extends AppCompatActivity {
     private String email;
     private EditText passText;
     private String pass;
-    /**
-     * ATTENTION: This was auto-generated to implement the App Indexing API.
-     * See https://g.co/AppIndexing/AndroidStudio for more information.
-     */
-    private GoogleApiClient client;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,9 +31,6 @@ public class SignInActivity extends AppCompatActivity {
 
         emailText = (EditText) findViewById(R.id.emailEditText);
         passText = (EditText) findViewById(R.id.passEditText);
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
 
     public void newAccount(View view) {
@@ -77,7 +69,6 @@ public class SignInActivity extends AppCompatActivity {
                 }, 3000);
     }
 
-
     private void signInSuccess() {
         Toast.makeText(this, "Sign in successsful", Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(this, MapActivity.class);
@@ -89,43 +80,10 @@ public class SignInActivity extends AppCompatActivity {
 
     }
 
+    //TODO: Connect to backend authentication mechanism.
     private boolean authenticateUser(String email, String password) {
-        return false;
+        return true;
     }
 
-    /**
-     * ATTENTION: This was auto-generated to implement the App Indexing API.
-     * See https://g.co/AppIndexing/AndroidStudio for more information.
-     */
-    public Action getIndexApiAction() {
-        Thing object = new Thing.Builder()
-                .setName("SignIn Page") // TODO: Define a title for the content shown.
-                // TODO: Make sure this auto-generated URL is correct.
-                .setUrl(Uri.parse("http://[ENTER-YOUR-URL-HERE]"))
-                .build();
-        return new Action.Builder(Action.TYPE_VIEW)
-                .setObject(object)
-                .setActionStatus(Action.STATUS_TYPE_COMPLETED)
-                .build();
-    }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        client.connect();
-        AppIndex.AppIndexApi.start(client, getIndexApiAction());
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        AppIndex.AppIndexApi.end(client, getIndexApiAction());
-        client.disconnect();
-    }
 }
