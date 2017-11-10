@@ -33,7 +33,9 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-        askForPermissions();
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            askForPermissions();
+        }
     }
 
 
@@ -63,9 +65,9 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
                                 lat = location.getLatitude();
                                 lng = location.getLongitude();
                                 // Add a marker and move the camera
-                                LatLng sydney = new LatLng(lat,lng);
-                                mMap.addMarker(new MarkerOptions().position(sydney).title("Your Location"));
-                                mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+                                LatLng userLoc = new LatLng(lat,lng);
+                                mMap.addMarker(new MarkerOptions().position(userLoc).title("Your Location"));
+                                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(userLoc, 15));
                             }
                         }
                     });
