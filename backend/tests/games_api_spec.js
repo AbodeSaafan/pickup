@@ -17,7 +17,7 @@ frisby.create("Register a user using the API with valid credentials to use for c
 	.expectBodyContains("refresh")
 	.afterJSON(function (body) {
 		frisby.create("Creating a new game")
-			.post(testHelper.createGameEndpoint, testHelper.createGenericGame(body.token, 1, 1))
+			.post(testHelper.createGameEndpoint, testHelper.createUnrestrictedGame(body.token, 1, 1))
 			.expectStatus(200)
 			.expectBodyContains("game_id")
 			.toss();
@@ -30,7 +30,7 @@ frisby.create("Register a user using the API with valid credentials to use for c
 
 // Using a bad token to create game should fail it
 frisby.create("Creating a new game")
-	.post(testHelper.createGameEndpoint, testHelper.createGenericGame({user_id: "1", email: "ab@mail.com"}))
+	.post(testHelper.createGameEndpoint, testHelper.createUnrestrictedGame({user_id: "1", email: "ab@mail.com"}))
 	.expectStatus(400)
 	.toss();
 
@@ -45,12 +45,12 @@ frisby.create("Register a user using the API with valid credentials to use for c
 	.expectBodyContains("refresh")
 	.afterJSON(function (body) {
 		frisby.create("Creating a new game")
-			.post(testHelper.createGameEndpoint, testHelper.createGenericGame(body.token, 100, 200))
+			.post(testHelper.createGameEndpoint, testHelper.createUnrestrictedGame(body.token, 100, 200))
 			.expectStatus(200)
 			.expectBodyContains("game_id")
 			.afterJSON(function (){
 				frisby.create("Creating a conflicting game - 1")
-					.post(testHelper.createGameEndpoint, testHelper.createGenericGame(body.token, 100, 200))
+					.post(testHelper.createGameEndpoint, testHelper.createUnrestrictedGame(body.token, 100, 200))
 					.expectStatus(400)
 					.expectJSON({
 						error: strings.invalidGameScheduleConflict
@@ -59,7 +59,7 @@ frisby.create("Register a user using the API with valid credentials to use for c
 			})
 			.afterJSON(function (){
 				frisby.create("Creating a conflicting game - 2")
-					.post(testHelper.createGameEndpoint, testHelper.createGenericGame(body.token, 90, 300))
+					.post(testHelper.createGameEndpoint, testHelper.createUnrestrictedGame(body.token, 90, 300))
 					.expectStatus(400)
 					.expectJSON({
 						error: strings.invalidGameScheduleConflict
@@ -68,7 +68,7 @@ frisby.create("Register a user using the API with valid credentials to use for c
 			})
 			.afterJSON(function (){
 				frisby.create("Creating a conflicting game - 3")
-					.post(testHelper.createGameEndpoint, testHelper.createGenericGame(body.token, 140, 300))
+					.post(testHelper.createGameEndpoint, testHelper.createUnrestrictedGame(body.token, 140, 300))
 					.expectStatus(400)
 					.expectJSON({
 						error: strings.invalidGameScheduleConflict
@@ -77,7 +77,7 @@ frisby.create("Register a user using the API with valid credentials to use for c
 			})
 			.afterJSON(function (){
 				frisby.create("Creating a conflicting game - 4")
-					.post(testHelper.createGameEndpoint, testHelper.createGenericGame(body.token, 180, 300))
+					.post(testHelper.createGameEndpoint, testHelper.createUnrestrictedGame(body.token, 180, 300))
 					.expectStatus(400)
 					.expectJSON({
 						error: strings.invalidGameScheduleConflict
@@ -86,14 +86,14 @@ frisby.create("Register a user using the API with valid credentials to use for c
 			})
 			.afterJSON(function (){
 				frisby.create("Creating a good game - 1")
-					.post(testHelper.createGameEndpoint, testHelper.createGenericGame(body.token, 55000, 300))
+					.post(testHelper.createGameEndpoint, testHelper.createUnrestrictedGame(body.token, 55000, 300))
 					.expectStatus(200)
 					.expectBodyContains("game_id")
 					.toss();
 			})
 			.afterJSON(function (){
 				frisby.create("Creating a good game - 2")
-					.post(testHelper.createGameEndpoint, testHelper.createGenericGame(body.token, 0, 20))
+					.post(testHelper.createGameEndpoint, testHelper.createUnrestrictedGame(body.token, 0, 20))
 					.expectStatus(200)
 					.expectBodyContains("game_id")
 					.toss();
@@ -113,7 +113,7 @@ frisby.create("Joining a game: Creating a user to create a game")
 	.expectBodyContains("token")
 	.afterJSON(function (user) {
 		frisby.create("Creating a new game")
-			.post(testHelper.createGameEndpoint, testHelper.createGenericGame(user.token, 100, 200))
+			.post(testHelper.createGameEndpoint, testHelper.createUnrestrictedGame(user.token, 100, 200))
 			.expectStatus(200)
 			.expectBodyContains("game_id")
 			.afterJSON(function (game) {
@@ -128,7 +128,7 @@ frisby.create("Joining a game: Creating a user to create a game")
 							.expectBodyContains("game_id")
 							.afterJSON(function (game) {
 								frisby.create("Get the users of the game")
-									.get(testHelper.getUsersOfGameEndpoint+"?jwt="+ user.token +"&game_id="+game.game_id)
+									.get(testHelper.getUsersOfGameEndpoint+"?jwt="+ user.token +"&game_id="+gameId)
 								//.expectBodyContains('user_id')
 								//.expectBodyContains('ifReviewed')
 									.expectStatus(200)
@@ -152,7 +152,7 @@ frisby.create("Joining a game: Creating a user to create a game")
 	.expectBodyContains("token")
 	.afterJSON(function (user) {
 		frisby.create("Creating a new game")
-			.post(testHelper.createGameEndpoint, testHelper.createGenericGame(user.token, 100, 200))
+			.post(testHelper.createGameEndpoint, testHelper.createUnrestrictedGame(user.token, 100, 200))
 			.expectStatus(200)
 			.expectBodyContains("game_id")
 			.afterJSON(function (game) {
@@ -185,7 +185,7 @@ frisby.create("Joining a game: Creating a user to create a game")
 	.expectBodyContains("token")
 	.afterJSON(function (user) {
 		frisby.create("Creating a new game")
-			.post(testHelper.createGameEndpoint, testHelper.createGenericGame(user.token, 100, 200))
+			.post(testHelper.createGameEndpoint, testHelper.createUnrestrictedGame(user.token, 100, 200))
 			.expectStatus(200)
 			.expectBodyContains("game_id")
 			.afterJSON(function (game) {
@@ -219,7 +219,7 @@ frisby.create("Joining a game: Creating a user to create a game")
 	.expectBodyContains("token")
 	.afterJSON(function (user) {
 		frisby.create("Creating a new game")
-			.post(testHelper.createGameEndpoint, testHelper.createGenericGame(user.token, 100, 200))
+			.post(testHelper.createGameEndpoint, testHelper.createUnrestrictedGame(user.token, 100, 200))
 			.expectStatus(200)
 			.expectBodyContains("game_id")
 			.afterJSON(function (game) {

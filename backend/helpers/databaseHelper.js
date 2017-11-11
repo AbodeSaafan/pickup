@@ -216,7 +216,7 @@ function addGamer(userIdIn, gameIdIn, callback){
 
 	pool.connect((err, client, done) => {
 		client.query(queryString, queryParams, (err, res) => {
-			callback(err === null && res.rowCount > 0);
+			callback(!err && res && res.rowCount > 0);
 			done();
 			pool.end();
 		});

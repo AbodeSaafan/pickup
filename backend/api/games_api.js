@@ -77,10 +77,9 @@ router.post("/", function(req, res){
 							if(game_id){
 								databaseHelper.addGamer(tok.user_id, game_id, (joinSuccess) => {
 									if (joinSuccess) {
-										res.status(200).json({"game_id": game_id});
-										return;
+										res.status(200).json({"game_id": game_id}); return;
 									} else {
-										res.status(505).json({"error": strings.problemWithGameCreation});
+										res.status(505).json({"error": strings.problemWithGameCreation}); return;
 									}
 								});
 							} else {
