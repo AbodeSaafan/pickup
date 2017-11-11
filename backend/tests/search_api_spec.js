@@ -28,7 +28,7 @@ frisby.create("Searching for game using game id/name/type/min_skill/max_skill/to
 					})
 					.afterJSON(function (new_user) {
 						frisby.create("Search for the game using game type")
-							.get(testHelper.searchEndpoint+"?jwt="+new_user.token+"&search_object=game&results_max=1&game_type=" + gameDetails.type)
+							.get(testHelper.searchEndpoint+"?jwt="+new_user.token+"&search_object=game&results_max=1&game_type="+gameDetails.type+"&game_id="+game.game_id)
 							.expectStatus(200)
 							.expectJSON("games.0", {
 								game_id: game.game_id
@@ -37,7 +37,7 @@ frisby.create("Searching for game using game id/name/type/min_skill/max_skill/to
 					})
 					.afterJSON(function (new_user) {
 						frisby.create("Search for the game using game minimum skill level")
-							.get(testHelper.searchEndpoint+"?jwt="+new_user.token+"&search_object=game&results_max=1&game_skill_min=0")
+							.get(testHelper.searchEndpoint+"?jwt="+new_user.token+"&search_object=game&results_max=1&game_skill_min=0&game_id="+game.game_id)
 							.expectStatus(200)
 							.expectJSON("games.0", {
 								game_id: game.game_id
@@ -46,7 +46,7 @@ frisby.create("Searching for game using game id/name/type/min_skill/max_skill/to
 					})
 					.afterJSON(function (new_user) {
 						frisby.create("Search for the game using game maximum skill level")
-							.get(testHelper.searchEndpoint+"?jwt="+new_user.token+"&search_object=game&results_max=1&game_skill_max=10")
+							.get(testHelper.searchEndpoint+"?jwt="+new_user.token+"&search_object=game&results_max=1&game_skill_max=10&game_id="+game.game_id)
 							.expectStatus(200)
 							.expectJSON("games.0", {
 								game_id: game.game_id
@@ -64,7 +64,7 @@ frisby.create("Searching for game using game id/name/type/min_skill/max_skill/to
 					})
 					.afterJSON(function (new_user) {
 						frisby.create("Search for the game using game total players")
-							.get(testHelper.searchEndpoint+"?jwt="+new_user.token+"&search_object=game&results_max=1&game_total_players="+gameDetails.total_players_required)
+							.get(testHelper.searchEndpoint+"?jwt="+new_user.token+"&search_object=game&results_max=1&game_total_players="+gameDetails.total_players_required+"&game_id="+game.game_id)
 							.expectStatus(200)
 							.expectJSON("games.0", {
 								game_id: game.game_id
@@ -73,7 +73,7 @@ frisby.create("Searching for game using game id/name/type/min_skill/max_skill/to
 					})
 					.afterJSON(function (new_user) {
 						frisby.create("Search for the game using game duration")
-							.get(testHelper.searchEndpoint+"?jwt="+new_user.token+"&search_object=game&results_max=1&game_duration="+gameDetails.duration)
+							.get(testHelper.searchEndpoint+"?jwt="+new_user.token+"&search_object=game&results_max=1&game_duration="+gameDetails.duration+"&game_id="+game.game_id)
 							.expectStatus(200)
 							.expectJSON("games.0", {
 								game_id: game.game_id
@@ -91,7 +91,7 @@ frisby.create("Searching for game using game id/name/type/min_skill/max_skill/to
 					})
 					.afterJSON(function (new_user) {
 						frisby.create("Search for the game using game duration and minimum skill level")
-							.get(testHelper.searchEndpoint+"?jwt="+new_user.token+"&search_object=game&results_max=1&game_skill_min=0&game_duration="+gameDetails.duration)
+							.get(testHelper.searchEndpoint+"?jwt="+new_user.token+"&search_object=game&results_max=1&game_skill_min=0&game_duration="+gameDetails.duration+"&game_id="+game.game_id)
 							.expectStatus(200)
 							.expectJSON("games.0", {
 								game_id: game.game_id
