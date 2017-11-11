@@ -33,5 +33,17 @@
     "postinstall": "node createPrivate.js",
     "ManualCommand_HerokuPush": "heroku git:remote radiant-temple-45023; git subtree push --prefix backend heroku master"
   },
-  "license": "ISC"
+  "license": "ISC",
+  "directories": {
+    "test": "tests"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AbodeSaafan/pickup.git"
+  },
+  "author": "SOTI_FC_2017",
+  "bugs": {
+    "url": "https://github.com/AbodeSaafan/pickup/issues"
+  },
+  "homepage": "https://github.com/AbodeSaafan/pickup#readme"
 }
