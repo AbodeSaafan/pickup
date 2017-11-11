@@ -81,7 +81,7 @@ function createGenericGame(jwt, start, duration){
 		name: rNameg.place() + " game",
 		type: "casual",
 		skill_offset: randomSkillLevel(),
-		total_players_required: randomSkillLevel(),
+		total_players_required: 3 + randomSkillLevel(),
 		start_time: start,
 		duration: duration,
 		location: randomLocation(),

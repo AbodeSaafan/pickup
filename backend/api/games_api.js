@@ -16,7 +16,7 @@ var strings = require("./universal_strings");
 * @apiParam {string} name The name of the game you are creating
 * @apiParam {string} type The type of the game you are creating (Serious, casual, ..)
 * @apiParam {int} skill_offset The intended skill offset range for this game (0-10)
-* @apiParam {int} total_players The total required players for the game
+* @apiParam {int} total_players The total required players for the game (between 2 and 100)
 * @apiParam {int} start_time The time the game starts (in unix epoch time)
 * @apiParam {int} duration The duration of the game (in seconds as an int)
 * @apiParam {point} location The location of the game represented in location point object (lat/lng)

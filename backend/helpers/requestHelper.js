@@ -36,8 +36,7 @@ function validateAndCleanCreateGameRequest(data){
 	data.start_time = data.start_time - 0; // quick convert to int
 	validate(data.duration, regex.gameDurationRegex, strings.invalidGameDuration);
 	data.duration = data.duration - 0; // quick convert to int
-	validate(data.total_players_required, regex.gameTotalPlayersRegex, strings.invalidGameTotalPlayers);
-	data.total_players_required = data.total_players_required - 0; // quick convert to int
+	validateTotalPlayersRequired(data.total_players_required);
 	validate(data.gender, regex.gameGenderRegex, strings.invalidGameGenderPreference);
 	validateAgeRange(data.age_range);
 	validateLocation(data.location);
@@ -277,4 +276,12 @@ function searchValidateLocationRange(locationRange, obj, objParamString){
 function isInt(number){
 	number = number - 0;
 	return (typeof number==="number" && (number%1)===0);
+}
+
+function validateTotalPlayersRequired(players){
+	validate(players, regex.gameTotalPlayersRegex, strings.invalidGameTotalPlayers);
+	players = players - 0; // quick convert to int
+	if(players < 2 || players > 100){
+		throw new Error(strings.invalidGameTotalPlayers);
+	}
 }
