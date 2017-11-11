@@ -31,7 +31,7 @@
     "test": "jasmine-node ./tests/ --verbose",
     "generate": "apidoc -i ./api/ -o apidoc/",
     "postinstall": "node createPrivate.js",
-    "ManualCommand_HerokuPush": "heroku git:remote radiant-temple-45023; git subtree push --prefix backend heroku master"
+    "ManualCommand_HerokuPush": "heroku git:remote pickup-app-api; git subtree push --prefix backend heroku master"
   },
   "license": "ISC",
   "directories": {
