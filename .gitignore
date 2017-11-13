@@ -60,3 +60,15 @@ typings/
 # Private key used for JWT
 .key
 private.key
+
+# Front-end
+*.iml
+.gradle
+/local.properties
+/.idea/workspace.xml
+/.idea/libraries
+.DS_Store
+/build
+/captures
+.externalNativeBuild
+google-services.json*
