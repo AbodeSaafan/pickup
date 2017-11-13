@@ -22,8 +22,6 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
     private FusedLocationProviderClient mFusedLocationClient;
     private int MY_PERMISSIONS_FINE_LOCATION;
     private int MY_PERMISSIONS_COARSE_LOCATION;
-    private double lat;
-    private double lng;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,22 +29,17 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
         setContentView(R.layout.activity_map);
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
+            .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             askForPermissions();
         }
     }
 
-
     /**
      * Manipulates the map once available.
      * This callback is triggered when the map is ready to be used.
-     * This is where we can add markers or lines, add listeners or move the camera. In this case,
-     * we just add a marker near Sydney, Australia.
-     * If Google Play services is not installed on the device, the user will be prompted to install
-     * it inside the SupportMapFragment. This method will only be triggered once the user has
-     * installed Google Play services and returned to the app.
+     * This is where we can add markers or lines, add listeners or move the camera.
      */
     @Override
     public void onMapReady(GoogleMap googleMap) {
@@ -57,25 +50,33 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
         }
         else {
             mFusedLocationClient.getLastLocation()
-                    .addOnSuccessListener(this, new OnSuccessListener<Location>() {
-                        @Override
-                        public void onSuccess(Location location) {
-                            // Got last known location. In some rare situations this can be null.
-                            if (location != null) {
-                                lat = location.getLatitude();
-                                lng = location.getLongitude();
-                                // Add a marker and move the camera
-                                LatLng userLoc = new LatLng(lat,lng);
-                                mMap.addMarker(new MarkerOptions().position(userLoc).title("Your Location"));
-                                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(userLoc, 15));
-                            }
+                .addOnSuccessListener(this, new OnSuccessListener<Location>() {
+                    @Override
+                    public void onSuccess(Location location) {
+                        // Got last known location. In some rare situations this can be null.
+                        if (location != null) {
+                            LatLng position = new LatLng(location.getLatitude(), location.getLongitude());
+                            // Add a marker and move the camera
+                            // TODO: This needs to be updated to TrackUser() when implemented, not plotGameOnMap().
+                            plotGameOnMap(mMap, position, "Your Location");
+                            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(position, 15));
                         }
-                    });
+                    }
+                });
         }
     }
-
     public void askForPermissions() {
         ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, MY_PERMISSIONS_FINE_LOCATION);
         ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION}, MY_PERMISSIONS_COARSE_LOCATION);
     }
+
+    // Have to make sure OnMapReady() is invoked before using this.
+    public void plotGameOnMap(GoogleMap googleMap, LatLng gameLoc, String title) {
+        mMap = googleMap;
+        mMap.addMarker(new MarkerOptions().position(gameLoc).title(title));
+    }
+
+    // TODO: Track user's location. Center to user, with games in sight baseed on distance.
+    public void trackUser() {}
+
 }
