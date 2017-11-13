@@ -63,12 +63,12 @@ private.key
 
 # Front-end
 *.iml
-.gradle
-/local.properties
-/.idea/workspace.xml
-/.idea/libraries
-.DS_Store
-/build
-/captures
+*.gradle
+*/local.properties
+*/.idea/workspace.xml
+*/.idea/libraries
+*.DS_Store
+*/build
+*/captures
 .externalNativeBuild
-google-services.json*
+*google-services.json*
