@@ -2,13 +2,16 @@ package sotifc2017.pickup;
 
 import android.app.ActionBar;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -41,6 +44,10 @@ public class SignInActivity extends AppCompatActivity {
 
     public void signIn(View view) {
 
+        //Close keyboard
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+
         final ProgressDialog progressDialog = new ProgressDialog(SignInActivity.this,
                 R.style.AppTheme_Dark);
         progressDialog.setIndeterminate(true);
@@ -48,6 +55,7 @@ public class SignInActivity extends AppCompatActivity {
 
         Window window = progressDialog.getWindow();
         window.setLayout(ActionBar.LayoutParams.WRAP_CONTENT, ActionBar.LayoutParams.WRAP_CONTENT);
+        progressDialog.setCancelable(false);
         progressDialog.show();
 
         email = emailText.getText().toString();
@@ -77,13 +85,10 @@ public class SignInActivity extends AppCompatActivity {
 
     private void signInFailure() {
         Toast.makeText(this, "Sign in failed", Toast.LENGTH_SHORT).show();
-
     }
 
     //TODO: Connect to backend authentication mechanism.
     private boolean authenticateUser(String email, String password) {
-        return true;
+        return (email.equals("123"));
     }
-
-
 }

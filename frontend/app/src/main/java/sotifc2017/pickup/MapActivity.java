@@ -13,13 +13,20 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class MapActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
     private FusedLocationProviderClient mFusedLocationClient;
+    private List<LatLng> sampleGames;
     private int MY_PERMISSIONS_FINE_LOCATION;
     private int MY_PERMISSIONS_COARSE_LOCATION;
 
@@ -50,19 +57,45 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
         }
         else {
             mFusedLocationClient.getLastLocation()
-                .addOnSuccessListener(this, new OnSuccessListener<Location>() {
-                    @Override
-                    public void onSuccess(Location location) {
-                        // Got last known location. In some rare situations this can be null.
-                        if (location != null) {
-                            LatLng position = new LatLng(location.getLatitude(), location.getLongitude());
-                            // Add a marker and move the camera
-                            // TODO: This needs to be updated to TrackUser() when implemented, not plotGameOnMap().
-                            plotGameOnMap(mMap, position, "Your Location");
-                            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(position, 15));
+                    .addOnSuccessListener(this, new OnSuccessListener<Location>() {
+                        @Override
+                        public void onSuccess(Location location) {
+                            // Got last known location. In some rare situations this can be null.
+                            if (location != null) {
+                                LatLng position = new LatLng(location.getLatitude(), location.getLongitude());
+                                // Generates Sample Games. Take out when connected to backend.
+                                sampleGames = new ArrayList<>();
+                                Random random = new Random();
+                                for (double i = 0; i < 8; i++) {
+                                    // Convert radius from meters to degrees.
+                                    double radiusInDegrees = 1000 / 111320f;
+
+                                    // Get a random distance and a random angle.
+                                    double u = random.nextDouble();
+                                    double v = random.nextDouble();
+                                    double w = radiusInDegrees * Math.sqrt(u);
+                                    double t = 2 * Math.PI * v;
+                                    // Get the x and y delta values.
+                                    double x = w * Math.cos(t);
+                                    double y = w * Math.sin(t);
+
+                                    // Compensate the x value.
+                                    double new_x = x / Math.cos(Math.toRadians(location.getLatitude()));
+
+                                    double foundLatitude;
+                                    double foundLongitude;
+
+                                    foundLatitude = location.getLatitude() + y;
+                                    foundLongitude = location.getLongitude() + new_x;
+                                    sampleGames.add(new LatLng(foundLatitude, foundLongitude));
+                                }
+                                plotGames(mMap, sampleGames);
+//                                zoomToUser(mMap, position);
+                                zoomToViewPoints(mMap, sampleGames);
+                            }
                         }
-                    }
-                });
+                    });
+
         }
     }
     public void askForPermissions() {
@@ -71,12 +104,31 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
     }
 
     // Have to make sure OnMapReady() is invoked before using this.
-    public void plotGameOnMap(GoogleMap googleMap, LatLng gameLoc, String title) {
-        mMap = googleMap;
-        mMap.addMarker(new MarkerOptions().position(gameLoc).title(title));
+    //TODO: Custom Map Marker
+    public void plotGameOnMap(GoogleMap mMap, LatLng gameLoc) {
+        mMap.addMarker(new MarkerOptions().position(gameLoc));
     }
 
-    // TODO: Track user's location. Center to user, with games in sight baseed on distance.
-    public void trackUser() {}
+    //TODO: Want to use Game object, or whatever we actually pull from backend here. Need to sync-up.
+    public void plotGames(GoogleMap mMap, List<LatLng> games) {
+        for (LatLng game : games) {
+            plotGameOnMap(mMap, game);
+        }
+    }
+
+    public void zoomToUser(GoogleMap mMap, LatLng userLoc) {
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(userLoc, 15));
+    }
+
+    //From https://stackoverflow.com/questions/14828217/android-map-v2-zoom-to-show-all-the-markers
+    public void zoomToViewPoints(GoogleMap mMap, List<LatLng> locations) {
+        LatLngBounds.Builder builder = new LatLngBounds.Builder();
+        for (LatLng loc : locations) {
+            builder.include(loc);
+        }
+        LatLngBounds bounds = builder.build();
+        int padding = 50;
+        mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, padding));
+    }
 
 }
