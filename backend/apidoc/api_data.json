@@ -113,7 +113,7 @@
       "examples": [
         {
           "title": "Success-Response:",
-          "content": "     HTTP/1.1 200 OK\n\t{\n   \"token\": \"b43a545f90ec60bf5ed2a4bd45d81a711de7ba658faa6899d8240343b857664fc967a76cd622235313db8e2ec053fe34c26c\",\n   \"user_id\": \"240\"\n\t}",
+          "content": "     HTTP/1.1 200 OK\n\t{\n   \"token\": \"b43a545f90ec60bf5ed2a4bd45d81a711de7ba658faa6899d8240343b857664fc967a76cd622235313db8e2ec053fe34c26c\",\n   \"user_id\": \"240\"\n\t \"refresh\": \"bhiy123h1yu3k1jb3i1y3231321jkh312hakbnsdasd7fa6sd76xczz8a8sd9zcxasd\"\n\t}",
           "type": "json"
         }
       ]
@@ -258,7 +258,7 @@
       "examples": [
         {
           "title": "Success-Response:",
-          "content": "     HTTP/1.1 200 OK\n\t{\n\t    \"status\": \"Successful refresh token delete\"\t\n\t}",
+          "content": "     HTTP/1.1 200 OK\n\t{\n\t}",
           "type": "json"
         }
       ]
@@ -943,7 +943,7 @@
             "type": "int",
             "optional": false,
             "field": "total_players",
-            "description": "<p>The total required players for the game</p>"
+            "description": "<p>The total required players for the game (between 2 and 100)</p>"
           },
           {
             "group": "Parameter",

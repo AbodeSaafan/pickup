@@ -22,6 +22,7 @@ var strings = require("./universal_strings");
 * 	{
 *    "token": "b43a545f90ec60bf5ed2a4bd45d81a711de7ba658faa6899d8240343b857664fc967a76cd622235313db8e2ec053fe34c26c",
 *    "user_id": "240"
+*	 "refresh": "bhiy123h1yu3k1jb3i1y3231321jkh312hakbnsdasd7fa6sd76xczz8a8sd9zcxasd"
 *	}
 *
 * @apiExample Example call::
@@ -44,7 +45,7 @@ router.post("/", function(req, res){
 	databaseHelper.checkPassword(user.email, user.password, (refreshToken, userId) => {
 		if (refreshToken != null) {
 			var newJwt = tokenHelper.createTokenForUser(userId, user.email);
-			res.status(200).json({"token":refreshToken, "user_id":userId, "jwt_token":newJwt});
+			res.status(200).json({"refresh":refreshToken, "user_id":userId, "token":newJwt});
 			return;
 		} else {
 			res.status(400).json({"error": strings.loginError});
