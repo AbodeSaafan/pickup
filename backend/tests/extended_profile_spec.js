@@ -15,6 +15,15 @@ frisby.create("Register a user using the API with valid credentials to use for e
 		frisby.create("Get extendedProfile of user")
 			.get(testHelper.extendedProfileEndpoint+"?jwt="+body.token)
 			.expectStatus(200)
+			.expectJSON({
+				user_id: parseInt(body.user_id),
+				age: body.age,
+				gender: body.gender,
+				location: null,
+				average_review: 0,
+				top_tag: null,
+				top_tag_count: null
+			})
 			.toss();
 	})
 	.toss();
@@ -35,6 +44,40 @@ frisby.create("Register a user using the API with valid credentials to use for e
 			.toss();
 	})
 	.toss();
+
+
+
+// Get an Extended Profile after updating skill_level and location
+frisby.create("Register a user using the API with valid credentials to use for extendedProfile testing")
+	.post(testHelper.registerEndpoint, testHelper.createGenericUser())
+	.expectStatus(200)
+	.expectHeaderContains("content-type", "application/json")
+	.expectBodyContains("token")
+	.expectBodyContains("user_id")
+	.expectBodyContains("refresh")
+	.afterJSON(function (body) {
+		frisby.create("Update extendedProfile of user")
+			.put(testHelper.extendedProfileEndpoint, testHelper.createGenericExtendedProfile (body.token))
+			.expectStatus(200)
+			.afterJSON (function (result) {
+				frisby.create("Get extendedProfile of user")
+					.get(testHelper.extendedProfileEndpoint+"?jwt="+body.token)
+					.expectStatus(200)
+					.expectJSON({
+						user_id: parseInt(body.user_id),
+						age: body.age,
+						gender: body.gender,
+						location: "(" + result.Users_Location.lat + "," + result.Users_Location.lng + ")",
+						average_review: 0,
+						top_tag: null,
+						top_tag_count: null
+					})
+					.toss();
+			})
+			.toss();
+	})
+	.toss();
+
 
 
 // Using a bad token to getExtendedProfile should fail

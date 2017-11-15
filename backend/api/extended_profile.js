@@ -44,7 +44,16 @@ router.get("/", function (req, res) {
 
 		databaseHelper.getExtendedProfile(tok.user_id, (ext_profile) => {
 			if(ext_profile) {
-				res.status(200).json(ext_profile); return;
+				var response = {
+					user_id: ext_profile.user_id,
+					age: ext_profile.age,
+					gender: ext_profile.gender,
+					location: ext_profile.location,
+					average_review: ext_profile.average_review,
+					top_tag: ext_profile.top_tag,
+					top_tag_count: ext_profile.top_tag_count
+				}
+				res.status(200).json(response); return;
 			}else{
 				res.status(400).json({"error": strings.userIdFail}); return;
 			}
@@ -96,12 +105,18 @@ router.put("/", function (req, res) {
 		var userId = tok.user_id;
 		var skill_level = details.skill_level;
 		var location = details.location;
+		console.log(location)
 
 		databaseHelper.getExtendedProfile(userId, (user_id) => {
 			if(user_id) {
 				databaseHelper.updateExtendedUser(userId, skill_level, location, (update) => {
 					if (update) {
-						res.status(200).json(); return;
+						var details = {
+							UserID: userId,
+							Users_SkillLevel: skill_level,
+							Users_Location: location
+						}
+						res.status(200).json(details); return;
 					} else {
 						res.status(400).json({"error": strings.UpdateFailed}); return;
 					}
