@@ -52,7 +52,7 @@ router.get("/", function (req, res) {
 					average_review: ext_profile.average_review,
 					top_tag: ext_profile.top_tag,
 					top_tag_count: ext_profile.top_tag_count
-				}
+				};
 				res.status(200).json(response); return;
 			}else{
 				res.status(400).json({"error": strings.userIdFail}); return;
@@ -101,11 +101,9 @@ router.put("/", function (req, res) {
 
 		var tok = tokenHelper.verifyToken(req.body.jwt);
 
-
 		var userId = tok.user_id;
 		var skill_level = details.skill_level;
 		var location = details.location;
-		console.log(location)
 
 		databaseHelper.getExtendedProfile(userId, (user_id) => {
 			if(user_id) {
@@ -115,7 +113,7 @@ router.put("/", function (req, res) {
 							UserID: userId,
 							Users_SkillLevel: skill_level,
 							Users_Location: location
-						}
+						};
 						res.status(200).json(details); return;
 					} else {
 						res.status(400).json({"error": strings.UpdateFailed}); return;
