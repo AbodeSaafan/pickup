@@ -4,31 +4,19 @@ import android.app.ActionBar;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
-import android.os.Handler;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.Toast;
-
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.HttpClientStack;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.google.android.gms.appindexing.Action;
-import com.google.android.gms.appindexing.AppIndex;
-import com.google.android.gms.appindexing.Thing;
-import com.google.android.gms.common.api.GoogleApiClient;
-
 import org.json.JSONObject;
-
-import java.util.HashMap;
+import sotifc2017.pickup.api.Authentication;
+import sotifc2017.pickup.api.Utils;
 
 public class SignInActivity extends AppCompatActivity {
 
@@ -74,14 +62,42 @@ public class SignInActivity extends AppCompatActivity {
         email = emailText.getText().toString();
         pass = passText.getText().toString();
 
-        authenticateUser(email, pass);
+        Utils.getInstance(this).addToRequestQueue(Authentication.login_request(email, pass, successful_signin, error_signin));
     }
 
-    private void signInSuccess(String message) {
-        Toast.makeText(this, "Sign in successsful: " + message, Toast.LENGTH_SHORT).show();
+    private Response.Listener<JSONObject> successful_signin = new Response.Listener<JSONObject>() {
+        @Override
+        public void onResponse(JSONObject response) {
+            try{
+                signInSuccess(response.getString("token"), response.getString("refresh"));
+            }
+            catch (Exception e){ signInFailure(e.getMessage()); }
+
+        }
+    };
+
+    private Response.ErrorListener error_signin =  new Response.ErrorListener() {
+        @Override
+        public void onErrorResponse(VolleyError error) {
+            try {
+                JSONObject errorJSON = new JSONObject(new String(error.networkResponse.data, "UTF-8"));
+                signInFailure(errorJSON.getString("error"));
+            }
+            catch (Exception e){ signInFailure(e.getMessage()); }
+        }
+    };
+
+    private void signInSuccess(String jwt, String refresh) {
+        Toast.makeText(this, "Sign in successsful", Toast.LENGTH_SHORT).show();
+
+        SharedPreferences prefs = this.getSharedPreferences(
+                "sotifc2017.pickup", Context.MODE_PRIVATE);
+        prefs.edit().putString("jwt", jwt);
+
         Intent intent = new Intent(this, MapActivity.class);
         startActivity(intent);
         progressDialog.cancel();
+
     }
 
     private void signInFailure(String message) {
@@ -90,41 +106,4 @@ public class SignInActivity extends AppCompatActivity {
     }
 
 
-    private void authenticateUser(String email, String password) {
-        // TODO beautify this proof of concept design
-        HashMap<String, String> params = new HashMap<String, String>();
-        params.put("email", email);
-        params.put("password", password);
-
-
-        JsonObjectRequest loginRequest = new JsonObjectRequest
-                (Request.Method.POST, HttpUtils.LOGIN_ENDPOINT, new JSONObject(params), new Response.Listener<JSONObject>() {
-
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        try{
-                            signInSuccess("jwt: " + response.getString("token") + " for user " + response.getString("user_id"));
-                        }
-                        catch (Exception e){
-                            signInFailure(e.getMessage());
-                        }
-
-                    }
-                }, new Response.ErrorListener() {
-
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        try {
-                            JSONObject errorJSON = new JSONObject(new String(error.networkResponse.data, "UTF-8"));
-                            signInFailure(errorJSON.getString("error"));
-                        }
-                        catch (Exception e){
-
-                        }
-                    }
-                });
-
-        // Add a request (in this example, called stringRequest) to your RequestQueue.
-        HttpUtils.getInstance(this).addToRequestQueue(loginRequest);
-    }
 }

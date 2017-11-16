@@ -1,7 +1,6 @@
-package sotifc2017.pickup;
+package sotifc2017.pickup.api;
 
 import android.content.Context;
-
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
 import com.android.volley.Request;
@@ -10,22 +9,20 @@ import com.android.volley.Request;
 /**
  * Created by Abode on 11/14/2017.
  */
-public class HttpUtils {
-    private static HttpUtils mInstance;
+public class Utils {
+    private static Utils mInstance;
     private RequestQueue mRequestQueue;
     private static Context mCtx;
-    private static final String BASE_API = "https://pickup-app-api.herokuapp.com/api/";
-    public static final String LOGIN_ENDPOINT = BASE_API + "login";
+    public static final String BASE_API = "https://pickup-app-api.herokuapp.com/api/";
 
-    private HttpUtils(Context context) {
+    private Utils(Context context) {
         mCtx = context;
         mRequestQueue = getRequestQueue();
-
     }
 
-    public static synchronized HttpUtils getInstance(Context context) {
+    public static synchronized Utils getInstance(Context context) {
         if (mInstance == null) {
-            mInstance = new HttpUtils(context);
+            mInstance = new Utils(context);
         }
         return mInstance;
     }
@@ -42,6 +39,4 @@ public class HttpUtils {
     public <T> void addToRequestQueue(Request<T> req) {
         getRequestQueue().add(req);
     }
-
-
 }
