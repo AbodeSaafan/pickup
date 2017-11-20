@@ -31,6 +31,9 @@
     <!-- string for the profile page -->
     <string name="header_name">Pickup Dude</string>
     <string name="profile_description">This is a basketball lover who outscores Michael Jordan easily... in 2k!</string>
-    <string name="title_activity_map">Map</string>
+    <string name="self_setting">Settings</string>
+    <string name="sign_out_title">Sign Out</string>
+    <string name="sign_out_message">Do you want to sign out?</string>
 
+    <string name="title_activity_map">Map</string>
 </resources>
