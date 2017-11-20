@@ -18,7 +18,8 @@ public class SplashActivity extends AppCompatActivity {
             @Override
             public void run() {
                 /* Create an Intent that will start the Menu-Activity. */
-                Intent mainIntent = new Intent(SplashActivity.this, SignInActivity.class);
+                //TODO: Change MapActivity.class to SignInActivity.class (Sign-in wasn't working)
+                Intent mainIntent = new Intent(SplashActivity.this, MapActivity.class);
                 SplashActivity.this.startActivity(mainIntent);
                 SplashActivity.this.finish();
             }

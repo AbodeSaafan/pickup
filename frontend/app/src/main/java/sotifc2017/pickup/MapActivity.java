@@ -1,10 +1,15 @@
 package sotifc2017.pickup;
 
+import android.app.FragmentManager;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
+import android.view.MenuItem;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -20,7 +25,6 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import java.util.concurrent.ThreadLocalRandom;
 
 public class MapActivity extends FragmentActivity implements OnMapReadyCallback {
 
@@ -29,18 +33,37 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
     private List<LatLng> sampleGames;
     private int MY_PERMISSIONS_FINE_LOCATION;
     private int MY_PERMISSIONS_COARSE_LOCATION;
+    private Intent intent;
+    SupportMapFragment mapFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_map);
+        setContentView(R.layout.activity_main);
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+        mapFragment = (SupportMapFragment) getSupportFragmentManager()
             .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             askForPermissions();
         }
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
+
+        bottomNavigationView.setOnNavigationItemSelectedListener(
+            new BottomNavigationView.OnNavigationItemSelectedListener() {
+                @Override
+                public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                    FragmentManager fm = getFragmentManager();
+                    switch (item.getItemId()) {
+                        case R.id.action_favorites:
+                            break;
+                        case R.id.action_map:
+                            break;
+                        case R.id.action_profile:
+                            break;
+                    }
+                    return true;
+                }});
     }
 
     /**
@@ -95,9 +118,9 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
                             }
                         }
                     });
-
         }
     }
+
     public void askForPermissions() {
         ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, MY_PERMISSIONS_FINE_LOCATION);
         ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION}, MY_PERMISSIONS_COARSE_LOCATION);

@@ -32,5 +32,6 @@
     <string name="header_name">Pickup Dude</string>
     <string name="profile_description">This is a basketball lover who outscores Michael Jordan easily... in 2k!</string>
     <string name="title_activity_map">Map</string>
+    <string name="title_activity_nav">NavActivity</string>
 
 </resources>
