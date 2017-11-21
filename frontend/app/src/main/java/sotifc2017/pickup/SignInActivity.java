@@ -5,6 +5,8 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -17,7 +19,7 @@ import com.android.volley.VolleyError;
 import org.json.JSONObject;
 import sotifc2017.pickup.api.Authentication;
 import sotifc2017.pickup.api.Utils;
-
+@RequiresApi(api = Build.VERSION_CODES.KITKAT)
 public class SignInActivity extends AppCompatActivity {
 
     private EditText emailText;
