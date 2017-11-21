@@ -17,6 +17,7 @@ var strings = require("./universal_strings");
 * @apiParam {int} rating of the user
 * @apiParam {int} tags describing the user
 * @apiParam {string} jwt Valid JWT
+* @apiParam {bool} reviewed already or not
 *
 * @apiError error The error field has a string with an exact error
 *
@@ -31,6 +32,7 @@ var strings = require("./universal_strings");
 *     "userId": "1",
 *     "rating": "1",
 *     "tags": ["1", "2"],
+*     "reviewed": "true",
 *     "jwt": Encrypted_JWT_Token
 *   }
 *
@@ -38,9 +40,9 @@ var strings = require("./universal_strings");
 */
 router.post("/setReview", function(req, res){
 	try{
-		var review = requestHelper.validateAndCleanReviewRequest(req.body);
+		var review = requestHelper.validateAndCleanReviewRequest(req.query);
 		try {
-			var tok = tokenHelper.verifyToken(req.body.jwt);
+			var tok = tokenHelper.verifyToken(req.query.jwt);
 		}
 		catch(err){
 			res.status(400).json({"error": strings.invalidJwt});
@@ -49,13 +51,14 @@ router.post("/setReview", function(req, res){
 
 		databaseHelper.addReview(review.userId, review.gameId, tok.reviewerId, review.rating, (reviewId) => {
 			if(reviewId) {
-				databaseHelper.addTag(reviewId, review.tags, (success) => {
-					if(success){
-						res.status(200).json("Review added succesfully.");
+				requestHelper.addTag(reviewId, review.tags, (anyFailure) => {
+					if(anyFailure){
+						res.status(400).json("Adding tags failed");
 						return;
 					}
 					else{
-						res.status(400).json("Adding tags failed");
+						res.status(200).json("Review added succesfully.");
+						return;
 					}
 				});
 			}else{

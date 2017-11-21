@@ -310,25 +310,64 @@ function addReview (userId, gameId, reviewerId, rating, tags, callback){
 	});
 }
 
+function updateReview (userId, gameId, reviewerId, rating, tags, callback){
+	var queryString = "UPDATE reviews SET user_id = $1, game_id = $2, reviewer_id = $3, rating = $4";
+	var queryParams = [userId, gameId, reviewerId, rating];
+
+	const pool = new pg.Pool({connectionString: conString});
+
+	pool.connect((err, client, done) => {
+		client.query(queryString, queryParams, (err, res) => {
+			if(!err && res && res.rows && res.rows[0] && res.rows[0].review_id){
+				callback(res.rows[0].review_id);
+			}
+			else{
+				callback(false);
+			}
+			done();
+			pool.end();
+		});
+	});
+}
 
 function addTag(reviewId, tags, callback){
-	for(let i = 0; i < tags.length; i++){
-		var queryString = "INSERT INTO tags(review_id, tag) VALUES($1, $2)";
-		var queryParams = [reviewId, tags[i]];
+	var queryString = "INSERT INTO tags(review_id, tag) VALUES($1, $2)";
+	var queryParams = [reviewId, tags[i]];
 
-		const pool = new pg.Pool({connectionString: conString});
+	const pool = new pg.Pool({connectionString: conString});
 
-		pool.connect((err, client, done) => {
-			client.query(queryString, queryParams, (err, res) => {
-				if(err || !res){
-					callback(false);
-				}
-				done();
-				pool.end();
-			});
+	pool.connect((err, client, done) => {
+		client.query(queryString, queryParams, (err, res) => {
+			if(!err && res){
+				callback(true);
+			}
+			else{
+				callback(false)
+			}
+			done();
+			pool.end();
 		});
-	}
-	callback(true);
+	});
+}
+
+function updateTag(reviewId, tags, callback){
+	var queryString = "UPDATE tags SET review_id = $1, tag = $2";
+	var queryParams = [reviewId, tags[i]];
+
+	const pool = new pg.Pool({connectionString: conString});
+
+	pool.connect((err, client, done) => {
+		client.query(queryString, queryParams, (err, res) => {
+			if(!err && res){
+				callback(true);
+			}
+			else{
+				callback(false)
+			}
+			done();
+			pool.end();
+		});
+	});
 }
 
 
@@ -744,7 +783,9 @@ module.exports = {
 	searchObjects,
 	listAllFriendRequests,
 	disableAccount,
-	getIfReviewed
+	getIfReviewed,
+	updateReview,
+	updateTag
 };
 
 //////////////// Helpers ////////////////
