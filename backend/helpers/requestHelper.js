@@ -109,8 +109,36 @@ function validateAndCleanFriendId (data) {
 function getIfReviewed(users, reviewerId, finished){
 	var final_results = [];
 	async.forEachOf(users, function(user, i, callback){
-		databaseHelper.getIfReviewed(users.user_id, reviewerId, (reviewed)=>{
+		databaseHelper.getIfReviewed(reviewerId, user.user_id, (reviewed)=>{
 			final_results.push({"user_id": users[i].user_id, "reviewed" : reviewed});
+			callback();
+		});
+	}, function () {
+		finished(final_results);
+	});
+}
+
+function addTag(reviewId, tags, finished){
+	var final_results = [];
+	async.forEachOf(tags, function(tag, i, callback){
+		databaseHelper.addTag(reviewId, tag, (tagAdded)=>{
+			if(!tagAdded){
+					final_results.push("1");
+				}
+			callback();
+		});
+	}, function () {
+		finished(final_results);
+	});
+}
+
+function updateTag(reviewId, tags, finished){
+	var final_results = [];
+	async.forEachOf(tags, function(tag, i, callback){
+		databaseHelper.updateTag(reviewId, tag, (tagAdded)=>{
+			if(!tagAdded){
+					final_results.push("1");
+				}
 			callback();
 		});
 	}, function () {
@@ -158,6 +186,8 @@ module.exports = {
 	validateAndCleanDeleteAccountRequest,
 	jsonError,
 	getIfReviewed,
+	addTag,
+	updateTag
 };
 
 //////////////// Helpers ////////////////

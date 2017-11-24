@@ -128,9 +128,11 @@ router.get("/getUsers", function(req, res){
 				requestHelper.getIfReviewed(userids, tok.user_id, (ifReviewed)=>{
 					if(ifReviewed){
 						res.status(200).json(ifReviewed);
+						return;
 					}
 					else{
 						res.status(400).json("Getting the review status failed.");
+						return;
 					}
 				});
 			}else{
