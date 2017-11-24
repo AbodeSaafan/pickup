@@ -91,7 +91,8 @@
                     android:imeOptions="actionUnspecified"
                     android:inputType="textCapCharacters|textPassword"
                     android:maxLines="1"
-                    android:singleLine="true" />
+                    android:singleLine="true"
+                    tools:ignore="InvalidImeActionId" />
 
             </android.support.design.widget.TextInputLayout>
 
@@ -159,6 +160,19 @@
 
             </RadioGroup>
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/dob_label" />
+
+            <EditText
+                android:id="@+id/Dob"
+                android:clickable="true"
+                android:hint="@string/birthday"
+                android:onClick="dobLabelClick"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:focusable="false"/>
 
             <Button
                 android:id="@+id/email_sign_in_button"

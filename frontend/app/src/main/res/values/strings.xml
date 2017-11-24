@@ -36,4 +36,6 @@
     <string name="sign_out_message">Do you want to sign out?</string>
 
     <string name="title_activity_map">Map</string>
+    <string name="birthday">Choose Date</string>
+    <string name="dob_label">Date of Birth:</string>
 </resources>

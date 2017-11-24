@@ -3,6 +3,8 @@ package sotifc2017.pickup;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.app.DatePickerDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
@@ -28,23 +30,28 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 
 import sotifc2017.pickup.api.Authentication;
 import sotifc2017.pickup.api.Utils;
 
 import static android.Manifest.permission.READ_CONTACTS;
+import static android.support.design.widget.Snackbar.LENGTH_LONG;
 
 @RequiresApi(api = Build.VERSION_CODES.KITKAT)
 /**
@@ -57,13 +64,6 @@ public class SignUpActivity extends AppCompatActivity implements LoaderCallbacks
      */
     private static final int REQUEST_READ_CONTACTS = 0;
 
-    /**
-     * A dummy authentication store containing known user names and passwords.
-     * TODO: remove after connecting to a real authentication system.
-     */
-    private static final String[] DUMMY_CREDENTIALS = new String[]{
-            "foo@example.com:hello", "bar@example.com:world"
-    };
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
      */
@@ -79,6 +79,8 @@ public class SignUpActivity extends AppCompatActivity implements LoaderCallbacks
     private EditText mLastnameView;
     private RadioGroup radioSexGroup;
     private EditText cPasswordView;
+    private String dob;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -291,8 +293,8 @@ public class SignUpActivity extends AppCompatActivity implements LoaderCallbacks
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             showProgress(true);
-//            mAuthTask = new UserLoginTask(email, firstname, lastname, password, gender, username);
-//            mAuthTask.execute((Void) null);
+            mAuthTask = new UserLoginTask(email, firstname, lastname, password, gender, username, dob, this);
+            mAuthTask.execute((Void) null);
         }
 
         Intent intent = new Intent(this, ProfileSelfActivity.class);
@@ -384,6 +386,9 @@ public class SignUpActivity extends AppCompatActivity implements LoaderCallbacks
 
     }
 
+    Calendar myCalendar = Calendar.getInstance();
+
+
     private void addEmailsToAutoComplete(List<String> emailAddressCollection) {
         //Create adapter to tell the AutoCompleteTextView what to show in its dropdown list.
         ArrayAdapter<String> adapter =
@@ -391,6 +396,34 @@ public class SignUpActivity extends AppCompatActivity implements LoaderCallbacks
                         android.R.layout.simple_dropdown_item_1line, emailAddressCollection);
 
         mEmailView.setAdapter(adapter);
+    }
+
+    DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
+
+        @Override
+        public void onDateSet(DatePicker view, int year, int monthOfYear,
+                              int dayOfMonth) {
+            // TODO Auto-generated method stub
+            myCalendar.set(Calendar.YEAR, year);
+            myCalendar.set(Calendar.MONTH, monthOfYear);
+            myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+            updateLabel();
+        }
+
+    };
+
+    private void updateLabel() {
+        EditText DobLabel = (EditText) findViewById(R.id.Dob);
+        String myFormat = "MM/dd/yy"; //In which you need put here
+        SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.CANADA);
+        dob = sdf.format(myCalendar.getTime());
+        DobLabel.setText(sdf.format(myCalendar.getTime()));
+    }
+
+    public void dobLabelClick(View view) {
+        new DatePickerDialog(this, date, myCalendar
+                .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
+                myCalendar.get(Calendar.DAY_OF_MONTH)).show();
     }
 
 
@@ -416,10 +449,11 @@ public class SignUpActivity extends AppCompatActivity implements LoaderCallbacks
         private final String mLastname;
         private final String mGender;
         private final String mUsername;
-        private final Date mDob;
+        private final String mDob;
+        private final Context signUpContext;
 
 
-        UserLoginTask(String email, String firstname, String lastname, String password, String gender, String username, Date dob) {
+        UserLoginTask(String email, String firstname, String lastname, String password, String gender, String username, String dob, Context signUpContext) {
             mEmail = email;
             mPassword = password;
             mFirstname = firstname;
@@ -427,12 +461,13 @@ public class SignUpActivity extends AppCompatActivity implements LoaderCallbacks
             mGender = gender;
             mUsername = username;
             mDob = dob;
+            this.signUpContext = signUpContext;
         }
 
         @Override
         protected Boolean doInBackground(Void... params) {
             // TODO: attempt authentication against a network service.
-            //Utils.getInstance(this).addToRequestQueue(Authentication.register_request(, successful_register, error_register));
+            Utils.getInstance(signUpContext).addToRequestQueue(Authentication.register_request(mUsername, mFirstname, mLastname, mGender, mDob, mEmail, mPassword, successful_register, error_register));
 
             // TODO: register the new account here.
             return true;
@@ -442,11 +477,15 @@ public class SignUpActivity extends AppCompatActivity implements LoaderCallbacks
             @Override
             public void onResponse(JSONObject response) {
                 try{
+                    Toast.makeText(signUpContext, "I am success!",
+                            Toast.LENGTH_LONG).show();
                     // TODO: Implement Success
                     //registerSuccess(response.getString("token"), response.getString("refresh"));
                 }
                 //TODO: Implement Failure
                 catch (Exception e){ //registerFailure(e.getMessage());
+                    Toast.makeText(signUpContext, "I am failure!",
+                            Toast.LENGTH_LONG).show();
                      }
 
             }
@@ -456,6 +495,8 @@ public class SignUpActivity extends AppCompatActivity implements LoaderCallbacks
             @Override
             public void onErrorResponse(VolleyError error) {
                 try {
+                    Toast.makeText(signUpContext, "I am error!",
+                            Toast.LENGTH_LONG).show();
                     // TODO: Implement Success
                     JSONObject errorJSON = new JSONObject(new String(error.networkResponse.data, "UTF-8"));
                     //registerFailure(errorJSON.getString("error"));

@@ -27,7 +27,7 @@ public class Authentication {
         return loginRequest;
     }
 
-    public static JsonObjectRequest register_request(String username, String fname, String lname, String gender, Date dob, String email, String password, Response.Listener<JSONObject> responseListener, Response.ErrorListener errorListener){
+    public static JsonObjectRequest register_request(String username, String fname, String lname, String gender, String dob, String email, String password, Response.Listener<JSONObject> responseListener, Response.ErrorListener errorListener){
         HashMap<String, String> params = new HashMap<>();
         params.put("email", email);
         params.put("password", password);
@@ -35,7 +35,7 @@ public class Authentication {
         params.put("fname", fname);
         params.put("lname", lname);
         params.put("gender", gender);
-        params.put("dob", dob.toString());
+        params.put("dob", dob);
 
         JsonObjectRequest registerRequest = new JsonObjectRequest
                 (Request.Method.POST, REGISTER_ENDPOINT, new JSONObject(params), responseListener, errorListener);
