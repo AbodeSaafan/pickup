@@ -21,6 +21,7 @@ import org.json.JSONObject;
 import sotifc2017.pickup.api.Authentication;
 import sotifc2017.pickup.api.Utils;
 import sotifc2017.pickup.api.contracts.LoginRequest;
+import sotifc2017.pickup.api.contracts.LoginResponse;
 
 @RequiresApi(api = Build.VERSION_CODES.KITKAT)
 public class SignInActivity extends AppCompatActivity {
@@ -74,7 +75,7 @@ public class SignInActivity extends AppCompatActivity {
         @Override
         public void onResponse(JSONObject response) {
             try{
-                signInSuccess(response.getString("token"), response.getString("refresh"));
+                signInSuccess(Utils.gson.fromJson(response.toString(), LoginResponse.class));
             }
             catch (Exception e){ signInFailure(e.getMessage()); }
 
@@ -92,12 +93,11 @@ public class SignInActivity extends AppCompatActivity {
         }
     };
 
-    private void signInSuccess(String jwt, String refresh) {
+    private void signInSuccess(LoginResponse response) {
         Toast.makeText(this, "Sign in successsful", Toast.LENGTH_SHORT).show();
 
-        SharedPreferences prefs = this.getSharedPreferences(
-                "sotifc2017.pickup", Context.MODE_PRIVATE);
-        prefs.edit().putString("jwt", jwt);
+        Authentication.saveJwt(this, response.token);
+        Authentication.saveRefresh(this, response.refresh);
 
         Intent intent = new Intent(this, MapActivity.class);
         startActivity(intent);

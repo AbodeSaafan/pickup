@@ -4,6 +4,7 @@ import android.content.Context;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
 import com.android.volley.Request;
+import com.google.gson.Gson;
 
 
 /**
@@ -14,6 +15,7 @@ public class Utils {
     private RequestQueue mRequestQueue;
     private static Context mCtx;
     public static final String BASE_API = "https://pickup-app-api.herokuapp.com/api/";
+    public static final Gson gson = new Gson();
 
     private Utils(Context context) {
         mCtx = context;

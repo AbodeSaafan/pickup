@@ -2,24 +2,15 @@ package sotifc2017.pickup.api;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.util.Log;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.RequestFuture;
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-
 import org.json.JSONObject;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 import sotifc2017.pickup.api.contracts.LoginRequest;
 import sotifc2017.pickup.api.contracts.RegisterRequest;
@@ -34,11 +25,10 @@ public class Authentication {
     private static final String REFRESH_ENDPOINT = Utils.BASE_API + "refresh";
 
     private static final int CALL_DELAY = 5; // 5 second delay so less calls fail due to expired jwt
-    private static final Gson gson = new Gson();
 
     public static JsonObjectRequest login_request(LoginRequest req, Response.Listener<JSONObject> responseListener, Response.ErrorListener errorListener) {
         try{
-            return new JsonObjectRequest (Request.Method.POST, LOGIN_ENDPOINT, new JSONObject(gson.toJson(req)), responseListener, errorListener);
+            return new JsonObjectRequest (Request.Method.POST, LOGIN_ENDPOINT, new JSONObject(Utils.gson.toJson(req)), responseListener, errorListener);
         }
         catch (Exception e){
             errorListener.onErrorResponse(new VolleyError(e.getMessage()));
@@ -48,7 +38,7 @@ public class Authentication {
 
     public static JsonObjectRequest register_request(RegisterRequest req, Response.Listener<JSONObject> responseListener, Response.ErrorListener errorListener) {
         try{
-            return new JsonObjectRequest (Request.Method.POST, REGISTER_ENDPOINT, new JSONObject(gson.toJson(req)), responseListener, errorListener);
+            return new JsonObjectRequest (Request.Method.POST, REGISTER_ENDPOINT, new JSONObject(Utils.gson.toJson(req)), responseListener, errorListener);
         }
         catch (Exception e) {
             errorListener.onErrorResponse(new VolleyError(e.getMessage()));
