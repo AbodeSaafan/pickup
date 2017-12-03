@@ -6,10 +6,10 @@ var async = require("async");
 function validateAndCleanRegisterRequest(data){
 	validate(data.username, regex.usernameRegex, strings.invalidUsername);
 	validate(data.password, regex.passwordRegex, strings.invalidPassword);
-	validate(data.fname, regex.nameRegex, strings.invalidName);
-	validate(data.lname, regex.nameRegex, strings.invalidName);
+	validate(data.fname, regex.nameRegex, strings.invalidFirstName);
+	validate(data.lname, regex.nameRegex, strings.invalidLastName);
 	validate(data.gender, regex.genderRegex, strings.invalidGender);
-	validate(data.dob, regex.dateRegex, strings.invalidDob);
+	validate(data.dob, regex.dateRegex, strings.invalidDob + " Given: " + param);
 	validate(data.email, regex.emailRegex, strings.invalidEmail);
 	return data;
 }
