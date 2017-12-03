@@ -11,7 +11,7 @@ import java.util.HashMap;
 /**
  * Created by Radhika on 11/27/2017.
  */
-
+/*
 public class Friends {
     private static final String SendFriendRequest_ENDPOINT = Utils.BASE_API + "friends";
     private static final String AcceptFriendRequest_ENDPOINT = Utils.BASE_API + "friends/accept";
@@ -82,3 +82,4 @@ public class Friends {
     }
 
 }
+*/

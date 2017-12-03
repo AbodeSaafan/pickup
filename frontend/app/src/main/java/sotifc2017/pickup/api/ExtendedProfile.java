@@ -11,7 +11,7 @@ import java.util.HashMap;
 /**
  * Created by Radhika on 11/27/2017.
  */
-
+/*
 public class ExtendedProfile {
     private static final String ExtendedProfile_ENDPOINT = Utils.BASE_API + "extended_profile";
 
@@ -36,3 +36,4 @@ public class ExtendedProfile {
     }
 
 }
+*/
