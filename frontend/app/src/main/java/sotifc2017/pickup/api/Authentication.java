@@ -2,11 +2,16 @@ package sotifc2017.pickup.api;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
+import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.RequestFuture;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 import org.json.JSONObject;
 
@@ -15,6 +20,9 @@ import java.util.HashMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+
+import sotifc2017.pickup.api.contracts.LoginRequest;
+import sotifc2017.pickup.api.contracts.RegisterRequest;
 
 /**
  * Created by Abode on 11/15/2017.
@@ -26,32 +34,26 @@ public class Authentication {
     private static final String REFRESH_ENDPOINT = Utils.BASE_API + "refresh";
 
     private static final int CALL_DELAY = 5; // 5 second delay so less calls fail due to expired jwt
+    private static final Gson gson = new Gson();
 
-    public static JsonObjectRequest login_request(String email, String password, Response.Listener<JSONObject> responseListener, Response.ErrorListener errorListener) {
-        HashMap<String, String> params = new HashMap<>();
-        params.put("email", email);
-        params.put("password", password);
-
-        JsonObjectRequest loginRequest = new JsonObjectRequest
-                (Request.Method.POST, LOGIN_ENDPOINT, new JSONObject(params), responseListener, errorListener);
-
-        return loginRequest;
+    public static JsonObjectRequest login_request(LoginRequest req, Response.Listener<JSONObject> responseListener, Response.ErrorListener errorListener) {
+        try{
+            return new JsonObjectRequest (Request.Method.POST, LOGIN_ENDPOINT, new JSONObject(gson.toJson(req)), responseListener, errorListener);
+        }
+        catch (Exception e){
+            errorListener.onErrorResponse(new VolleyError(e.getMessage()));
+            return null;
+        }
     }
 
-    public static JsonObjectRequest register_request(String username, String fname, String lname, String gender, String dob, String email, String password, Response.Listener<JSONObject> responseListener, Response.ErrorListener errorListener) {
-        HashMap<String, String> params = new HashMap<>();
-        params.put("email", email);
-        params.put("password", password);
-        params.put("username", username);
-        params.put("fname", fname);
-        params.put("lname", lname);
-        params.put("gender", gender);
-        params.put("dob", dob);
-
-        JsonObjectRequest registerRequest = new JsonObjectRequest
-                (Request.Method.POST, REGISTER_ENDPOINT, new JSONObject(params), responseListener, errorListener);
-
-        return registerRequest;
+    public static JsonObjectRequest register_request(RegisterRequest req, Response.Listener<JSONObject> responseListener, Response.ErrorListener errorListener) {
+        try{
+            return new JsonObjectRequest (Request.Method.POST, REGISTER_ENDPOINT, new JSONObject(gson.toJson(req)), responseListener, errorListener);
+        }
+        catch (Exception e) {
+            errorListener.onErrorResponse(new VolleyError(e.getMessage()));
+            return null;
+        }
     }
 
     public static String getJwt(Context ctx) throws Exception{

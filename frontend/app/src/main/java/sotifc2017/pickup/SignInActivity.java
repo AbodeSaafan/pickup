@@ -9,6 +9,7 @@ import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
@@ -19,6 +20,8 @@ import com.android.volley.VolleyError;
 import org.json.JSONObject;
 import sotifc2017.pickup.api.Authentication;
 import sotifc2017.pickup.api.Utils;
+import sotifc2017.pickup.api.contracts.LoginRequest;
+
 @RequiresApi(api = Build.VERSION_CODES.KITKAT)
 public class SignInActivity extends AppCompatActivity {
 
@@ -64,7 +67,7 @@ public class SignInActivity extends AppCompatActivity {
         email = emailText.getText().toString();
         pass = passText.getText().toString();
 
-        Utils.getInstance(this).addToRequestQueue(Authentication.login_request(email, pass, successful_signin, error_signin));
+        Utils.getInstance(this).addToRequestQueue(Authentication.login_request(new LoginRequest(email, pass), successful_signin, error_signin));
     }
 
     private Response.Listener<JSONObject> successful_signin = new Response.Listener<JSONObject>() {

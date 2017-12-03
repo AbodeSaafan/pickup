@@ -49,6 +49,7 @@ import java.util.Locale;
 
 import sotifc2017.pickup.api.Authentication;
 import sotifc2017.pickup.api.Utils;
+import sotifc2017.pickup.api.contracts.RegisterRequest;
 
 import static android.Manifest.permission.READ_CONTACTS;
 import static android.support.design.widget.Snackbar.LENGTH_LONG;
@@ -467,7 +468,7 @@ public class SignUpActivity extends AppCompatActivity implements LoaderCallbacks
         @Override
         protected Boolean doInBackground(Void... params) {
             // TODO: attempt authentication against a network service.
-            Utils.getInstance(signUpContext).addToRequestQueue(Authentication.register_request(mUsername, mFirstname, mLastname, mGender, mDob, mEmail, mPassword, successful_register, error_register));
+            Utils.getInstance(signUpContext).addToRequestQueue(Authentication.register_request(new RegisterRequest(mEmail, mPassword, mUsername, mFirstname, mLastname, mGender, mDob), successful_register, error_register));
 
             // TODO: register the new account here.
             return true;
