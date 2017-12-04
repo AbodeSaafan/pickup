@@ -3,29 +3,24 @@ package sotifc2017.pickup;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.app.ActionBar;
 import android.app.DatePickerDialog;
-import android.content.Context;
-import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.support.annotation.NonNull;
-import android.support.annotation.RequiresApi;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
-import android.app.LoaderManager.LoaderCallbacks;
-
+import android.app.LoaderManager;
+import android.app.ProgressDialog;
 import android.content.CursorLoader;
+import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
-import android.os.AsyncTask;
-
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.Window;
 import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -50,15 +45,11 @@ import java.util.Locale;
 import sotifc2017.pickup.api.Authentication;
 import sotifc2017.pickup.api.Utils;
 import sotifc2017.pickup.api.contracts.RegisterRequest;
-
-import static android.Manifest.permission.READ_CONTACTS;
-import static android.support.design.widget.Snackbar.LENGTH_LONG;
-
-@RequiresApi(api = Build.VERSION_CODES.KITKAT)
+import sotifc2017.pickup.api.contracts.RegisterResponse;
 /**
  * A login screen that offers login via email/password.
  */
-public class SignUpActivity extends AppCompatActivity implements LoaderCallbacks<Cursor> {
+public class SignUpActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
     /**
      * Id to identity READ_CONTACTS permission request.
@@ -68,7 +59,7 @@ public class SignUpActivity extends AppCompatActivity implements LoaderCallbacks
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
      */
-    private UserLoginTask mAuthTask = null;
+//    private UserLoginTask mAuthTask = null;
 
     // UI references.
     private AutoCompleteTextView mEmailView;
@@ -81,6 +72,7 @@ public class SignUpActivity extends AppCompatActivity implements LoaderCallbacks
     private RadioGroup radioSexGroup;
     private EditText cPasswordView;
     private String dob;
+    private ProgressDialog progressDialog;
 
 
     @Override
@@ -89,20 +81,7 @@ public class SignUpActivity extends AppCompatActivity implements LoaderCallbacks
         setContentView(R.layout.activity_sign_up);
         // Set up the login form.
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
-        populateAutoComplete();
-
         mPasswordView = (EditText) findViewById(R.id.password);
-//        mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-//            @Override
-//            public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
-//                if (id == R.id.login || id == EditorInfo.IME_NULL) {
-//                    attemptLogin();
-//                    return true;
-//                }
-//                return false;
-//            }
-//        });
-
         cPasswordView = (EditText) findViewById(R.id.confirmPassword);
         cPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
@@ -114,67 +93,23 @@ public class SignUpActivity extends AppCompatActivity implements LoaderCallbacks
                 return false;
             }
         });
-
         mUsernameView = (EditText) findViewById(R.id.username);
-
-        Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
+        Button mEmailSignInButton = findViewById(R.id.email_sign_in_button);
         mEmailSignInButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
                 attemptLogin();
             }
         });
-
-        mFirstnameView = (EditText) findViewById(R.id.fname);
-        mLastnameView = (EditText) findViewById(R.id.lname);
-        radioSexGroup = (RadioGroup) findViewById(R.id.radioSex);
+        mFirstnameView = findViewById(R.id.fname);
+        mLastnameView = findViewById(R.id.lname);
+        radioSexGroup = findViewById(R.id.radioSex);
 
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
-    }
 
-    private void populateAutoComplete() {
-        if (!mayRequestContacts()) {
-            return;
-        }
-
-        getLoaderManager().initLoader(0, null, this);
-    }
-
-    private boolean mayRequestContacts() {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            return true;
-        }
-        if (checkSelfPermission(READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
-            return true;
-        }
-        if (shouldShowRequestPermissionRationale(READ_CONTACTS)) {
-            Snackbar.make(mEmailView, R.string.permission_rationale, Snackbar.LENGTH_INDEFINITE)
-                    .setAction(android.R.string.ok, new View.OnClickListener() {
-                        @Override
-                        @TargetApi(Build.VERSION_CODES.M)
-                        public void onClick(View v) {
-                            requestPermissions(new String[]{READ_CONTACTS}, REQUEST_READ_CONTACTS);
-                        }
-                    });
-        } else {
-            requestPermissions(new String[]{READ_CONTACTS}, REQUEST_READ_CONTACTS);
-        }
-        return false;
-    }
-
-    /**
-     * Callback received when a permissions request has been completed.
-     */
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-                                           @NonNull int[] grantResults) {
-        if (requestCode == REQUEST_READ_CONTACTS) {
-            if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                populateAutoComplete();
-            }
-        }
+        progressDialog = new ProgressDialog(SignUpActivity.this,
+                R.style.AppTheme_Dark);
     }
 
 
@@ -184,9 +119,6 @@ public class SignUpActivity extends AppCompatActivity implements LoaderCallbacks
      * errors are presented and no actual login attempt is made.
      */
     private void attemptLogin() {
-        if (mAuthTask != null) {
-            return;
-        }
 
         // Reset errors.
         mEmailView.setError(null);
@@ -294,12 +226,19 @@ public class SignUpActivity extends AppCompatActivity implements LoaderCallbacks
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             showProgress(true);
-            mAuthTask = new UserLoginTask(email, firstname, lastname, password, gender, username, dob, this);
-            mAuthTask.execute((Void) null);
+
+            progressDialog.setIndeterminate(true);
+            progressDialog.setMessage("Authenticating...");
+
+            Window window = progressDialog.getWindow();
+            window.setLayout(ActionBar.LayoutParams.WRAP_CONTENT, ActionBar.LayoutParams.WRAP_CONTENT);
+            progressDialog.setCancelable(false);
+            progressDialog.show();
+
+            ExecuteLogin(email, firstname, lastname, password, gender, username, dob);
         }
 
-        Intent intent = new Intent(this, ProfileSelfActivity.class);
-        startActivity(intent);
+
     }
 
     private boolean isEmailValid(String email) {
@@ -316,6 +255,8 @@ public class SignUpActivity extends AppCompatActivity implements LoaderCallbacks
 
         return password.equals(confirmPassword);
     }
+
+
 
     /**
      * Shows the progress UI and hides the login form.
@@ -415,7 +356,7 @@ public class SignUpActivity extends AppCompatActivity implements LoaderCallbacks
 
     private void updateLabel() {
         EditText DobLabel = (EditText) findViewById(R.id.Dob);
-        String myFormat = "MM/dd/yy"; //In which you need put here
+        String myFormat = "MM/dd/yyyy"; //In which you need put here
         SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.CANADA);
         dob = sdf.format(myCalendar.getTime());
         DobLabel.setText(sdf.format(myCalendar.getTime()));
@@ -427,7 +368,6 @@ public class SignUpActivity extends AppCompatActivity implements LoaderCallbacks
                 myCalendar.get(Calendar.DAY_OF_MONTH)).show();
     }
 
-
     private interface ProfileQuery {
         String[] PROJECTION = {
                 ContactsContract.CommonDataKinds.Email.ADDRESS,
@@ -438,95 +378,54 @@ public class SignUpActivity extends AppCompatActivity implements LoaderCallbacks
         int IS_PRIMARY = 1;
     }
 
-    /**
-     * Represents an asynchronous login/registration task used to authenticate
-     * the user.
-     */
-    public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
-
-        private final String mEmail;
-        private final String mPassword;
-        private final String mFirstname;
-        private final String mLastname;
-        private final String mGender;
-        private final String mUsername;
-        private final String mDob;
-        private final Context signUpContext;
-
-
-        UserLoginTask(String email, String firstname, String lastname, String password, String gender, String username, String dob, Context signUpContext) {
-            mEmail = email;
-            mPassword = password;
-            mFirstname = firstname;
-            mLastname = lastname;
-            mGender = gender;
-            mUsername = username;
-            mDob = dob;
-            this.signUpContext = signUpContext;
-        }
-
+    private Response.Listener<JSONObject> successful_register = new Response.Listener<JSONObject>() {
         @Override
-        protected Boolean doInBackground(Void... params) {
-            // TODO: attempt authentication against a network service.
-            Utils.getInstance(signUpContext).addToRequestQueue(Authentication.register_request(new RegisterRequest(mEmail, mPassword, mUsername, mFirstname, mLastname, mGender, mDob), successful_register, error_register));
+        public void onResponse(JSONObject response) {
+            try{
+                registerSuccess(Utils.gson.fromJson(response.toString(), RegisterResponse.class));
+            }
+            //TODO: Implement Failure
+            catch (Exception e){
+                registerFailure(e.getMessage());
+            }
 
-            // TODO: register the new account here.
-            return true;
         }
+    };
 
-        private Response.Listener<JSONObject> successful_register = new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                try{
-                    Toast.makeText(signUpContext, "I am success!",
-                            Toast.LENGTH_LONG).show();
-                    // TODO: Implement Success
-                    //registerSuccess(response.getString("token"), response.getString("refresh"));
-                }
-                //TODO: Implement Failure
-                catch (Exception e){ //registerFailure(e.getMessage());
-                    Toast.makeText(signUpContext, "I am failure!",
-                            Toast.LENGTH_LONG).show();
-                     }
-
-            }
-        };
-
-        private Response.ErrorListener error_register =  new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                try {
-                    Toast.makeText(signUpContext, "I am error!",
-                            Toast.LENGTH_LONG).show();
-                    // TODO: Implement Success
-                    JSONObject errorJSON = new JSONObject(new String(error.networkResponse.data, "UTF-8"));
-                    //registerFailure(errorJSON.getString("error"));
-                }
-                //TODO: Implement Failure
-                catch (Exception e){ //registerFailure(e.getMessage());
-                     }
-            }
-        };
-
+    private Response.ErrorListener error_register =  new Response.ErrorListener() {
         @Override
-        protected void onPostExecute(final Boolean success) {
-            mAuthTask = null;
-            showProgress(false);
-
-            if (success) {
-
-                //finish();
-            } else {
-                mPasswordView.setError(getString(R.string.error_incorrect_password));
-                mPasswordView.requestFocus();
+        public void onErrorResponse(VolleyError error) {
+            try {
+                JSONObject errorJSON = new JSONObject(new String(error.networkResponse.data, "UTF-8"));
+                registerFailure(errorJSON.getString("error"));
+            }
+            //TODO: Implement Failure
+            catch (Exception e){
+                registerFailure(e.getMessage());
             }
         }
+    };
 
-        @Override
-        protected void onCancelled() {
-            mAuthTask = null;
-            showProgress(false);
-        }
+    private void ExecuteLogin(String email, String firstname, String lastname, String password, String gender, String username, String dob) {
+
+        Utils.getInstance(SignUpActivity.this).addToRequestQueue(Authentication.register_request(new RegisterRequest(email, password, username, firstname, lastname, gender, dob), successful_register, error_register));
+    }
+
+    private void registerSuccess(RegisterResponse response) {
+        Toast.makeText(this, "Register successsful", Toast.LENGTH_SHORT).show();
+
+        Authentication.saveJwt(this, response.token);
+        Authentication.saveRefresh(this, response.refresh);
+
+        Intent intent = new Intent(SignUpActivity.this, ProfileSelfActivity.class);
+        startActivity(intent);
+        progressDialog.cancel();
+
+    }
+
+    private void registerFailure(String message) {
+        Toast.makeText(this, "Sign in failed: " + message, Toast.LENGTH_SHORT).show();
+        progressDialog.cancel();
     }
 }
 
