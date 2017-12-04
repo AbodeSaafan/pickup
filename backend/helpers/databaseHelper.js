@@ -785,7 +785,8 @@ module.exports = {
 	disableAccount,
 	getIfReviewed,
 	updateReview,
-	updateTag
+	updateTag,
+	addTag
 };
 
 //////////////// Helpers ////////////////

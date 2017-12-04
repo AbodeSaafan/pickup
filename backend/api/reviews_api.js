@@ -16,8 +16,8 @@ var strings = require("./universal_strings");
 * @apiParam {int} id of the user being reviewed
 * @apiParam {int} rating of the user
 * @apiParam {int} tags describing the user
-* @apiParam {string} jwt Valid JWT
 * @apiParam {bool} reviewed already or not
+* @apiParam {string} jwt Valid JWT
 *
 * @apiError error The error field has a string with an exact error
 *
@@ -49,23 +49,44 @@ router.post("/setReview", function(req, res){
 			return;
 		}
 
-		databaseHelper.addReview(review.userId, review.gameId, tok.reviewerId, review.rating, (reviewId) => {
-			if(reviewId) {
-				requestHelper.addTag(reviewId, review.tags, (anyFailure) => {
-					if(anyFailure){
-						res.status(400).json("Adding tags failed");
-						return;
-					}
-					else{
-						res.status(200).json("Review added succesfully.");
-						return;
-					}
-				});
-			}else{
-				res.status(400).json("Adding review failed");
-				return;
-			}
-		});
+		if(review.reviewed){
+			databaseHelper.updateReview(review.userId, review.gameId, tok.reviewerId, review.rating, (reviewId) => {
+				if(reviewId) {
+					requestHelper.updateTag(reviewId, review.tags, (anyFailure) => {
+						if(anyFailure){
+							res.status(400).json("Adding tags failed");
+							return;
+						}
+						else{
+							res.status(200).json("Review added succesfully.");
+							return;
+						}
+					});
+				}else{
+					res.status(400).json("Adding review failed");
+					return;
+				}
+			});	
+		}
+		else{
+			databaseHelper.addReview(review.userId, review.gameId, tok.reviewerId, review.rating, (reviewId) => {
+				if(reviewId) {
+					requestHelper.addTag(reviewId, review.tags, (anyFailure) => {
+						if(anyFailure){
+							res.status(400).json("Adding tags failed");
+							return;
+						}
+						else{
+							res.status(200).json("Review added succesfully.");
+							return;
+						}
+					});
+				}else{
+					res.status(400).json("Adding review failed");
+					return;
+				}
+			});	
+		}
 	}
 	catch (err){
 		res.status(400).json(requestHelper.jsonError(err)); return;
