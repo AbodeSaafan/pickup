@@ -1,11 +1,15 @@
 package sotifc2017.pickup.api;
 
 import android.content.Context;
+import android.net.Uri;
+
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
 import com.android.volley.Request;
 import com.google.gson.Gson;
 
+import java.util.HashMap;
+import java.util.Map.Entry;
 
 /**
  * Created by Abode on 11/14/2017.
@@ -40,5 +44,18 @@ public class Utils {
 
     public <T> void addToRequestQueue(Request<T> req) {
         getRequestQueue().add(req);
+    }
+
+    public static String jsonToUrlParam(Object contractObj){
+        HashMap<String,String> map = gson.fromJson(gson.toJson(contractObj), HashMap.class);
+
+        Uri.Builder builder = new Uri.Builder();
+
+        for (Entry<String, String> entry : map.entrySet())
+        {
+            builder.appendQueryParameter(entry.getKey(), entry.getValue());
+        }
+
+        return builder.toString();
     }
 }
