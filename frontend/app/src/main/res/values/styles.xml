@@ -31,4 +31,10 @@
         <item name="android:paddingRight">15dp</item>
     </style>
 
+    <style name="Widget.PlacesAutoCompleteTextView.Styled"
+        parent="PACV.Widget.PlacesAutoCompleteTextView">
+        <item name="android:background">@color/primary_dark</item>
+
+    </style>
+
 </resources>

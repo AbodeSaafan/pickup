@@ -22,17 +22,22 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
 import android.view.inputmethod.EditorInfo;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.RadioGroup;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.seatgeek.placesautocomplete.OnPlaceSelectedListener;
+import com.seatgeek.placesautocomplete.PlacesAutocompleteTextView;
+import com.seatgeek.placesautocomplete.model.Place;
 
 import org.json.JSONObject;
 
@@ -46,10 +51,12 @@ import sotifc2017.pickup.api.Authentication;
 import sotifc2017.pickup.api.Utils;
 import sotifc2017.pickup.api.contracts.RegisterRequest;
 import sotifc2017.pickup.api.contracts.RegisterResponse;
+
+import android.widget.ViewFlipper;
 /**
  * A login screen that offers login via email/password.
  */
-public class SignUpActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
+public class SignUpActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>, AdapterView.OnItemSelectedListener {
 
     /**
      * Id to identity READ_CONTACTS permission request.
@@ -73,12 +80,95 @@ public class SignUpActivity extends AppCompatActivity implements LoaderManager.L
     private EditText cPasswordView;
     private String dob;
     private ProgressDialog progressDialog;
+    private PlacesAutocompleteTextView placesAutocomplete;
+    private String firstname;
+    private String lastname;
+    private String username;
+    private String email;
+    private String password;
+    private String gender;
 
+    Button next0;
+    Button next1;
+    Button back1;
+    Button back2;
+    ViewFlipper VF;
+    Spinner genderSpinner;
+
+    private OnClickListener page_switch_listener = new OnClickListener() {
+        public void onClick(View v) {
+            boolean cancel = false;
+            View focusView = null;
+            switch (v.getId()) {
+                case R.id.next0:
+                    mUsernameView.setError(null);
+                    mFirstnameView.setError(null);
+                    firstname = mFirstnameView.getText().toString();
+                    lastname = mLastnameView.getText().toString();
+                    // Check for firstname.
+                    if (TextUtils.isEmpty(firstname)) {
+                        mFirstnameView.setError(getString(R.string.error_field_required));
+                        focusView = mFirstnameView;
+                        cancel = true;
+                    }
+                    // Check for lastname.
+                    if (TextUtils.isEmpty(lastname)) {
+                        mLastnameView.setError(getString(R.string.error_field_required));
+                        focusView = mLastnameView;
+                        cancel = true;
+                    }
+                    if (cancel) {
+                        // There was an error; don't attempt login and focus the first
+                        // form field with an error.
+                        focusView.requestFocus();
+                        return;
+                    }
+                    VF.setDisplayedChild(1);
+                    break;
+                case R.id.next1:
+                    VF.setDisplayedChild(2);
+                    break;
+                case R.id.back1:
+                    VF.setDisplayedChild(0);
+                    break;
+                case R.id.back2:
+                    VF.setDisplayedChild(1);
+                    break;
+            }
+
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
+
+        next0 = findViewById(R.id.next0);
+        next1 = findViewById(R.id.next1);
+        back1 = findViewById(R.id.back1);
+        back2 = findViewById(R.id.back2);
+        VF = findViewById(R.id.RegisterViewFlipper);
+        VF.setDisplayedChild(0);
+        next0.setOnClickListener(page_switch_listener);
+        next1.setOnClickListener(page_switch_listener);
+        back1.setOnClickListener(page_switch_listener);
+        back2.setOnClickListener(page_switch_listener);
+        placesAutocomplete = findViewById(R.id.places_autocomplete);
+        placesAutocomplete.setOnPlaceSelectedListener(
+                new OnPlaceSelectedListener() {
+                    @Override
+                    public void onPlaceSelected(final Place place) {
+                        // do something awesome with the selected place
+                    }
+                }
+        );
+        genderSpinner = findViewById(R.id.gender_spinner);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+                R.array.gender_array, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        genderSpinner.setAdapter(adapter);
+        genderSpinner.setOnItemSelectedListener(this);
         // Set up the login form.
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
         mPasswordView = (EditText) findViewById(R.id.password);
@@ -105,11 +195,29 @@ public class SignUpActivity extends AppCompatActivity implements LoaderManager.L
         mLastnameView = findViewById(R.id.lname);
         radioSexGroup = findViewById(R.id.radioSex);
 
-        mLoginFormView = findViewById(R.id.login_form);
+        mLoginFormView = findViewById(R.id.RegisterViewFlipper);
         mProgressView = findViewById(R.id.login_progress);
 
         progressDialog = new ProgressDialog(SignUpActivity.this,
                 R.style.AppTheme_Dark);
+    }
+
+    public void onItemSelected(AdapterView<?> parent, View view,
+                               int pos, long id) {
+        switch (genderSpinner.getSelectedItem().toString()) {
+            case "Male":
+                gender = "M";
+                break;
+            case "Female":
+                gender = "F";
+                break;
+            default:
+                gender = "O";
+        }
+    }
+
+    public void onNothingSelected(AdapterView<?> parent) {
+        // Another interface callback
     }
 
 
@@ -125,19 +233,12 @@ public class SignUpActivity extends AppCompatActivity implements LoaderManager.L
         mPasswordView.setError(null);
         cPasswordView.setError(null);
         mUsernameView.setError(null);
-        mFirstnameView.setError(null);
-        mLastnameView.setError(null);
-
 
         // Store values at the time of the login attempt.
-        String email = mEmailView.getText().toString();
-        String password = mPasswordView.getText().toString();
+        email = mEmailView.getText().toString();
+        password = mPasswordView.getText().toString();
         String confirmPassword = cPasswordView.getText().toString();
-        String username = mUsernameView.getText().toString();
-        String firstname = mFirstnameView.getText().toString();
-        String lastname = mLastnameView.getText().toString();
-        String gender = "";
-
+        username = mUsernameView.getText().toString();
 
         boolean cancel = false;
         View focusView = null;
@@ -150,20 +251,6 @@ public class SignUpActivity extends AppCompatActivity implements LoaderManager.L
         } else if (!isEmailValid(email)) {
             mEmailView.setError(getString(R.string.error_invalid_email));
             focusView = mEmailView;
-            cancel = true;
-        }
-
-        // Check for firstname.
-        if (TextUtils.isEmpty(firstname)) {
-            mFirstnameView.setError(getString(R.string.error_field_required));
-            focusView = mFirstnameView;
-            cancel = true;
-        }
-
-        // Check for lastname.
-        if (TextUtils.isEmpty(lastname)) {
-            mLastnameView.setError(getString(R.string.error_field_required));
-            focusView = mLastnameView;
             cancel = true;
         }
 
@@ -200,22 +287,6 @@ public class SignUpActivity extends AppCompatActivity implements LoaderManager.L
             mUsernameView.setError(getString(R.string.error_field_required));
             focusView = mUsernameView;
             cancel = true;
-        }
-
-        // get the gender
-        int radioButtonID = radioSexGroup.getCheckedRadioButtonId();
-        View radioButton = radioSexGroup.findViewById(radioButtonID);
-        int idx = radioSexGroup.indexOfChild(radioButton);
-        switch (idx) {
-            case 0:
-                gender = "M";
-                break;
-            case 1:
-                gender = "F";
-                break;
-            case 2:
-                gender = "O";
-                break;
         }
 
         if (cancel) {

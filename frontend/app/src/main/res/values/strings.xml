@@ -14,10 +14,18 @@
     <string name="prompt_password">Password</string>
     <string name="prompt_confirm_password">Confirm Password</string>
     <string name="action_sign_in">Sign me up!</string>
+    <string-array name="gender_array">
+        <item>Male</item>
+        <item>Female</item>
+        <item>Other</item>
+        <item>Prefer Not To Say</item>
+    </string-array>
     <string name="prompt_gender">Gender</string>
     <string name="prompt_male">Male</string>
     <string name="prompt_female">Female</string>
     <string name="prompt_other_gender">Other</string>
+    <string name="prompt_skill_level">How Confident do you find your skills? Please Pick A Rate!</string>
+    <string name="prompt_default_location">Default Location:</string>
     <string name="action_sign_in_short">Sign in</string>
     <string name="error_invalid_email">This email address is invalid</string>
     <string name="error_invalid_password">This password is too short</string>
