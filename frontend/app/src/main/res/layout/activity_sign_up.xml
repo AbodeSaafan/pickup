@@ -100,35 +100,9 @@
             <Spinner
                 android:id="@+id/gender_spinner"
                 android:layout_width="fill_parent"
-                android:layout_height="wrap_content" />
-
-            <RadioGroup
-                android:id="@+id/radioSex"
-                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:checkedButton="@+id/radioMale">
-
-
-
-                <RadioButton
-                    android:id="@+id/radioMale"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/prompt_male" />
-
-                <RadioButton
-                    android:id="@+id/radioFemale"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/prompt_female" />
-
-                <RadioButton
-                    android:id="@+id/radioOther"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/prompt_other_gender" />
-
-            </RadioGroup>
+                android:layout_marginTop="6dp"
+                android:layout_marginBottom="12dp"/>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -143,7 +117,7 @@
                 app:dsb_min="1"
                 android:paddingHorizontal="12dp"
                 android:layout_marginTop="18dp"
-                android:layout_marginBottom="24dp"
+                android:layout_marginBottom="12dp"
                 app:dsb_max="10"
                 app:dsb_value="5"
                 />
@@ -158,21 +132,24 @@
                 app:pacv_googleMapsApiKey="AIzaSyDIoyl48T6r8uVOLSmKJHoCAYVKe7ydaU8"/>
                 <!--app:pacv_googleMapsApiKey="@string/google_maps_key"-->
 
-            <LinearLayout
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp">
                 <Button
                     android:id="@+id/back1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
                     android:text="Prev" />
                 <Button
                     android:id="@+id/next1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
                     android:text="Next" />
 
-            </LinearLayout>
+            </RelativeLayout>
         </LinearLayout>
 
         <LinearLayout

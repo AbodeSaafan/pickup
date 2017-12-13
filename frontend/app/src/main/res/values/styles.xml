@@ -4,7 +4,7 @@
         <item name="colorPrimary">@color/primary</item>
         <item name="colorPrimaryDark">@color/primary_dark</item>
         <item name="colorAccent">@color/light_orange</item>
-
+        <item name="pacv_placesAutoCompleteTextViewStyle">@style/Widget.PlacesAutoCompleteTextView.Styled</item>
         <item name="android:windowBackground">@color/primary_dark</item>
         <item name="android:alertDialogStyle">@style/CustomAlertDialogStyle</item>
 
@@ -33,7 +33,8 @@
 
     <style name="Widget.PlacesAutoCompleteTextView.Styled"
         parent="PACV.Widget.PlacesAutoCompleteTextView">
-        <item name="android:background">@color/primary_dark</item>
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorPrimaryDark">@color/primary_dark</item>
 
     </style>
 

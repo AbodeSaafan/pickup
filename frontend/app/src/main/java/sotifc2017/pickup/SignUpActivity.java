@@ -94,6 +94,7 @@ public class SignUpActivity extends AppCompatActivity implements LoaderManager.L
     Button back2;
     ViewFlipper VF;
     Spinner genderSpinner;
+    EditText DobLabel;
 
     private OnClickListener page_switch_listener = new OnClickListener() {
         public void onClick(View v) {
@@ -111,9 +112,19 @@ public class SignUpActivity extends AppCompatActivity implements LoaderManager.L
                         focusView = mFirstnameView;
                         cancel = true;
                     }
+                    if (!isNameValid(firstname)) {
+                        mFirstnameView.setError(getString(R.string.error_invalid_name));
+                        focusView = mFirstnameView;
+                        cancel = true;
+                    }
                     // Check for lastname.
                     if (TextUtils.isEmpty(lastname)) {
                         mLastnameView.setError(getString(R.string.error_field_required));
+                        focusView = mLastnameView;
+                        cancel = true;
+                    }
+                    if (!isNameValid(lastname)) {
+                        mLastnameView.setError(getString(R.string.error_invalid_name));
                         focusView = mLastnameView;
                         cancel = true;
                     }
@@ -126,6 +137,12 @@ public class SignUpActivity extends AppCompatActivity implements LoaderManager.L
                     VF.setDisplayedChild(1);
                     break;
                 case R.id.next1:
+                    DobLabel.setError(null);
+                    if (dob == null) {
+                        DobLabel.setError(getString(R.string.error_field_required));
+                        DobLabel.requestFocus();
+                        return;
+                    }
                     VF.setDisplayedChild(2);
                     break;
                 case R.id.back1:
@@ -163,6 +180,7 @@ public class SignUpActivity extends AppCompatActivity implements LoaderManager.L
                     }
                 }
         );
+        DobLabel = findViewById(R.id.Dob);
         genderSpinner = findViewById(R.id.gender_spinner);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
                 R.array.gender_array, android.R.layout.simple_spinner_item);
@@ -193,7 +211,6 @@ public class SignUpActivity extends AppCompatActivity implements LoaderManager.L
         });
         mFirstnameView = findViewById(R.id.fname);
         mLastnameView = findViewById(R.id.lname);
-        radioSexGroup = findViewById(R.id.radioSex);
 
         mLoginFormView = findViewById(R.id.RegisterViewFlipper);
         mProgressView = findViewById(R.id.login_progress);
@@ -312,14 +329,17 @@ public class SignUpActivity extends AppCompatActivity implements LoaderManager.L
 
     }
 
+    private boolean isNameValid(String name) {
+        return name.matches("^[a-zA-Z'-]*$");
+    }
+
     private boolean isEmailValid(String email) {
-        //TODO: Replace this with your own logic
-        return email.contains("@");
+        return email.matches("^(([^<>()[]\\\\.,;:\\s@\"]+(.[^<>()[]\\\\.,;:\\s@\"]+)*)|(\".+\"))@((\\[[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}])|(([a-zA-Z\\-0-9]+.)+[a-zA-Z]{2,}))$");
     }
 
     private boolean isPasswordValid(String password) {
 
-        return password.length() > 7;
+        return password.matches("^[a-z0-9A-Z?!~$#%*]{6,80}$");
     }
 
     private boolean isPasswordMatch(String password, String confirmPassword) {
@@ -426,7 +446,6 @@ public class SignUpActivity extends AppCompatActivity implements LoaderManager.L
     };
 
     private void updateLabel() {
-        EditText DobLabel = (EditText) findViewById(R.id.Dob);
         String myFormat = "MM/dd/yyyy"; //In which you need put here
         SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.CANADA);
         dob = sdf.format(myCalendar.getTime());
