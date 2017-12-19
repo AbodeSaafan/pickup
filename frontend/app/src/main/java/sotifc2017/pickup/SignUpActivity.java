@@ -39,6 +39,7 @@ import com.seatgeek.placesautocomplete.OnPlaceSelectedListener;
 import com.seatgeek.placesautocomplete.PlacesAutocompleteTextView;
 import com.seatgeek.placesautocomplete.model.Place;
 
+import org.adw.library.widgets.discreteseekbar.DiscreteSeekBar;
 import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
@@ -76,8 +77,9 @@ public class SignUpActivity extends AppCompatActivity implements LoaderManager.L
     private EditText mUsernameView;
     private EditText mFirstnameView;
     private EditText mLastnameView;
-    private RadioGroup radioSexGroup;
+    private DiscreteSeekBar skillLevelBar;
     private EditText cPasswordView;
+    private TextView skillLevel;
     private String dob;
     private ProgressDialog progressDialog;
     private PlacesAutocompleteTextView placesAutocomplete;
@@ -87,6 +89,7 @@ public class SignUpActivity extends AppCompatActivity implements LoaderManager.L
     private String email;
     private String password;
     private String gender;
+    private String[] skillLevels = {"Just for Fun!", "Rookie", "All Star", "Super Star", "Hall of Fame", "God of Basketball"};
 
     Button next0;
     Button next1;
@@ -211,7 +214,24 @@ public class SignUpActivity extends AppCompatActivity implements LoaderManager.L
         });
         mFirstnameView = findViewById(R.id.fname);
         mLastnameView = findViewById(R.id.lname);
+        skillLevel = findViewById(R.id.skill_level);
+        skillLevelBar = findViewById(R.id.skill_level_bar);
+        skillLevelBar.setOnProgressChangeListener(new DiscreteSeekBar.OnProgressChangeListener() {
+            @Override
+            public void onProgressChanged(DiscreteSeekBar seekBar, int value, boolean fromUser) {
+                skillLevel.setText(skillLevels[value / 2]);
+            }
 
+            @Override
+            public void onStartTrackingTouch(DiscreteSeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(DiscreteSeekBar seekBar) {
+
+            }
+        });
         mLoginFormView = findViewById(R.id.RegisterViewFlipper);
         mProgressView = findViewById(R.id.login_progress);
 
@@ -313,7 +333,7 @@ public class SignUpActivity extends AppCompatActivity implements LoaderManager.L
         } else {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
-            showProgress(true);
+//            showProgress(true);
 
             progressDialog.setIndeterminate(true);
             progressDialog.setMessage("Authenticating...");
@@ -334,7 +354,7 @@ public class SignUpActivity extends AppCompatActivity implements LoaderManager.L
     }
 
     private boolean isEmailValid(String email) {
-        return email.matches("^(([^<>()[]\\\\.,;:\\s@\"]+(.[^<>()[]\\\\.,;:\\s@\"]+)*)|(\".+\"))@((\\[[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}])|(([a-zA-Z\\-0-9]+.)+[a-zA-Z]{2,}))$");
+        return email.matches("^(([^<>()\\[\\]\\\\.,;:\\s@\"]+(\\.[^<>()\\[\\]\\\\.,;:\\s@\"]+)*)|(\".+\"))@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}])|(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))$");
     }
 
     private boolean isPasswordValid(String password) {

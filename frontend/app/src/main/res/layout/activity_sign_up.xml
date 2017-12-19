@@ -125,6 +125,7 @@
                     android:text="@string/prompt_skill_level" />
 
                 <org.adw.library.widgets.discreteseekbar.DiscreteSeekBar
+                    android:id="@+id/skill_level_bar"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@color/primary_dark"
@@ -135,6 +136,11 @@
                     app:dsb_max="10"
                     app:dsb_value="5"
                     />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/skill_level"/>
 
                 <com.seatgeek.placesautocomplete.PlacesAutocompleteTextView
                     android:id="@+id/places_autocomplete"
