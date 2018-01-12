@@ -34,7 +34,7 @@ var strings = require("./universal_strings");
 *   }
 *
 *
-* @apiSampleRequest /api/games/:GAMEID/leave/
+* @apiSampleRequest /api/profile
 */
 router.get("/", function (req, res) {
 	try {

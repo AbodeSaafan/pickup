@@ -1287,7 +1287,7 @@
     ],
     "sampleRequest": [
       {
-        "url": "/api/games/:GAMEID/leave/"
+        "url": "/api/profile"
       }
     ],
     "version": "0.0.0",
@@ -1477,6 +1477,13 @@
           },
           {
             "group": "Parameter",
+            "type": "bool",
+            "optional": false,
+            "field": "reviewed",
+            "description": "<p>already or not</p>"
+          },
+          {
+            "group": "Parameter",
             "type": "string",
             "optional": false,
             "field": "jwt",
@@ -1509,7 +1516,7 @@
     "examples": [
       {
         "title": "Example call::",
-        "content": "{\n  \"gameId\": \"1\",\n  \"userId\": \"1\",\n  \"rating\": \"1\",\n  \"tags\": [\"1\", \"2\"],\n  \"jwt\": Encrypted_JWT_Token\n}",
+        "content": "{\n  \"gameId\": \"1\",\n  \"userId\": \"1\",\n  \"rating\": \"1\",\n  \"tags\": [\"1\", \"2\"],\n  \"reviewed\": \"true\",\n  \"jwt\": Encrypted_JWT_Token\n}",
         "type": "json"
       }
     ],
