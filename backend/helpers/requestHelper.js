@@ -101,6 +101,11 @@ function validateAndCleanUpdateExtendedProfileRequest (data) {
 	return data;
 }
 
+function validateAndCleanExtendedProfileRequest (data) {
+    validate(data.username);
+    return data;
+}
+
 function validateAndCleanFriendId (data) {
 	validate(data.userId, regex.idRegex, strings.invalidUserId);
 	return data;
@@ -180,6 +185,7 @@ module.exports = {
 	validateAndCleanSearchRequest,
 	validateAndCleanReviewRequest,
 	validateAndCleanLeaveRequest,
+    validateAndCleanExtendedProfileRequest,
 	validateAndCleanUpdateExtendedProfileRequest,
 	validateAndCleanFriendId,
 	filterGames,

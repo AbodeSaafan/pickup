@@ -41,8 +41,9 @@ var strings = require("./universal_strings");
 router.get("/", function (req, res) {
 	try {
 		var tok = tokenHelper.verifyToken(req.query.jwt);
+        var reqUsername = requestHelper.validateAndCleanExtendedProfileRequest(req.query);
 
-		databaseHelper.getExtendedProfile(tok.user_id, (ext_profile) => {
+		databaseHelper.getExtendedProfile(reqUsername.username, (ext_profile) => {
 			if(ext_profile) {
 				var response = {
 					user_id: ext_profile.user_id,
