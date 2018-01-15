@@ -109,7 +109,7 @@ router.post("/", function(req, res){
 * @apiSuccessExample Success-Response:
 *      HTTP/1.1 200 OK
 *     {
-*		"ifReviewed":[ {1, true}, {4, false}]
+*		[{ user_id : 23, reviewed: false}, {user_id : 100, reviewed: true}]
 *      }
 * @apiExample Example call::
 *   {
