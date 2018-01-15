@@ -11,10 +11,11 @@ import java.util.HashMap;
 /**
  * Created by Radhika on 11/27/2017.
  */
-/*
+
 public class ExtendedProfile {
     private static final String ExtendedProfile_ENDPOINT = Utils.BASE_API + "extended_profile";
 
+    /*
     public static JsonObjectRequest updateProfile_request(String jwt, int skill_level, Object location, Response.Listener<JSONObject> responseListener, Response.ErrorListener errorListener){
         HashMap<String, String> params = new HashMap<>();
         params.put("jwt", jwt);
@@ -26,14 +27,14 @@ public class ExtendedProfile {
 
         return UpdateRequest;
     }
+    */
 
     public static JsonObjectRequest getProfile_request(String jwt, Response.Listener<JSONObject> responseListener, Response.ErrorListener errorListener){
 
         JsonObjectRequest GetRequest = new JsonObjectRequest
-                (Request.Method.GET, ExtendedProfile_ENDPOINT+"?jwt="+jwt, responseListener, errorListener);
+                (Request.Method.GET, ExtendedProfile_ENDPOINT+"?jwt="+jwt, null, responseListener, errorListener);
 
         return GetRequest;
     }
 
 }
-*/
