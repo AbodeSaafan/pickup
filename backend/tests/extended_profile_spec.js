@@ -3,11 +3,10 @@ var strings = require("../api/universal_strings");
 var testHelper = require("./testHelper");
 
 
-// Creating a user with valid creds for testing. Getting the same user id of the user requesting the profile just for
-// testing purposes
-var newUser = testHelper.createGenericUser()
+// Check if user can view their extended Profile
+
 frisby.create("Register a user using the API with valid credentials to use for extendedProfile testing")
-	.post(testHelper.registerEndpoint, newUser)
+	.post(testHelper.registerEndpoint, testHelper.createGenericUser())
 	.expectStatus(200)
 	.expectHeaderContains("content-type", "application/json")
 	.expectBodyContains("token")
@@ -15,7 +14,7 @@ frisby.create("Register a user using the API with valid credentials to use for e
 	.expectBodyContains("refresh")
 	.afterJSON(function (body) {
 		frisby.create("Get extendedProfile of user")
-			.get(testHelper.extendedProfileEndpoint+"?jwt=" + body.token + "&username=" + newUser.username)
+			.get(testHelper.extendedProfileEndpoint+"?jwt=" + body.token + "&userID=" + body.user_id)
 			.expectStatus(200)
 			.expectJSON({
 				user_id: parseInt(body.user_id),
@@ -30,6 +29,41 @@ frisby.create("Register a user using the API with valid credentials to use for e
 	})
 	.toss();
 
+
+// Check if user can view another user's extended Profile
+	frisby.create("Register a user using the API with valid credentials to use for extendedProfile testing")
+		.post(testHelper.registerEndpoint, testHelper.createGenericUser())
+		.expectStatus(200)
+		.expectHeaderContains("content-type", "application/json")
+		.expectBodyContains("token")
+		.expectBodyContains("user_id")
+		.expectBodyContains("refresh")
+		.afterJSON(function (user1) {
+			frisby.create("Register another user")
+			.post(testHelper.registerEndpoint, testHelper.createGenericUser())
+			.expectStatus(200)
+			.expectHeaderContains("content-type", "application/json")
+			.expectBodyContains("token")
+			.expectBodyContains("user_id")
+			.expectBodyContains("refresh")
+			.afterJSON(function(user2) {
+				frisby.create("Get Extended Profile of User2")
+				.get(testHelper.extendedProfileEndpoint+"?jwt=" + user1.token + "&userID=" + user2.user_id)
+				.expectStatus(200)
+				.expectJSON({
+					user_id: parseInt(user2.user_id),
+					age: user2.age,
+					gender: user2.gender,
+					location: null,
+					average_review: 0,
+					top_tag: null,
+					top_tag_count: null
+				})
+				.toss();
+			})
+			.toss();
+		})
+		.toss();
 
 // Creating a user with valid creds for testing
 frisby.create("Register a user using the API with valid credentials to use for extendedProfile testing")
@@ -64,7 +98,7 @@ frisby.create("Register a user using the API with valid credentials to use for e
 			.expectStatus(200)
 			.afterJSON (function (result) {
 				frisby.create("Get extendedProfile of user")
-					.get(testHelper.extendedProfileEndpoint+"?jwt="+body.token + "&username=" + newUser.username)
+					.get(testHelper.extendedProfileEndpoint+"?jwt="+body.token + "&userID=" + body.user_id)
 					.expectStatus(200)
 					.expectJSON({
 						user_id: parseInt(body.user_id),
@@ -95,7 +129,7 @@ frisby.create("Get extendedProfile of user")
 	.expectStatus(400)
 	.toss();
 
-// Using a username that does not exist should fail
+// Using a useID that does not exist should fail
 frisby.create("Register a user using the API with valid credentials to use for extendedProfile testing")
     .post(testHelper.registerEndpoint, testHelper.createGenericUser())
     .expectStatus(200)
@@ -109,7 +143,7 @@ frisby.create("Register a user using the API with valid credentials to use for e
             .expectStatus(200)
             .afterJSON (function (result) {
                 frisby.create("Get extendedProfile of user")
-                    .get(testHelper.extendedProfileEndpoint+"?jwt="+body.token + "&username=DoesNotExist")
+                    .get(testHelper.extendedProfileEndpoint+"?jwt="+body.token + "&userID=DoesNotExist")
                     .expectStatus(400)
                     .toss();
             })

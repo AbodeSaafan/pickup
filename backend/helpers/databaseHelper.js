@@ -149,39 +149,29 @@ function populateExtendedProfile(user, callback) {
 	});
 }
 
-function getExtendedProfile(username, callback) {
-	var queryString = "SELECT user_id FROM users WHERE username = $1"
-    var queryParams = [username];
+function getExtendedProfile(userID, callback) {
+	console.log(userID)
+	var queryString = "(SELECT * FROM " +
+			"(SELECT * FROM extended_profile WHERE user_id = $1) ext_profile_row " +
+			"LEFT JOIN (SELECT tag top_tag, count(tag) top_tag_count from tags where review_id in " +
+			"(SELECT review_id from reviews where user_id = $1) group by top_tag, review_id ORDER BY top_tag_count DESC LIMIT 1) top_tag_row on 1=1);";
+  var queryParams = [userID];
 
 	const pool = new pg.Pool({connectionString: conString});
 
 	pool.connect((err, client, done) => {
 		client.query(queryString, queryParams, (err, res) => {
             if(!err && res.rows[0]){
-                var queryString = "(SELECT * FROM " +
-                    "(SELECT * FROM extended_profile WHERE user_id = $1) ext_profile_row " +
-                    "LEFT JOIN (SELECT tag top_tag, count(tag) top_tag_count from tags where review_id in " +
-                    "(SELECT review_id from reviews where user_id = $1) group by top_tag, review_id ORDER BY top_tag_count DESC LIMIT 1) top_tag_row on 1=1);";
-                var queryParams = [res.rows[0].user_id];
-                pool.connect((err, client, done) => {
-                    client.query(queryString, queryParams, (err, res) => {
-                        if(!err && res.rows[0]){
-                            callback(res.rows[0]);
-                        } else {
-                            callback(false);
-                        }
-                        done();
-                        pool.end();
-                    });
-                });
+              callback(res.rows[0]);
+							console.log("reached here0")
             } else {
-                callback(false);
+              callback(false);
+							console.log("reached here5")
             }
-
-			done();
-			pool.end();
-		});
-	});
+            done();
+            pool.end();
+    });
+  });
 }
 
 function checkPassword(emailIn, passIn, callback){

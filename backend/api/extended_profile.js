@@ -39,14 +39,18 @@ var strings = require("./universal_strings");
 */
 
 router.get("/", function (req, res) {
+
 	try {
 		var tok = tokenHelper.verifyToken(req.query.jwt);
-        var reqUsername = requestHelper.validateAndCleanExtendedProfileRequest(req.query);
+		console.log(req.query.userID)
+    var reqUserID = req.query.userID;
 
-		databaseHelper.getExtendedProfile(reqUsername.username, (ext_profile) => {
+
+		databaseHelper.getExtendedProfile(reqUserID, (ext_profile) => {
 			if(ext_profile) {
 				var response = {
 					user_id: ext_profile.user_id,
+					username: ext_profile.username,
 					age: ext_profile.age,
 					gender: ext_profile.gender,
 					location: ext_profile.location,
@@ -54,6 +58,7 @@ router.get("/", function (req, res) {
 					top_tag: ext_profile.top_tag,
 					top_tag_count: ext_profile.top_tag_count
 				};
+				console.log(response)
 				res.status(200).json(response); return;
 			}else{
 				res.status(400).json({"error": strings.userIdFail}); return;
