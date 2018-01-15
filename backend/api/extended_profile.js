@@ -42,10 +42,8 @@ router.get("/", function (req, res) {
 
 	try {
 		var tok = tokenHelper.verifyToken(req.query.jwt);
-		console.log(req.query.userID)
-    var reqUserID = req.query.userID;
-
-
+		var reqUserID = req.query.userID;
+		
 		databaseHelper.getExtendedProfile(reqUserID, (ext_profile) => {
 			if(ext_profile) {
 				var response = {
@@ -58,7 +56,6 @@ router.get("/", function (req, res) {
 					top_tag: ext_profile.top_tag,
 					top_tag_count: ext_profile.top_tag_count
 				};
-				console.log(response)
 				res.status(200).json(response); return;
 			}else{
 				res.status(400).json({"error": strings.userIdFail}); return;
