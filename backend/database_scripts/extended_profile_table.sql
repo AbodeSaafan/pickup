@@ -1,5 +1,6 @@
 CREATE TABLE IF NOT EXISTS Extended_profile (
 	user_id int REFERENCES Users(user_id),
+	username varchar(255) REFERENCES Users(username),
 	skilllevel int default 0,
 	age int, 
 	gender varchar(255),
