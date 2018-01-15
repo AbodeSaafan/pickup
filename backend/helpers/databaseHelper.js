@@ -135,9 +135,9 @@ function deleteRefreshToken(userId, refreshToken, callback){
 }
 
 function populateExtendedProfile(user, callback) {
-	var queryString = "INSERT INTO extended_profile(user_id, age, gender) VALUES($1, $2, $3);";
+	var queryString = "INSERT INTO extended_profile(user_id, age, gender, username) VALUES($1, $2, $3, $4);";
 	var age = calculateAge(user.dob);
-	var queryParams = [user.userId, age, user.gender];
+	var queryParams = [user.userId, age, user.gender, user.username];
 
 	const pool = new pg.Pool({connectionString: conString});
 	pool.connect((err, client, done) => {

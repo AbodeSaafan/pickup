@@ -9,7 +9,7 @@ function validateAndCleanRegisterRequest(data){
 	validate(data.fname, regex.nameRegex, strings.invalidFirstName);
 	validate(data.lname, regex.nameRegex, strings.invalidLastName);
 	validate(data.gender, regex.genderRegex, strings.invalidGender);
-	validate(data.dob, regex.dateRegex, strings.invalidDob + " Given: " + param);
+	validate(data.dob, regex.dateRegex, strings.invalidDob + " Given: " + data);
 	validate(data.email, regex.emailRegex, strings.invalidEmail);
 	return data;
 }
