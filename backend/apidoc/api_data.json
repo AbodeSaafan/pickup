@@ -1088,7 +1088,7 @@
       "examples": [
         {
           "title": "Success-Response:",
-          "content": "     HTTP/1.1 200 OK\n    {\n\t\t\"ifReviewed\":[ {1, true}, {4, false}]\n     }",
+          "content": "     HTTP/1.1 200 OK\n    {\n\t\t[{ user_id : 23, reviewed: false}, {user_id : 100, reviewed: true}]\n     }",
           "type": "json"
         }
       ]
