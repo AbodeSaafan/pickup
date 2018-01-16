@@ -29,10 +29,10 @@ public class ExtendedProfile {
     }
     */
 
-    public static JsonObjectRequest getProfile_request(String jwt, Response.Listener<JSONObject> responseListener, Response.ErrorListener errorListener){
+    public static JsonObjectRequest getProfile_request(String jwt, String userID, Response.Listener<JSONObject> responseListener, Response.ErrorListener errorListener){
 
         JsonObjectRequest GetRequest = new JsonObjectRequest
-                (Request.Method.GET, ExtendedProfile_ENDPOINT+"?jwt="+jwt, null, responseListener, errorListener);
+                (Request.Method.GET, ExtendedProfile_ENDPOINT+"?jwt="+jwt+"&userID="+userID, null, responseListener, errorListener);
 
         return GetRequest;
     }

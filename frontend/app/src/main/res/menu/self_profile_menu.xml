@@ -9,5 +9,8 @@
     <item android:id="@+id/profile_self_sign_out"
         android:title="@string/sign_out_title"
         android:showAsAction="never" />
+    <item android:id="@+id/extended_profile"
+        android:title="View Extended Profile"
+        android:showAsAction="never" />
 
 </menu>

@@ -38,6 +38,9 @@ public class ProfileSelfActivity extends AppCompatActivity {
                 AlertDialog diaBox = AskOption();
                 diaBox.show();
                 break;
+            case R.id.extended_profile:
+                viewExtendedProfile();
+                break;
         }
         return true;
     }
@@ -46,6 +49,12 @@ public class ProfileSelfActivity extends AppCompatActivity {
         Intent intent = new Intent(this, SignInActivity.class);
         startActivity(intent);
     }
+
+    private void viewExtendedProfile() {
+        Intent intent = new Intent(this, ExtendedProfileActivity.class);
+        startActivity(intent);
+    }
+
 
     private AlertDialog AskOption()
     {
@@ -64,8 +73,7 @@ public class ProfileSelfActivity extends AppCompatActivity {
                     }
 
                 })
-
-
+                
 
                 .setNegativeButton("cancel", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
