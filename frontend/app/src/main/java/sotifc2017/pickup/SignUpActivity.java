@@ -11,12 +11,15 @@ import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
+import android.location.Address;
+import android.location.Geocoder;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -49,7 +52,10 @@ import java.util.List;
 import java.util.Locale;
 
 import sotifc2017.pickup.api.Authentication;
+import sotifc2017.pickup.api.ExtendedProfile;
 import sotifc2017.pickup.api.Utils;
+import sotifc2017.pickup.api.contracts.GetExtendedProfileRequest;
+import sotifc2017.pickup.api.contracts.GetExtendedProfileResponse;
 import sotifc2017.pickup.api.contracts.RegisterRequest;
 import sotifc2017.pickup.api.contracts.RegisterResponse;
 
@@ -89,7 +95,7 @@ public class SignUpActivity extends AppCompatActivity implements LoaderManager.L
     private String email;
     private String password;
     private String gender;
-    private String[] skillLevels = {"Just for Fun!", "Rookie", "All Star", "Super Star", "Hall of Fame", "God of Basketball"};
+    public String[] skillLevels = {"Just for Fun!", "Rookie", "All Star", "Super Star", "Hall of Fame", "God of Basketball"};
 
     Button next0;
     Button next1;
@@ -98,6 +104,11 @@ public class SignUpActivity extends AppCompatActivity implements LoaderManager.L
     ViewFlipper VF;
     Spinner genderSpinner;
     EditText DobLabel;
+    String address;
+    Geocoder coder;
+    double lat;
+    double lng;
+    int skilllevel_Value;
 
     private OnClickListener page_switch_listener = new OnClickListener() {
         public void onClick(View v) {
@@ -163,6 +174,7 @@ public class SignUpActivity extends AppCompatActivity implements LoaderManager.L
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
+        coder = new Geocoder(this);
 
         next0 = findViewById(R.id.next0);
         next1 = findViewById(R.id.next1);
@@ -180,6 +192,20 @@ public class SignUpActivity extends AppCompatActivity implements LoaderManager.L
                     @Override
                     public void onPlaceSelected(final Place place) {
                         // do something awesome with the selected place
+                        address = placesAutocomplete.getText().toString();
+                        if (address != null && !address.isEmpty()) {
+                            try {
+
+                                List<Address> addressList = coder.getFromLocationName(address, 1);
+                                if (addressList != null && addressList.size() > 0) {
+                                    lat = addressList.get(0).getLatitude();
+                                    lng = addressList.get(0).getLongitude();
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            } // end catch
+                        }
+
                     }
                 }
         );
@@ -220,6 +246,7 @@ public class SignUpActivity extends AppCompatActivity implements LoaderManager.L
             @Override
             public void onProgressChanged(DiscreteSeekBar seekBar, int value, boolean fromUser) {
                 skillLevel.setText(skillLevels[value / 2]);
+                skilllevel_Value = value / 2;
             }
 
             @Override
@@ -344,6 +371,7 @@ public class SignUpActivity extends AppCompatActivity implements LoaderManager.L
             progressDialog.show();
 
             ExecuteLogin(email, firstname, lastname, password, gender, username, dob);
+
         }
 
 
@@ -496,6 +524,7 @@ public class SignUpActivity extends AppCompatActivity implements LoaderManager.L
             }
             //TODO: Implement Failure
             catch (Exception e){
+                Log.d("CREATION",e.getMessage());
                 registerFailure(e.getMessage());
             }
 
@@ -511,6 +540,7 @@ public class SignUpActivity extends AppCompatActivity implements LoaderManager.L
             }
             //TODO: Implement Failure
             catch (Exception e){
+                Log.d("CREATION", e.getMessage());
                 registerFailure(e.getMessage());
             }
         }
@@ -521,21 +551,83 @@ public class SignUpActivity extends AppCompatActivity implements LoaderManager.L
         Utils.getInstance(SignUpActivity.this).addToRequestQueue(Authentication.register_request(new RegisterRequest(email, password, username, firstname, lastname, gender, dob), successful_register, error_register));
     }
 
+
+
     private void registerSuccess(RegisterResponse response) {
         Toast.makeText(this, "Register successsful", Toast.LENGTH_SHORT).show();
 
         Authentication.saveJwt(this, response.token);
         Authentication.saveRefresh(this, response.refresh);
 
-        Intent intent = new Intent(SignUpActivity.this, ProfileSelfActivity.class);
-        startActivity(intent);
-        progressDialog.cancel();
+        UpdateExtendedProfile(response.token);
 
     }
 
     private void registerFailure(String message) {
+        Log.d("CREATION", message);
         Toast.makeText(this, "Sign in failed: " + message, Toast.LENGTH_SHORT).show();
+
         progressDialog.cancel();
     }
+
+    private Response.Listener<JSONObject> successful_Update = new Response.Listener<JSONObject>() {
+        @Override
+        public void onResponse(JSONObject response) {
+            try{
+                Log.d("CREATION", "Reached here");
+                updateProfileSuccess(Utils.gson.fromJson(response.toString(), GetExtendedProfileResponse.class));
+            }
+            //TODO: Implement Failure
+            catch (Exception e){
+                Log.d("CREATION", "Reached here2");
+                updateProfileFailure(e.getMessage());
+            }
+
+        }
+    };
+
+    private Response.ErrorListener error_Update=  new Response.ErrorListener() {
+        @Override
+        public void onErrorResponse(VolleyError error) {
+            try {
+                Log.d("CREATION", "Reached here3");
+                JSONObject errorJSON = new JSONObject(new String(error.networkResponse.data, "UTF-8"));
+                updateProfileFailure(errorJSON.getString("error"));
+            }
+            //TODO: Implement Failure
+            catch (Exception e) {
+                Log.d("CREATION", "Reached here4");
+                updateProfileFailure(e.getMessage());
+            }
+        }
+    };
+
+    private void UpdateExtendedProfile (String jwt) {
+        Log.d("CREATION", jwt);
+        Utils.getInstance(SignUpActivity.this).addToRequestQueue(ExtendedProfile.updateProfile_request(new GetExtendedProfileRequest(jwt, lat, lng, skilllevel_Value), successful_Update, error_Update));
+    }
+
+
+
+    private void updateProfileFailure(String message) {
+        Toast.makeText(this, "Extended Profile Update failed: " + message, Toast.LENGTH_SHORT).show();
+        Log.d("CREATION", message);
+        progressDialog.cancel();
+    }
+
+    private void updateProfileSuccess(GetExtendedProfileResponse getExtendedProfileResponse) {
+        Toast.makeText(this, "Extended Profile Updated successsfully", Toast.LENGTH_SHORT).show();
+
+        Intent intent = new Intent(SignUpActivity.this, ProfileSelfActivity.class);
+        startActivity(intent);
+        progressDialog.cancel();
+
+
+    }
+
+
+
 }
+
+
 
