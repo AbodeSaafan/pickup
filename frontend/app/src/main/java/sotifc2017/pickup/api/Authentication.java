@@ -1,5 +1,7 @@
 package sotifc2017.pickup.api;
 
+import android.app.Activity;
+import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
 
@@ -46,8 +48,8 @@ public class Authentication {
         }
     }
 
-    public static String getJwt(Context ctx) throws Exception{
-        SharedPreferences prefs = ctx.getSharedPreferences(
+    public static String getJwt(Activity activity) throws Exception{
+        SharedPreferences prefs = activity.getApplicationContext().getSharedPreferences(
                 "sotifc2017.pickup", Context.MODE_PRIVATE);
 
         String jwt_tok = prefs.getString("jwt", null);
@@ -65,11 +67,11 @@ public class Authentication {
         }
         // request new one
         RequestFuture<JSONObject> requestFuture= RequestFuture.newFuture();
-        Utils.getInstance(ctx).addToRequestQueue(jwt_request(refresh_tok, jwt_tok, requestFuture, requestFuture));
+        Utils.getInstance(activity.getApplicationContext()).addToRequestQueue(jwt_request(refresh_tok, jwt_tok, requestFuture, requestFuture));
         try {
             JSONObject response = requestFuture.get(10, TimeUnit.SECONDS);
             String jwt = response.getString("token");
-            saveJwt(ctx, jwt);
+            saveJwt(activity, jwt);
             return jwt;
 
         } catch (Exception e) {
@@ -78,20 +80,20 @@ public class Authentication {
         }
     }
 
-    public static void saveJwt(Context ctx, String tok){
-        SharedPreferences prefs = ctx.getSharedPreferences(
+    public static void saveJwt(Activity activity, String tok){
+        SharedPreferences prefs = activity.getApplicationContext().getSharedPreferences(
                 "sotifc2017.pickup", Context.MODE_PRIVATE);
         prefs.edit().putString("jwt", tok);
     }
 
-    public static void saveRefresh(Context ctx, String refresh){
-        SharedPreferences prefs = ctx.getSharedPreferences(
+    public static void saveRefresh(Activity activity, String refresh){
+        SharedPreferences prefs = activity.getApplicationContext().getSharedPreferences(
                 "sotifc2017.pickup", Context.MODE_PRIVATE);
         prefs.edit().putString("refresh", refresh);
     }
 
-    public static String getRefresh(Context ctx){
-        SharedPreferences prefs = ctx.getSharedPreferences(
+    public static String getRefresh(Activity activity){
+        SharedPreferences prefs = activity.getApplicationContext().getSharedPreferences(
                 "sotifc2017.pickup", Context.MODE_PRIVATE);
 
         String ref = prefs.getString("refresh", null);

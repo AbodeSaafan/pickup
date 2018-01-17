@@ -126,20 +126,33 @@ frisby.create("Joining a game: Creating a user to create a game")
 							.put(util.format(testHelper.joinGameEndpoint, gameId, newUser.token), newUser.token)
 							.expectStatus(200)
 							.expectBodyContains("game_id")
-							.afterJSON(function (game) {
-								frisby.create("Get the users of the game")
-									.get(testHelper.getUsersOfGameEndpoint+"?jwt="+ user.token +"&game_id="+gameId)
-								    .expectJSON('0',{
-								    	user_id: parseInt(user.user_id),
-								    	reviewed: false
-								    })
-								    .expectJSON('1',{
-								    	user_id: parseInt(newUser.user_id),
-								    	reviewed: false
-								    })
+							.afterJSON(function (gameJoin) {
+								frisby.create("Creating a new user to join the game")
+									.post(testHelper.registerEndpoint, testHelper.createGenericUserFixedBirth())
 									.expectStatus(200)
+									.afterJSON(function (newUser1) {
+										frisby.create("Join a game using the API with valid credentials")
+											.put(util.format(testHelper.joinGameEndpoint, gameId, newUser1.token), newUser1.token)
+											.expectStatus(200)
+											.expectBodyContains("game_id")
+											.afterJSON(function (gameJoin1) {
+												frisby.create("Get the users of the game")
+													.get(testHelper.getUsersOfGameEndpoint+"?jwt="+ user.token +"&game_id="+gameId)
+								 			   		.expectJSON('?',{
+												    	user_id: parseInt(newUser1.user_id),
+												    	reviewed: false
+												    })
+												    .expectJSON('?',{
+												    	user_id: parseInt(newUser.user_id),
+												    	reviewed: false
+												    })
+													.expectStatus(200)
+													.toss();
+													})
+											.toss();
+											})
 									.toss();
-							})
+									})
 							.toss();
 					})
 					.toss();

@@ -40,18 +40,20 @@ var strings = require("./universal_strings");
 */
 router.post("/setReview", function(req, res){
 	try{
-		var review = requestHelper.validateAndCleanReviewRequest(req.query);
+		var review = requestHelper.validateAndCleanReviewRequest(req.body);
 		try {
-			var tok = tokenHelper.verifyToken(req.query.jwt);
+			var tok = tokenHelper.verifyToken(req.body.jwt);
 		}
 		catch(err){
 			res.status(400).json({"error": strings.invalidJwt});
 			return;
-		}
+		} 
 
 		if(review.reviewed){
-			databaseHelper.updateReview(review.userId, review.gameId, tok.reviewerId, review.rating, (reviewId) => {
+			console.log("het======================================================================")
+			databaseHelper.updateReview(review.userId, review.gameId, tok.user_id, review.rating, (reviewId) => {
 				if(reviewId) {
+					console.log("het")
 					requestHelper.updateTag(reviewId, review.tags, (anyFailure) => {
 						if(anyFailure){
 							res.status(400).json("Adding tags failed");
