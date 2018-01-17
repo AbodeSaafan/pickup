@@ -123,7 +123,7 @@ router.get("/getUsers", function(req, res){
 	try {
 		var gameid = req.query.game_id;
 		var tok = tokenHelper.verifyToken(req.query.jwt);
-		databaseHelper.getUsers(gameid , (userids) => {
+		databaseHelper.getUsers(gameid , tok.user_id, (userids) => {
 			if(userids) {
 				requestHelper.getIfReviewed(userids, tok.user_id, (ifReviewed)=>{
 					if(ifReviewed){

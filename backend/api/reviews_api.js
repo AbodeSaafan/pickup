@@ -40,9 +40,9 @@ var strings = require("./universal_strings");
 */
 router.post("/setReview", function(req, res){
 	try{
-		var review = requestHelper.validateAndCleanReviewRequest(req.query);
+		var review = requestHelper.validateAndCleanReviewRequest(req.body);
 		try {
-			var tok = tokenHelper.verifyToken(req.query.jwt);
+			var tok = tokenHelper.verifyToken(req.body.jwt);
 		}
 		catch(err){
 			res.status(400).json({"error": strings.invalidJwt});
