@@ -21,7 +21,7 @@ app.use(express.static(path.join(__dirname, "apidoc")));
 app.use(function(req, res, next) {
 	// eslint-disable-next-line no-console
 	logger.info(req.method + " " + req.url);
-	logger.verbose(req);
+	logger.verbose(req.method + " " + req.url + ". Params: " + JSON.stringify(req.params) + ". Query: " + JSON.stringify(req.query) + ". Body: " + JSON.stringify(req.body));
 	next();
 });
 app.use("/api", api);
