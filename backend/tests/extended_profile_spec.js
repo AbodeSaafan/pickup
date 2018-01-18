@@ -20,6 +20,7 @@ frisby.create("Register a user using the API with valid credentials to use for e
 				user_id: parseInt(body.user_id),
 				age: body.age,
 				gender: body.gender,
+				skilllevel: 0,
 				location: null,
 				average_review: 0,
 				top_tag: null,
@@ -54,6 +55,7 @@ frisby.create("Register a user using the API with valid credentials to use for e
 					user_id: parseInt(user2.user_id),
 					age: user2.age,
 					gender: user2.gender,
+					skilllevel: 0,
 					location: null,
 					average_review: 0,
 					top_tag: null,
@@ -83,6 +85,7 @@ frisby.create("Register a user using the API with valid credentials to use for e
 
 
 
+
 // Get an Extended Profile after updating skill_level and location
 var newUser = testHelper.createGenericUser()
 frisby.create("Register a user using the API with valid credentials to use for extendedProfile testing")
@@ -104,6 +107,7 @@ frisby.create("Register a user using the API with valid credentials to use for e
 						user_id: parseInt(body.user_id),
 						age: body.age,
 						gender: body.gender,
+						skilllevel: parseInt(result.Users_SkillLevel),
 						location: "(" + result.Users_Location.lat + "," + result.Users_Location.lng + ")",
 						average_review: 0,
 						top_tag: null,

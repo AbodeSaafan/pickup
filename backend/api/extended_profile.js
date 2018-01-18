@@ -43,7 +43,7 @@ router.get("/", function (req, res) {
 	try {
 		var tok = tokenHelper.verifyToken(req.query.jwt);
 		var reqUserID = req.query.userID;
-		
+
 		databaseHelper.getExtendedProfile(reqUserID, (ext_profile) => {
 			if(ext_profile) {
 				var response = {
@@ -51,11 +51,13 @@ router.get("/", function (req, res) {
 					username: ext_profile.username,
 					age: ext_profile.age,
 					gender: ext_profile.gender,
+					skilllevel: ext_profile.skilllevel,
 					location: ext_profile.location,
 					average_review: ext_profile.average_review,
 					top_tag: ext_profile.top_tag,
 					top_tag_count: ext_profile.top_tag_count
 				};
+				console.log(response);
 				res.status(200).json(response); return;
 			}else{
 				res.status(400).json({"error": strings.userIdFail}); return;
