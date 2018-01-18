@@ -57,10 +57,11 @@ function validateAndCleanLeaveRequest(data){
 }
 
 function validateAndCleanReviewRequest(data){
-	validate(data.UserId, regex.idRegex, strings.invalidUserId);
+	validate(data.userId, regex.idRegex, strings.invalidUserId);
 	validate(data.gameId, regex.idRegex, strings.invalidGameId);
 	validate(data.rating, regex.ratingRegex, strings.invalidRating);
 	validateRatings(data.tags);
+	data.reviewed = data.reviewed == 'true'
 	return data;
 }
 
@@ -133,7 +134,7 @@ function addTag(reviewId, tags, finished){
 			callback();
 		});
 	}, function () {
-		finished(final_results);
+		finished(final_results.length > 0);
 	});
 }
 

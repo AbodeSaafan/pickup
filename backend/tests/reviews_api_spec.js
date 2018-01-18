@@ -45,7 +45,6 @@ frisby.create("Joining a game: Creating a user to create a game")
 												reviewed : false,
 												jwt : user.token
 											})
-											.inspectJSON()
 											.expectStatus(200)
 											.toss();
 									})

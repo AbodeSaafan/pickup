@@ -4,6 +4,7 @@ var requestHelper = require("../helpers/requestHelper");
 var databaseHelper = require("../helpers/databaseHelper");
 var tokenHelper = require("../helpers/tokenHelper");
 var strings = require("./universal_strings");
+var logger = require("../logger");
 
 /**
 * @api {get} /reviews/setReview Set the review of a player for a particular game.
@@ -48,12 +49,14 @@ router.post("/setReview", function(req, res){
 			res.status(400).json({"error": strings.invalidJwt});
 			return;
 		} 
-
+		
 		if(review.reviewed){
-			console.log("het======================================================================")
+			console.log("#####")
+			console.log(review.reviewed)
+			console.log(review.reviewed == "false")
+			console.log("#####")
 			databaseHelper.updateReview(review.userId, review.gameId, tok.user_id, review.rating, (reviewId) => {
 				if(reviewId) {
-					console.log("het")
 					requestHelper.updateTag(reviewId, review.tags, (anyFailure) => {
 						if(anyFailure){
 							res.status(400).json("Adding tags failed");
@@ -65,13 +68,14 @@ router.post("/setReview", function(req, res){
 						}
 					});
 				}else{
+					logger.info(reviewId);
 					res.status(400).json("Adding review failed");
 					return;
 				}
 			});	
 		}
 		else{
-			databaseHelper.addReview(review.userId, review.gameId, tok.reviewerId, review.rating, (reviewId) => {
+			databaseHelper.addReview(review.userId, review.gameId, tok.user_id, review.rating, (reviewId) => {
 				if(reviewId) {
 					requestHelper.addTag(reviewId, review.tags, (anyFailure) => {
 						if(anyFailure){
@@ -84,6 +88,7 @@ router.post("/setReview", function(req, res){
 						}
 					});
 				}else{
+					logger.info(reviewId);
 					res.status(400).json("Adding review failed");
 					return;
 				}
