@@ -311,7 +311,7 @@ function addReview (userId, gameId, reviewerId, rating, callback){
 }
 
 function updateReview (userId, gameId, reviewerId, rating, callback){
-	var queryString = "UPDATE reviews SET user_id = $1, game_id = $2, reviewer_id = $3, rating = $4";
+	var queryString = "UPDATE reviews SET rating = $4 WHERE user_id = $1 AND game_id = $2 AND reviewer_id = $3 RETURNING review_id";
 	var queryParams = [userId, gameId, reviewerId, rating];
 
 	const pool = new pg.Pool({connectionString: conString});
@@ -350,9 +350,9 @@ function addTag(reviewId, tag, callback){
 	});
 }
 
-function updateTag(reviewId, tags, callback){
-	var queryString = "UPDATE tags SET review_id = $1, tag = $2";
-	var queryParams = [reviewId, tags[i]];
+function deleteTag(reviewId, callback){
+	var queryString = "DELETE FROM tags WHERE review_id = $1";
+	var queryParams = [reviewId];
 
 	const pool = new pg.Pool({connectionString: conString});
 
@@ -785,8 +785,8 @@ module.exports = {
 	disableAccount,
 	getIfReviewed,
 	updateReview,
-	updateTag,
-	addTag
+	addTag,
+	deleteTag
 };
 
 //////////////// Helpers ////////////////

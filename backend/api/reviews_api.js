@@ -51,10 +51,6 @@ router.post("/setReview", function(req, res){
 		} 
 		
 		if(review.reviewed){
-			console.log("#####")
-			console.log(review.reviewed)
-			console.log(review.reviewed == "false")
-			console.log("#####")
 			databaseHelper.updateReview(review.userId, review.gameId, tok.user_id, review.rating, (reviewId) => {
 				if(reviewId) {
 					requestHelper.updateTag(reviewId, review.tags, (anyFailure) => {
@@ -68,7 +64,6 @@ router.post("/setReview", function(req, res){
 						}
 					});
 				}else{
-					logger.info(reviewId);
 					res.status(400).json("Adding review failed");
 					return;
 				}
@@ -88,7 +83,6 @@ router.post("/setReview", function(req, res){
 						}
 					});
 				}else{
-					logger.info(reviewId);
 					res.status(400).json("Adding review failed");
 					return;
 				}

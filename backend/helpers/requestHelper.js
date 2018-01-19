@@ -139,16 +139,23 @@ function addTag(reviewId, tags, finished){
 }
 
 function updateTag(reviewId, tags, finished){
-	var final_results = [];
-	async.forEachOf(tags, function(tag, i, callback){
-		databaseHelper.updateTag(reviewId, tag, (tagAdded)=>{
-			if(!tagAdded){
-					final_results.push("1");
-				}
-			callback();
-		});
-	}, function () {
-		finished(final_results);
+	databaseHelper.deleteTag(reviewId, (deleteComplete)=> {
+		if(deleteComplete){
+				var final_results = [];
+				async.forEachOf(tags, function(tag, i, callback){
+					databaseHelper.addTag(reviewId, tag, (tagAdded)=>{
+						if(!tagAdded){
+								final_results.push("1");
+							}
+						callback();
+					});
+				}, function () {
+					finished(final_results.length > 0);
+				});
+			}
+		else{
+			finished(true);
+		}
 	});
 }
 
