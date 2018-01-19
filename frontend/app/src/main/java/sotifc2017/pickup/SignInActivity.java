@@ -67,7 +67,7 @@ public class SignInActivity extends AppCompatActivity {
         email = emailText.getText().toString();
         pass = passText.getText().toString();
 
-        Utils.getInstance(this).addToRequestQueue(Authentication.login_request(new LoginRequest(email, pass), successful_signin, error_signin));
+        Utils.getInstance(this).getRequestQueue(this).add(Authentication.login_request(new LoginRequest(email, pass), successful_signin, error_signin));
     }
 
     private Response.Listener<JSONObject> successful_signin = new Response.Listener<JSONObject>() {

@@ -548,7 +548,7 @@ public class SignUpActivity extends AppCompatActivity implements LoaderManager.L
 
     private void ExecuteLogin(String email, String firstname, String lastname, String password, String gender, String username, String dob) {
 
-        Utils.getInstance(SignUpActivity.this).addToRequestQueue(Authentication.register_request(new RegisterRequest(email, password, username, firstname, lastname, gender, dob), successful_register, error_register));
+        Utils.getInstance(this).getRequestQueue(this).add(Authentication.register_request(new RegisterRequest(email, password, username, firstname, lastname, gender, dob), successful_register, error_register));
     }
 
 
@@ -604,7 +604,7 @@ public class SignUpActivity extends AppCompatActivity implements LoaderManager.L
 
     private void UpdateExtendedProfile (String jwt) {
         Log.d("CREATION", jwt);
-        Utils.getInstance(SignUpActivity.this).addToRequestQueue(ExtendedProfile.updateProfile_request(new GetExtendedProfileRequest(jwt, lat, lng, skilllevel_Value), successful_Update, error_Update));
+        Utils.getInstance(this).getRequestQueue(this).add(ExtendedProfile.updateProfile_request(new GetExtendedProfileRequest(jwt, lat, lng, skilllevel_Value), successful_Update, error_Update));
     }
 
 

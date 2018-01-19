@@ -56,7 +56,15 @@ public class ExtendedProfileActivity extends AppCompatActivity {
         averageReview.setText("2.5");
         */
 
-        jwt = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNCIsImVtYWlsIjoicmFAb3V0bG9vay5jb20iLCJpYXQiOjE1MTYxMzYxMzQsImV4cCI6MTUxNjEzNzAzNH0.jud4rHdcdlGTAtnQcMqkFmwziKbk5WntoNfaH7DYCjg";
+        try{
+            Log.v("getting jwt", "getting jwt");
+            jwt = Authentication.getJwt(this);
+            Log.v("jwt from function", jwt);
+        }
+        catch (Exception e){
+            // Sign out of app
+        }
+
         user_id = "4";
         GetExtendedProfile();
 
@@ -94,7 +102,7 @@ public class ExtendedProfileActivity extends AppCompatActivity {
 
     private void GetExtendedProfile() {
         Log.d("CREATION", "Reached here");
-        Utils.getInstance(ExtendedProfileActivity.this).addToRequestQueue(ExtendedProfile.getProfile_request(jwt, user_id, successful_extendedProfile, error_extendedProfile));
+        Utils.getInstance(this).getRequestQueue(this).add(ExtendedProfile.getProfile_request(jwt, user_id, successful_extendedProfile, error_extendedProfile));
     }
 
     private void ExtendedProfileSuccess(GetExtendedProfileResponse response) {

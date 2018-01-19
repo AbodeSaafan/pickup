@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -25,8 +26,6 @@ public class Authentication {
     private static final String LOGIN_ENDPOINT = Utils.BASE_API + "login";
     private static final String REGISTER_ENDPOINT = Utils.BASE_API + "register";
     private static final String REFRESH_ENDPOINT = Utils.BASE_API + "refresh";
-
-    private static final int CALL_DELAY = 5; // 5 second delay so less calls fail due to expired jwt
 
     public static JsonObjectRequest login_request(LoginRequest req, Response.Listener<JSONObject> responseListener, Response.ErrorListener errorListener) {
         try{
@@ -57,8 +56,9 @@ public class Authentication {
 
         if (jwt_tok != null && !jwt_tok.isEmpty() && refresh_tok != null && !refresh_tok.isEmpty()) {
             //check date and return if good, move on if bad
-            int expiry = prefs.getInt("jwt_expiry", 0);
-            if (expiry >= (System.currentTimeMillis() / 1000) + CALL_DELAY) {
+            long expiry = prefs.getLong("jwt_expiry", Long.MIN_VALUE);
+            Log.v("jwt", "expiry is " + expiry + " while the current time is " + System.currentTimeMillis());
+            if (expiry >= System.currentTimeMillis()) {
                 return jwt_tok;
             }
         } else {
@@ -67,7 +67,7 @@ public class Authentication {
         }
         // request new one
         RequestFuture<JSONObject> requestFuture= RequestFuture.newFuture();
-        Utils.getInstance(activity.getApplicationContext()).addToRequestQueue(jwt_request(refresh_tok, jwt_tok, requestFuture, requestFuture));
+        Utils.getInstance(activity).getRequestQueue(activity).add(jwt_request(refresh_tok, jwt_tok, requestFuture, requestFuture));
         try {
             JSONObject response = requestFuture.get(10, TimeUnit.SECONDS);
             String jwt = response.getString("token");
@@ -83,13 +83,17 @@ public class Authentication {
     public static void saveJwt(Activity activity, String tok){
         SharedPreferences prefs = activity.getApplicationContext().getSharedPreferences(
                 "sotifc2017.pickup", Context.MODE_PRIVATE);
-        prefs.edit().putString("jwt", tok);
+        prefs.edit().putString("jwt", tok).apply();
+        Log.v("jwt", "saving jwt as " + tok);
+        // Current time + 14 minutes converted into milliseconds
+        prefs.edit().putLong("jwt_expiry", System.currentTimeMillis() + (1000 * 60 * 14)).apply();
+        Log.v("jwt", "saving expiry as " + System.currentTimeMillis() + (1000 * 60 * 14));
     }
 
     public static void saveRefresh(Activity activity, String refresh){
         SharedPreferences prefs = activity.getApplicationContext().getSharedPreferences(
                 "sotifc2017.pickup", Context.MODE_PRIVATE);
-        prefs.edit().putString("refresh", refresh);
+        prefs.edit().putString("refresh", refresh).apply();
     }
 
     public static String getRefresh(Activity activity){
