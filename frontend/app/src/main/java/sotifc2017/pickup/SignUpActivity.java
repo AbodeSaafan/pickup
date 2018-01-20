@@ -558,6 +558,7 @@ public class SignUpActivity extends AppCompatActivity implements LoaderManager.L
 
         Authentication.saveJwt(this, response.token);
         Authentication.saveRefresh(this, response.refresh);
+        Authentication.saveUserId(this, response.user_id);
 
         UpdateExtendedProfile(response.token);
 

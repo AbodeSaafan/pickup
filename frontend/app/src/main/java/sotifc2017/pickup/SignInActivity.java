@@ -96,8 +96,8 @@ public class SignInActivity extends AppCompatActivity {
         Toast.makeText(this, "Sign in successsful", Toast.LENGTH_SHORT).show();
 
         Authentication.saveJwt(this, response.token);
-
         Authentication.saveRefresh(this, response.refresh);
+        Authentication.saveUserId(this, response.user_id);
 
         Intent intent = new Intent(this, ProfileSelfActivity.class);
         startActivity(intent);

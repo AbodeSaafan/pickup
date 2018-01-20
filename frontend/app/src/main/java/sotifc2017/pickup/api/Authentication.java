@@ -23,6 +23,8 @@ import sotifc2017.pickup.api.contracts.RegisterRequest;
  */
 
 public class Authentication {
+    public static final String SHARED_PREF_KEY = "sotifc2017.pickup";
+
     private static final String LOGIN_ENDPOINT = Utils.BASE_API + "login";
     private static final String REGISTER_ENDPOINT = Utils.BASE_API + "register";
     private static final String REFRESH_ENDPOINT = Utils.BASE_API + "refresh";
@@ -48,8 +50,7 @@ public class Authentication {
     }
 
     public static String getJwt(Activity activity) throws Exception{
-        SharedPreferences prefs = activity.getApplicationContext().getSharedPreferences(
-                "sotifc2017.pickup", Context.MODE_PRIVATE);
+        SharedPreferences prefs = activity.getApplicationContext().getSharedPreferences(SHARED_PREF_KEY, Context.MODE_PRIVATE);
 
         String jwt_tok = prefs.getString("jwt", null);
         String refresh_tok = prefs.getString("refresh", null);
@@ -81,8 +82,7 @@ public class Authentication {
     }
 
     public static void saveJwt(Activity activity, String tok){
-        SharedPreferences prefs = activity.getApplicationContext().getSharedPreferences(
-                "sotifc2017.pickup", Context.MODE_PRIVATE);
+        SharedPreferences prefs = activity.getApplicationContext().getSharedPreferences(SHARED_PREF_KEY, Context.MODE_PRIVATE);
         prefs.edit().putString("jwt", tok).apply();
         Log.v("jwt", "saving jwt as " + tok);
         // Current time + 14 minutes converted into milliseconds
@@ -91,14 +91,12 @@ public class Authentication {
     }
 
     public static void saveRefresh(Activity activity, String refresh){
-        SharedPreferences prefs = activity.getApplicationContext().getSharedPreferences(
-                "sotifc2017.pickup", Context.MODE_PRIVATE);
+        SharedPreferences prefs = activity.getApplicationContext().getSharedPreferences(SHARED_PREF_KEY, Context.MODE_PRIVATE);
         prefs.edit().putString("refresh", refresh).apply();
     }
 
     public static String getRefresh(Activity activity){
-        SharedPreferences prefs = activity.getApplicationContext().getSharedPreferences(
-                "sotifc2017.pickup", Context.MODE_PRIVATE);
+        SharedPreferences prefs = activity.getApplicationContext().getSharedPreferences(SHARED_PREF_KEY, Context.MODE_PRIVATE);
 
         String ref = prefs.getString("refresh", null);
 
@@ -108,6 +106,22 @@ public class Authentication {
             // Log out as we have no refresh token
             return ""; // making error silent
         }
+    }
+
+    public static void saveUserId(Activity activity, int userId){
+        SharedPreferences prefs = activity.getApplicationContext().getSharedPreferences(SHARED_PREF_KEY, Context.MODE_PRIVATE);
+
+        prefs.edit().putInt("userId", userId).apply();
+    }
+
+    public static int getUserId(Activity activity){
+        SharedPreferences prefs = activity.getApplicationContext().getSharedPreferences(SHARED_PREF_KEY, Context.MODE_PRIVATE);
+
+        return prefs.getInt("userId", -1);
+    }
+
+    public static void logout(Activity activity){
+        activity.getApplicationContext().getSharedPreferences(SHARED_PREF_KEY, Context.MODE_PRIVATE).edit().clear().commit();
     }
 
     private static JsonObjectRequest jwt_request(String refresh, String expired_jwt, Response.Listener<JSONObject> responseListener, Response.ErrorListener errorListener) {
