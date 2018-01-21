@@ -1,15 +1,10 @@
 package sotifc2017.pickup;
 
-import android.content.Intent;
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.app.ProgressDialog;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -20,8 +15,6 @@ import sotifc2017.pickup.api.Authentication;
 import sotifc2017.pickup.api.ExtendedProfile;
 import sotifc2017.pickup.api.Utils;
 import sotifc2017.pickup.api.contracts.GetExtendedProfileResponse;
-import sotifc2017.pickup.api.contracts.RegisterRequest;
-import sotifc2017.pickup.api.contracts.RegisterResponse;
 
 /**
  * Created by radhika on 2018-01-14.

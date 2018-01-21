@@ -5,7 +5,6 @@ import android.net.Uri;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
-import com.android.volley.Request;
 import com.google.gson.Gson;
 
 import java.util.HashMap;

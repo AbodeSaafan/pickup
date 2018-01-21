@@ -4,24 +4,20 @@ import android.app.ActionBar;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.os.SystemClock;
+import android.os.Bundle;
 import android.preference.EditTextPreference;
 import android.preference.PreferenceFragment;
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.util.Log;
 import android.view.Window;
 
-import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 
 import org.json.JSONObject;
 
 import sotifc2017.pickup.api.Authentication;
+import sotifc2017.pickup.api.PrivateProfile;
 import sotifc2017.pickup.api.Utils;
 import sotifc2017.pickup.api.contracts.GetPrivateProfileRequest;
-import sotifc2017.pickup.api.PrivateProfile;
 import sotifc2017.pickup.api.contracts.GetPrivateProfileResponse;
 
 public class SettingsActivity extends Activity {

@@ -1,16 +1,15 @@
 package sotifc2017.pickup.api;
 
 import android.app.Activity;
-import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.util.Log;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.RequestFuture;
+
 import org.json.JSONObject;
 
 import java.util.concurrent.TimeUnit;

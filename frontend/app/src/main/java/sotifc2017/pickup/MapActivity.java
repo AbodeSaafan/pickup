@@ -20,7 +20,6 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import java.util.concurrent.ThreadLocalRandom;
 
 public class MapActivity extends FragmentActivity implements OnMapReadyCallback {
 
