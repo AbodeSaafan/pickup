@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory android:title="Account Information">
+        <EditTextPreference
+            android:id="@+id/username"
+            android:key="editTextPref_username"
+            android:title="Username"
+            android:summary="Abode"
+            android:enabled="false"/>
+        <EditTextPreference
+            android:id="@+id/firstname"
+            android:key="editTextPref_firstname"
+            android:title="First Name"
+            android:summary="Abode"
+            android:enabled="false"/>
+        <EditTextPreference
+            android:id="@+id/lasttname"
+            android:key="editTextPref_lastname"
+            android:title="Last Name"
+            android:summary="Saafan"
+            android:enabled="false"/>
+        <EditTextPreference
+            android:id="@+id/dob"
+            android:key="editTextPref_dob"
+            android:title="Birthday"
+            android:summary="11/11/1111"
+            android:enabled="false"/>
+        <EditTextPreference
+            android:id="@+id/gender"
+            android:key="editTextPref_gender"
+            android:title="Gender"
+            android:summary="M"
+            android:enabled="false"/>
+        <EditTextPreference
+            android:id="@+id/email"
+            android:key="editTextPref_email"
+            android:title="Email"
+            android:summary="abode@mail.com"
+            android:enabled="false"/>
+    </PreferenceCategory>
+</PreferenceScreen>

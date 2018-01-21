@@ -17,6 +17,7 @@ public class SplashActivity extends AppCompatActivity {
         new Handler().postDelayed(new Runnable(){
             @Override
             public void run() {
+                // TODO: Figure out if user is already logged in
                 /* Create an Intent that will start the Menu-Activity. */
                 Intent mainIntent = new Intent(SplashActivity.this, SignInActivity.class);
                 SplashActivity.this.startActivity(mainIntent);

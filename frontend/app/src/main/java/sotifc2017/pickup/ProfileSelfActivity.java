@@ -36,6 +36,7 @@ public class ProfileSelfActivity extends AppCompatActivity {
         switch(item.getItemId())
         {
             case R.id.profile_self_setting:
+                viewSettings();
                 break;
             case R.id.profile_self_sign_out:
                 AlertDialog diaBox = AskOption();
@@ -55,6 +56,11 @@ public class ProfileSelfActivity extends AppCompatActivity {
 
     private void viewExtendedProfile() {
         Intent intent = new Intent(this, ExtendedProfileActivity.class);
+        startActivity(intent);
+    }
+
+    private void viewSettings(){
+        Intent intent = new Intent(this, SettingsActivity.class);
         startActivity(intent);
     }
 
