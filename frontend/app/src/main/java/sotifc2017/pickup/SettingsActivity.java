@@ -1,13 +1,18 @@
 package sotifc2017.pickup;
 
+import android.app.ActionBar;
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
+import android.os.SystemClock;
 import android.preference.EditTextPreference;
 import android.preference.PreferenceFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Window;
 
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 
@@ -30,9 +35,22 @@ public class SettingsActivity extends Activity {
 
     public static class PrefsFragment extends PreferenceFragment {
 
+        private ProgressDialog progressDialog;
+
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
+
+            progressDialog = new ProgressDialog(getActivity(),
+                    R.style.AppTheme_Dark);
+
+            progressDialog.setIndeterminate(true);
+            progressDialog.setMessage("Loading...");
+
+            Window window = progressDialog.getWindow();
+            window.setLayout(ActionBar.LayoutParams.WRAP_CONTENT, ActionBar.LayoutParams.WRAP_CONTENT);
+            progressDialog.setCancelable(false);
+            progressDialog.show();
 
             LoadSettings(getActivity());
 
@@ -45,6 +63,7 @@ public class SettingsActivity extends Activity {
                 String jwt = Authentication.getJwt(act);
                 Utils.getInstance(act).getRequestQueue(act).add(PrivateProfile.get_private_profile_request(new GetPrivateProfileRequest(jwt), successful_profile, error_profile));
             } catch (Exception e){
+                progressDialog.cancel();
                 Authentication.logout(act);
                 Intent intent = new Intent(act, SignInActivity.class);
                 startActivity(intent);
@@ -71,6 +90,7 @@ public class SettingsActivity extends Activity {
             public void onResponse(JSONObject response) {
                 try{
                     LoadProfileValuesFromResponse((Utils.gson.fromJson(response.toString(), GetPrivateProfileResponse.class)));
+                    progressDialog.cancel();
                 }
                 //TODO: Implement Failure
                 catch (Exception e){
@@ -85,6 +105,10 @@ public class SettingsActivity extends Activity {
             public void onErrorResponse(VolleyError error) {
                 try {
                     JSONObject errorJSON = new JSONObject(new String(error.networkResponse.data, "UTF-8"));
+                    progressDialog.cancel();
+                    Authentication.logout(getActivity());
+                    Intent intent = new Intent(getActivity(), SignInActivity.class);
+                    startActivity(intent);
                 }
                 //TODO: Implement Failure
                 catch (Exception e){
