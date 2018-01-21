@@ -622,7 +622,7 @@ public class SignUpActivity extends AppCompatActivity implements LoaderManager.L
         Intent intent = new Intent(SignUpActivity.this, ProfileSelfActivity.class);
         startActivity(intent);
         progressDialog.cancel();
-
+        finish();
 
     }
 

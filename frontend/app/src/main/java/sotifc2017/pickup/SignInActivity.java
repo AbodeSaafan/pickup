@@ -102,6 +102,7 @@ public class SignInActivity extends AppCompatActivity {
         Intent intent = new Intent(this, ProfileSelfActivity.class);
         startActivity(intent);
         progressDialog.cancel();
+        finish();
 
     }
 
