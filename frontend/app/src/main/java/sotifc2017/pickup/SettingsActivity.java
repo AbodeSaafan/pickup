@@ -94,7 +94,7 @@ public class SettingsActivity extends Activity {
                 }
                 //TODO: Implement Failure
                 catch (Exception e){
-                    Log.d("CREATION",e.getMessage());
+
                 }
 
             }
@@ -112,7 +112,7 @@ public class SettingsActivity extends Activity {
                 }
                 //TODO: Implement Failure
                 catch (Exception e){
-                    Log.d("CREATION", e.getMessage());
+
                 }
             }
         };

@@ -37,8 +37,6 @@ public class ExtendedProfile {
 
     public static JsonObjectRequest updateProfile_request(GetExtendedProfileRequest req, Response.Listener<JSONObject> responseListener, Response.ErrorListener errorListener) {
         try{
-            JSONObject object = new JSONObject(Utils.gson.toJson(req));
-            Log.d("CREATION", "JSON:" + object);
             return new JsonObjectRequest (Request.Method.PUT, ExtendedProfile_ENDPOINT, new JSONObject(Utils.gson.toJson(req)), responseListener, errorListener);
         }
         catch (Exception e){

@@ -58,7 +58,6 @@ public class Authentication {
         if (jwt_tok != null && !jwt_tok.isEmpty() && refresh_tok != null && !refresh_tok.isEmpty()) {
             //check date and return if good, move on if bad
             long expiry = prefs.getLong("jwt_expiry", Long.MIN_VALUE);
-            Log.v("jwt", "expiry is " + expiry + " while the current time is " + System.currentTimeMillis());
             if (expiry >= System.currentTimeMillis()) {
                 return jwt_tok;
             }
@@ -84,10 +83,8 @@ public class Authentication {
     public static void saveJwt(Activity activity, String tok){
         SharedPreferences prefs = activity.getApplicationContext().getSharedPreferences(SHARED_PREF_KEY, Context.MODE_PRIVATE);
         prefs.edit().putString("jwt", tok).apply();
-        Log.v("jwt", "saving jwt as " + tok);
         // Current time + 14 minutes converted into milliseconds
         prefs.edit().putLong("jwt_expiry", System.currentTimeMillis() + (1000 * 60 * 14)).apply();
-        Log.v("jwt", "saving expiry as " + System.currentTimeMillis() + (1000 * 60 * 14));
     }
 
     public static void saveRefresh(Activity activity, String refresh){

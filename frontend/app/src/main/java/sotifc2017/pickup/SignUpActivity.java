@@ -524,7 +524,6 @@ public class SignUpActivity extends AppCompatActivity implements LoaderManager.L
             }
             //TODO: Implement Failure
             catch (Exception e){
-                Log.d("CREATION",e.getMessage());
                 registerFailure(e.getMessage());
             }
 
@@ -540,7 +539,6 @@ public class SignUpActivity extends AppCompatActivity implements LoaderManager.L
             }
             //TODO: Implement Failure
             catch (Exception e){
-                Log.d("CREATION", e.getMessage());
                 registerFailure(e.getMessage());
             }
         }
@@ -565,7 +563,6 @@ public class SignUpActivity extends AppCompatActivity implements LoaderManager.L
     }
 
     private void registerFailure(String message) {
-        Log.d("CREATION", message);
         Toast.makeText(this, "Sign in failed: " + message, Toast.LENGTH_SHORT).show();
 
         progressDialog.cancel();
@@ -575,12 +572,10 @@ public class SignUpActivity extends AppCompatActivity implements LoaderManager.L
         @Override
         public void onResponse(JSONObject response) {
             try{
-                Log.d("CREATION", "Reached here");
                 updateProfileSuccess(Utils.gson.fromJson(response.toString(), GetExtendedProfileResponse.class));
             }
             //TODO: Implement Failure
             catch (Exception e){
-                Log.d("CREATION", "Reached here2");
                 updateProfileFailure(e.getMessage());
             }
 
@@ -591,20 +586,17 @@ public class SignUpActivity extends AppCompatActivity implements LoaderManager.L
         @Override
         public void onErrorResponse(VolleyError error) {
             try {
-                Log.d("CREATION", "Reached here3");
                 JSONObject errorJSON = new JSONObject(new String(error.networkResponse.data, "UTF-8"));
                 updateProfileFailure(errorJSON.getString("error"));
             }
             //TODO: Implement Failure
             catch (Exception e) {
-                Log.d("CREATION", "Reached here4");
                 updateProfileFailure(e.getMessage());
             }
         }
     };
 
     private void UpdateExtendedProfile (String jwt) {
-        Log.d("CREATION", jwt);
         Utils.getInstance(this).getRequestQueue(this).add(ExtendedProfile.updateProfile_request(new GetExtendedProfileRequest(jwt, lat, lng, skilllevel_Value), successful_Update, error_Update));
     }
 
@@ -612,7 +604,6 @@ public class SignUpActivity extends AppCompatActivity implements LoaderManager.L
 
     private void updateProfileFailure(String message) {
         Toast.makeText(this, "Extended Profile Update failed: " + message, Toast.LENGTH_SHORT).show();
-        Log.d("CREATION", message);
         progressDialog.cancel();
     }
 

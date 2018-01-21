@@ -57,9 +57,7 @@ public class ExtendedProfileActivity extends AppCompatActivity {
         */
 
         try{
-            Log.v("getting jwt", "getting jwt");
             jwt = Authentication.getJwt(this);
-            Log.v("jwt from function", jwt);
         }
         catch (Exception e){
             // Sign out of app
@@ -101,32 +99,25 @@ public class ExtendedProfileActivity extends AppCompatActivity {
     };
 
     private void GetExtendedProfile() {
-        Log.d("CREATION", "Reached here");
         Utils.getInstance(this).getRequestQueue(this).add(ExtendedProfile.getProfile_request(jwt, user_id, successful_extendedProfile, error_extendedProfile));
     }
 
     private void ExtendedProfileSuccess(GetExtendedProfileResponse response) {
         Toast.makeText(this, "ExtendedProfile successsful", Toast.LENGTH_SHORT).show();
-        Log.d("CREATION", "Reached here2");
         age = (TextView)findViewById(R.id.ageValue);
         age.setText(response.age);
         gender = (TextView)findViewById(R.id.genderValue);
         gender.setText(response.gender);
-        Log.d("CREATION", response.gender);
         skillevel = (TextView)findViewById(R.id.skillLevelValue);
         skillevel.setText(response.skillevel);
-        Log.d("CREATION", response.skillevel);
         location = (TextView)findViewById(R.id.locationValue);
         location.setText(response.location);
-        Log.d("CREATION", response.location);
         averageReview = (TextView)findViewById(R.id.averageReviewValue);
         averageReview.setText(response.average_review);
-        Log.d("CREATION", response.average_review);
 
     }
 
     private void ExtendedProfileFailure(String message) {
-        Log.d("CREATION", "Reached here3");
         Toast.makeText(this, "ExtendedProfile failed: " + message, Toast.LENGTH_SHORT).show();
 
     }
