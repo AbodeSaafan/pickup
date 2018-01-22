@@ -28,6 +28,7 @@ repositories {
 dependencies {
     //implementation 'com.google.android.gms:play-services-maps:11.6.0'
     implementation 'com.google.firebase:firebase-appindexing:11.6.0'
+    implementation 'com.android.support:support-v4:26.1.0'
     compile fileTree(dir: 'libs', include: ['*.jar'])
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
@@ -45,6 +46,7 @@ dependencies {
     compile 'org.adw.library:discrete-seekbar:1.0.1'
     compile 'com.seatgeek:placesautocomplete:0.3-SNAPSHOT'
 }
+
 
 
 
