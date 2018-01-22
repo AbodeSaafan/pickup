@@ -135,9 +135,9 @@ function deleteRefreshToken(userId, refreshToken, callback){
 }
 
 function populateExtendedProfile(user, callback) {
-	var queryString = "INSERT INTO extended_profile(user_id, age, gender) VALUES($1, $2, $3);";
+	var queryString = "INSERT INTO extended_profile(user_id, age, gender, username) VALUES($1, $2, $3, $4);";
 	var age = calculateAge(user.dob);
-	var queryParams = [user.userId, age, user.gender];
+	var queryParams = [user.userId, age, user.gender, user.username];
 
 	const pool = new pg.Pool({connectionString: conString});
 	pool.connect((err, client, done) => {
@@ -151,24 +151,24 @@ function populateExtendedProfile(user, callback) {
 
 function getExtendedProfile(userID, callback) {
 	var queryString = "(SELECT * FROM " +
-						"(SELECT * FROM extended_profile WHERE user_id = $1) ext_profile_row " +
-						"LEFT JOIN (SELECT tag top_tag, count(tag) top_tag_count from tags where review_id in " +
-						"(SELECT review_id from reviews where user_id = $1) group by top_tag, review_id ORDER BY top_tag_count DESC LIMIT 1) top_tag_row on 1=1);";
+			"(SELECT * FROM extended_profile WHERE user_id = $1) ext_profile_row " +
+			"LEFT JOIN (SELECT tag top_tag, count(tag) top_tag_count from tags where review_id in " +
+			"(SELECT review_id from reviews where user_id = $1) group by top_tag, review_id ORDER BY top_tag_count DESC LIMIT 1) top_tag_row on 1=1);";
+  	var queryParams = [userID];
 
-	var queryParams = [userID];
 	const pool = new pg.Pool({connectionString: conString});
 
 	pool.connect((err, client, done) => {
 		client.query(queryString, queryParams, (err, res) => {
-			if(!err && res.rows[0]){
-				callback(res.rows[0]);
-			} else {
-				callback(false);
-			}
-			done();
-			pool.end();
-		});
-	});
+            if(!err && res.rows[0]){
+              callback(res.rows[0]);
+            } else {
+              callback(false);
+            }
+            done();
+            pool.end();
+    });
+  });
 }
 
 function checkPassword(emailIn, passIn, callback){
@@ -253,9 +253,9 @@ function updateExtendedUser (userId, skill_level, location, callback) {
 	});
 }
 
-function getUsers (gameId, callback){
-	var queryString = "SELECT user_id FROM gamers WHERE game_id = $1;";
-	var queryParams = [gameId];
+function getUsers (gameId, userid,  callback){
+	var queryString = "SELECT user_id FROM gamers WHERE game_id = $1 AND user_id != $2;";
+	var queryParams = [gameId, userid];
 	const pool = new pg.Pool({connectionString: conString});
 
 	pool.connect((err, client, done) => {
@@ -290,8 +290,8 @@ function getIfReviewed(reviewerId, user, callback){
 }
 
 
-function addReview (userId, gameId, reviewerId, rating, tags, callback){
-	var queryString = "INSERT INTO reviews(user_id, game_id, reviewer_id, rating) VALUES($1, $2, $3, $4)";
+function addReview (userId, gameId, reviewerId, rating, callback){
+	var queryString = "INSERT INTO reviews(user_id, game_id, reviewer_id, rating) VALUES($1, $2, $3, $4) RETURNING review_id;";
 	var queryParams = [userId, gameId, reviewerId, rating];
 
 	const pool = new pg.Pool({connectionString: conString});
@@ -310,25 +310,64 @@ function addReview (userId, gameId, reviewerId, rating, tags, callback){
 	});
 }
 
+function updateReview (userId, gameId, reviewerId, rating, callback){
+	var queryString = "UPDATE reviews SET rating = $4 WHERE user_id = $1 AND game_id = $2 AND reviewer_id = $3 RETURNING review_id";
+	var queryParams = [userId, gameId, reviewerId, rating];
 
-function addTag(reviewId, tags, callback){
-	for(let i = 0; i < tags.length; i++){
-		var queryString = "INSERT INTO tags(review_id, tag) VALUES($1, $2)";
-		var queryParams = [reviewId, tags[i]];
+	const pool = new pg.Pool({connectionString: conString});
 
-		const pool = new pg.Pool({connectionString: conString});
-
-		pool.connect((err, client, done) => {
-			client.query(queryString, queryParams, (err, res) => {
-				if(err || !res){
-					callback(false);
-				}
-				done();
-				pool.end();
-			});
+	pool.connect((err, client, done) => {
+		client.query(queryString, queryParams, (err, res) => {
+			if(!err && res && res.rows && res.rows[0] && res.rows[0].review_id){
+				callback(res.rows[0].review_id);
+			}
+			else{
+				callback(false);
+			}
+			done();
+			pool.end();
 		});
-	}
-	callback(true);
+	});
+}
+
+function addTag(reviewId, tag, callback){
+	var queryString = "INSERT INTO tags(review_id, tag) VALUES($1, $2)";
+	var queryParams = [reviewId, tag];
+
+	const pool = new pg.Pool({connectionString: conString});
+
+	pool.connect((err, client, done) => {
+		client.query(queryString, queryParams, (err, res) => {
+			if(!err && res && res.rowCount == 1){
+				callback(true);
+			}
+			else{
+				callback(false)
+			}
+			done();
+			pool.end();
+		});
+	});
+}
+
+function deleteTag(reviewId, callback){
+	var queryString = "DELETE FROM tags WHERE review_id = $1";
+	var queryParams = [reviewId];
+
+	const pool = new pg.Pool({connectionString: conString});
+
+	pool.connect((err, client, done) => {
+		client.query(queryString, queryParams, (err, res) => {
+			if(!err && res){
+				callback(true);
+			}
+			else{
+				callback(false)
+			}
+			done();
+			pool.end();
+		});
+	});
 }
 
 
@@ -744,7 +783,10 @@ module.exports = {
 	searchObjects,
 	listAllFriendRequests,
 	disableAccount,
-	getIfReviewed
+	getIfReviewed,
+	updateReview,
+	addTag,
+	deleteTag
 };
 
 //////////////// Helpers ////////////////

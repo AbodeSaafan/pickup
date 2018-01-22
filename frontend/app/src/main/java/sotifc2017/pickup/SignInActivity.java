@@ -4,20 +4,27 @@ import android.app.ActionBar;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.support.v7.app.AppCompatActivity;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.RequiresApi;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.Toast;
+
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+
 import org.json.JSONObject;
+
 import sotifc2017.pickup.api.Authentication;
 import sotifc2017.pickup.api.Utils;
+import sotifc2017.pickup.api.contracts.LoginRequest;
+import sotifc2017.pickup.api.contracts.LoginResponse;
 
+@RequiresApi(api = Build.VERSION_CODES.KITKAT)
 public class SignInActivity extends AppCompatActivity {
 
     private EditText emailText;
@@ -39,7 +46,6 @@ public class SignInActivity extends AppCompatActivity {
     }
 
     public void newAccount(View view) {
-        Toast.makeText(this, "New Account...", Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(this, SignUpActivity.class);
         startActivity(intent);
     }
@@ -62,14 +68,14 @@ public class SignInActivity extends AppCompatActivity {
         email = emailText.getText().toString();
         pass = passText.getText().toString();
 
-        Utils.getInstance(this).addToRequestQueue(Authentication.login_request(email, pass, successful_signin, error_signin));
+        Utils.getInstance(this).getRequestQueue(this).add(Authentication.login_request(new LoginRequest(email, pass), successful_signin, error_signin));
     }
 
     private Response.Listener<JSONObject> successful_signin = new Response.Listener<JSONObject>() {
         @Override
         public void onResponse(JSONObject response) {
             try{
-                signInSuccess(response.getString("token"), response.getString("refresh"));
+                signInSuccess(Utils.gson.fromJson(response.toString(), LoginResponse.class));
             }
             catch (Exception e){ signInFailure(e.getMessage()); }
 
@@ -87,16 +93,17 @@ public class SignInActivity extends AppCompatActivity {
         }
     };
 
-    private void signInSuccess(String jwt, String refresh) {
+    private void signInSuccess(LoginResponse response) {
         Toast.makeText(this, "Sign in successsful", Toast.LENGTH_SHORT).show();
 
-        SharedPreferences prefs = this.getSharedPreferences(
-                "sotifc2017.pickup", Context.MODE_PRIVATE);
-        prefs.edit().putString("jwt", jwt);
+        Authentication.saveJwt(this, response.token);
+        Authentication.saveRefresh(this, response.refresh);
+        Authentication.saveUserId(this, response.user_id);
 
-        Intent intent = new Intent(this, MapActivity.class);
+        Intent intent = new Intent(this, ProfileSelfActivity.class);
         startActivity(intent);
         progressDialog.cancel();
+        finish();
 
     }
 

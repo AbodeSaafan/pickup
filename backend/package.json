@@ -17,11 +17,13 @@
     "md5": "^2.2.1",
     "nodemon": "^1.11.0",
     "pg": "^6.4.0",
-    "random-name": "^0.1.2"
+    "random-name": "^0.1.2",
+    "winston": "^2.4.0"
   },
   "devDependencies": {
     "eslint": "^4.11.0",
     "frisby": "^0.8.5",
+    "husky": "^0.14.3",
     "jasmine-node": "^1.14.5"
   },
   "scripts": {

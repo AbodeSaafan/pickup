@@ -24,6 +24,7 @@
         <activity android:name=".SignUpActivity" />
         <activity android:name=".CreateAccountActivity" />
         <activity android:name=".ProfileSelfActivity" />
+        <activity android:name=".ExtendedProfileActivity" />
         <!--
  ATTENTION: This was auto-generated to add Google Play services to your project for
      App Indexing.  See https://g.co/AppIndexing/AndroidStudio for more information.
@@ -46,6 +47,7 @@
         <activity
             android:name=".MapActivity"
             android:label="@string/title_activity_map" />
+        <activity android:name=".SettingsActivity"></activity>
     </application>
 
 </manifest>

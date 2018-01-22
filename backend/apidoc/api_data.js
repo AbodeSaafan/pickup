@@ -1088,7 +1088,7 @@ define({ "api": [
       "examples": [
         {
           "title": "Success-Response:",
-          "content": "     HTTP/1.1 200 OK\n    {\n\t\t\"ifReviewed\":[ {1, true}, {4, false}]\n     }",
+          "content": "     HTTP/1.1 200 OK\n    {\n\t\t[{ user_id : 23, reviewed: false}, {user_id : 100, reviewed: true}]\n     }",
           "type": "json"
         }
       ]
@@ -1287,7 +1287,7 @@ define({ "api": [
     ],
     "sampleRequest": [
       {
-        "url": "/api/games/:GAMEID/leave/"
+        "url": "/api/profile"
       }
     ],
     "version": "0.0.0",
@@ -1477,6 +1477,13 @@ define({ "api": [
           },
           {
             "group": "Parameter",
+            "type": "bool",
+            "optional": false,
+            "field": "reviewed",
+            "description": "<p>already or not</p>"
+          },
+          {
+            "group": "Parameter",
             "type": "string",
             "optional": false,
             "field": "jwt",
@@ -1509,7 +1516,7 @@ define({ "api": [
     "examples": [
       {
         "title": "Example call::",
-        "content": "{\n  \"gameId\": \"1\",\n  \"userId\": \"1\",\n  \"rating\": \"1\",\n  \"tags\": [\"1\", \"2\"],\n  \"jwt\": Encrypted_JWT_Token\n}",
+        "content": "{\n  \"gameId\": \"1\",\n  \"userId\": \"1\",\n  \"rating\": \"1\",\n  \"tags\": [\"1\", \"2\"],\n  \"reviewed\": \"true\",\n  \"jwt\": Encrypted_JWT_Token\n}",
         "type": "json"
       }
     ],

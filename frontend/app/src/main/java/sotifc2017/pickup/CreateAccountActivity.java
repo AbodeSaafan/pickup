@@ -1,7 +1,7 @@
 package sotifc2017.pickup;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 
 public class CreateAccountActivity extends AppCompatActivity {
 

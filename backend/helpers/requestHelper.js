@@ -6,10 +6,10 @@ var async = require("async");
 function validateAndCleanRegisterRequest(data){
 	validate(data.username, regex.usernameRegex, strings.invalidUsername);
 	validate(data.password, regex.passwordRegex, strings.invalidPassword);
-	validate(data.fname, regex.nameRegex, strings.invalidName);
-	validate(data.lname, regex.nameRegex, strings.invalidName);
+	validate(data.fname, regex.nameRegex, strings.invalidFirstName);
+	validate(data.lname, regex.nameRegex, strings.invalidLastName);
 	validate(data.gender, regex.genderRegex, strings.invalidGender);
-	validate(data.dob, regex.dateRegex, strings.invalidDob);
+	validate(data.dob, regex.dateRegex, strings.invalidDob + " Given: " + data);
 	validate(data.email, regex.emailRegex, strings.invalidEmail);
 	return data;
 }
@@ -57,10 +57,11 @@ function validateAndCleanLeaveRequest(data){
 }
 
 function validateAndCleanReviewRequest(data){
-	validate(data.UserId, regex.idRegex, strings.invalidUserId);
+	validate(data.userId, regex.idRegex, strings.invalidUserId);
 	validate(data.gameId, regex.idRegex, strings.invalidGameId);
 	validate(data.rating, regex.ratingRegex, strings.invalidRating);
 	validateRatings(data.tags);
+	data.reviewed = data.reviewed == 'true'
 	return data;
 }
 
@@ -101,6 +102,11 @@ function validateAndCleanUpdateExtendedProfileRequest (data) {
 	return data;
 }
 
+function validateAndCleanExtendedProfileRequest (data) {
+    validate(data.username);
+    return data;
+}
+
 function validateAndCleanFriendId (data) {
 	validate(data.userId, regex.idRegex, strings.invalidUserId);
 	return data;
@@ -109,12 +115,47 @@ function validateAndCleanFriendId (data) {
 function getIfReviewed(users, reviewerId, finished){
 	var final_results = [];
 	async.forEachOf(users, function(user, i, callback){
-		databaseHelper.getIfReviewed(users.user_id, reviewerId, (reviewed)=>{
+		databaseHelper.getIfReviewed(reviewerId, user.user_id, (reviewed)=>{
 			final_results.push({"user_id": users[i].user_id, "reviewed" : reviewed});
 			callback();
 		});
 	}, function () {
 		finished(final_results);
+	});
+}
+
+function addTag(reviewId, tags, finished){
+	var final_results = [];
+	async.forEachOf(tags, function(tag, i, callback){
+		databaseHelper.addTag(reviewId, tag, (tagAdded)=>{
+			if(!tagAdded){
+					final_results.push("1");
+				}
+			callback();
+		});
+	}, function () {
+		finished(final_results.length > 0);
+	});
+}
+
+function updateTag(reviewId, tags, finished){
+	databaseHelper.deleteTag(reviewId, (deleteComplete)=> {
+		if(deleteComplete){
+				var final_results = [];
+				async.forEachOf(tags, function(tag, i, callback){
+					databaseHelper.addTag(reviewId, tag, (tagAdded)=>{
+						if(!tagAdded){
+								final_results.push("1");
+							}
+						callback();
+					});
+				}, function () {
+					finished(final_results.length > 0);
+				});
+			}
+		else{
+			finished(true);
+		}
 	});
 }
 
@@ -152,12 +193,15 @@ module.exports = {
 	validateAndCleanSearchRequest,
 	validateAndCleanReviewRequest,
 	validateAndCleanLeaveRequest,
+    validateAndCleanExtendedProfileRequest,
 	validateAndCleanUpdateExtendedProfileRequest,
 	validateAndCleanFriendId,
 	filterGames,
 	validateAndCleanDeleteAccountRequest,
 	jsonError,
 	getIfReviewed,
+	addTag,
+	updateTag
 };
 
 //////////////// Helpers ////////////////

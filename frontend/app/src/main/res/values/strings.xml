@@ -14,11 +14,20 @@
     <string name="prompt_password">Password</string>
     <string name="prompt_confirm_password">Confirm Password</string>
     <string name="action_sign_in">Sign me up!</string>
+    <string-array name="gender_array">
+        <item>Male</item>
+        <item>Female</item>
+        <item>Other</item>
+        <item>Prefer Not To Say</item>
+    </string-array>
     <string name="prompt_gender">Gender</string>
     <string name="prompt_male">Male</string>
     <string name="prompt_female">Female</string>
     <string name="prompt_other_gender">Other</string>
+    <string name="prompt_skill_level">How Confident do you find your skills? Please Pick A Rate!</string>
+    <string name="prompt_default_location">Default Location:</string>
     <string name="action_sign_in_short">Sign in</string>
+    <string name="error_invalid_name">This name is invalid, use alphabetical letters</string>
     <string name="error_invalid_email">This email address is invalid</string>
     <string name="error_invalid_password">This password is too short</string>
     <string name="error_mismatch_password">Password does not match</string>
@@ -31,7 +40,11 @@
     <!-- string for the profile page -->
     <string name="header_name">Pickup Dude</string>
     <string name="profile_description">This is a basketball lover who outscores Michael Jordan easily... in 2k!</string>
-    <string name="title_activity_map">Map</string>
-    <string name="title_activity_nav">NavActivity</string>
+    <string name="self_setting">Settings</string>
+    <string name="sign_out_title">Sign Out</string>
+    <string name="sign_out_message">Do you want to sign out?</string>
 
+    <string name="title_activity_map">Map</string>
+    <string name="birthday">Choose Date</string>
+    <string name="dob_label">Date of Birth:</string>
 </resources>

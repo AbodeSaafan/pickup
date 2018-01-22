@@ -1,10 +1,14 @@
 package sotifc2017.pickup.api;
 
 import android.content.Context;
+import android.net.Uri;
+
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
-import com.android.volley.Request;
+import com.google.gson.Gson;
 
+import java.util.HashMap;
+import java.util.Map.Entry;
 
 /**
  * Created by Abode on 11/14/2017.
@@ -12,12 +16,11 @@ import com.android.volley.Request;
 public class Utils {
     private static Utils mInstance;
     private RequestQueue mRequestQueue;
-    private static Context mCtx;
     public static final String BASE_API = "https://pickup-app-api.herokuapp.com/api/";
+    public static final Gson gson = new Gson();
 
     private Utils(Context context) {
-        mCtx = context;
-        mRequestQueue = getRequestQueue();
+        mRequestQueue = getRequestQueue(context);
     }
 
     public static synchronized Utils getInstance(Context context) {
@@ -27,7 +30,7 @@ public class Utils {
         return mInstance;
     }
 
-    public RequestQueue getRequestQueue() {
+    public RequestQueue getRequestQueue(Context mCtx) {
         if (mRequestQueue == null) {
             // getApplicationContext() is key, it keeps you from leaking the
             // Activity or BroadcastReceiver if someone passes one in.
@@ -36,7 +39,16 @@ public class Utils {
         return mRequestQueue;
     }
 
-    public <T> void addToRequestQueue(Request<T> req) {
-        getRequestQueue().add(req);
+    public static String jsonToUrlParam(Object contractObj){
+        HashMap<String,String> map = gson.fromJson(gson.toJson(contractObj), HashMap.class);
+
+        Uri.Builder builder = new Uri.Builder();
+
+        for (Entry<String, String> entry : map.entrySet())
+        {
+            builder.appendQueryParameter(entry.getKey(), entry.getValue());
+        }
+
+        return builder.toString();
     }
 }

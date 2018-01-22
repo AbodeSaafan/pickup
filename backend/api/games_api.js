@@ -109,7 +109,7 @@ router.post("/", function(req, res){
 * @apiSuccessExample Success-Response:
 *      HTTP/1.1 200 OK
 *     {
-*		"ifReviewed":[ {1, true}, {4, false}]
+*		[{ user_id : 23, reviewed: false}, {user_id : 100, reviewed: true}]
 *      }
 * @apiExample Example call::
 *   {
@@ -123,14 +123,16 @@ router.get("/getUsers", function(req, res){
 	try {
 		var gameid = req.query.game_id;
 		var tok = tokenHelper.verifyToken(req.query.jwt);
-		databaseHelper.getUsers(gameid , (userids) => {
+		databaseHelper.getUsers(gameid , tok.user_id, (userids) => {
 			if(userids) {
 				requestHelper.getIfReviewed(userids, tok.user_id, (ifReviewed)=>{
 					if(ifReviewed){
 						res.status(200).json(ifReviewed);
+						return;
 					}
 					else{
 						res.status(400).json("Getting the review status failed.");
+						return;
 					}
 				});
 			}else{
