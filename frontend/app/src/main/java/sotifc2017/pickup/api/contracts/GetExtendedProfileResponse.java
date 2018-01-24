@@ -10,4 +10,5 @@ public class GetExtendedProfileResponse {
     public String gender;
     public String location;
     public String average_review;
+    public String username;
 }

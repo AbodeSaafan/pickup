@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="sotifc2017.pickup.ProfileSelfActivity">
+    tools:context="sotifc2017.pickup.ExtendedProfileActivity">
 
 
 
@@ -81,7 +81,6 @@
                     android:layout_height="wrap_content"
                     android:layout_centerHorizontal="true"
                     android:layout_marginTop="76dp"
-                    android:text="@string/header_name"
                     android:textColor="#552582"
                     android:textSize="24sp"
                     android:textStyle="bold" />
@@ -99,7 +98,7 @@
                     android:textAlignment="center"/>
 
                 <Button
-                    android:id="@+id/button2"
+                    android:id="@+id/addFriend"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
@@ -108,6 +107,7 @@
                     android:layout_marginLeft="14dp"
                     android:layout_marginStart="14dp"
                     android:background="#552582"
+                    android:visibility="gone"
                     android:text="Add Friend" />
             </RelativeLayout>
 

@@ -54,6 +54,7 @@ public class ProfileSelfActivity extends AppCompatActivity {
 
     private void viewExtendedProfile() {
         Intent intent = new Intent(this, ExtendedProfileActivity.class);
+        intent.putExtra("userID", String.valueOf(28));
         startActivity(intent);
     }
 

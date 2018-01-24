@@ -1,9 +1,13 @@
 package sotifc2017.pickup;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
+import android.location.Geocoder;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -11,6 +15,8 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 
 import org.json.JSONObject;
+
+import java.util.Locale;
 
 import sotifc2017.pickup.api.Authentication;
 import sotifc2017.pickup.api.ExtendedProfile;
@@ -29,34 +35,45 @@ public class ExtendedProfileActivity extends AppCompatActivity {
     TextView skillevel;
     TextView location;
     TextView averageReview;
+    TextView username;
     private ProgressDialog progressDialog;
     String jwt;
     String user_id;
+    Geocoder geocoder;
+    String[] LatLng;
+
+    public static final int SUCCESS_RESULT = 0;
+    public static final int FAILURE_RESULT = 1;
+    public static final String PACKAGE_NAME =
+            "com.google.android.gms.location.sample.locationaddress";
+    public static final String RECEIVER = PACKAGE_NAME + ".RECEIVER";
+    public static final String RESULT_DATA_KEY = PACKAGE_NAME +
+            ".RESULT_DATA_KEY";
+    public static final String LOCATION_DATA_EXTRA = PACKAGE_NAME +
+            ".LOCATION_DATA_EXTRA";
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_extended_profile);
-        /*
-        age = (TextView)findViewById(R.id.ageValue);
-        age.setText("21");
-        gender = (TextView)findViewById(R.id.genderValue);
-        gender.setText("Female");
-        skillevel = (TextView)findViewById(R.id.skillLevelValue);
-        skillevel.setText("Rookie");
-        location = (TextView)findViewById(R.id.locationValue);
-        location.setText("Mississauga");
-        averageReview = (TextView)findViewById(R.id.averageReviewValue);
-        averageReview.setText("2.5");
-        */
+        geocoder = new Geocoder(this, Locale.getDefault());
+
+        user_id =  this.getIntent().getStringExtra("userID");
 
         try {
             jwt = Authentication.getJwt(this);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        user_id = "22";
+
+        if (user_id == null) {
+            //Log.d("CREATION", "reached here");
+            user_id = String.valueOf(Authentication.getUserId(this));
+        } else {
+            Button addFriendButton = (Button) findViewById(R.id.addFriend);
+            addFriendButton.setVisibility (View.VISIBLE);
+        }
 
         GetExtendedProfile();
 
@@ -99,6 +116,8 @@ public class ExtendedProfileActivity extends AppCompatActivity {
 
     }
 
+
+
     private void ExtendedProfileSuccess(GetExtendedProfileResponse response) {
         Toast.makeText(this, "ExtendedProfile successsful", Toast.LENGTH_SHORT).show();
         age = (TextView)findViewById(R.id.ageValue);
@@ -108,14 +127,18 @@ public class ExtendedProfileActivity extends AppCompatActivity {
         skillevel = (TextView)findViewById(R.id.skillLevelValue);
 
         //skillevel.setText(SignUpActivity.skillLevels[Integer.parseInt(response.skilllevel)]);
-        Log.d("CREATION", "skilllevel " + SignUpActivity.skillLevels[Integer.parseInt(response.skilllevel)]);
+        //Log.d("CREATION", "skilllevel " + SignUpActivity.skillLevels[Integer.parseInt(response.skilllevel)]);
 
         skillevel.setText(response.skilllevel);
 
         location = (TextView)findViewById(R.id.locationValue);
+        LatLng = response.location.split("(,)");
+        
         location.setText(response.location);
         averageReview = (TextView)findViewById(R.id.averageReviewValue);
         averageReview.setText(response.average_review);
+        username = (TextView) findViewById(R.id.user_profile_name);
+        username.setText(response.username);
 
     }
 
@@ -124,6 +147,8 @@ public class ExtendedProfileActivity extends AppCompatActivity {
         Toast.makeText(this, "ExtendedProfile failed: " + message, Toast.LENGTH_SHORT).show();
 
     }
+
+
 
 }
 
