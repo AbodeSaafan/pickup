@@ -4,8 +4,17 @@ import android.app.Activity;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.Toast;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -23,18 +32,29 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class MapActivity extends Activity implements OnMapReadyCallback {
+public class MapActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
     private FusedLocationProviderClient mFusedLocationClient;
     private List<LatLng> sampleGames;
     private int MY_PERMISSIONS_FINE_LOCATION;
     private int MY_PERMISSIONS_COARSE_LOCATION;
+    private Toolbar toolbar;
+    private NavigationView navigationView;
+    private DrawerLayout drawerLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
+
+        toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        navigationView = findViewById(R.id.navigation_view_main);
+        drawerLayout = findViewById(R.id.activity_map);
+        setDrawerLayout();
+
         // Obtain the MapFragment and get notified when the map is ready to be used.
         MapFragment mapFragment = (com.google.android.gms.maps.MapFragment) getFragmentManager()
                 .findFragmentById(R.id.map_fragment);
@@ -131,5 +151,42 @@ public class MapActivity extends Activity implements OnMapReadyCallback {
         int padding = 50;
         mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, padding));
     }
+    private void setDrawerLayout() {
+        ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.nav_open, R.string.nav_closed) {
+            public void onDrawerClosed(View drawerView) {
+                super.onDrawerClosed(drawerView);
+            }
+            public void onDrawerSlide(View drawerView, float slideOffset) {
+                super.onDrawerSlide(drawerView, slideOffset);
+            }
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+            }
+        };
+        drawerLayout.addDrawerListener(actionBarDrawerToggle);
+        actionBarDrawerToggle.syncState();
 
+        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                drawerLayout.closeDrawers();
+                for (int i = 0; i < navigationView.getMenu().size(); i++) {
+                    navigationView.getMenu().getItem(i).setChecked(false);
+                }
+                item.setChecked(true);
+                switch(item.getItemId()) {
+                    case R.id.action_map:
+                        Toast.makeText(getApplicationContext(), "Map", Toast.LENGTH_LONG).show();
+                        break;
+                    case R.id.action_profile:
+                        Toast.makeText(getApplicationContext(), "Profile", Toast.LENGTH_LONG).show();
+                        break;
+                    case R.id.action_settings:
+                        Toast.makeText(getApplicationContext(), "Settings", Toast.LENGTH_LONG).show();
+                        break;
+                }
+                return true;
+            }
+        });
+    }
 }

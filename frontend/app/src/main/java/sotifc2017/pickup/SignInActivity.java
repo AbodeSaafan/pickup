@@ -38,15 +38,15 @@ public class SignInActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_in);
 
-        emailText = (EditText) findViewById(R.id.emailEditText);
-        passText = (EditText) findViewById(R.id.passEditText);
+        emailText = findViewById(R.id.emailEditText);
+        passText = findViewById(R.id.passEditText);
 
         progressDialog = new ProgressDialog(SignInActivity.this,
                 R.style.AppTheme_Dark);
     }
 
     public void newAccount(View view) {
-        Intent intent = new Intent(this, MapActivity.class);
+        Intent intent = new Intent(this, SignUpActivity.class);
         startActivity(intent);
     }
 

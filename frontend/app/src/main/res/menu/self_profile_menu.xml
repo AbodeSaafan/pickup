@@ -1,16 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools" tools:context=".ProfileSelfActivity"
-    >
+    xmlns:tools="http://schemas.android.com/tools" tools:context=".ProfileSelfActivity">
     <item android:id="@+id/profile_self_setting"
         android:title="@string/self_setting"
-        android:showAsAction="never" />
+        app:showAsAction="never" />
     <item android:id="@+id/profile_self_sign_out"
         android:title="@string/sign_out_title"
-        android:showAsAction="never" />
+        app:showAsAction="never" />
     <item android:id="@+id/extended_profile"
-        android:title="View Extended Profile"
-        android:showAsAction="never" />
-
+        android:title="@string/title_activity_profile"
+        app:showAsAction="never" />
 </menu>
