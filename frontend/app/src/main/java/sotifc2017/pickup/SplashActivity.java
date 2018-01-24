@@ -18,7 +18,7 @@ public class SplashActivity extends AppCompatActivity {
         try {
             Authentication.getJwt(this);
             /* Create an Intent that will start the Menu-Activity. */
-            Intent mainIntent = new Intent(this, ProfileSelfActivity.class);
+            Intent mainIntent = new Intent(this, MapActivity.class);
             startActivity(mainIntent);
             finish();
         } catch (Exception e) {

@@ -100,7 +100,7 @@ public class SignInActivity extends AppCompatActivity {
         Authentication.saveRefresh(this, response.refresh);
         Authentication.saveUserId(this, response.user_id);
 
-        Intent intent = new Intent(this, ProfileSelfActivity.class);
+        Intent intent = new Intent(this, MapActivity.class);
         startActivity(intent);
         progressDialog.cancel();
         finish();

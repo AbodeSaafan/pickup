@@ -1,6 +1,8 @@
 package sotifc2017.pickup;
 
 import android.app.Activity;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
@@ -10,6 +12,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
@@ -32,6 +35,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import sotifc2017.pickup.api.Authentication;
+import sotifc2017.pickup.api.ExtendedProfile;
+
 public class MapActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
@@ -42,6 +48,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     private Toolbar toolbar;
     private NavigationView navigationView;
     private DrawerLayout drawerLayout;
+    Intent intent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,48 +83,45 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             askForPermissions();
         }
-        else {
-            mFusedLocationClient.getLastLocation()
-                    .addOnSuccessListener(this, new OnSuccessListener<Location>() {
-                        @Override
-                        public void onSuccess(Location location) {
-                            // Got last known location. In some rare situations this can be null.
-                            if (location != null) {
-                                LatLng position = new LatLng(location.getLatitude(), location.getLongitude());
-                                // Generates Sample Games. Take out when connected to backend.
-                                sampleGames = new ArrayList<>();
-                                Random random = new Random();
-                                for (double i = 0; i < 8; i++) {
-                                    // Convert radius from meters to degrees.
-                                    double radiusInDegrees = 1000 / 111320f;
+        mFusedLocationClient.getLastLocation()
+                .addOnSuccessListener(this, new OnSuccessListener<Location>() {
+                    @Override
+                    public void onSuccess(Location location) {
+                        // Got last known location. In some rare situations this can be null.
+                        if (location != null) {
+                            LatLng position = new LatLng(location.getLatitude(), location.getLongitude());
+                            // Generates Sample Games. Take out when connected to backend.
+                            sampleGames = new ArrayList<>();
+                            Random random = new Random();
+                            for (double i = 0; i < 8; i++) {
+                                // Convert radius from meters to degrees.
+                                double radiusInDegrees = 1000 / 111320f;
 
-                                    // Get a random distance and a random angle.
-                                    double u = random.nextDouble();
-                                    double v = random.nextDouble();
-                                    double w = radiusInDegrees * Math.sqrt(u);
-                                    double t = 2 * Math.PI * v;
-                                    // Get the x and y delta values.
-                                    double x = w * Math.cos(t);
-                                    double y = w * Math.sin(t);
+                                // Get a random distance and a random angle.
+                                double u = random.nextDouble();
+                                double v = random.nextDouble();
+                                double w = radiusInDegrees * Math.sqrt(u);
+                                double t = 2 * Math.PI * v;
+                                // Get the x and y delta values.
+                                double x = w * Math.cos(t);
+                                double y = w * Math.sin(t);
 
-                                    // Compensate the x value.
-                                    double new_x = x / Math.cos(Math.toRadians(location.getLatitude()));
+                                // Compensate the x value.
+                                double new_x = x / Math.cos(Math.toRadians(location.getLatitude()));
 
-                                    double foundLatitude;
-                                    double foundLongitude;
+                                double foundLatitude;
+                                double foundLongitude;
 
-                                    foundLatitude = location.getLatitude() + y;
-                                    foundLongitude = location.getLongitude() + new_x;
-                                    sampleGames.add(new LatLng(foundLatitude, foundLongitude));
-                                }
-                                plotGames(mMap, sampleGames);
-//                                zoomToUser(mMap, position);
-                                zoomToViewPoints(mMap, sampleGames);
+                                foundLatitude = location.getLatitude() + y;
+                                foundLongitude = location.getLongitude() + new_x;
+                                sampleGames.add(new LatLng(foundLatitude, foundLongitude));
                             }
+                            plotGames(mMap, sampleGames);
+//                                zoomToUser(mMap, position);
+                            zoomToViewPoints(mMap, sampleGames);
                         }
-                    });
-
-        }
+                    }
+                });
     }
     public void askForPermissions() {
         ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, MY_PERMISSIONS_FINE_LOCATION);
@@ -176,17 +180,47 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 item.setChecked(true);
                 switch(item.getItemId()) {
                     case R.id.action_map:
-                        Toast.makeText(getApplicationContext(), "Map", Toast.LENGTH_LONG).show();
                         break;
                     case R.id.action_profile:
-                        Toast.makeText(getApplicationContext(), "Profile", Toast.LENGTH_LONG).show();
+                        intent = new Intent(getApplicationContext(), ExtendedProfileActivity.class);
+                        startActivity(intent);
                         break;
                     case R.id.action_settings:
-                        Toast.makeText(getApplicationContext(), "Settings", Toast.LENGTH_LONG).show();
+                        intent = new Intent(getApplicationContext(), SettingsActivity.class);
+                        startActivity(intent);
+                        break;
+                    case R.id.action_sign_out:
+                        AlertDialog diaBox = AskOption();
+                        diaBox.show();
                         break;
                 }
                 return true;
             }
         });
+    }
+
+    private AlertDialog AskOption() {
+        return new AlertDialog.Builder(this)
+                //set message, title, and icon
+                .setTitle(getString(R.string.sign_out_title))
+                .setMessage(getString(R.string.sign_out_message))
+                .setPositiveButton("Sign Out", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        //sign out call
+                        Authentication.logout(MapActivity.this);
+                        intent = new Intent(getApplicationContext(), SignInActivity.class);
+                        startActivity(intent);
+                        dialog.dismiss();
+                    }
+
+                })
+                .setNegativeButton("cancel", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        dialog.dismiss();
+
+                    }
+                })
+                .create();
     }
 }
