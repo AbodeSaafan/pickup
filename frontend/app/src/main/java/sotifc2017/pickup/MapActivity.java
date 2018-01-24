@@ -174,10 +174,12 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 drawerLayout.closeDrawers();
-                for (int i = 0; i < navigationView.getMenu().size(); i++) {
-                    navigationView.getMenu().getItem(i).setChecked(false);
+                if (item.getItemId() != R.id.action_sign_out) {
+                    for (int i = 0; i < navigationView.getMenu().size(); i++) {
+                        navigationView.getMenu().getItem(i).setChecked(false);
+                    }
+                    item.setChecked(true);
                 }
-                item.setChecked(true);
                 switch(item.getItemId()) {
                     case R.id.action_map:
                         break;
