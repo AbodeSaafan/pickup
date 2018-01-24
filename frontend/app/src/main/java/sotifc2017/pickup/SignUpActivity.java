@@ -95,7 +95,7 @@ public class SignUpActivity extends AppCompatActivity implements LoaderManager.L
     private String email;
     private String password;
     private String gender;
-    public String[] skillLevels = {"Just for Fun!", "Rookie", "All Star", "Super Star", "Hall of Fame", "God of Basketball"};
+    public static String[] skillLevels = {"Just for Fun!", "Rookie", "All Star", "Super Star", "Hall of Fame", "God of Basketball"};
 
     Button next0;
     Button next1;

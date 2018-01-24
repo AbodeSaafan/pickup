@@ -22,6 +22,7 @@ import sotifc2017.pickup.api.Utils;
 import sotifc2017.pickup.api.contracts.GetExtendedProfileResponse;
 import sotifc2017.pickup.api.contracts.RegisterRequest;
 import sotifc2017.pickup.api.contracts.RegisterResponse;
+import sotifc2017.pickup.SignUpActivity;
 
 /**
  * Created by radhika on 2018-01-14.
@@ -56,8 +57,14 @@ public class ExtendedProfileActivity extends AppCompatActivity {
         averageReview.setText("2.5");
         */
 
-        jwt = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNCIsImVtYWlsIjoicmFAb3V0bG9vay5jb20iLCJpYXQiOjE1MTYxMzYxMzQsImV4cCI6MTUxNjEzNzAzNH0.jud4rHdcdlGTAtnQcMqkFmwziKbk5WntoNfaH7DYCjg";
-        user_id = "4";
+        //jwt = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMjIiLCJlbWFpbCI6InBhdmxlQHlhaG9vLmNvbSIsImlhdCI6MTUxNjMwNjMxNiwiZXhwIjoxNTE2MzA3MjE2fQ.6qT8PaV-yoOeLKNKWFInx3jxCIx8u0SsecWtWUYAd6k";
+
+        try {
+            jwt = Authentication.getJwt(this);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        user_id = "22";
         GetExtendedProfile();
 
 
@@ -93,7 +100,6 @@ public class ExtendedProfileActivity extends AppCompatActivity {
     };
 
     private void GetExtendedProfile() {
-        Log.d("CREATION", "Reached here");
         Utils.getInstance(ExtendedProfileActivity.this).addToRequestQueue(ExtendedProfile.getProfile_request(jwt, user_id, successful_extendedProfile, error_extendedProfile));
     }
 
@@ -106,8 +112,8 @@ public class ExtendedProfileActivity extends AppCompatActivity {
         gender.setText(response.gender);
         Log.d("CREATION", response.gender);
         skillevel = (TextView)findViewById(R.id.skillLevelValue);
-        skillevel.setText(response.skillevel);
-        Log.d("CREATION", response.skillevel);
+        skillevel.setText(SignUpActivity.skillLevels[Integer.parseInt(response.skilllevel)]);
+        Log.d("CREATION", "skilllevel " + SignUpActivity.skillLevels[Integer.parseInt(response.skilllevel)]);
         location = (TextView)findViewById(R.id.locationValue);
         location.setText(response.location);
         Log.d("CREATION", response.location);
@@ -118,7 +124,7 @@ public class ExtendedProfileActivity extends AppCompatActivity {
     }
 
     private void ExtendedProfileFailure(String message) {
-        Log.d("CREATION", "Reached here3");
+        Log.d("CREATION", message);
         Toast.makeText(this, "ExtendedProfile failed: " + message, Toast.LENGTH_SHORT).show();
 
     }
