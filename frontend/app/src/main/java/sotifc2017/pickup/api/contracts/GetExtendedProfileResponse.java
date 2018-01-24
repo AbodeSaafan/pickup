@@ -1,7 +1,5 @@
 package sotifc2017.pickup.api.contracts;
 
-import java.util.Date;
-
 /**
  * Created by rkrishnan on 1/16/2018.
  */

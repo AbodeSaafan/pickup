@@ -64,6 +64,7 @@
         android:text="@string/create_account"
         android:id="@+id/textView2"
         android:clickable="true"
+        android:focusable="true"
         android:onClick="newAccount"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"

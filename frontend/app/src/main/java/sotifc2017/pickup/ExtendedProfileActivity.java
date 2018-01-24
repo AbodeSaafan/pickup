@@ -1,15 +1,11 @@
 package sotifc2017.pickup;
 
-import android.content.Intent;
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.app.ProgressDialog;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -20,9 +16,7 @@ import sotifc2017.pickup.api.Authentication;
 import sotifc2017.pickup.api.ExtendedProfile;
 import sotifc2017.pickup.api.Utils;
 import sotifc2017.pickup.api.contracts.GetExtendedProfileResponse;
-import sotifc2017.pickup.api.contracts.RegisterRequest;
-import sotifc2017.pickup.api.contracts.RegisterResponse;
-import sotifc2017.pickup.SignUpActivity;
+
 
 /**
  * Created by radhika on 2018-01-14.
@@ -57,16 +51,14 @@ public class ExtendedProfileActivity extends AppCompatActivity {
         averageReview.setText("2.5");
         */
 
-        //jwt = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMjIiLCJlbWFpbCI6InBhdmxlQHlhaG9vLmNvbSIsImlhdCI6MTUxNjMwNjMxNiwiZXhwIjoxNTE2MzA3MjE2fQ.6qT8PaV-yoOeLKNKWFInx3jxCIx8u0SsecWtWUYAd6k";
-
         try {
             jwt = Authentication.getJwt(this);
         } catch (Exception e) {
             e.printStackTrace();
         }
         user_id = "22";
-        GetExtendedProfile();
 
+        GetExtendedProfile();
 
     }
 
@@ -100,31 +92,35 @@ public class ExtendedProfileActivity extends AppCompatActivity {
     };
 
     private void GetExtendedProfile() {
-        Utils.getInstance(ExtendedProfileActivity.this).addToRequestQueue(ExtendedProfile.getProfile_request(jwt, user_id, successful_extendedProfile, error_extendedProfile));
+
+        //Utils.getInstance(ExtendedProfileActivity.this).addToRequestQueue(ExtendedProfile.getProfile_request(jwt, user_id, successful_extendedProfile, error_extendedProfile));
+
+        Utils.getInstance(this).getRequestQueue(this).add(ExtendedProfile.getProfile_request(jwt, user_id, successful_extendedProfile, error_extendedProfile));
+
     }
 
     private void ExtendedProfileSuccess(GetExtendedProfileResponse response) {
         Toast.makeText(this, "ExtendedProfile successsful", Toast.LENGTH_SHORT).show();
-        Log.d("CREATION", "Reached here2");
         age = (TextView)findViewById(R.id.ageValue);
         age.setText(response.age);
         gender = (TextView)findViewById(R.id.genderValue);
         gender.setText(response.gender);
-        Log.d("CREATION", response.gender);
         skillevel = (TextView)findViewById(R.id.skillLevelValue);
-        skillevel.setText(SignUpActivity.skillLevels[Integer.parseInt(response.skilllevel)]);
+
+        //skillevel.setText(SignUpActivity.skillLevels[Integer.parseInt(response.skilllevel)]);
         Log.d("CREATION", "skilllevel " + SignUpActivity.skillLevels[Integer.parseInt(response.skilllevel)]);
+
+        skillevel.setText(response.skilllevel);
+
         location = (TextView)findViewById(R.id.locationValue);
         location.setText(response.location);
-        Log.d("CREATION", response.location);
         averageReview = (TextView)findViewById(R.id.averageReviewValue);
         averageReview.setText(response.average_review);
-        Log.d("CREATION", response.average_review);
 
     }
 
     private void ExtendedProfileFailure(String message) {
-        Log.d("CREATION", message);
+
         Toast.makeText(this, "ExtendedProfile failed: " + message, Toast.LENGTH_SHORT).show();
 
     }

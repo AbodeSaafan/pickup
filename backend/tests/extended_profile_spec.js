@@ -1,6 +1,7 @@
 var frisby = require("frisby");
 var strings = require("../api/universal_strings");
 var testHelper = require("./testHelper");
+const util = require("util");
 
 
 // Check if user can view their extended Profile
@@ -198,3 +199,99 @@ frisby.create("Update extendedProfile of user with invalid skill_level")
 	.put(testHelper.extendedProfileEndpoint, testHelper.createInvalidLocationForExtendedProfile (""))
 	.expectStatus(400)
 	.toss();
+
+	// Set the review of a user by another user
+frisby.create("Joining a game: Creating a user to create a game")
+.post(testHelper.registerEndpoint, testHelper.createGenericUserFixedBirth())
+.expectStatus(200)
+.expectBodyContains("token")
+.afterJSON(function (user) {
+	frisby.create("Creating a new game")
+		.post(testHelper.createGameEndpoint, testHelper.createUnrestrictedGame(user.token, 100, 200))
+		.expectStatus(200)
+		.expectBodyContains("game_id")
+		.afterJSON(function (game) {
+			frisby.create("Creating a new game")
+			.post(testHelper.createGameEndpoint, testHelper.createUnrestrictedGame(user.token, 500, 600))
+			.expectStatus(200)
+			.expectBodyContains("game_id")
+			.afterJSON(function (game1) {
+			var gameRealId = game.game_id;
+			var gameRealId1 = game1.game_id;
+				frisby.create("Creating a new user to join the game")
+					.post(testHelper.registerEndpoint, testHelper.createGenericUserFixedBirth())
+					.expectStatus(200)
+					.afterJSON(function (newUser) {
+						frisby.create("Creating a new user to join the game")
+						.post(testHelper.registerEndpoint, testHelper.createGenericUserFixedBirth())
+						.expectStatus(200)
+						.afterJSON(function (newUser1) {
+						frisby.create("Join a game using the API with valid credentials")
+							.put(util.format(testHelper.joinGameEndpoint, gameRealId, newUser.token), newUser.token)
+							.expectStatus(200)
+							.expectBodyContains("game_id")
+							.afterJSON(function (gameJoin) {
+								frisby.create("Join a game using the API with valid credentials")
+								.put(util.format(testHelper.joinGameEndpoint, gameRealId1, newUser1.token), newUser.token)
+								.expectStatus(200)
+								.expectBodyContains("game_id")
+								.afterJSON(function (gameJoin1) {
+									frisby.create("Set the review to the new user")
+										.post(testHelper.setReviewEndpoint, {
+												gameId : parseInt(gameRealId),
+												userId : parseInt(user.user_id),
+												rating : 2,
+												tags : [1 , 2],
+												reviewed : false,
+												jwt : newUser.token
+											})
+											.expectStatus(200)
+											.afterJSON(function(review){
+												frisby.create("Set the review to the new user1")
+												.post(testHelper.setReviewEndpoint, {
+														gameId : parseInt(gameRealId1),
+														userId : parseInt(user.user_id),
+														rating : 4,
+														tags : [1],
+														reviewed : false,
+														jwt : newUser1.token
+													})
+													.expectStatus(200)
+													.afterJSON(function(review1){
+														frisby.create("Update extendedProfile of user")
+														.put(testHelper.extendedProfileEndpoint, testHelper.createGenericExtendedProfile (user.token))
+														.expectStatus(200)
+														.afterJSON (function (result) {
+															frisby.create("Get extendedProfile of user")
+															.get(testHelper.extendedProfileEndpoint+"?jwt="+user.token + "&userID=" + user.user_id)
+															.expectStatus(200)
+															.expectJSON({
+																user_id: parseInt(user.user_id),
+																age: user.age,
+																gender: user.gender,
+																skilllevel: parseInt(result.Users_SkillLevel),
+																location: "(" + result.Users_Location.lat + "," + result.Users_Location.lng + ")",
+																average_review: 3,
+																top_tag: 1,
+																top_tag_count: 2
+															})
+														})
+														.toss();
+												})
+												.toss();
+											})
+									.toss();
+								})
+								.toss();
+							})
+							.toss();
+							})
+							.toss();
+						})
+						.toss();
+				})
+				.toss();
+		})
+		.toss();
+})
+.toss();

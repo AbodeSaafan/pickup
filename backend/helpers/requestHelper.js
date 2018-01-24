@@ -57,10 +57,11 @@ function validateAndCleanLeaveRequest(data){
 }
 
 function validateAndCleanReviewRequest(data){
-	validate(data.UserId, regex.idRegex, strings.invalidUserId);
+	validate(data.userId, regex.idRegex, strings.invalidUserId);
 	validate(data.gameId, regex.idRegex, strings.invalidGameId);
 	validate(data.rating, regex.ratingRegex, strings.invalidRating);
 	validateRatings(data.tags);
+	data.reviewed = data.reviewed == 'true'
 	return data;
 }
 
@@ -133,21 +134,28 @@ function addTag(reviewId, tags, finished){
 			callback();
 		});
 	}, function () {
-		finished(final_results);
+		finished(final_results.length > 0);
 	});
 }
 
 function updateTag(reviewId, tags, finished){
-	var final_results = [];
-	async.forEachOf(tags, function(tag, i, callback){
-		databaseHelper.updateTag(reviewId, tag, (tagAdded)=>{
-			if(!tagAdded){
-					final_results.push("1");
-				}
-			callback();
-		});
-	}, function () {
-		finished(final_results);
+	databaseHelper.deleteTag(reviewId, (deleteComplete)=> {
+		if(deleteComplete){
+				var final_results = [];
+				async.forEachOf(tags, function(tag, i, callback){
+					databaseHelper.addTag(reviewId, tag, (tagAdded)=>{
+						if(!tagAdded){
+								final_results.push("1");
+							}
+						callback();
+					});
+				}, function () {
+					finished(final_results.length > 0);
+				});
+			}
+		else{
+			finished(true);
+		}
 	});
 }
 

@@ -19,7 +19,6 @@ import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -31,10 +30,10 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ViewFlipper;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -58,8 +57,6 @@ import sotifc2017.pickup.api.contracts.GetExtendedProfileRequest;
 import sotifc2017.pickup.api.contracts.GetExtendedProfileResponse;
 import sotifc2017.pickup.api.contracts.RegisterRequest;
 import sotifc2017.pickup.api.contracts.RegisterResponse;
-
-import android.widget.ViewFlipper;
 /**
  * A login screen that offers login via email/password.
  */
@@ -524,7 +521,6 @@ public class SignUpActivity extends AppCompatActivity implements LoaderManager.L
             }
             //TODO: Implement Failure
             catch (Exception e){
-                Log.d("CREATION",e.getMessage());
                 registerFailure(e.getMessage());
             }
 
@@ -540,7 +536,6 @@ public class SignUpActivity extends AppCompatActivity implements LoaderManager.L
             }
             //TODO: Implement Failure
             catch (Exception e){
-                Log.d("CREATION", e.getMessage());
                 registerFailure(e.getMessage());
             }
         }
@@ -548,7 +543,7 @@ public class SignUpActivity extends AppCompatActivity implements LoaderManager.L
 
     private void ExecuteLogin(String email, String firstname, String lastname, String password, String gender, String username, String dob) {
 
-        Utils.getInstance(SignUpActivity.this).addToRequestQueue(Authentication.register_request(new RegisterRequest(email, password, username, firstname, lastname, gender, dob), successful_register, error_register));
+        Utils.getInstance(this).getRequestQueue(this).add(Authentication.register_request(new RegisterRequest(email, password, username, firstname, lastname, gender, dob), successful_register, error_register));
     }
 
 
@@ -558,13 +553,13 @@ public class SignUpActivity extends AppCompatActivity implements LoaderManager.L
 
         Authentication.saveJwt(this, response.token);
         Authentication.saveRefresh(this, response.refresh);
+        Authentication.saveUserId(this, response.user_id);
 
         UpdateExtendedProfile(response.token);
 
     }
 
     private void registerFailure(String message) {
-        Log.d("CREATION", message);
         Toast.makeText(this, "Sign in failed: " + message, Toast.LENGTH_SHORT).show();
 
         progressDialog.cancel();
@@ -574,12 +569,10 @@ public class SignUpActivity extends AppCompatActivity implements LoaderManager.L
         @Override
         public void onResponse(JSONObject response) {
             try{
-                Log.d("CREATION", "Reached here");
                 updateProfileSuccess(Utils.gson.fromJson(response.toString(), GetExtendedProfileResponse.class));
             }
             //TODO: Implement Failure
             catch (Exception e){
-                Log.d("CREATION", "Reached here2");
                 updateProfileFailure(e.getMessage());
             }
 
@@ -590,28 +583,24 @@ public class SignUpActivity extends AppCompatActivity implements LoaderManager.L
         @Override
         public void onErrorResponse(VolleyError error) {
             try {
-                Log.d("CREATION", "Reached here3");
                 JSONObject errorJSON = new JSONObject(new String(error.networkResponse.data, "UTF-8"));
                 updateProfileFailure(errorJSON.getString("error"));
             }
             //TODO: Implement Failure
             catch (Exception e) {
-                Log.d("CREATION", "Reached here4");
                 updateProfileFailure(e.getMessage());
             }
         }
     };
 
     private void UpdateExtendedProfile (String jwt) {
-        Log.d("CREATION", jwt);
-        Utils.getInstance(SignUpActivity.this).addToRequestQueue(ExtendedProfile.updateProfile_request(new GetExtendedProfileRequest(jwt, lat, lng, skilllevel_Value), successful_Update, error_Update));
+        Utils.getInstance(this).getRequestQueue(this).add(ExtendedProfile.updateProfile_request(new GetExtendedProfileRequest(jwt, lat, lng, skilllevel_Value), successful_Update, error_Update));
     }
 
 
 
     private void updateProfileFailure(String message) {
         Toast.makeText(this, "Extended Profile Update failed: " + message, Toast.LENGTH_SHORT).show();
-        Log.d("CREATION", message);
         progressDialog.cancel();
     }
 
@@ -621,7 +610,7 @@ public class SignUpActivity extends AppCompatActivity implements LoaderManager.L
         Intent intent = new Intent(SignUpActivity.this, ProfileSelfActivity.class);
         startActivity(intent);
         progressDialog.cancel();
-
+        finish();
 
     }
 

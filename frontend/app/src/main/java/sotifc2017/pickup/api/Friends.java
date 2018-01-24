@@ -1,13 +1,5 @@
 package sotifc2017.pickup.api;
 
-import com.android.volley.Request;
-import com.android.volley.Response;
-import com.android.volley.toolbox.JsonObjectRequest;
-import org.json.JSONObject;
-
-import java.util.Date;
-import java.util.HashMap;
-
 /**
  * Created by Radhika on 11/27/2017.
  */

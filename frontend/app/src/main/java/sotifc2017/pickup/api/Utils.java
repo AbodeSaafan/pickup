@@ -5,7 +5,6 @@ import android.net.Uri;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
-import com.android.volley.Request;
 import com.google.gson.Gson;
 
 import java.util.HashMap;
@@ -17,13 +16,11 @@ import java.util.Map.Entry;
 public class Utils {
     private static Utils mInstance;
     private RequestQueue mRequestQueue;
-    private static Context mCtx;
     public static final String BASE_API = "https://pickup-app-api.herokuapp.com/api/";
     public static final Gson gson = new Gson();
 
     private Utils(Context context) {
-        mCtx = context;
-        mRequestQueue = getRequestQueue();
+        mRequestQueue = getRequestQueue(context);
     }
 
     public static synchronized Utils getInstance(Context context) {
@@ -33,17 +30,13 @@ public class Utils {
         return mInstance;
     }
 
-    public RequestQueue getRequestQueue() {
+    public RequestQueue getRequestQueue(Context mCtx) {
         if (mRequestQueue == null) {
             // getApplicationContext() is key, it keeps you from leaking the
             // Activity or BroadcastReceiver if someone passes one in.
             mRequestQueue = Volley.newRequestQueue(mCtx.getApplicationContext());
         }
         return mRequestQueue;
-    }
-
-    public <T> void addToRequestQueue(Request<T> req) {
-        getRequestQueue().add(req);
     }
 
     public static String jsonToUrlParam(Object contractObj){

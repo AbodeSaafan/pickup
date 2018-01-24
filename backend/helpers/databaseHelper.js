@@ -290,8 +290,8 @@ function getIfReviewed(reviewerId, user, callback){
 }
 
 
-function addReview (userId, gameId, reviewerId, rating, tags, callback){
-	var queryString = "INSERT INTO reviews(user_id, game_id, reviewer_id, rating) VALUES($1, $2, $3, $4)";
+function addReview (userId, gameId, reviewerId, rating, callback){
+	var queryString = "INSERT INTO reviews(user_id, game_id, reviewer_id, rating) VALUES($1, $2, $3, $4) RETURNING review_id;";
 	var queryParams = [userId, gameId, reviewerId, rating];
 
 	const pool = new pg.Pool({connectionString: conString});
@@ -310,8 +310,8 @@ function addReview (userId, gameId, reviewerId, rating, tags, callback){
 	});
 }
 
-function updateReview (userId, gameId, reviewerId, rating, tags, callback){
-	var queryString = "UPDATE reviews SET user_id = $1, game_id = $2, reviewer_id = $3, rating = $4";
+function updateReview (userId, gameId, reviewerId, rating, callback){
+	var queryString = "UPDATE reviews SET rating = $4 WHERE user_id = $1 AND game_id = $2 AND reviewer_id = $3 RETURNING review_id";
 	var queryParams = [userId, gameId, reviewerId, rating];
 
 	const pool = new pg.Pool({connectionString: conString});
@@ -330,15 +330,15 @@ function updateReview (userId, gameId, reviewerId, rating, tags, callback){
 	});
 }
 
-function addTag(reviewId, tags, callback){
+function addTag(reviewId, tag, callback){
 	var queryString = "INSERT INTO tags(review_id, tag) VALUES($1, $2)";
-	var queryParams = [reviewId, tags[i]];
+	var queryParams = [reviewId, tag];
 
 	const pool = new pg.Pool({connectionString: conString});
 
 	pool.connect((err, client, done) => {
 		client.query(queryString, queryParams, (err, res) => {
-			if(!err && res){
+			if(!err && res && res.rowCount == 1){
 				callback(true);
 			}
 			else{
@@ -350,9 +350,9 @@ function addTag(reviewId, tags, callback){
 	});
 }
 
-function updateTag(reviewId, tags, callback){
-	var queryString = "UPDATE tags SET review_id = $1, tag = $2";
-	var queryParams = [reviewId, tags[i]];
+function deleteTag(reviewId, callback){
+	var queryString = "DELETE FROM tags WHERE review_id = $1";
+	var queryParams = [reviewId];
 
 	const pool = new pg.Pool({connectionString: conString});
 
@@ -785,8 +785,8 @@ module.exports = {
 	disableAccount,
 	getIfReviewed,
 	updateReview,
-	updateTag,
-	addTag
+	addTag,
+	deleteTag
 };
 
 //////////////// Helpers ////////////////

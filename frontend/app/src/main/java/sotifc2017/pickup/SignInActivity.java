@@ -4,20 +4,21 @@ import android.app.ActionBar;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Build;
+import android.os.Bundle;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.Toast;
+
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+
 import org.json.JSONObject;
+
 import sotifc2017.pickup.api.Authentication;
 import sotifc2017.pickup.api.Utils;
 import sotifc2017.pickup.api.contracts.LoginRequest;
@@ -37,8 +38,8 @@ public class SignInActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_in);
 
-        emailText = (EditText) findViewById(R.id.emailEditText);
-        passText = (EditText) findViewById(R.id.passEditText);
+        emailText = findViewById(R.id.emailEditText);
+        passText = findViewById(R.id.passEditText);
 
         progressDialog = new ProgressDialog(SignInActivity.this,
                 R.style.AppTheme_Dark);
@@ -67,7 +68,7 @@ public class SignInActivity extends AppCompatActivity {
         email = emailText.getText().toString();
         pass = passText.getText().toString();
 
-        Utils.getInstance(this).addToRequestQueue(Authentication.login_request(new LoginRequest(email, pass), successful_signin, error_signin));
+        Utils.getInstance(this).getRequestQueue(this).add(Authentication.login_request(new LoginRequest(email, pass), successful_signin, error_signin));
     }
 
     private Response.Listener<JSONObject> successful_signin = new Response.Listener<JSONObject>() {
@@ -96,12 +97,13 @@ public class SignInActivity extends AppCompatActivity {
         Toast.makeText(this, "Sign in successsful", Toast.LENGTH_SHORT).show();
 
         Authentication.saveJwt(this, response.token);
-
         Authentication.saveRefresh(this, response.refresh);
+        Authentication.saveUserId(this, response.user_id);
 
         Intent intent = new Intent(this, ProfileSelfActivity.class);
         startActivity(intent);
         progressDialog.cancel();
+        finish();
 
     }
 

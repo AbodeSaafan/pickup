@@ -2,13 +2,15 @@ package sotifc2017.pickup;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+
+import sotifc2017.pickup.api.Authentication;
 
 public class ProfileSelfActivity extends AppCompatActivity {
 
@@ -30,9 +32,9 @@ public class ProfileSelfActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch(item.getItemId())
-        {
+        switch (item.getItemId()) {
             case R.id.profile_self_setting:
+                viewSettings();
                 break;
             case R.id.profile_self_sign_out:
                 AlertDialog diaBox = AskOption();
@@ -55,10 +57,14 @@ public class ProfileSelfActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    private void viewSettings() {
+        Intent intent = new Intent(this, SettingsActivity.class);
+        startActivity(intent);
+    }
 
-    private AlertDialog AskOption()
-    {
-        AlertDialog myQuittingDialogBox =new AlertDialog.Builder(this)
+
+    private AlertDialog AskOption() {
+        AlertDialog myQuittingDialogBox = new AlertDialog.Builder(this)
                 //set message, title, and icon
                 .setTitle(getString(R.string.sign_out_title))
                 .setMessage(getString(R.string.sign_out_message))
@@ -67,13 +73,13 @@ public class ProfileSelfActivity extends AppCompatActivity {
 
                     public void onClick(DialogInterface dialog, int whichButton) {
                         //sign out call
-
+                        Authentication.logout(ProfileSelfActivity.this);
                         redirectSignIn();
                         dialog.dismiss();
                     }
 
                 })
-                
+
 
                 .setNegativeButton("cancel", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
