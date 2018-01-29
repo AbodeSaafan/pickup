@@ -19,12 +19,12 @@
         android:title="@string/title_activity_settings"
         android:id="@+id/action_settings"
         android:enabled="true"
-        android:icon="@drawable/ic_gear_black_24dp"
+        android:icon="@drawable/ic_settings_black_24dp"
         />
     <item
         android:title="@string/sign_out_title"
         android:id="@+id/action_sign_out"
         android:enabled="true"
-        android:icon="@drawable/ic_exit_to_app_black_24dp"
+        android:icon="@drawable/ic_power_settings_new_black_24dp"
         />
 </menu>
