@@ -59,7 +59,7 @@ public class ProfileSelfActivity extends AppCompatActivity {
     }
 
     private void viewSettings() {
-        Intent intent = new Intent(this, SettingsActivity.class);
+        Intent intent = new Intent(this, SettingsFragment.class);
         startActivity(intent);
     }
 

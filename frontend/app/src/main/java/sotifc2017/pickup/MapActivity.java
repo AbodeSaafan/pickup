@@ -1,6 +1,7 @@
 package sotifc2017.pickup;
 
-import android.app.Activity;
+import android.app.Fragment;
+import android.app.FragmentTransaction;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -9,7 +10,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
@@ -17,7 +17,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -25,7 +24,6 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -36,7 +34,6 @@ import java.util.List;
 import java.util.Random;
 
 import sotifc2017.pickup.api.Authentication;
-import sotifc2017.pickup.api.ExtendedProfile;
 
 public class MapActivity extends AppCompatActivity implements OnMapReadyCallback {
 
@@ -63,8 +60,9 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         setDrawerLayout();
 
         // Obtain the MapFragment and get notified when the map is ready to be used.
-        MapFragment mapFragment = (com.google.android.gms.maps.MapFragment) getFragmentManager()
-                .findFragmentById(R.id.map_fragment);
+        MapFragment mapFragment = new MapFragment();
+        replaceFragment(mapFragment);
+
         mapFragment.getMapAsync(this);
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             askForPermissions();
@@ -176,20 +174,20 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 drawerLayout.closeDrawers();
                 if (item.getItemId() != R.id.action_sign_out) {
                     for (int i = 0; i < navigationView.getMenu().size(); i++) {
-                        navigationView.getMenu().getItem(i).setChecked(false);
+                        navigationView.getMenu().getItem(i).setChecked(false).setEnabled(true);
                     }
-                    item.setChecked(true);
+                    item.setChecked(true).setEnabled(false);
                 }
                 switch(item.getItemId()) {
                     case R.id.action_map:
+                        replaceFragment(new MapFragment());
                         break;
                     case R.id.action_profile:
                         intent = new Intent(getApplicationContext(), ExtendedProfileActivity.class);
                         startActivity(intent);
                         break;
                     case R.id.action_settings:
-                        intent = new Intent(getApplicationContext(), SettingsActivity.class);
-                        startActivity(intent);
+                        replaceFragment(new SettingsFragment());
                         break;
                     case R.id.action_sign_out:
                         AlertDialog diaBox = AskOption();
@@ -224,5 +222,18 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                     }
                 })
                 .create();
+    }
+
+    //https://stackoverflow.com/questions/5658675/replacing-a-fragment-with-another-fragment-inside-activity-group
+    private void replaceFragment(Fragment frag){
+        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+
+        // Replace whatever is in the fragment_container view with this fragment,
+        // and add the transaction to the back stack if needed
+        transaction.replace(R.id.fragment_container, frag);
+        transaction.addToBackStack(null);
+
+        // Commit the transaction
+        transaction.commit();
     }
 }
