@@ -1,6 +1,7 @@
 package sotifc2017.pickup;
 
 import android.app.Fragment;
+import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -61,7 +62,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
         // Obtain the MapFragment and get notified when the map is ready to be used.
         MapFragment mapFragment = new MapFragment();
-        replaceFragment(mapFragment);
+        replaceFragment(mapFragment, false);
 
         mapFragment.getMapAsync(this);
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -180,14 +181,14 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 }
                 switch(item.getItemId()) {
                     case R.id.action_map:
-                        replaceFragment(new MapFragment());
+                        replaceFragment(new MapFragment(), true);
                         break;
                     case R.id.action_profile:
                         intent = new Intent(getApplicationContext(), ExtendedProfileActivity.class);
                         startActivity(intent);
                         break;
                     case R.id.action_settings:
-                        replaceFragment(new SettingsFragment());
+                        replaceFragment(new SettingsFragment(), true);
                         break;
                     case R.id.action_sign_out:
                         AlertDialog diaBox = AskOption();
@@ -225,13 +226,13 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     }
 
     //https://stackoverflow.com/questions/5658675/replacing-a-fragment-with-another-fragment-inside-activity-group
-    private void replaceFragment(Fragment frag){
+    private void replaceFragment(Fragment frag, boolean backStackAdd){
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
 
         // Replace whatever is in the fragment_container view with this fragment,
         // and add the transaction to the back stack if needed
         transaction.replace(R.id.fragment_container, frag);
-        transaction.addToBackStack(null);
+        if(backStackAdd) transaction.addToBackStack(null);
 
         // Commit the transaction
         transaction.commit();
