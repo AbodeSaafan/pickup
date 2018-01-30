@@ -1,7 +1,6 @@
 package sotifc2017.pickup;
 
 import android.app.Fragment;
-import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -192,8 +191,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                         replaceFragment(new MapFragment(), true, R.id.action_map);
                         break;
                     case R.id.action_profile:
-                        intent = new Intent(getApplicationContext(), ExtendedProfileActivity.class);
-                        startActivity(intent);
+                        replaceFragment(new ExtendedProfileFragment(), true, R.id.action_profile);
                         break;
                     case R.id.action_settings:
                         replaceFragment(new SettingsFragment(), true, R.id.action_settings);

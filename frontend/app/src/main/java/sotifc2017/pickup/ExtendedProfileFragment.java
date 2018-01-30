@@ -1,12 +1,16 @@
 package sotifc2017.pickup;
 
+import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.location.Geocoder;
 import android.os.Bundle;
+import android.preference.PreferenceFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -28,7 +32,7 @@ import sotifc2017.pickup.api.contracts.GetExtendedProfileResponse;
  * Created by radhika on 2018-01-14.
  */
 
-public class ExtendedProfileActivity extends AppCompatActivity {
+public class ExtendedProfileFragment extends Fragment {
 
     TextView age;
     TextView gender;
@@ -54,24 +58,29 @@ public class ExtendedProfileActivity extends AppCompatActivity {
 
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.activity_extended_profile, container, false);
+    }
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_extended_profile);
-        geocoder = new Geocoder(this, Locale.getDefault());
+        //getActivity().setContentView(R.layout.activity_extended_profile);
+        geocoder = new Geocoder(getActivity(), Locale.getDefault());
 
-        user_id =  this.getIntent().getStringExtra("userID");
+        user_id =  getActivity().getIntent().getStringExtra("userID");
 
         try {
-            jwt = Authentication.getJwt(this);
+            jwt = Authentication.getJwt(getActivity());
         } catch (Exception e) {
             e.printStackTrace();
         }
 
         if (user_id == null) {
             //Log.d("CREATION", "reached here");
-            user_id = String.valueOf(Authentication.getUserId(this));
+            user_id = String.valueOf(Authentication.getUserId(getActivity()));
         } else {
-            Button addFriendButton = (Button) findViewById(R.id.addFriend);
+            Button addFriendButton = (Button) getView().findViewById(R.id.addFriend);
             addFriendButton.setVisibility (View.VISIBLE);
         }
 
@@ -110,41 +119,41 @@ public class ExtendedProfileActivity extends AppCompatActivity {
 
     private void GetExtendedProfile() {
 
-        //Utils.getInstance(ExtendedProfileActivity.this).addToRequestQueue(ExtendedProfile.getProfile_request(jwt, user_id, successful_extendedProfile, error_extendedProfile));
+        //Utils.getInstance(ExtendedProfileFragment.this).addToRequestQueue(ExtendedProfile.getProfile_request(jwt, user_id, successful_extendedProfile, error_extendedProfile));
 
-        Utils.getInstance(this).getRequestQueue(this).add(ExtendedProfile.getProfile_request(jwt, user_id, successful_extendedProfile, error_extendedProfile));
+        Utils.getInstance(getActivity()).getRequestQueue(getActivity()).add(ExtendedProfile.getProfile_request(jwt, user_id, successful_extendedProfile, error_extendedProfile));
 
     }
 
 
 
     private void ExtendedProfileSuccess(GetExtendedProfileResponse response) {
-        Toast.makeText(this, "ExtendedProfile successsful", Toast.LENGTH_SHORT).show();
-        age = (TextView)findViewById(R.id.ageValue);
+        Toast.makeText(getActivity(), "ExtendedProfile successsful", Toast.LENGTH_SHORT).show();
+        age = (TextView)getView().findViewById(R.id.ageValue);
         age.setText(response.age);
-        gender = (TextView)findViewById(R.id.genderValue);
+        gender = (TextView)getView().findViewById(R.id.genderValue);
         gender.setText(response.gender);
-        skillevel = (TextView)findViewById(R.id.skillLevelValue);
+        skillevel = (TextView)getView().findViewById(R.id.skillLevelValue);
 
         //skillevel.setText(SignUpActivity.skillLevels[Integer.parseInt(response.skilllevel)]);
         //Log.d("CREATION", "skilllevel " + SignUpActivity.skillLevels[Integer.parseInt(response.skilllevel)]);
 
         skillevel.setText(response.skilllevel);
 
-        location = (TextView)findViewById(R.id.locationValue);
+        location = (TextView)getView().findViewById(R.id.locationValue);
         LatLng = response.location.split("(,)");
         
         location.setText(response.location);
-        averageReview = (TextView)findViewById(R.id.averageReviewValue);
+        averageReview = (TextView)getView().findViewById(R.id.averageReviewValue);
         averageReview.setText(response.average_review);
-        username = (TextView) findViewById(R.id.user_profile_name);
+        username = (TextView) getView().findViewById(R.id.user_profile_name);
         username.setText(response.username);
 
     }
 
     private void ExtendedProfileFailure(String message) {
 
-        Toast.makeText(this, "ExtendedProfile failed: " + message, Toast.LENGTH_SHORT).show();
+        Toast.makeText(getActivity(), "ExtendedProfile failed: " + message, Toast.LENGTH_SHORT).show();
 
     }
 
