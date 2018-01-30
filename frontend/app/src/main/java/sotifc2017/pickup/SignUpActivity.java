@@ -607,7 +607,7 @@ public class SignUpActivity extends AppCompatActivity implements LoaderManager.L
     private void updateProfileSuccess(GetExtendedProfileResponse getExtendedProfileResponse) {
         Toast.makeText(this, "Extended Profile Updated successsfully", Toast.LENGTH_SHORT).show();
 
-        Intent intent = new Intent(SignUpActivity.this, ProfileSelfActivity.class);
+        Intent intent = new Intent(SignUpActivity.this, MapActivity.class);
         startActivity(intent);
         progressDialog.cancel();
         finish();

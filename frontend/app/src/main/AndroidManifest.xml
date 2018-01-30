@@ -23,7 +23,6 @@
         <activity android:name=".SignInActivity" />
         <activity android:name=".SignUpActivity" />
         <activity android:name=".CreateAccountActivity" />
-        <activity android:name=".ProfileSelfActivity" />
         <activity android:name=".ExtendedProfileFragment" />
         <!--
  ATTENTION: This was auto-generated to add Google Play services to your project for
