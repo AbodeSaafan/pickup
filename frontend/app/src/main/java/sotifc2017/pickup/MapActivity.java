@@ -62,12 +62,20 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
         // Obtain the MapFragment and get notified when the map is ready to be used.
         MapFragment mapFragment = new MapFragment();
-        replaceFragment(mapFragment, false);
+        replaceFragment(mapFragment, false, R.id.action_map);
 
         mapFragment.getMapAsync(this);
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             askForPermissions();
         }
+    }
+
+    @Override
+    public void onBackPressed(){
+        int count = getFragmentManager().getBackStackEntryCount();
+        if(count == 1) setNavItemSelectedById(R.id.action_map);
+        if(count > 1) setNavItemSelectedById(Integer.parseInt(getFragmentManager().getBackStackEntryAt(getFragmentManager().getBackStackEntryCount() - 2).getName()));
+        super.onBackPressed();
     }
 
     /**
@@ -181,14 +189,14 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 }
                 switch(item.getItemId()) {
                     case R.id.action_map:
-                        replaceFragment(new MapFragment(), true);
+                        replaceFragment(new MapFragment(), true, R.id.action_map);
                         break;
                     case R.id.action_profile:
                         intent = new Intent(getApplicationContext(), ExtendedProfileActivity.class);
                         startActivity(intent);
                         break;
                     case R.id.action_settings:
-                        replaceFragment(new SettingsFragment(), true);
+                        replaceFragment(new SettingsFragment(), true, R.id.action_settings);
                         break;
                     case R.id.action_sign_out:
                         AlertDialog diaBox = AskOption();
@@ -226,15 +234,23 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     }
 
     //https://stackoverflow.com/questions/5658675/replacing-a-fragment-with-another-fragment-inside-activity-group
-    private void replaceFragment(Fragment frag, boolean backStackAdd){
+    private void replaceFragment(Fragment frag, boolean backStackAdd, int fragId){
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
 
         // Replace whatever is in the fragment_container view with this fragment,
         // and add the transaction to the back stack if needed
         transaction.replace(R.id.fragment_container, frag);
-        if(backStackAdd) transaction.addToBackStack(null);
+        if(backStackAdd) transaction.addToBackStack(String.valueOf(fragId));
 
         // Commit the transaction
         transaction.commit();
+    }
+
+    private void setNavItemSelectedById(int id){
+        drawerLayout.closeDrawers();
+        for (int i = 0; i < navigationView.getMenu().size(); i++) {
+            navigationView.getMenu().getItem(i).setChecked(false).setEnabled(true);
+        }
+        navigationView.getMenu().findItem(id).setChecked(true).setEnabled(false);
     }
 }
