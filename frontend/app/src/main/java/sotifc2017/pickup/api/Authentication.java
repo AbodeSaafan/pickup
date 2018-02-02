@@ -3,6 +3,7 @@ package sotifc2017.pickup.api;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -27,6 +28,9 @@ public class Authentication {
     private static final String LOGIN_ENDPOINT = Utils.BASE_API + "login";
     private static final String REGISTER_ENDPOINT = Utils.BASE_API + "register";
     private static final String REFRESH_ENDPOINT = Utils.BASE_API + "refresh";
+
+    private static final long JWT_LIFETIME = 1000 * 60 * 14;
+    private static final long JWT_BUFFER = 1000 * 60 * 2;
 
     public static JsonObjectRequest login_request(LoginRequest req, Response.Listener<JSONObject> responseListener, Response.ErrorListener errorListener) {
         try{
@@ -57,33 +61,61 @@ public class Authentication {
         if (jwt_tok != null && !jwt_tok.isEmpty() && refresh_tok != null && !refresh_tok.isEmpty()) {
             //check date and return if good, move on if bad
             long expiry = prefs.getLong("jwt_expiry", Long.MIN_VALUE);
-            if (expiry >= System.currentTimeMillis()) {
-                return jwt_tok;
+            // Expired or soon to be
+            if (expiry < System.currentTimeMillis() + JWT_BUFFER) {
+                refreshJwt(activity);
             }
-        } else {
-            //never had a jwt or refresh so "sign out"
-            throw new Exception("Bad JWT");
-        }
-        // request new one
-        RequestFuture<JSONObject> requestFuture= RequestFuture.newFuture();
-        Utils.getInstance(activity).getRequestQueue(activity).add(jwt_request(refresh_tok, jwt_tok, requestFuture, requestFuture));
-        try {
-            JSONObject response = requestFuture.get(10, TimeUnit.SECONDS);
-            String jwt = response.getString("token");
-            saveJwt(activity, jwt);
-            return jwt;
 
-        } catch (Exception e) {
-            // idek what to do here, probably check if we have internet access, display correct err
-            throw new Exception("Could not get a new JWT");
+            return jwt_tok;
         }
+        //never had a jwt or refresh so "sign out"
+        throw new Exception("Bad JWT");
+    }
+
+    private static Response.Listener<JSONObject> successful_refresh(final Activity activity){
+        return new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                try{
+                    String jwt = response.getString("token");
+                    saveJwt(activity, jwt);
+                }
+                catch (Exception e){
+                    Log.e("jwt", "refresh api error");
+                }
+
+            }
+        };
+    }
+
+    private static Response.ErrorListener error_refresh =  new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                try {
+                    JSONObject errorJSON = new JSONObject(new String(error.networkResponse.data, "UTF-8"));
+                    Log.e("jwt", errorJSON.getString("error"));
+                }
+                catch (Exception e) {
+                    Log.e("jwt", e.getMessage());
+                }
+            }
+    };
+
+    public static void refreshJwt(Activity activity){
+        SharedPreferences prefs = activity.getApplicationContext().getSharedPreferences(SHARED_PREF_KEY, Context.MODE_PRIVATE);
+
+        String jwt_tok = prefs.getString("jwt", null);
+        String refresh_tok = prefs.getString("refresh", null);
+
+        // request new one
+        Utils.getInstance(activity).getRequestQueue(activity).add(jwt_request(refresh_tok, jwt_tok, successful_refresh(activity), error_refresh));
     }
 
     public static void saveJwt(Activity activity, String tok){
         SharedPreferences prefs = activity.getApplicationContext().getSharedPreferences(SHARED_PREF_KEY, Context.MODE_PRIVATE);
         prefs.edit().putString("jwt", tok).apply();
         // Current time + 14 minutes converted into milliseconds
-        prefs.edit().putLong("jwt_expiry", System.currentTimeMillis() + (1000 * 60 * 14)).apply();
+        prefs.edit().putLong("jwt_expiry", System.currentTimeMillis() + JWT_LIFETIME).apply();
     }
 
     public static void saveRefresh(Activity activity, String refresh){
