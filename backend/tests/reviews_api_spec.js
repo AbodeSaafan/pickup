@@ -46,31 +46,6 @@ frisby.create("Joining a game: Creating a user to create a game")
 												jwt : user.token
 											})
 											.expectStatus(200)
-											.afterJSON(function(resultSetReview){
-												frisby.create("Get the users of the game")
-												.get(testHelper.getUsersOfGameEndpoint+"?jwt="+ user.token +"&game_id="+gameRealId)
-												.expectJSON('0',{
-													user_id: parseInt(newUser.user_id),
-													reviewed: true
-												})
-												.expectStatus(200)
-												.afterJSON(function(resultsOfUser1){
-													frisby.create("Set the review to the new user again")
-														.post(testHelper.setReviewEndpoint, {
-															gameId : parseInt(gameRealId),
-															userId : parseInt(newUser.user_id),
-															rating : 3,
-															tags : [3],
-															reviewed : true,
-															jwt : user.token
-														})
-														.expectStatus(200)
-														.toss();
-													})
-
-												.toss();
-											})
-
 											.toss();
 									})
 									.toss();

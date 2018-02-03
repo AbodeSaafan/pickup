@@ -23,6 +23,9 @@ function getUserFromToken(token){
 		if(info.user_id && info.email){
 			return info;
 		}
+		else {
+			throw new Error(strings.invalidJwt);
+		}
 	} catch(err){
 		throw new Error(strings.invalidJwt);
 	}
