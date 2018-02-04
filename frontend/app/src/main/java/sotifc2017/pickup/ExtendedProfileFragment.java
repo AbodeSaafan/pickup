@@ -24,6 +24,7 @@ import java.util.Locale;
 
 import sotifc2017.pickup.api.Authentication;
 import sotifc2017.pickup.api.ExtendedProfile;
+import sotifc2017.pickup.api.GetJwt;
 import sotifc2017.pickup.api.Utils;
 import sotifc2017.pickup.api.contracts.GetExtendedProfileResponse;
 
@@ -32,7 +33,7 @@ import sotifc2017.pickup.api.contracts.GetExtendedProfileResponse;
  * Created by radhika on 2018-01-14.
  */
 
-public class ExtendedProfileFragment extends Fragment {
+public class ExtendedProfileFragment extends Fragment implements GetJwt.Callback {
 
     TextView age;
     TextView gender;
@@ -41,7 +42,6 @@ public class ExtendedProfileFragment extends Fragment {
     TextView averageReview;
     TextView username;
     private ProgressDialog progressDialog;
-    String jwt;
     String user_id;
     Geocoder geocoder;
     String[] LatLng;
@@ -70,11 +70,7 @@ public class ExtendedProfileFragment extends Fragment {
 
         user_id =  getActivity().getIntent().getStringExtra("userID");
 
-        try {
-            jwt = Authentication.getJwt(getActivity());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        new GetJwt(this).execute(getActivity());
 
         if (user_id == null) {
             //Log.d("CREATION", "reached here");
@@ -83,9 +79,19 @@ public class ExtendedProfileFragment extends Fragment {
             Button addFriendButton = (Button) getView().findViewById(R.id.addFriend);
             addFriendButton.setVisibility (View.VISIBLE);
         }
+    }
 
-        GetExtendedProfile();
+    @Override
+    public void jwtSuccess(String jwt) {
+        GetExtendedProfile(jwt);
+    }
 
+    @Override
+    public void jwtFailure(Exception e) {
+        Log.e("jwt", e.getMessage());
+        Authentication.logout(getActivity());
+        Intent intent = new Intent(getActivity(), SignInActivity.class);
+        startActivity(intent);
     }
 
 
@@ -108,7 +114,7 @@ public class ExtendedProfileFragment extends Fragment {
         public void onErrorResponse(VolleyError error) {
             try {
                 JSONObject errorJSON = new JSONObject(new String(error.networkResponse.data, "UTF-8"));
-                ExtendedProfileFailure(errorJSON.getString("error"));
+                ExtendedProfileFailure(errorJSON.getString("jwtFailure"));
             }
             //TODO: Implement Failure
             catch (Exception e){
@@ -117,10 +123,7 @@ public class ExtendedProfileFragment extends Fragment {
         }
     };
 
-    private void GetExtendedProfile() {
-
-        //Utils.getInstance(ExtendedProfileFragment.this).addToRequestQueue(ExtendedProfile.getProfile_request(jwt, user_id, successful_extendedProfile, error_extendedProfile));
-
+    private void GetExtendedProfile(String jwt) {
         Utils.getInstance(getActivity()).getRequestQueue(getActivity()).add(ExtendedProfile.getProfile_request(jwt, user_id, successful_extendedProfile, error_extendedProfile));
 
     }

@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.preference.EditTextPreference;
 import android.preference.PreferenceFragment;
+import android.util.Log;
 import android.view.Window;
 
 import com.android.volley.Response;
@@ -15,13 +16,14 @@ import com.android.volley.VolleyError;
 import org.json.JSONObject;
 
 import sotifc2017.pickup.api.Authentication;
+import sotifc2017.pickup.api.GetJwt;
 import sotifc2017.pickup.api.PrivateProfile;
 import sotifc2017.pickup.api.Utils;
 import sotifc2017.pickup.api.contracts.GetPrivateProfileRequest;
 import sotifc2017.pickup.api.contracts.GetPrivateProfileResponse;
 
 
-public class SettingsFragment extends PreferenceFragment {
+public class SettingsFragment extends PreferenceFragment implements GetJwt.Callback  {
 
     private ProgressDialog progressDialog;
 
@@ -40,15 +42,27 @@ public class SettingsFragment extends PreferenceFragment {
         progressDialog.setCancelable(false);
         progressDialog.show();
 
-        LoadSettings(getActivity());
+        new GetJwt(this).execute(getActivity());
 
         // Load the preferences from an XML resource
         addPreferencesFromResource(R.xml.preferences);
     }
 
-    public void LoadSettings(Activity act) {
+    @Override
+    public void jwtSuccess(String jwt) {
+        LoadSettings(getActivity(), jwt);
+    }
+
+    @Override
+    public void jwtFailure(Exception e) {
+        Log.e("jwt", e.getMessage());
+        Authentication.logout(getActivity());
+        Intent intent = new Intent(getActivity(), SignInActivity.class);
+        startActivity(intent);
+    }
+
+    public void LoadSettings(Activity act, String jwt) {
         try {
-            String jwt = Authentication.getJwt(act);
             Utils.getInstance(act).getRequestQueue(act).add(PrivateProfile.get_private_profile_request(new GetPrivateProfileRequest(jwt), successful_profile, error_profile));
         } catch (Exception e) {
             progressDialog.cancel();
