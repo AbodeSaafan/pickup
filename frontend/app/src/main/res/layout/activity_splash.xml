@@ -9,13 +9,27 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
+    tools:background="@color/primary"
     tools:context="sotifc2017.pickup.SplashActivity">
 
     <ImageView
-        android:layout_width="wrap_content"
+        android:id="@+id/logo"
+        android:layout_width="match_parent"
+        android:layout_height="125dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="193dp"
+        app:srcCompat="@drawable/ic_logo" />
+
+    <ProgressBar
+        android:id="@+id/splashProgress"
+        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:srcCompat="@android:drawable/btn_star_big_on"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true"
-        android:id="@+id/imageView" />
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/logo"
+        android:indeterminate="true" />
+
 </RelativeLayout>
