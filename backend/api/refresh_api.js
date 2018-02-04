@@ -49,9 +49,9 @@ router.get("/", function(req, res){
 			res.status(400).json({"error" : strings.noRefreshToken}); return;
 		}
 
-		var newToken = tokenHelper.createTokenForUser(user.userId, user.email);
+		var newToken = tokenHelper.createTokenForUser(user.user_id, user.email);
 
-		res.status(200).json({"token":newToken, "user_id":user.userId}); return;
+		res.status(200).json({"token":newToken, "user_id":user.user_id}); return;
 
 	});
 });
