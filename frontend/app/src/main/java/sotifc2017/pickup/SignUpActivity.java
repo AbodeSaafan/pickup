@@ -19,6 +19,7 @@ import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -37,9 +38,14 @@ import android.widget.ViewFlipper;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.seatgeek.placesautocomplete.OnPlaceSelectedListener;
-import com.seatgeek.placesautocomplete.PlacesAutocompleteTextView;
-import com.seatgeek.placesautocomplete.model.Place;
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.places.AutocompleteFilter;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
+import com.google.android.gms.location.places.ui.PlaceSelectionListener;
+//import com.seatgeek.placesautocomplete.OnPlaceSelectedListener;
+//import com.seatgeek.placesautocomplete.PlacesAutocompleteTextView;
+//import com.seatgeek.placesautocomplete.model.Place;
 
 import org.adw.library.widgets.discreteseekbar.DiscreteSeekBar;
 import org.json.JSONObject;
@@ -57,6 +63,9 @@ import sotifc2017.pickup.api.contracts.GetExtendedProfileRequest;
 import sotifc2017.pickup.api.contracts.GetExtendedProfileResponse;
 import sotifc2017.pickup.api.contracts.RegisterRequest;
 import sotifc2017.pickup.api.contracts.RegisterResponse;
+
+//import static sotifc2017.pickup.R.id.place_autocomplete_fragment;
+
 /**
  * A login screen that offers login via email/password.
  */
@@ -66,6 +75,7 @@ public class SignUpActivity extends AppCompatActivity implements LoaderManager.L
      * Id to identity READ_CONTACTS permission request.
      */
     private static final int REQUEST_READ_CONTACTS = 0;
+    private static final String FC_TAG = "sotifc2017";
 
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
@@ -85,7 +95,7 @@ public class SignUpActivity extends AppCompatActivity implements LoaderManager.L
     private TextView skillLevel;
     private String dob;
     private ProgressDialog progressDialog;
-    private PlacesAutocompleteTextView placesAutocomplete;
+//    private PlacesAutocompleteTextView placesAutocomplete;
     private String firstname;
     private String lastname;
     private String username;
@@ -183,29 +193,29 @@ public class SignUpActivity extends AppCompatActivity implements LoaderManager.L
         next1.setOnClickListener(page_switch_listener);
         back1.setOnClickListener(page_switch_listener);
         back2.setOnClickListener(page_switch_listener);
-        placesAutocomplete = findViewById(R.id.places_autocomplete);
-        placesAutocomplete.setOnPlaceSelectedListener(
-                new OnPlaceSelectedListener() {
-                    @Override
-                    public void onPlaceSelected(final Place place) {
-                        // do something awesome with the selected place
-                        address = placesAutocomplete.getText().toString();
-                        if (address != null && !address.isEmpty()) {
-                            try {
-
-                                List<Address> addressList = coder.getFromLocationName(address, 1);
-                                if (addressList != null && addressList.size() > 0) {
-                                    lat = addressList.get(0).getLatitude();
-                                    lng = addressList.get(0).getLongitude();
-                                }
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            } // end catch
-                        }
-
-                    }
-                }
-        );
+//        placesAutocomplete = findViewById(R.id.places_autocomplete);
+//        placesAutocomplete.setOnPlaceSelectedListener(
+//                new OnPlaceSelectedListener() {
+//                    @Override
+//                    public void onPlaceSelected(final Place place) {
+//                        // do something awesome with the selected place
+//                        address = placesAutocomplete.getText().toString();
+//                        if (address != null && !address.isEmpty()) {
+//                            try {
+//
+//                                List<Address> addressList = coder.getFromLocationName(address, 1);
+//                                if (addressList != null && addressList.size() > 0) {
+//                                    lat = addressList.get(0).getLatitude();
+//                                    lng = addressList.get(0).getLongitude();
+//                                }
+//                            } catch (Exception e) {
+//                                e.printStackTrace();
+//                            } // end catch
+//                        }
+//
+//                    }
+//                }
+//        );
         DobLabel = findViewById(R.id.Dob);
         genderSpinner = findViewById(R.id.gender_spinner);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
@@ -261,6 +271,29 @@ public class SignUpActivity extends AppCompatActivity implements LoaderManager.L
 
         progressDialog = new ProgressDialog(SignUpActivity.this,
                 R.style.AppTheme_Dark);
+
+        PlaceAutocompleteFragment autocompleteFragment = (PlaceAutocompleteFragment)
+                getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
+
+        AutocompleteFilter typeFilter = new AutocompleteFilter.Builder()
+                .setTypeFilter(AutocompleteFilter.TYPE_FILTER_CITIES)
+                .build();
+
+        autocompleteFragment.setFilter(typeFilter);
+
+        autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
+            @Override
+            public void onPlaceSelected(Place place) {
+                // TODO: Get info about the selected place.
+                Log.i(FC_TAG, "Place: " + place.getName());
+            }
+
+            @Override
+            public void onError(Status status) {
+                // TODO: Handle the error.
+                Log.i(FC_TAG, "An error occurred: " + status);
+            }
+        });
     }
 
     public void onItemSelected(AdapterView<?> parent, View view,
