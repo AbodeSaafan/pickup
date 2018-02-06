@@ -43,6 +43,7 @@ import com.google.android.gms.location.places.AutocompleteFilter;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
 import com.google.android.gms.location.places.ui.PlaceSelectionListener;
+import com.google.android.gms.maps.model.LatLng;
 //import com.seatgeek.placesautocomplete.OnPlaceSelectedListener;
 //import com.seatgeek.placesautocomplete.PlacesAutocompleteTextView;
 //import com.seatgeek.placesautocomplete.model.Place;
@@ -281,10 +282,19 @@ public class SignUpActivity extends AppCompatActivity implements LoaderManager.L
 
         autocompleteFragment.setFilter(typeFilter);
 
+        EditText x = (EditText) autocompleteFragment.getView().findViewById(R.id.place_autocomplete_search_input);
+        x.setHintTextColor(-1);
+        x.setHint("Select Location");
+        x.setTextColor(-1);
+
+
+
         autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
             public void onPlaceSelected(Place place) {
-                // TODO: Get info about the selected place.
+                LatLng latlng = place.getLatLng();
+                lat = latlng.latitude;
+                lng = latlng.longitude;
                 Log.i(FC_TAG, "Place: " + place.getName());
             }
 
