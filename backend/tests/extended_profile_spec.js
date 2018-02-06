@@ -295,3 +295,77 @@ frisby.create("Joining a game: Creating a user to create a game")
 		.toss();
 })
 .toss();
+
+
+// User creates one game, ext profile should reflect that
+frisby.create("Register a user using the API with valid credentials to use for creating a game")
+	.post(testHelper.registerEndpoint, testHelper.createGenericUser())
+	.expectStatus(200)
+	.expectBodyContains("token")
+	.expectBodyContains("user_id")
+	.afterJSON(function (body) {
+		frisby.create("Creating a new game")
+			.post(testHelper.createGameEndpoint, testHelper.createUnrestrictedGame(body.token, 1, 1))
+			.expectStatus(200)
+			.expectBodyContains("game_id")
+			.afterJSON(function () {
+				frisby.create("Get extendedProfile of user")
+					.get(testHelper.extendedProfileEndpoint + "?jwt=" + body.token + "&userID=" + body.user_id)
+					.expectStatus(200)
+					.expectJSON({
+						user_id: parseInt(body.user_id),
+						age: body.age,
+						gender: body.gender,
+						skilllevel: 0,
+						location: null,
+						average_review: 0,
+						top_tag: null,
+						top_tag_count: null,
+						games_created: 1,
+						games_joined: 1
+					})
+					.toss();
+			})
+			.toss();
+	})
+	.toss();
+
+
+// User creates one game, leaves it, ext profile should reflect that
+frisby.create("Register a user using the API with valid credentials to use for creating a game")
+	.post(testHelper.registerEndpoint, testHelper.createGenericUser())
+	.expectStatus(200)
+	.expectBodyContains("token")
+	.expectBodyContains("user_id")
+	.afterJSON(function (body) {
+		frisby.create("Creating a new game")
+			.post(testHelper.createGameEndpoint, testHelper.createUnrestrictedGame(body.token, 1, 1))
+			.expectStatus(200)
+			.expectBodyContains("game_id")
+			.afterJSON(function (joinedGame) {
+				frisby.create("Leaving a game using API - valid case")
+					.delete(util.format(testHelper.leaveGameEndpoint, joinedGame.game_id, body.token), body.token)
+					.expectStatus(200)
+					.after(function () {
+						frisby.create("Get extendedProfile of user")
+							.get(testHelper.extendedProfileEndpoint + "?jwt=" + body.token + "&userID=" + body.user_id)
+							.expectStatus(200)
+							.expectJSON({
+								user_id: parseInt(body.user_id),
+								age: body.age,
+								gender: body.gender,
+								skilllevel: 0,
+								location: null,
+								average_review: 0,
+								top_tag: null,
+								top_tag_count: null,
+								games_created: 1,
+								games_joined: 0
+							})
+							.toss();
+					})
+					.toss();
+			})
+			.toss();
+	})
+	.toss();
