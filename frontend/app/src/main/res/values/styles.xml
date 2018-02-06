@@ -30,5 +30,13 @@
         <item name="android:paddingRight">15dp</item>
     </style>
 
+    <style name="CustomToolbar" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="drawerArrowStyle">@style/DrawerArrowStyle</item>
+    </style>
+
+    <style name="DrawerArrowStyle" parent="@style/Widget.AppCompat.DrawerArrowToggle">
+        <item name="spinBars">true</item>
+        <item name="color">@color/light_orange</item>
+    </style>
 
 </resources>

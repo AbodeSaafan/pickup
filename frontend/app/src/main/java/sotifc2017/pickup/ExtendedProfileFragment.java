@@ -31,11 +31,6 @@ import sotifc2017.pickup.api.GetJwt;
 import sotifc2017.pickup.api.Utils;
 import sotifc2017.pickup.api.contracts.GetExtendedProfileResponse;
 
-
-/**
- * Created by radhika on 2018-01-14.
- */
-
 public class ExtendedProfileFragment extends Fragment implements GetJwt.Callback {
 
     TextView age;
@@ -63,12 +58,12 @@ public class ExtendedProfileFragment extends Fragment implements GetJwt.Callback
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.activity_extended_profile, container, false);
+        return inflater.inflate(R.layout.fragment_extended_profile, container, false);
     }
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //getActivity().setContentView(R.layout.activity_extended_profile);
+        //getActivity().setContentView(R.layout.fragment_extended_profile);
         geocoder = new Geocoder(getActivity(), Locale.getDefault());
 
         user_id =  getActivity().getIntent().getStringExtra("userID");
@@ -135,7 +130,7 @@ public class ExtendedProfileFragment extends Fragment implements GetJwt.Callback
 
     private void ExtendedProfileSuccess(GetExtendedProfileResponse response) throws IOException {
         Toast.makeText(getActivity(), "ExtendedProfile successsful", Toast.LENGTH_SHORT).show();
-        age = (TextView)getView().findViewById(R.id.age);
+        age = (TextView) getView().findViewById(R.id.age);
         age.setText(response.age + " years old");
         gender = (TextView)getView().findViewById(R.id.gender);
         if (response.gender == "M") {

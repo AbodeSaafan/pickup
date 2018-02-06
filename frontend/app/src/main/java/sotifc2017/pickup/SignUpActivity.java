@@ -11,7 +11,6 @@ import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
-import android.location.Address;
 import android.location.Geocoder;
 import android.net.Uri;
 import android.os.Build;
@@ -625,7 +624,7 @@ public class SignUpActivity extends AppCompatActivity implements LoaderManager.L
     private void updateProfileSuccess(GetExtendedProfileResponse getExtendedProfileResponse) {
         Toast.makeText(this, "Extended Profile Updated successsfully", Toast.LENGTH_SHORT).show();
 
-        Intent intent = new Intent(SignUpActivity.this, MapActivity.class);
+        Intent intent = new Intent(SignUpActivity.this, MainActivity.class);
         startActivity(intent);
         progressDialog.cancel();
         finish();
