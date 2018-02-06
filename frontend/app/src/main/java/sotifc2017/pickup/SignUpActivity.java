@@ -44,9 +44,6 @@ import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
 import com.google.android.gms.location.places.ui.PlaceSelectionListener;
 import com.google.android.gms.maps.model.LatLng;
-//import com.seatgeek.placesautocomplete.OnPlaceSelectedListener;
-//import com.seatgeek.placesautocomplete.PlacesAutocompleteTextView;
-//import com.seatgeek.placesautocomplete.model.Place;
 
 import org.adw.library.widgets.discreteseekbar.DiscreteSeekBar;
 import org.json.JSONObject;
@@ -194,29 +191,7 @@ public class SignUpActivity extends AppCompatActivity implements LoaderManager.L
         next1.setOnClickListener(page_switch_listener);
         back1.setOnClickListener(page_switch_listener);
         back2.setOnClickListener(page_switch_listener);
-//        placesAutocomplete = findViewById(R.id.places_autocomplete);
-//        placesAutocomplete.setOnPlaceSelectedListener(
-//                new OnPlaceSelectedListener() {
-//                    @Override
-//                    public void onPlaceSelected(final Place place) {
-//                        // do something awesome with the selected place
-//                        address = placesAutocomplete.getText().toString();
-//                        if (address != null && !address.isEmpty()) {
-//                            try {
-//
-//                                List<Address> addressList = coder.getFromLocationName(address, 1);
-//                                if (addressList != null && addressList.size() > 0) {
-//                                    lat = addressList.get(0).getLatitude();
-//                                    lng = addressList.get(0).getLongitude();
-//                                }
-//                            } catch (Exception e) {
-//                                e.printStackTrace();
-//                            } // end catch
-//                        }
-//
-//                    }
-//                }
-//        );
+
         DobLabel = findViewById(R.id.Dob);
         genderSpinner = findViewById(R.id.gender_spinner);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
@@ -282,10 +257,10 @@ public class SignUpActivity extends AppCompatActivity implements LoaderManager.L
 
         autocompleteFragment.setFilter(typeFilter);
 
-        EditText x = (EditText) autocompleteFragment.getView().findViewById(R.id.place_autocomplete_search_input);
-        x.setHintTextColor(-1);
-        x.setHint("Select Location");
-        x.setTextColor(-1);
+        EditText locationView = (EditText) autocompleteFragment.getView().findViewById(R.id.place_autocomplete_search_input);
+        locationView.setHintTextColor(-1);
+        locationView.setHint("Select Location");
+        locationView.setTextColor(-1);
 
 
 

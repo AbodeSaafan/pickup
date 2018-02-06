@@ -154,17 +154,6 @@
                     android:name="com.google.android.gms.location.places.ui.PlaceAutocompleteFragment"
                     />
 
-                <!--<com.seatgeek.placesautocomplete.PlacesAutocompleteTextView-->
-                    <!--android:id="@+id/places_autocomplete"-->
-                    <!--android:layout_width="match_parent"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:hint="@string/prompt_default_location"-->
-                    <!--app:pacv_languageCode="en"-->
-                    <!--app:pacv_resultType="no_type"-->
-                    <!--app:pacv_googleMapsApiKey="AIzaSyDIoyl48T6r8uVOLSmKJHoCAYVKe7ydaU8"-->
-                    <!--android:theme="@style/AppTheme.Dark"-->
-                    <!--android:popupBackground="@color/black"/>-->
-                <!--app:pacv_googleMapsApiKey="@string/google_maps_key"-->
             </LinearLayout>
 
             <LinearLayout
