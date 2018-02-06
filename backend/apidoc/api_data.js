@@ -1322,14 +1322,14 @@ define({ "api": [
             "type": "String",
             "optional": false,
             "field": "User",
-            "description": "<p>'s extended profile entry (user_id, skilllevel, age, gender, location, average_review, top_tag)</p>"
+            "description": "<p>'s extended profile entry (user_id, skilllevel, age, gender, location, average_review, top_tag, games_created, games_joined)</p>"
           }
         ]
       },
       "examples": [
         {
           "title": "Success-Response:",
-          "content": "     HTTP/1.1 200 OK\n\t\t{\n\t\t\"user_id\": 164\n\t\t\"skilllevel\": 7\n\t\t\"age\": 24\n\t\t\"gender\": M\n\t\t\"location\": {lat: 124.32 lng: -96.23}\n\t\t\"average_review\": 3.76\n\t\t\"top_tag\": 4\n\t\t}",
+          "content": "     HTTP/1.1 200 OK\n\t\t{\n\t\t\"user_id\": 164\n\t\t\"skilllevel\": 7\n\t\t\"age\": 24\n\t\t\"gender\": M\n\t\t\"location\": {lat: 124.32 lng: -96.23}\n\t\t\"average_review\": 3.76\n\t\t\"top_tag\": 4\n\t\t\"games_created\": 5\n\t\t\"games_joined\": 12\n\t\t}",
           "type": "json"
         }
       ]

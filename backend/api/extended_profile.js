@@ -14,7 +14,7 @@ var strings = require("./universal_strings");
 *
 * @apiParam {String} jwt The JWT you have currently
 *
-* @apiSuccess {String} User's extended profile entry (user_id, skilllevel, age, gender, location, average_review, top_tag)
+* @apiSuccess {String} User's extended profile entry (user_id, skilllevel, age, gender, location, average_review, top_tag, games_created, games_joined)
 *
 * @apiError error An error is given for invalid user_ID
 *
@@ -33,6 +33,8 @@ var strings = require("./universal_strings");
 *		"location": {lat: 124.32 lng: -96.23}
 *		"average_review": 3.76
 *		"top_tag": 4
+*		"games_created": 5
+*		"games_joined": 12
 *		}
 *
 * @apiSampleRequest /api/extendedProfile
