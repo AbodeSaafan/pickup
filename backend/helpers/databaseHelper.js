@@ -150,10 +150,16 @@ function populateExtendedProfile(user, callback) {
 }
 
 function getExtendedProfile(userID, callback) {
-	var queryString = "(SELECT * FROM " +
-			"(SELECT * FROM extended_profile WHERE user_id = $1) ext_profile_row " +
-			"LEFT JOIN (SELECT tag top_tag, count(tag) top_tag_count from tags where review_id in " +
-			"(SELECT review_id from reviews where user_id = $1) group by top_tag, review_id ORDER BY top_tag_count DESC LIMIT 1) top_tag_row on 1=1);";
+	var queryString =
+			"(SELECT * FROM " + 
+			"(SELECT * FROM extended_profile WHERE user_id = $1) ext_profile_row " + 
+			"LEFT JOIN " + 
+			"(SELECT tag top_tag, count(tag) top_tag_count from tags where review_id in (SELECT review_id from reviews where user_id = $1) group by top_tag, review_id ORDER BY top_tag_count DESC LIMIT 1) top_tag_row on 1=1 " +
+			"LEFT JOIN " + 
+			"(SELECT count(*) games_created from games where creator_id = $1) games_created on 1=1 " +
+			"LEFT JOIN " + 
+			"(SELECT count(*) games_joined from gamers where user_id = $1) games_joined on 1=1 )";
+			
   	var queryParams = [userID];
 
 	const pool = new pg.Pool({connectionString: conString});

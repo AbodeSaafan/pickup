@@ -55,7 +55,9 @@ router.get("/", function (req, res) {
 					location: ext_profile.location,
 					average_review: ext_profile.average_review,
 					top_tag: ext_profile.top_tag,
-					top_tag_count: ext_profile.top_tag_count
+					top_tag_count: ext_profile.top_tag_count,
+					games_created: parseInt(ext_profile.games_created),
+					games_joined: parseInt(ext_profile.games_joined)
 				};
 				console.log(response);
 				res.status(200).json(response); return;
