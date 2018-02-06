@@ -3,6 +3,7 @@ package sotifc2017.pickup;
 import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
 import android.preference.PreferenceFragment;
@@ -20,6 +21,8 @@ import com.android.volley.VolleyError;
 
 import org.json.JSONObject;
 
+import java.io.IOException;
+import java.util.List;
 import java.util.Locale;
 
 import sotifc2017.pickup.api.Authentication;
@@ -76,7 +79,7 @@ public class ExtendedProfileFragment extends Fragment implements GetJwt.Callback
             //Log.d("CREATION", "reached here");
             user_id = String.valueOf(Authentication.getUserId(getActivity()));
         } else {
-            Button addFriendButton = (Button) getView().findViewById(R.id.addFriend);
+            Button addFriendButton = (Button) getView().findViewById(R.id.add_friend);
             addFriendButton.setVisibility (View.VISIBLE);
         }
     }
@@ -130,25 +133,39 @@ public class ExtendedProfileFragment extends Fragment implements GetJwt.Callback
 
 
 
-    private void ExtendedProfileSuccess(GetExtendedProfileResponse response) {
+    private void ExtendedProfileSuccess(GetExtendedProfileResponse response) throws IOException {
         Toast.makeText(getActivity(), "ExtendedProfile successsful", Toast.LENGTH_SHORT).show();
-        age = (TextView)getView().findViewById(R.id.ageValue);
-        age.setText(response.age);
-        gender = (TextView)getView().findViewById(R.id.genderValue);
-        gender.setText(response.gender);
-        skillevel = (TextView)getView().findViewById(R.id.skillLevelValue);
+        age = (TextView)getView().findViewById(R.id.age);
+        age.setText(response.age + " years old");
+        gender = (TextView)getView().findViewById(R.id.gender);
+        if (response.gender == "M") {
+            gender.setText("Male");
+        } else if (response.gender == "F") {
+            gender.setText("Female");
+        }
 
-        //skillevel.setText(SignUpActivity.skillLevels[Integer.parseInt(response.skilllevel)]);
+        skillevel = (TextView)getView().findViewById(R.id.skill_level);
+        String skill = SignUpActivity.skillLevels[Integer.parseInt(response.skilllevel)] + "(" + response.skilllevel + ")";
+
         //Log.d("CREATION", "skilllevel " + SignUpActivity.skillLevels[Integer.parseInt(response.skilllevel)]);
 
-        skillevel.setText(response.skilllevel);
+        skillevel.setText(skill);
 
-        location = (TextView)getView().findViewById(R.id.locationValue);
-        LatLng = response.location.split("(,)");
-        
-        location.setText(response.location);
-        averageReview = (TextView)getView().findViewById(R.id.averageReviewValue);
-        averageReview.setText(response.average_review);
+        location = (TextView)getView().findViewById(R.id.location);
+        LatLng = response.location.split(",");
+        double latitude = Double.parseDouble(LatLng[0].substring(1));
+        double longtitude = Double.parseDouble(LatLng[1].substring(0, LatLng[1].length() - 1));
+        String newLocation;
+        List<Address> addresses  = geocoder.getFromLocation(latitude, longtitude, 1);
+        if (addresses.size() > 0) {
+            newLocation = addresses.get(0).getLocality() + ", " + addresses.get(0).getAdminArea() + ", " + addresses.get(0).getCountryCode();
+        } else {
+            newLocation = "N/A";
+        }
+
+        location.setText(newLocation);
+        //averageReview = (TextView)getView().findViewById(R.id.averageReviewValue);
+        //averageReview.setText(response.average_review);
         username = (TextView) getView().findViewById(R.id.user_profile_name);
         username.setText(response.username);
 
