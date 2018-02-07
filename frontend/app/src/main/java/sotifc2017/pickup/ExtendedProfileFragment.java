@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -42,8 +43,10 @@ public class ExtendedProfileFragment extends Fragment implements GetJwt.Callback
     TextView gender;
     TextView skillevel;
     TextView location;
-    TextView averageReview;
+    RatingBar averageReview;
     TextView username;
+    TextView gamesCreated;
+    TextView gamesPlayed;
     private ProgressDialog progressDialog;
     String user_id;
     Geocoder geocoder;
@@ -164,8 +167,19 @@ public class ExtendedProfileFragment extends Fragment implements GetJwt.Callback
         }
 
         location.setText(newLocation);
-        //averageReview = (TextView)getView().findViewById(R.id.averageReviewValue);
-        //averageReview.setText(response.average_review);
+
+
+        averageReview = (RatingBar)getView().findViewById(R.id.averageReviewValue);
+        float aReviewValue = Float.parseFloat(response.average_review);
+        averageReview.setRating(aReviewValue);
+
+        gamesCreated = (TextView) getView().findViewById(R.id.gamesCreatedValue);
+        gamesCreated.setText(response.games_created);
+
+        gamesPlayed = (TextView) getView().findViewById(R.id.gamesCreatedValue);
+        gamesPlayed.setText(response.games_joined);
+
+
         username = (TextView) getView().findViewById(R.id.user_profile_name);
         username.setText(response.username);
 

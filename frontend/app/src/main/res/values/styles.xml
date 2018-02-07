@@ -30,5 +30,10 @@
         <item name="android:paddingRight">15dp</item>
     </style>
 
+    <style name="customRatingBar"
+        parent="android:style/Widget.Material.RatingBar.Small">
+        ... // Additional customizations
+    </style>
+
 
 </resources>
