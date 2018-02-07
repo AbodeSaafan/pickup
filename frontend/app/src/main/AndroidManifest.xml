@@ -23,7 +23,6 @@
         <activity android:name=".SignInActivity" />
         <activity android:name=".SignUpActivity" />
         <activity android:name=".CreateAccountActivity" />
-        <activity android:name=".ExtendedProfileFragment" />
         <!--
  ATTENTION: This was auto-generated to add Google Play services to your project for
      App Indexing.  See https://g.co/AppIndexing/AndroidStudio for more information.
@@ -44,9 +43,8 @@
             android:value="@string/google_maps_key" />
 
         <activity
-            android:name=".MapActivity"
+            android:name=".MainActivity"
             android:label="@string/title_activity_map" />
-        <activity android:name=".SettingsFragment"></activity>
     </application>
 
 </manifest>

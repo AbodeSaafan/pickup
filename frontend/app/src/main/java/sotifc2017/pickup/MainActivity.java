@@ -35,7 +35,7 @@ import java.util.Random;
 
 import sotifc2017.pickup.api.Authentication;
 
-public class MapActivity extends AppCompatActivity implements OnMapReadyCallback {
+public class MainActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
     private FusedLocationProviderClient mFusedLocationClient;
@@ -50,10 +50,12 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_map);
+        setContentView(R.layout.activity_main);
 
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle(null);
+        toolbar.bringToFront();
 
         navigationView = findViewById(R.id.navigation_view_main);
         drawerLayout = findViewById(R.id.activity_map);
@@ -214,7 +216,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 .setPositiveButton("Sign Out", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
                         //sign out call
-                        Authentication.logout(MapActivity.this);
+                        Authentication.logout(MainActivity.this);
                         intent = new Intent(getApplicationContext(), SignInActivity.class);
                         startActivity(intent);
                         dialog.dismiss();

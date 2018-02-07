@@ -5,14 +5,21 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/activity_map">
 
-    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:id="@+id/fragment_container"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:context="sotifc2017.pickup.MapActivity">
+        android:layout_height="match_parent">
 
+        <include layout="@layout/toolbar"/>
+
+        <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:id="@+id/fragment_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:context="sotifc2017.pickup.MainActivity">
+        </RelativeLayout>
     </RelativeLayout>
+
 
     <android.support.design.widget.NavigationView
         android:id="@+id/navigation_view_main"
