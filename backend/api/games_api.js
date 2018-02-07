@@ -16,10 +16,10 @@ var strings = require("./universal_strings");
 * @apiParam {string} name The name of the game you are creating
 * @apiParam {string} type The type of the game you are creating (Serious, casual, ..)
 * @apiParam {int} skill_offset The intended skill offset range for this game (0-10)
-* @apiParam {int} total_players The total required players for the game (between 2 and 100)
+* @apiParam {int} total_players_required The total required players for the game (between 2 and 100)
 * @apiParam {int} start_time The time the game starts (in unix epoch time)
 * @apiParam {int} duration The duration of the game (in seconds as an int)
-* @apiParam {point} location The location of the game represented in location point object (lat/lng)
+* @apiParam {string} location The location of the game represented in location point object (lat/lng)
 * @apiParam {string} location_notes how to get into the court
 * @apiParam {string} description Short description for the game (less than 250 characters)
 * @apiParam {string} gender The preferred for the game (if any)
@@ -40,7 +40,7 @@ var strings = require("./universal_strings");
 *       "total_players_required": 6,
 *       "start_time": 1504272395,
 *       "duration": 5400,
-*       "location": {lat: 500.50, lng:500.50},
+*       "location": { "lng": -96.849, "lat": -144.336 },
 *       "location_notes": "Come around the back and knock on the blue door",
 *       "description": "Casual basketball game",
 *       "gender": "A",
