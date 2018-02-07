@@ -942,7 +942,7 @@
             "group": "Parameter",
             "type": "int",
             "optional": false,
-            "field": "total_players",
+            "field": "total_players_required",
             "description": "<p>The total required players for the game (between 2 and 100)</p>"
           },
           {
@@ -961,7 +961,7 @@
           },
           {
             "group": "Parameter",
-            "type": "point",
+            "type": "string",
             "optional": false,
             "field": "location",
             "description": "<p>The location of the game represented in location point object (lat/lng)</p>"
@@ -1039,7 +1039,7 @@
     "examples": [
       {
         "title": "Example call:",
-        "content": "{\n  \"jwt\": Encrypted_JWT_Token,\n  \"name\": \"abode's game\",\n  \"type\": \"casual\",\n  \"skill\": 5,\n  \"total_players_required\": 6,\n  \"start_time\": 1504272395,\n  \"duration\": 5400,\n  \"location\": {lat: 500.50, lng:500.50},\n  \"location_notes\": \"Come around the back and knock on the blue door\",\n  \"description\": \"Casual basketball game\",\n  \"gender\": \"A\",\n  \"age_range\": \"[20, 30]\",\n  \"enforced_params\": [\"gender\", \"age\"]\n}",
+        "content": "{\n  \"jwt\": Encrypted_JWT_Token,\n  \"name\": \"abode's game\",\n  \"type\": \"casual\",\n  \"skill\": 5,\n  \"total_players_required\": 6,\n  \"start_time\": 1504272395,\n  \"duration\": 5400,\n  \"location\": { \"lng\": -96.849, \"lat\": -144.336 },\n  \"location_notes\": \"Come around the back and knock on the blue door\",\n  \"description\": \"Casual basketball game\",\n  \"gender\": \"A\",\n  \"age_range\": \"[20, 30]\",\n  \"enforced_params\": [\"gender\", \"age\"]\n}",
         "type": "json"
       }
     ],

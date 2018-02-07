@@ -61,7 +61,6 @@ router.get("/", function (req, res) {
 					games_created: parseInt(ext_profile.games_created),
 					games_joined: parseInt(ext_profile.games_joined)
 				};
-				console.log(response);
 				res.status(200).json(response); return;
 			}else{
 				res.status(400).json({"error": strings.userIdFail}); return;

@@ -38,11 +38,11 @@ function validateAndCleanCreateGameRequest(data){
 	data.duration = data.duration - 0; // quick convert to int
 	validateTotalPlayersRequired(data.total_players_required);
 	validate(data.gender, regex.gameGenderRegex, strings.invalidGameGenderPreference);
-	validateAgeRange(data.age_range);
-	validateLocation(data.location);
+	data.age_range = validateAgeRange(data.age_range);
+	data.location = validateLocation(data.location);
 	validate(data.location_notes, regex.gameLocationNotesRegex, strings.invalidLocationNotes);
 	validate(data.description, regex.gameDescriptionRegex, strings.invalidGameDescription);
-	validateEnforcedParamsList(data.enforced_params);
+	data.enforced_params = validateEnforcedParamsList(data.enforced_params);
 	return data;
 }
 
@@ -61,7 +61,7 @@ function validateAndCleanReviewRequest(data){
 	validate(data.gameId, regex.idRegex, strings.invalidGameId);
 	validate(data.rating, regex.ratingRegex, strings.invalidRating);
 	validateRatings(data.tags);
-	data.reviewed = data.reviewed == 'true'
+	data.reviewed = data.reviewed == "true";
 	return data;
 }
 
@@ -97,14 +97,14 @@ function validateAndCleanSearchRequest(data){
 }
 
 function validateAndCleanUpdateExtendedProfileRequest (data) {
-	validateLocation(data.location);
+	data.location = validateLocation(data.location);
 	validateSkill(data.skill_level);
 	return data;
 }
 
-function validateAndCleanExtendedProfileRequest (data) {
-    validate(data.username);
-    return data;
+function validateAndCleanExtendedProfileRequest(data) {
+	validate(data.username);
+	return data;
 }
 
 function validateAndCleanFriendId (data) {
@@ -124,13 +124,13 @@ function getIfReviewed(users, reviewerId, finished){
 	});
 }
 
-function addTag(reviewId, tags, finished){
+function addTag(reviewId, tags, finished) {
 	var final_results = [];
-	async.forEachOf(tags, function(tag, i, callback){
-		databaseHelper.addTag(reviewId, tag, (tagAdded)=>{
-			if(!tagAdded){
-					final_results.push("1");
-				}
+	async.forEachOf(tags, function (tag, i, callback) {
+		databaseHelper.addTag(reviewId, tag, (tagAdded) => {
+			if (!tagAdded) {
+				final_results.push("1");
+			}
 			callback();
 		});
 	}, function () {
@@ -138,22 +138,22 @@ function addTag(reviewId, tags, finished){
 	});
 }
 
-function updateTag(reviewId, tags, finished){
-	databaseHelper.deleteTag(reviewId, (deleteComplete)=> {
-		if(deleteComplete){
-				var final_results = [];
-				async.forEachOf(tags, function(tag, i, callback){
-					databaseHelper.addTag(reviewId, tag, (tagAdded)=>{
-						if(!tagAdded){
-								final_results.push("1");
-							}
-						callback();
-					});
-				}, function () {
-					finished(final_results.length > 0);
+function updateTag(reviewId, tags, finished) {
+	databaseHelper.deleteTag(reviewId, (deleteComplete) => {
+		if (deleteComplete) {
+			var final_results = [];
+			async.forEachOf(tags, function (tag, i, callback) {
+				databaseHelper.addTag(reviewId, tag, (tagAdded) => {
+					if (!tagAdded) {
+						final_results.push("1");
+					}
+					callback();
 				});
-			}
-		else{
+			}, function () {
+				finished(final_results.length > 0);
+			});
+		}
+		else {
 			finished(true);
 		}
 	});
@@ -193,7 +193,7 @@ module.exports = {
 	validateAndCleanSearchRequest,
 	validateAndCleanReviewRequest,
 	validateAndCleanLeaveRequest,
-    validateAndCleanExtendedProfileRequest,
+	validateAndCleanExtendedProfileRequest,
 	validateAndCleanUpdateExtendedProfileRequest,
 	validateAndCleanFriendId,
 	filterGames,
@@ -238,16 +238,20 @@ function searchValidateStartTime(startTime, obj, objParamString){
 }
 
 function validateAgeRange(ageRange){
+	ageRange = JSON.parse(ageRange);
 	if (ageRange == null || ageRange.length != 2 ||
 		ageRange[0] > ageRange[1]){
 		throw new Error(strings.invalidGameAgeRange);
 	}
+	return ageRange;
 }
 
 function validateLocation(location){
+	location = JSON.parse(location);
 	if (location == null || location.lng == null || location.lat == null){
 		throw new Error(strings.invalidGameLocation);
 	}
+	return location;
 }
 
 function searchValidateLocation(location, obj, objParamString){
@@ -261,12 +265,14 @@ function searchValidateLocation(location, obj, objParamString){
 }
 
 function validateEnforcedParamsList(enforcedList){
+	enforcedList = JSON.parse(enforcedList);
 	if (enforcedList != null){
 		for (let param of enforcedList){
 			if (!(regex.gameEnforcedParamRegex.test(param))){
 				throw new Error(strings.invalidEnforcedParamList);
 			}
 		}
+		return enforcedList;
 	}
 }
 

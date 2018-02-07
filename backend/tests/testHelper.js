@@ -32,10 +32,10 @@ function randomUsername(){
 }
 
 function randomLocation(){
-	return {
+	return JSON.stringify({
 		lng: (Math.random() * (180 - (-180)) - 180).toFixed(3) * 1,
 		lat: (Math.random() * (180 - (-180)) - 180).toFixed(3) * 1
-	};
+	});
 }
 
 function randomDob(){
@@ -88,15 +88,15 @@ function createGenericGame(jwt, start, duration){
 		location_notes: "Come around the back and knock on the blue door",
 		description: "Casual basketball game",
 		gender: "m",
-		age_range: [20, 30],
-		enforced_params: ["gender", "age"],
+		age_range: "[20, 30]",
+		enforced_params: JSON.stringify(["gender", "age"]),
 		jwt: jwt
 	};
 }
 
 function createUnrestrictedGame(jwt, start, duration){
 	var game = createGenericGame(jwt, start, duration);
-	game.enforced_params = [];
+	game.enforced_params = JSON.stringify([]);
 	return game;
 }
 
