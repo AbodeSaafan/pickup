@@ -2,6 +2,7 @@ package sotifc2017.pickup;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.ActionBar;
 import android.app.DatePickerDialog;
@@ -11,13 +12,18 @@ import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
+import android.graphics.Typeface;
 import android.location.Geocoder;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
+import android.text.style.StyleSpan;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -30,6 +36,7 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -38,11 +45,29 @@ import android.widget.ViewFlipper;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.google.android.gms.common.api.Status;
+import com.google.android.gms.common.data.DataBufferUtils;
 import com.google.android.gms.location.places.AutocompleteFilter;
+import com.google.android.gms.location.places.AutocompletePrediction;
+import com.google.android.gms.location.places.AutocompletePredictionBufferResponse;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
 import com.google.android.gms.location.places.ui.PlaceSelectionListener;
 import com.google.android.gms.maps.model.LatLng;
+
+// Custom Implementation
+import com.google.android.gms.location.places.GeoDataClient;
+import com.google.android.gms.location.places.Places;
+import com.google.android.gms.location.places.PlaceDetectionClient;
+import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.RuntimeExecutionException;
+import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
+
+import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
+// Custom Implementation
 
 import org.adw.library.widgets.discreteseekbar.DiscreteSeekBar;
 import org.json.JSONObject;
@@ -50,8 +75,12 @@ import org.json.JSONObject;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import sotifc2017.pickup.api.Authentication;
 import sotifc2017.pickup.api.ExtendedProfile;
@@ -113,6 +142,10 @@ public class SignUpActivity extends AppCompatActivity implements LoaderManager.L
     double lat;
     double lng;
     int skilllevel_Value;
+
+    // Custom Implementation
+    protected GeoDataClient mGeoDataClient;
+    // Custom Implementation
 
     private OnClickListener page_switch_listener = new OnClickListener() {
         public void onClick(View v) {
@@ -247,6 +280,83 @@ public class SignUpActivity extends AppCompatActivity implements LoaderManager.L
         progressDialog = new ProgressDialog(SignUpActivity.this,
                 R.style.AppTheme_Dark);
 
+        // Custom Implementation
+        // Construct a GeoDataClient
+        mGeoDataClient = Places.getGeoDataClient(this, null);
+
+        // Construct a PlaceDetectionClient.
+        // mPlaceDetectionClient = Places.getPlaceDetectionClient(this, null);
+        final AutocompleteFilter mPlaceFilter = new AutocompleteFilter.Builder()
+                .setTypeFilter(AutocompleteFilter.TYPE_FILTER_CITIES)
+                .build();
+
+        // List view for locations
+        final ListView locationsList = findViewById(R.id.list_view_locations);
+
+        // Set listener on edit view
+        final EditText location = findViewById(R.id.location_autocomplete);
+
+        location.addTextChangedListener(new TextWatcher() {
+
+            public void afterTextChanged(Editable s) {}
+
+            public void beforeTextChanged(CharSequence s, int start,
+                                          int count, int after) {
+            }
+
+            public void onTextChanged(CharSequence s, int start,
+                                      int before, int count) {
+                Log.d(FC_TAG, String.valueOf(location.getText()));
+                if (location.getText().length() > 2) {
+                    // Query user typed information using a Google API
+                    LatLngBounds mBounds = null;
+                    String query = String.valueOf(location.getText());
+                    Task<AutocompletePredictionBufferResponse> results =
+                            mGeoDataClient.getAutocompletePredictions(query, mBounds, mPlaceFilter);
+
+                    results.addOnSuccessListener(new OnSuccessListener<AutocompletePredictionBufferResponse>() {
+                        @Override
+                        public void onSuccess(AutocompletePredictionBufferResponse autocompletePredictions) {
+                            Iterator<AutocompletePrediction> iterator = autocompletePredictions.iterator();
+//                            ArrayList<String> locations = new ArrayList<String>(autocompletePredictions.getCount());
+//                            ArrayAdapter<String> adapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.activity_list_item, locations);
+//                            locationsList.setAdapter(adapter);
+                            if (iterator.hasNext()) {
+                                while (iterator.hasNext()) {
+                                    AutocompletePrediction prediction = iterator.next();
+                                    StyleSpan normal = new StyleSpan(Typeface.NORMAL);
+                                    CharSequence fullText = prediction.getFullText(normal);
+                                    CharSequence primaryText = prediction.getPrimaryText(normal);
+                                    CharSequence secondaryText = prediction.getSecondaryText(normal);
+
+                                    // Add to a list view somehow
+//                                    locations.add((String) fullText);
+//                                    adapter.notifyDataSetChanged();
+
+                                    Log.d(FC_TAG, "Query was successful" + fullText + primaryText + secondaryText);
+                                }
+                            } else {
+                                Log.d(FC_TAG, "No data found for that location");
+                            }
+                            autocompletePredictions.release();
+                        }
+                    });
+
+                    results.addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.e(FC_TAG, "Could not get suggestions" + e);
+                        }
+
+                    });
+                }
+            }
+        });
+
+
+        // Custom Implementation
+
+        // Location using Google widget
         PlaceAutocompleteFragment autocompleteFragment = (PlaceAutocompleteFragment)
                 getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
 
