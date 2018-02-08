@@ -44,12 +44,15 @@ import android.widget.ViewFlipper;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
+import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.common.data.DataBufferUtils;
 import com.google.android.gms.location.places.AutocompleteFilter;
 import com.google.android.gms.location.places.AutocompletePrediction;
 import com.google.android.gms.location.places.AutocompletePredictionBufferResponse;
 import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.ui.PlaceAutocomplete;
 import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
 import com.google.android.gms.location.places.ui.PlaceSelectionListener;
 import com.google.android.gms.maps.model.LatLng;
@@ -296,6 +299,7 @@ public class SignUpActivity extends AppCompatActivity implements LoaderManager.L
         // Set listener on edit view
         final EditText location = findViewById(R.id.location_autocomplete);
 
+
         location.addTextChangedListener(new TextWatcher() {
 
             public void afterTextChanged(Editable s) {}
@@ -353,6 +357,32 @@ public class SignUpActivity extends AppCompatActivity implements LoaderManager.L
             }
         });
 
+        final AutocompleteFilter typeFilter = new AutocompleteFilter.Builder()
+                .setTypeFilter(AutocompleteFilter.TYPE_FILTER_CITIES)
+                .build();
+        final EditText location2 = findViewById(R.id.location_autocompleteBetter);
+
+        location2.setOnClickListener(new OnClickListener() {
+            public void onClick(View view) {
+
+
+                int PLACE_AUTOCOMPLETE_REQUEST_CODE = 1;
+                try {
+                    Intent intent =
+                            new PlaceAutocomplete.IntentBuilder(PlaceAutocomplete.MODE_FULLSCREEN)
+                                    .setFilter(typeFilter)
+                                    .build(SignUpActivity.this);
+                    startActivityForResult(intent, PLACE_AUTOCOMPLETE_REQUEST_CODE);
+                } catch (GooglePlayServicesRepairableException e) {
+                    // TODO: Handle the error.
+                } catch (GooglePlayServicesNotAvailableException e) {
+                    // TODO: Handle the error.
+                }
+            }
+        });
+
+
+
 
         // Custom Implementation
 
@@ -360,9 +390,7 @@ public class SignUpActivity extends AppCompatActivity implements LoaderManager.L
         PlaceAutocompleteFragment autocompleteFragment = (PlaceAutocompleteFragment)
                 getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
 
-        AutocompleteFilter typeFilter = new AutocompleteFilter.Builder()
-                .setTypeFilter(AutocompleteFilter.TYPE_FILTER_CITIES)
-                .build();
+
 
         autocompleteFragment.setFilter(typeFilter);
 
@@ -388,6 +416,29 @@ public class SignUpActivity extends AppCompatActivity implements LoaderManager.L
                 Log.i(FC_TAG, "An error occurred: " + status);
             }
         });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == 1) {
+            if (resultCode == RESULT_OK) {
+
+                Place place = PlaceAutocomplete.getPlace(this, data);
+                EditText location = findViewById(R.id.location_autocompleteBetter);
+                location.setText(place.getAddress());
+                LatLng latlng = place.getLatLng();
+                lat = latlng.latitude;
+                lng = latlng.longitude;
+                Log.i("test", "Place: " + place.getName());
+            } else if (resultCode == PlaceAutocomplete.RESULT_ERROR) {
+                Status status = PlaceAutocomplete.getStatus(this, data);
+                // TODO: Handle the error.
+                Log.i("test", status.getStatusMessage());
+
+            } else if (resultCode == RESULT_CANCELED) {
+                // The user canceled the operation.
+            }
+        }
     }
 
     public void onItemSelected(AdapterView<?> parent, View view,
