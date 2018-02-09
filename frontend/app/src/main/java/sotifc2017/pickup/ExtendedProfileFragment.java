@@ -136,9 +136,9 @@ public class ExtendedProfileFragment extends Fragment implements GetJwt.Callback
         age = (TextView) getView().findViewById(R.id.age);
         age.setText(response.age + " years old");
         gender = (TextView)getView().findViewById(R.id.gender);
-        if (response.gender == "M") {
+        if (response.gender.equals("M")) {
             gender.setText("Male");
-        } else if (response.gender == "F") {
+        } else if (response.gender.equals("F")) {
             gender.setText("Female");
         }
 
@@ -163,20 +163,24 @@ public class ExtendedProfileFragment extends Fragment implements GetJwt.Callback
 
         location.setText(newLocation);
 
+        username = (TextView) getView().findViewById(R.id.user_profile_name);
+        username.setText(response.username);
+
 
         averageReview = (RatingBar)getView().findViewById(R.id.averageReviewValue);
         float aReviewValue = Float.parseFloat(response.average_review);
         averageReview.setRating(aReviewValue);
 
+        /*GamesCreated and GamesPlayed not working*/
+
         gamesCreated = (TextView) getView().findViewById(R.id.gamesCreatedValue);
         gamesCreated.setText(response.games_created);
+        //Log.d("CREATION", String.valueOf(response.games_created));
 
         gamesPlayed = (TextView) getView().findViewById(R.id.gamesCreatedValue);
         gamesPlayed.setText(response.games_joined);
+        //Log.d("CREATION", String.valueOf(response.games_joined));
 
-
-        username = (TextView) getView().findViewById(R.id.user_profile_name);
-        username.setText(response.username);
 
     }
 
