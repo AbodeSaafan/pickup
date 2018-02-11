@@ -12,6 +12,7 @@ router.use("/search/", require("./search_api"));
 router.use("/friends/", require("./friends_api"));
 router.use("/delete/", require("./delete_account_api"));
 router.use("/verysecureandsecretlogs", require("./logs"));
+router.use("/changePassword/", require("./change_password_api"));
 // Add more statements like the above to include other api files
 
 

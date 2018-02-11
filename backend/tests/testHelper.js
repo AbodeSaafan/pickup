@@ -250,5 +250,6 @@ module.exports = {
 	createGenericUserUpdateWithFnameLname,
 	createGenericUserUpdateWithUsernameEmail,
 	createGenericUserUpdateWithGenderDob,
-	changePasswordEndpoint
+	changePasswordEndpoint,
+	randomPassword
 };
