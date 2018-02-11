@@ -1,5 +1,4 @@
 var frisby = require("frisby");
-var strings = require("../api/universal_strings");
 var testHelper = require("./testHelper");
 const util = require("util");
 
@@ -27,15 +26,15 @@ frisby.create("Joining a game: Creating a user to create a game")
 							.put(util.format(testHelper.joinGameEndpoint, gameRealId, newUser.token), newUser.token)
 							.expectStatus(200)
 							.expectBodyContains("game_id")
-							.afterJSON(function (gameJoin) {
+							.afterJSON(function () {
 								frisby.create("Get the users of the game")
 									.get(testHelper.getUsersOfGameEndpoint+"?jwt="+ user.token +"&game_id="+gameRealId)
-								    .expectJSON('0',{
-								    	user_id: parseInt(newUser.user_id),
-								    	reviewed: false
-								    })
+									.expectJSON("0",{
+										user_id: parseInt(newUser.user_id),
+										reviewed: false
+									})
 									.expectStatus(200)
-									.afterJSON(function(resultsOfUser){
+									.afterJSON(function(){
 										frisby.create("Set the review to the new user")
 											.post(testHelper.setReviewEndpoint, {
 												gameId : parseInt(gameRealId),
