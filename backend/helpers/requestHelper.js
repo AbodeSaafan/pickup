@@ -15,16 +15,8 @@ function validateAndCleanRegisterRequest(data){
 }
 
 function validateAndCleanUpdateAdminRequest(user_id, data){
-	var user_details = {
-		user_id: parseInt(user_id),
-		username: null,
-		password: null,
-		fname: null,
-		lname: null,
-		gender: null,
-		dob: null,
-		email: null
-	}
+	var user_details = {user_id: parseInt(user_id)};
+	
 	if (data.username) {
 		validate(data.username, regex.usernameRegex, strings.invalidUsername);
 		user_details.username = data.username;
