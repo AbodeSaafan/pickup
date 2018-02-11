@@ -22,7 +22,7 @@ var listFriendRequestEndpoint = baseApi + "/friends/listFriendRequest";
 var searchEndpoint = baseApi + "/search";
 var deleteAccountEndpoint = baseApi + "/delete";
 var setReviewEndpoint = baseApi + "/reviews/setReview";
-var setReviewEndpoint = baseApi + "/changePassword";
+var changePasswordEndpoint = baseApi + "/changePassword";
 
 function randomEmail(){
 	return crypto.randomBytes(4).toString("hex") + "@mail.com";
@@ -52,7 +52,7 @@ function randomPassword(){
 	return crypto.randomBytes(4).toString("hex");
 }
 
-function createGenericUser(){
+function createGenericUserMale(){
 	return {
 		username:randomUsername(),
 		password:randomPassword(),
@@ -116,6 +116,18 @@ function createGenericUserUpdateWithGenderDob(jwt){
 	};
 }
 
+function createGenericUserFemale(){
+	return {
+		username:randomUsername(),
+		password:randomPassword(),
+		fname:rNameg.first(),
+		lname:rNameg.last(),
+		gender:"f",
+		dob:randomDob(),
+		email:randomEmail()
+	};
+}
+
 
 function createGenericUserFixedBirth(){
 	return {
@@ -140,7 +152,7 @@ function createGenericGame(jwt, start, duration){
 		location: randomLocation(),
 		location_notes: "Come around the back and knock on the blue door",
 		description: "Casual basketball game",
-		gender: "m",
+		gender: "f",
 		age_range: "[20, 30]",
 		enforced_params: JSON.stringify(["gender", "age"]),
 		jwt: jwt
@@ -208,7 +220,8 @@ module.exports = {
 	loginEndpoint,
 	randomEmail,
 	extendedProfileEndpoint,
-	createGenericUser,
+	createGenericUserMale,
+	createGenericUserFemale,
 	createGameEndpoint,
 	createGenericGame,
 	joinGameEndpoint,
@@ -237,5 +250,5 @@ module.exports = {
 	createGenericUserUpdateWithFnameLname,
 	createGenericUserUpdateWithUsernameEmail,
 	createGenericUserUpdateWithGenderDob,
-
+	changePasswordEndpoint
 };

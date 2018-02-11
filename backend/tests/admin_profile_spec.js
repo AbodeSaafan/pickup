@@ -4,7 +4,7 @@ var testHelper = require("./testHelper");
 
 // Get admin profile properly
 frisby.create("Register a user using the API with valid credentials to use for profile testing")
-	.post(testHelper.registerEndpoint, testHelper.createGenericUser())
+	.post(testHelper.registerEndpoint, testHelper.createGenericUserMale())
 	.expectStatus(200)
 	.afterJSON(function (body) {
 		frisby.create("Get admin profile of user")
@@ -30,7 +30,7 @@ frisby.create("Register a user using the API with valid credentials to use for p
 
 //Update ALL fields of Admin User
 	frisby.create("Register a user using the API with valid credentials to use for profile testing")
-		.post(testHelper.registerEndpoint, testHelper.createGenericUser())
+		.post(testHelper.registerEndpoint, testHelper.createGenericUserMale())
 		.expectStatus(200)
 		.afterJSON(function (body) {
 			frisby.create("Get admin profile of user")
@@ -66,7 +66,7 @@ frisby.create("Register a user using the API with valid credentials to use for p
 
 //Update only first and last name field of Admin User
 		frisby.create("Register a user using the API with valid credentials to use for profile testing")
-			.post(testHelper.registerEndpoint, testHelper.createGenericUser())
+			.post(testHelper.registerEndpoint, testHelper.createGenericUserMale())
 			.expectStatus(200)
 			.afterJSON(function (body) {
 				frisby.create("Update admin profile of user with firstName and lastName")
@@ -97,7 +97,7 @@ frisby.create("Register a user using the API with valid credentials to use for p
 //Update only username and email field of Admin User
 
 frisby.create("Register a user using the API with valid credentials to use for profile testing")
-	.post(testHelper.registerEndpoint, testHelper.createGenericUser())
+	.post(testHelper.registerEndpoint, testHelper.createGenericUserMale())
 	.expectStatus(200)
 	.afterJSON(function (body) {
 		frisby.create("Update admin profile of user with username and email")
@@ -126,7 +126,7 @@ frisby.create("Register a user using the API with valid credentials to use for p
 //Update only gender and dob field of Admin User
 
 frisby.create("Register a user using the API with valid credentials to use for profile testing")
-	.post(testHelper.registerEndpoint, testHelper.createGenericUser())
+	.post(testHelper.registerEndpoint, testHelper.createGenericUserMale())
 	.expectStatus(200)
 	.afterJSON(function (body) {
 		frisby.create("Update admin profile of user with username and email")
@@ -154,7 +154,7 @@ frisby.create("Register a user using the API with valid credentials to use for p
 
 //Update no field of Admin User
 frisby.create("Register a user using the API with valid credentials to use for profile testing")
-	.post(testHelper.registerEndpoint, testHelper.createGenericUser())
+	.post(testHelper.registerEndpoint, testHelper.createGenericUserMale())
 	.expectStatus(200)
 	.afterJSON(function (body) {
 		frisby.create("Update admin profile of user with username and email")
@@ -192,7 +192,7 @@ frisby.create("Register a user using the API with valid credentials to use for p
 	//Updating with invalid details
 
 	frisby.create("Register a user using the API with valid credentials to use for profile testing")
-		.post(testHelper.registerEndpoint, testHelper.createGenericUser())
+		.post(testHelper.registerEndpoint, testHelper.createGenericUserMale())
 		.expectStatus(200)
 		.afterJSON(function (body) {
 			frisby.create("Update admin profile of user with invalid username, email and fname")
@@ -215,7 +215,7 @@ frisby.create("Register a user using the API with valid credentials to use for p
 	//Updating with invalid jwt
 
 	frisby.create("Register a user using the API with valid credentials to use for profile testing")
-		.post(testHelper.registerEndpoint, testHelper.createGenericUser())
+		.post(testHelper.registerEndpoint, testHelper.createGenericUserMale())
 		.expectStatus(200)
 		.afterJSON(function (body) {
 			frisby.create("Update admin profile of user with invalid jwt")

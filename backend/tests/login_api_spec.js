@@ -2,7 +2,7 @@ var frisby = require("frisby");
 var strings = require("../api/universal_strings");
 var testHelper = require("./testHelper");
 
-var genericUser = testHelper.createGenericUser();
+var genericUser = testHelper.createGenericUserMale();
 
 // Sending a login request with an incorrect password
 frisby.create("Attempt to login a user using the wrong password")
