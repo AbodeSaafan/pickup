@@ -407,7 +407,7 @@ function ensureGameIsValidToBeCreated (game, userId, callback){
 }
 
 function ensureGameIsJoinableByPlayer(gameId, userId, callback){
-	var queryString = "SELECT total_players_required, total_players_added, enforced_params, gender, age_range FROM games WHERE game_id = $1";
+	var queryString = "SELECT total_players_required, total_players_added, to_json(enforced_params) enforced_params, gender, age_range FROM games WHERE game_id = $1";
 	var queryParams = [gameId];
 
 	const pool = new pg.Pool({connectionString: conString});
@@ -416,14 +416,13 @@ function ensureGameIsJoinableByPlayer(gameId, userId, callback){
 			var resQuery = res.rows[0];
 			if (resQuery.total_players_required - resQuery.total_players_added > 0){ // Check space in the game
 				// Go through enforced params and verify that user meets requirements (if any)
-				if (resQuery.enforced_params !== null){
+				if (resQuery.enforced_params != null && resQuery.enforced_params.length > 0){
 					var queryString = "SELECT gender, dob FROM users WHERE user_id = $1";
 					var queryParams = [userId];
-
 					const pool = new pg.Pool({connectionString: conString});
 					pool.connect((err, client, done) => {
 						client.query(queryString, queryParams, (err, res) => {
-							var params = resQuery.enforced_params.replace("{", "").replace("}", "").split(",");
+							var params = resQuery.enforced_params;
 							for (var i = 0; i < params.length; i++) {
 								var validParam = params[i] === "gender" ? resQuery.gender === res.rows[0].gender :
 									validAge(resQuery.age_range, res.rows[0].dob);

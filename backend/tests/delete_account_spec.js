@@ -3,7 +3,7 @@ var strings = require("../api/universal_strings");
 var testHelper = require("./testHelper");
 
 // Get admin profile properly
-var userDetails = testHelper.createGenericUser();
+var userDetails = testHelper.createGenericUserMale();
 frisby.create("Register a user using the API with valid credentials to use for delete account testing")
 	.post(testHelper.registerEndpoint, userDetails)
 	.expectStatus(200)

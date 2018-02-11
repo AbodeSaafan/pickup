@@ -272,20 +272,24 @@ function validateAgeRange(ageRange){
 }
 
 function validateLocation(location){
-	location = JSON.parse(location);
-	if (location == null || location.lng == null || location.lat == null){
+	try{
+		location = JSON.parse(location);
+		if (location == null || location.lng == null || location.lat == null){
+			throw new Error(strings.invalidGameLocation);
+		}
+		return location;
+	}
+	catch(Exception){
 		throw new Error(strings.invalidGameLocation);
 	}
-	return location;
 }
 
 function searchValidateLocation(location, obj, objParamString){
 	if(!location || location == ""){
 		delete obj[objParamString]; return;
 	} else {
-		var loc = JSON.parse(location);
-		validateLocation(loc);
-		return loc;
+		return validateLocation(location);
+		
 	}
 }
 

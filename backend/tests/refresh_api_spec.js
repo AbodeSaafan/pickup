@@ -4,7 +4,7 @@ var testHelper = require("./testHelper");
 
 // Creating a user with valid creds for testing
 frisby.create("Register a user using the API with valid credentials to use for refresh testing")
-	.post(testHelper.registerEndpoint, testHelper.createGenericUser()) 
+	.post(testHelper.registerEndpoint, testHelper.createGenericUserMale()) 
 	.expectStatus(200)
 	.expectHeaderContains("content-type", "application/json")
 	.expectBodyContains("token")

@@ -5,12 +5,12 @@ var testHelper = require("./testHelper");
 //Send a friend request to valid User
 
 frisby.create("Sending a Friend Request: Creating a user to send a friend request")
-	.post(testHelper.registerEndpoint, testHelper.createGenericUser())
+	.post(testHelper.registerEndpoint, testHelper.createGenericUserMale())
 	.expectStatus(200)
 	.expectBodyContains("token")
 	.afterJSON(function (user) {
 		frisby.create("Creating a new user to send the request to")
-			.post(testHelper.registerEndpoint, testHelper.createGenericUser())
+			.post(testHelper.registerEndpoint, testHelper.createGenericUserMale())
 			.expectStatus(200)
 			.expectBodyContains("user_id")
 			.afterJSON(function (friend) {
@@ -28,12 +28,12 @@ frisby.create("Sending a Friend Request: Creating a user to send a friend reques
 //User2 can't send friend invite to user1
 
 frisby.create("Invalid Test Case: Sending Bi-directional Friend Requests: Creating a user to send a friend request")
-	.post(testHelper.registerEndpoint, testHelper.createGenericUser())
+	.post(testHelper.registerEndpoint, testHelper.createGenericUserMale())
 	.expectStatus(200)
 	.expectBodyContains("token")
 	.afterJSON(function (user) {
 		frisby.create("Creating a new user to send the request to")
-			.post(testHelper.registerEndpoint, testHelper.createGenericUser())
+			.post(testHelper.registerEndpoint, testHelper.createGenericUserMale())
 			.expectStatus(200)
 			.expectBodyContains("user_id")
 			.afterJSON(function (friend) {
@@ -59,12 +59,12 @@ frisby.create("Invalid Test Case: Sending Bi-directional Friend Requests: Creati
 //Accept a friend request with Valid credentials
 
 frisby.create("Accept a Friend Request: Creating a user to send a friend request")
-	.post(testHelper.registerEndpoint, testHelper.createGenericUser())
+	.post(testHelper.registerEndpoint, testHelper.createGenericUserMale())
 	.expectStatus(200)
 	.expectBodyContains("token")
 	.afterJSON(function (user) {
 		frisby.create("Creating a new user to send the request to")
-			.post(testHelper.registerEndpoint, testHelper.createGenericUser())
+			.post(testHelper.registerEndpoint, testHelper.createGenericUserMale())
 			.expectStatus(200)
 			.expectBodyContains("user_id")
 			.afterJSON(function (friend) {
@@ -86,12 +86,12 @@ frisby.create("Accept a Friend Request: Creating a user to send a friend request
 
 //Accept a friend request when there is no friend request/no entry in DB
 frisby.create("Invalid Accept Request: Creating a user to send a friend request")
-	.post(testHelper.registerEndpoint, testHelper.createGenericUser())
+	.post(testHelper.registerEndpoint, testHelper.createGenericUserMale())
 	.expectStatus(200)
 	.expectBodyContains("token")
 	.afterJSON(function (user) {
 		frisby.create("Creating a new user to send the request to")
-			.post(testHelper.registerEndpoint, testHelper.createGenericUser())
+			.post(testHelper.registerEndpoint, testHelper.createGenericUserMale())
 			.expectStatus(200)
 			.expectBodyContains("user_id")
 			.afterJSON(function (friend) {
@@ -111,12 +111,12 @@ frisby.create("Invalid Accept Request: Creating a user to send a friend request"
 //User1 Accepts a friend request
 //Which User1 has sent to User2
 frisby.create("Invalid Accept Request: Creating a user to send a friend request")
-	.post(testHelper.registerEndpoint, testHelper.createGenericUser())
+	.post(testHelper.registerEndpoint, testHelper.createGenericUserMale())
 	.expectStatus(200)
 	.expectBodyContains("token")
 	.afterJSON(function (user1) {
 		frisby.create("Creating a new user to send the request to")
-			.post(testHelper.registerEndpoint, testHelper.createGenericUser())
+			.post(testHelper.registerEndpoint, testHelper.createGenericUserMale())
 			.expectStatus(200)
 			.expectBodyContains("user_id")
 			.afterJSON(function (user2) {
@@ -141,12 +141,12 @@ frisby.create("Invalid Accept Request: Creating a user to send a friend request"
 
 //Decline a friend request (When recieving user declines the request)
 frisby.create("Decline a Friend Request: Creating a user to send a friend request")
-	.post(testHelper.registerEndpoint, testHelper.createGenericUser())
+	.post(testHelper.registerEndpoint, testHelper.createGenericUserMale())
 	.expectStatus(200)
 	.expectBodyContains("token")
 	.afterJSON(function (user) {
 		frisby.create("Creating a new user to send the request to")
-			.post(testHelper.registerEndpoint, testHelper.createGenericUser())
+			.post(testHelper.registerEndpoint, testHelper.createGenericUserMale())
 			.expectStatus(200)
 			.expectBodyContains("user_id")
 			.afterJSON(function (friend) {
@@ -168,12 +168,12 @@ frisby.create("Decline a Friend Request: Creating a user to send a friend reques
 
 //Remove an Existing Friend (User1 removes User2)
 frisby.create("Remove a Friend: Creating a user to send a friend request")
-	.post(testHelper.registerEndpoint, testHelper.createGenericUser())
+	.post(testHelper.registerEndpoint, testHelper.createGenericUserMale())
 	.expectStatus(200)
 	.expectBodyContains("token")
 	.afterJSON(function (user1) {
 		frisby.create("Creating a new user to send the request to")
-			.post(testHelper.registerEndpoint, testHelper.createGenericUser())
+			.post(testHelper.registerEndpoint, testHelper.createGenericUserMale())
 			.expectStatus(200)
 			.expectBodyContains("user_id")
 			.afterJSON(function (user2) {
@@ -203,19 +203,19 @@ frisby.create("Remove a Friend: Creating a user to send a friend request")
 //List all friends for a User
 
 frisby.create("List all friends of a user: Creating a user to send a friend request")
-	.post(testHelper.registerEndpoint, testHelper.createGenericUser())
+	.post(testHelper.registerEndpoint, testHelper.createGenericUserMale())
 	.expectStatus(200)
 	.expectBodyContains("token")
 	.expectBodyContains("user_id")
 	.afterJSON(function (user1) {
 		frisby.create("Creating a new user to send the request to")
-			.post(testHelper.registerEndpoint, testHelper.createGenericUser())
+			.post(testHelper.registerEndpoint, testHelper.createGenericUserMale())
 			.expectStatus(200)
 			.expectBodyContains("token")
 			.expectBodyContains("user_id")
 			.afterJSON(function (user2) {
 				frisby.create("Creating another user")
-					.post(testHelper.registerEndpoint, testHelper.createGenericUser())
+					.post(testHelper.registerEndpoint, testHelper.createGenericUserMale())
 					.expectStatus(200)
 					.expectBodyContains("token")
 					.expectBodyContains("user_id")
@@ -269,12 +269,12 @@ frisby.create("List all friends of a user: Creating a user to send a friend requ
 
 //User2 blocks User1 upon recieving request from User1 (Success)
 frisby.create("Block a Friend after Friend Request: Creating a user to send a friend request")
-	.post(testHelper.registerEndpoint, testHelper.createGenericUser())
+	.post(testHelper.registerEndpoint, testHelper.createGenericUserMale())
 	.expectStatus(200)
 	.expectBodyContains("token")
 	.afterJSON(function (user1) {
 		frisby.create("Creating a new user to send the request to")
-			.post(testHelper.registerEndpoint, testHelper.createGenericUser())
+			.post(testHelper.registerEndpoint, testHelper.createGenericUserMale())
 			.expectStatus(200)
 			.expectBodyContains("user_id")
 			.afterJSON(function (user2) {
@@ -297,12 +297,12 @@ frisby.create("Block a Friend after Friend Request: Creating a user to send a fr
 
 //User2 blocks User1 after becoming friends (Success)
 frisby.create("Block an existing Friend: Creating a user to send a friend request")
-	.post(testHelper.registerEndpoint, testHelper.createGenericUser())
+	.post(testHelper.registerEndpoint, testHelper.createGenericUserMale())
 	.expectStatus(200)
 	.expectBodyContains("token")
 	.afterJSON(function (user1) {
 		frisby.create("Creating a new user to send the request to")
-			.post(testHelper.registerEndpoint, testHelper.createGenericUser())
+			.post(testHelper.registerEndpoint, testHelper.createGenericUserMale())
 			.expectStatus(200)
 			.expectBodyContains("user_id")
 			.afterJSON(function (user2) {
@@ -331,13 +331,13 @@ frisby.create("Block an existing Friend: Creating a user to send a friend reques
 
 //User1 blocks User2 after user1 deletes friend request sent from User2
 frisby.create("Block a user after deleting friend Request: Creating a user to send a friend request")
-	.post(testHelper.registerEndpoint, testHelper.createGenericUser())
+	.post(testHelper.registerEndpoint, testHelper.createGenericUserMale())
 	.expectStatus(200)
 	.expectBodyContains("token")
 	.expectBodyContains("user_id")
 	.afterJSON(function (user1) {
 		frisby.create("Creating a new user to send the request to")
-			.post(testHelper.registerEndpoint, testHelper.createGenericUser())
+			.post(testHelper.registerEndpoint, testHelper.createGenericUserMale())
 			.expectStatus(200)
 			.expectBodyContains("token")
 			.expectBodyContains("user_id")
@@ -367,19 +367,19 @@ frisby.create("Block a user after deleting friend Request: Creating a user to se
 //List all blocked friends for a User
 
 frisby.create("List all blocked users for a user: Creating a user to send a friend request")
-	.post(testHelper.registerEndpoint, testHelper.createGenericUser())
+	.post(testHelper.registerEndpoint, testHelper.createGenericUserMale())
 	.expectStatus(200)
 	.expectBodyContains("token")
 	.expectBodyContains("user_id")
 	.afterJSON(function (user1) {
 		frisby.create("Creating a new user to send the request to")
-			.post(testHelper.registerEndpoint, testHelper.createGenericUser())
+			.post(testHelper.registerEndpoint, testHelper.createGenericUserMale())
 			.expectStatus(200)
 			.expectBodyContains("token")
 			.expectBodyContains("user_id")
 			.afterJSON(function (user2) {
 				frisby.create("Creating another user")
-					.post(testHelper.registerEndpoint, testHelper.createGenericUser())
+					.post(testHelper.registerEndpoint, testHelper.createGenericUserMale())
 					.expectStatus(200)
 					.expectBodyContains("token")
 					.expectBodyContains("user_id")
@@ -444,25 +444,25 @@ frisby.create("List all blocked users for a user: Creating a user to send a frie
 //List friend Requests
 
 frisby.create("List Friend Requests for a User: Creating a user to send a friend request")
-	.post(testHelper.registerEndpoint, testHelper.createGenericUser())
+	.post(testHelper.registerEndpoint, testHelper.createGenericUserMale())
 	.expectStatus(200)
 	.expectBodyContains("token")
 	.expectBodyContains("user_id")
 	.afterJSON(function (user1) {
 		frisby.create("Creating a new user to send the request to")
-			.post(testHelper.registerEndpoint, testHelper.createGenericUser())
+			.post(testHelper.registerEndpoint, testHelper.createGenericUserMale())
 			.expectStatus(200)
 			.expectBodyContains("token")
 			.expectBodyContains("user_id")
 			.afterJSON(function (user2) {
 				frisby.create("Creating a new user to send the request to")
-					.post(testHelper.registerEndpoint, testHelper.createGenericUser())
+					.post(testHelper.registerEndpoint, testHelper.createGenericUserMale())
 					.expectStatus(200)
 					.expectBodyContains("token")
 					.expectBodyContains("user_id")
 					.afterJSON(function (user3) {
 						frisby.create("Creating a new user to send the request to")
-							.post(testHelper.registerEndpoint, testHelper.createGenericUser())
+							.post(testHelper.registerEndpoint, testHelper.createGenericUserMale())
 							.expectStatus(200)
 							.expectBodyContains("token")
 							.expectBodyContains("user_id")

@@ -43,7 +43,7 @@ var strings = require("./universal_strings");
 router.get("/", function (req, res) {
 
 	try {
-		var tok = tokenHelper.verifyToken(req.query.jwt);
+		tokenHelper.verifyToken(req.query.jwt);
 		var reqUserID = req.query.userID;
 
 		databaseHelper.getExtendedProfile(reqUserID, (ext_profile) => {

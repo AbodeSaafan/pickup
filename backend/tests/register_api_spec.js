@@ -2,7 +2,7 @@ var frisby = require("frisby");
 var strings = require("../api/universal_strings");
 var testHelper = require("./testHelper");
 
-var genericUser = testHelper.createGenericUser();
+var genericUser = testHelper.createGenericUserMale();
 
 // Creating a user with valid creds
 frisby.create("Register a user using the API with valid credentials")

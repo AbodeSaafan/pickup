@@ -3,13 +3,9 @@ var strings = require("../api/universal_strings");
 var testHelper = require("./testHelper");
 const util = require("util");
 
-/*
-* Register API test
-* */
-
-// Creating a user with valid creds for testing
+// Creating a unrestricted game
 frisby.create("Register a user using the API with valid credentials to use for creating a game")
-	.post(testHelper.registerEndpoint, testHelper.createGenericUser()) 
+	.post(testHelper.registerEndpoint, testHelper.createGenericUserMale()) 
 	.expectStatus(200)
 	.expectHeaderContains("content-type", "application/json")
 	.expectBodyContains("token")
@@ -18,6 +14,20 @@ frisby.create("Register a user using the API with valid credentials to use for c
 	.afterJSON(function (body) {
 		frisby.create("Creating a new game")
 			.post(testHelper.createGameEndpoint, testHelper.createUnrestrictedGame(body.token, 1, 1))
+			.expectStatus(200)
+			.expectBodyContains("game_id")
+			.toss();
+	})
+	.toss();
+
+// Creating a game with enforced params
+frisby.create("Register a user using the API with valid credentials to use for creating a game with enforced params")
+	.post(testHelper.registerEndpoint, testHelper.createGenericUserMale())
+	.expectStatus(200)
+	.expectBodyContains("token")
+	.afterJSON(function (body) {
+		frisby.create("Creating a new game")
+			.post(testHelper.createGameEndpoint, testHelper.createGenericGame(body.token, 1, 1))
 			.expectStatus(200)
 			.expectBodyContains("game_id")
 			.toss();
@@ -37,7 +47,7 @@ frisby.create("Creating a new game")
 
 // Creating a game that conflicts with another game you have created should fail
 frisby.create("Register a user using the API with valid credentials to use for creating a game")
-	.post(testHelper.registerEndpoint, testHelper.createGenericUser()) 
+	.post(testHelper.registerEndpoint, testHelper.createGenericUserMale()) 
 	.expectStatus(200)
 	.expectHeaderContains("content-type", "application/json")
 	.expectBodyContains("token")
