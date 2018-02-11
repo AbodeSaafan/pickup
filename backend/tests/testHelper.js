@@ -22,6 +22,7 @@ var listFriendRequestEndpoint = baseApi + "/friends/listFriendRequest";
 var searchEndpoint = baseApi + "/search";
 var deleteAccountEndpoint = baseApi + "/delete";
 var setReviewEndpoint = baseApi + "/reviews/setReview";
+var setReviewEndpoint = baseApi + "/changePassword";
 
 function randomEmail(){
 	return crypto.randomBytes(4).toString("hex") + "@mail.com";
@@ -60,6 +61,58 @@ function createGenericUser(){
 		gender:"m",
 		dob:randomDob(),
 		email:randomEmail()
+	};
+}
+
+function createGenericUserUpdate(jwt){
+	return {
+		jwt: jwt,
+		username:randomUsername(),
+		password:"",
+		fname:rNameg.first(),
+		lname: rNameg.last(),
+		gender:"m",
+		dob:randomDob(),
+		email:randomEmail()
+	};
+}
+
+function createGenericUserUpdateWithFnameLname(jwt){
+	return {
+		jwt: jwt,
+		username:"",
+		password:"",
+		fname:rNameg.first(),
+		lname: rNameg.last(),
+		gender:"",
+		dob:"",
+		email:""
+	};
+}
+
+function createGenericUserUpdateWithUsernameEmail(jwt){
+	return {
+		jwt: jwt,
+		username:randomUsername(),
+		password:"",
+		fname:"",
+		lname: "",
+		gender:"",
+		dob:"",
+		email:randomEmail()
+	};
+}
+
+function createGenericUserUpdateWithGenderDob(jwt){
+	return {
+		jwt: jwt,
+		username:"",
+		password:"",
+		fname:"",
+		lname: "",
+		gender:"f",
+		dob:randomDob(),
+		email:""
 	};
 }
 
@@ -179,5 +232,10 @@ module.exports = {
 	getUsersOfGameEndpoint,
 	createGenericUsersRequest,
 	setReviewEndpoint,
-	createGenericReviewRequest
+	createGenericReviewRequest,
+	createGenericUserUpdate,
+	createGenericUserUpdateWithFnameLname,
+	createGenericUserUpdateWithUsernameEmail,
+	createGenericUserUpdateWithGenderDob,
+
 };

@@ -14,6 +14,29 @@ function validateAndCleanRegisterRequest(data){
 	return data;
 }
 
+function validateAndCleanUpdateAdminRequest(data){
+	console.log(data)
+	if (data.username) {
+		validate(data.username, regex.usernameRegex, strings.invalidUsername);
+	}
+	if (data.fname) {
+		validate(data.fname, regex.nameRegex, strings.invalidFirstName);
+	}
+	if (data.lname) {
+		validate(data.lname, regex.nameRegex, strings.invalidLastName);
+	}
+	if (data.gender) {
+		validate(data.gender, regex.genderRegex, strings.invalidGender);
+	}
+	if (data.dob) {
+		validate(data.dob, regex.dateRegex, strings.invalidDob + " Given: " + data);
+	}
+	if (data.email) {
+		validate(data.email, regex.emailRegex, strings.invalidEmail);
+	}
+	return data;
+}
+
 function validateAndCleanUpdateRequest(data){
 	validate(data.fname, regex.nameRegex, strings.invalidName);
 	validate(data.lname, regex.nameRegex, strings.invalidName);
@@ -201,12 +224,14 @@ module.exports = {
 	jsonError,
 	getIfReviewed,
 	addTag,
-	updateTag
+	updateTag,
+	validateAndCleanUpdateAdminRequest
 };
 
 //////////////// Helpers ////////////////
 
 function validate(param, regexPattern, errorMessage){
+	console.log(param)
 	if(!regexPattern){
 		throw new Error("Regex not found for input " + param);
 	}

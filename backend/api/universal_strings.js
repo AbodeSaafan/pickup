@@ -59,6 +59,8 @@ var listFriendRequestFailed = "Listing all friend requests has failed.";
 var deleteFailed = "Delete account failed.";
 var refreshDoesNotExist = "The refresh token you want to delete does not exist.";
 var refreshMissingParams = "Please provide your current JWT and the refresh token you want revoked.";
+var updateUserFailed = "Update user details failed";
+var updatePassword = "Update user password failed";
 
 module.exports = {
 	invalidUsername,
@@ -119,5 +121,7 @@ module.exports = {
 	listFriendRequestFailed,
 	deleteFailed,
 	refreshMissingParams,
-	refreshDoesNotExist
+	refreshDoesNotExist,
+	updateUserFailed,
+	updatePassword
 };

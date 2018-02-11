@@ -51,21 +51,6 @@ function registerUser(user, callback){
 	});
 }
 
-function updateUser(user, callback){
-	var queryString = "UPDATE users SET fname = $2, lname = $3, dob = $4 where user_id = $1";
-	var queryParams = [user["user_id"], user["fname"], user["lname"], user["dob"]];
-
-	const pool = new pg.Pool({connectionString: conString});
-
-	pool.connect((err, client, done) => {
-		client.query(queryString, queryParams, (err, res) => {
-			callback(!err && res);
-			done();
-			pool.end();
-		});
-	});
-}
-
 function getUserId(email, callback){
 	var queryString = "SELECT user_id FROM users WHERE email =  $1;";
 	var queryParams = [email];
@@ -151,15 +136,15 @@ function populateExtendedProfile(user, callback) {
 
 function getExtendedProfile(userID, callback) {
 	var queryString =
-			"(SELECT * FROM " + 
-			"(SELECT * FROM extended_profile WHERE user_id = $1) ext_profile_row " + 
-			"LEFT JOIN " + 
+			"(SELECT * FROM " +
+			"(SELECT * FROM extended_profile WHERE user_id = $1) ext_profile_row " +
+			"LEFT JOIN " +
 			"(SELECT tag top_tag, count(tag) top_tag_count from tags where review_id in (SELECT review_id from reviews where user_id = $1) group by top_tag, review_id ORDER BY top_tag_count DESC LIMIT 1) top_tag_row on 1=1 " +
-			"LEFT JOIN " + 
+			"LEFT JOIN " +
 			"(SELECT count(*) games_created from games where creator_id = $1) games_created on 1=1 " +
-			"LEFT JOIN " + 
+			"LEFT JOIN " +
 			"(SELECT count(*) games_joined from gamers where user_id = $1) games_joined on 1=1 )";
-			
+
   	var queryParams = [userID];
 
 	const pool = new pg.Pool({connectionString: conString});
@@ -248,7 +233,7 @@ function updateExtendedUser (userId, skill_level, location, callback) {
 	var queryString = "UPDATE extended_profile SET skilllevel = $1, location = $2 WHERE user_id = $3;";
 	var dblocation = "(" + location.lat + "," + location.lng + ")";
 	var queryParams = [skill_level, dblocation, userId];
-	
+
 	const pool = new pg.Pool({connectionString: conString});
 	pool.connect((err, client, done) => {
 		client.query(queryString, queryParams, (err, res) => {
@@ -751,6 +736,36 @@ function disableAccount(user_id, callback){
 	});
 }
 
+function updateUser(user_id, username, fname, lname, gender, dob, email, callback){
+	var queryString = "SELECT * FROM update_user($1, $2, $3, $4, $5, $6, $7);";
+	var queryParams = [user_id, username, fname, lname, gender, dob, email];
+	const pool = new pg.Pool({connectionString: conString});
+
+
+	pool.connect((err, client, done) => {
+		client.query(queryString, queryParams, (err, res) => {
+			callback(!err && res);
+			done();
+			pool.end();
+		});
+	});
+}
+
+function updatePassword(user_id, user_salt, user_new_hashed_Password, callback) {
+	var queryString = "UPDATE users SET salt = $2, password = $3 WHERE user_id = $1";
+	var queryParams = [user_id, user_salt, user_new_hashed_Password];
+
+	const pool = new pg.Pool({connectionString: conString});
+
+	pool.connect((err, client, done) => {
+		client.query(queryString, queryParams, (err, res) => {
+			callback(!err && res);
+			done();
+			pool.end();
+		});
+	});
+}
+
 
 module.exports = {
 	checkEmailUniqueness,
@@ -792,7 +807,8 @@ module.exports = {
 	getIfReviewed,
 	updateReview,
 	addTag,
-	deleteTag
+	deleteTag,
+	updatePassword
 };
 
 //////////////// Helpers ////////////////

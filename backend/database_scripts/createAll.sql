@@ -1,4 +1,5 @@
 BEGIN;
+
 \i login_register_tables.sql
 \i refresh_table.sql
 \i extended_profile_table.sql
@@ -10,4 +11,6 @@ BEGIN;
 \i triggers.sql
 \i search.sql
 \i stored_procedures.sql
+\i update_procedure.sql
+
 COMMIT;
