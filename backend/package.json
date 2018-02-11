@@ -24,7 +24,8 @@
     "eslint": "^4.11.0",
     "frisby": "^0.8.5",
     "husky": "^0.14.3",
-    "jasmine-node": "^1.14.5"
+    "jasmine-node": "^1.14.5",
+    "lint-staged": "^6.1.0"
   },
   "scripts": {
     "start": "NODE_ENV=production node server.js",
@@ -34,7 +35,10 @@
     "generate": "apidoc -i ./api/ -o apidoc/",
     "postinstall": "node createPrivate.js",
     "ManualCommand_HerokuPush": "heroku git:remote pickup-app-api; git subtree push --prefix backend heroku master",
-    "lint": "eslint --fix ./api ./tests ./helpers"
+    "precommit": "lint-staged"
+  },
+  "lint-staged": {
+    "*.js": ["eslint --fix ./api ./tests ./helpers", "git add"]
   },
   "license": "ISC",
   "directories": {
