@@ -4,7 +4,6 @@ var requestHelper = require("../helpers/requestHelper");
 var databaseHelper = require("../helpers/databaseHelper");
 var tokenHelper = require("../helpers/tokenHelper");
 var strings = require("./universal_strings");
-var logger = require("../logger");
 
 /**
 * @api {get} /reviews/setReview Set the review of a player for a particular game.

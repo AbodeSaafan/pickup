@@ -96,28 +96,28 @@ router.get("/", function (req, res) {
 * @apiSampleRequest /api/profile
 */
 
-router.put('/', function (req, res) {
+router.put("/", function (req, res) {
 
 	try {
 		var tok = tokenHelper.verifyToken(req.body.jwt);
 
-		var details = requestHelper.validateAndCleanUpdateAdminRequest(tok.user_id, req.body)
+		var details = requestHelper.validateAndCleanUpdateAdminRequest(tok.user_id, req.body);
 
 		databaseHelper.updateUser(details.user_id, details.username, details.fname, details.lname, details.gender, details.dob, details.email, (update) => {
 			if (update) {
-					databaseHelper.getUserRowById(tok.user_id, (new_user_details) => {
-						if (new_user_details) {
-							res.status(200).json(new_user_details); return;
-						}
-						else {
-							res.status(400).json({"error": strings.userIdFail}); return;
-						}
-					})
-				}
-					else {
-						res.status(400).json({"error": strings.updateUserFailed}); return;
+				databaseHelper.getUserRowById(tok.user_id, (new_user_details) => {
+					if (new_user_details) {
+						res.status(200).json(new_user_details); return;
 					}
-		})
+					else {
+						res.status(400).json({"error": strings.userIdFail}); return;
+					}
+				});
+			}
+			else {
+				res.status(400).json({"error": strings.updateUserFailed}); return;
+			}
+		});
 
 	} catch(err){
 		res.status(400).json(requestHelper.jsonError(err)); return;
