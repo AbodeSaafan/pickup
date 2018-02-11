@@ -32,17 +32,16 @@ var crypto = require("crypto");
 *		 "new_password": "test2876"
 *	}
 *
-*
 * @apiSampleRequest /api/changePassword
 */
-router.put('/', function (req, res) {
+router.put("/", function (req, res) {
 
 	try {
 		var tok = tokenHelper.verifyToken(req.body.jwt);
 
-    var user_id = tok.user_id;
+		var user_id = tok.user_id;
 		var user_old_password = req.body.old_password;
-    var user_new_password = requestHelper.validateAndCleanChangePasswordRequest(req.body.new_password);
+		var user_new_password = requestHelper.validateAndCleanChangePasswordRequest(req.body.new_password);
 
 		databaseHelper.checkPassword(user_id, user_old_password, (success) => {
 			if (success) {
@@ -55,11 +54,11 @@ router.put('/', function (req, res) {
 					} else {
 						res.status(400).json({"error": strings.updatePassword}); return;
 					}
-		 		})
+				});
 			} else {
 				res.status(400).json({"error": strings.invalidOldPassword}); return;
 			}
-		})
+		});
 
 	} catch(err){
 		res.status(400).json(requestHelper.jsonError(err)); return;
