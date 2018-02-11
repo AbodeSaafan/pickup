@@ -101,26 +101,7 @@ router.put('/', function (req, res) {
 	try {
 		var tok = tokenHelper.verifyToken(req.body.jwt);
 
-		var user_details = {
-			user_id: parseInt(tok.user_id),
-			username: null,
-			password: null,
-			fname: null,
-			lname: null,
-			gender: null,
-			dob: null,
-			email: null
-		}
-
-		for (var key in user_details) {
-			if (key in req.body) {
-				if (!checkNull(req.body[key])) {
-					user_details[key] = req.body[key]
-				}
-			}
-		}
-
-		var details = requestHelper.validateAndCleanUpdateAdminRequest(user_details)
+		var details = requestHelper.validateAndCleanUpdateAdminRequest(tok.user_id, req.body)
 
 		databaseHelper.updateUser(details.user_id, details.username, details.fname, details.lname, details.gender, details.dob, details.email, (update) => {
 			if (update) {
@@ -144,7 +125,3 @@ router.put('/', function (req, res) {
 });
 
 module.exports = router;
-
-function checkNull(str) {
-	return (!str || 0 === str.length);
-}

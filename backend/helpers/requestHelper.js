@@ -14,25 +14,46 @@ function validateAndCleanRegisterRequest(data){
 	return data;
 }
 
-function validateAndCleanUpdateAdminRequest(data){
+function validateAndCleanUpdateAdminRequest(user_id, data){
+	var user_details = {
+		user_id: parseInt(user_id),
+		username: null,
+		password: null,
+		fname: null,
+		lname: null,
+		gender: null,
+		dob: null,
+		email: null
+	}
 	if (data.username) {
 		validate(data.username, regex.usernameRegex, strings.invalidUsername);
+		user_details.username = data.username;
 	}
 	if (data.fname) {
 		validate(data.fname, regex.nameRegex, strings.invalidFirstName);
+		user_details.fname = data.fname;
 	}
 	if (data.lname) {
 		validate(data.lname, regex.nameRegex, strings.invalidLastName);
+		user_details.lname = data.lname;
 	}
 	if (data.gender) {
 		validate(data.gender, regex.genderRegex, strings.invalidGender);
+		user_details.gender = data.gender;
 	}
 	if (data.dob) {
 		validate(data.dob, regex.dateRegex, strings.invalidDob + " Given: " + data);
+		user_details.dob = data.dob;
 	}
 	if (data.email) {
 		validate(data.email, regex.emailRegex, strings.invalidEmail);
+		user_details.email = data.email;
 	}
+	return data;
+}
+
+function validateAndCleanChangePasswordRequest(data){
+	validate(data, regex.passwordRegex, strings.invalidPassword);
 	return data;
 }
 
@@ -223,7 +244,8 @@ module.exports = {
 	getIfReviewed,
 	addTag,
 	updateTag,
-	validateAndCleanUpdateAdminRequest
+	validateAndCleanUpdateAdminRequest,
+	validateAndCleanChangePasswordRequest
 };
 
 //////////////// Helpers ////////////////
