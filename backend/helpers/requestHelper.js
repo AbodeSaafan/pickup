@@ -15,7 +15,6 @@ function validateAndCleanRegisterRequest(data){
 }
 
 function validateAndCleanUpdateAdminRequest(data){
-	console.log(data)
 	if (data.username) {
 		validate(data.username, regex.usernameRegex, strings.invalidUsername);
 	}
@@ -230,7 +229,6 @@ module.exports = {
 //////////////// Helpers ////////////////
 
 function validate(param, regexPattern, errorMessage){
-	console.log(param)
 	if(!regexPattern){
 		throw new Error("Regex not found for input " + param);
 	}
@@ -288,7 +286,7 @@ function searchValidateLocation(location, obj, objParamString){
 		delete obj[objParamString]; return;
 	} else {
 		return validateLocation(location);
-		
+
 	}
 }
 

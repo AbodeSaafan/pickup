@@ -111,7 +111,6 @@ router.put('/', function (req, res) {
 			dob: null,
 			email: null
 		}
-		//console.log(req.body)
 
 		for (var key in user_details) {
 			if (key in req.body) {
@@ -121,40 +120,25 @@ router.put('/', function (req, res) {
 			}
 		}
 
-
 		var details = requestHelper.validateAndCleanUpdateAdminRequest(user_details)
 
-
-
-
-		databaseHelper.getUserRowById(tok.user_id, (user) => {
-			if(user) {
-				console.log("old User details:")
-				console.log(user)
-				databaseHelper.updateUser(details.user_id, details.username, details.fname, details.lname, details.gender, details.dob, details.email, (update) => {
-					if (update) {
-						databaseHelper.getUserRowById(tok.user_id, (new_user_details) => {
-							if (new_user_details) {
-								console.log(new_user_details)
-								res.status(200).json(new_user_details); return;
-							}
-							else {
-								res.status(400).json({"error": strings.userIdFail}); return;
-							}
-						})
-					}
+		databaseHelper.updateUser(details.user_id, details.username, details.fname, details.lname, details.gender, details.dob, details.email, (update) => {
+			if (update) {
+					databaseHelper.getUserRowById(tok.user_id, (new_user_details) => {
+						if (new_user_details) {
+							res.status(200).json(new_user_details); return;
+						}
+						else {
+							res.status(400).json({"error": strings.userIdFail}); return;
+						}
+					})
+				}
 					else {
 						res.status(400).json({"error": strings.updateUserFailed}); return;
 					}
-				})
-			} else{
-				res.status(400).json({"error": strings.userIdFail}); return;
-			}
-		});
-
+		})
 
 	} catch(err){
-		console.log(err);
 		res.status(400).json(requestHelper.jsonError(err)); return;
 	}
 });
