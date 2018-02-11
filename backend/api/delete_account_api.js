@@ -13,7 +13,6 @@ var strings = require("./universal_strings");
 * @apiDescription API used to delete your pickup account
 *
 * @apiParam {String} jwt User's jwt
-* @apiParam {String} email The email of the user
 * @apiParam {String} password Password of the user
 *
 * @apiError error The error field has a string with an exact error
@@ -37,14 +36,11 @@ router.delete("/", function(req, res){
 		var tok = tokenHelper.verifyToken(req.query.jwt);
 		var user = requestHelper.validateAndCleanDeleteAccountRequest(req.query);
 
-		if(tok.email != user.email){
-			res.status(400).json({"error": strings.deleteFailed}); return; 
-		}
 		// Verify password
-		databaseHelper.checkPassword(user.email, user.password, (refreshToken, userId) => {
-			if (refreshToken && userId && userId == tok.user_id) {
+		databaseHelper.checkPassword(tok.user_id, user.password, (valid) => {
+			if (valid) {
 			// User verified, ready to delete
-				databaseHelper.disableAccount(userId, (success) => {
+				databaseHelper.disableAccount(tok.user_id, (success) => {
 					if(success){
 						res.status(200).json(); return;
 					} else {

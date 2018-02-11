@@ -9,7 +9,7 @@ frisby.create("Register a user using the API with valid credentials to use for d
 	.expectStatus(200)
 	.afterJSON(function (user) {
 		frisby.create("Delete account")
-			.delete(testHelper.deleteAccountEndpoint+"?jwt="+user.token+"&email="+userDetails.email+"&password="+userDetails.password)
+			.delete(testHelper.deleteAccountEndpoint+"?jwt="+user.token+"&password="+userDetails.password)
 			.expectStatus(200)
 			.after(function() {
 				frisby.create("Get admin profile of user")

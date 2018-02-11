@@ -162,7 +162,7 @@ function getExtendedProfile(userID, callback) {
   });
 }
 
-function checkPassword(emailIn, passIn, callback){
+function checkPasswordWithRefresh(emailIn, passIn, callback){
 	var queryString = "SELECT user_id, salt, password FROM users WHERE email = $1;";
 	var queryParams = [emailIn];
 
@@ -177,6 +177,26 @@ function checkPassword(emailIn, passIn, callback){
 				});
 			} else {
 				callback(null, null);
+			}
+			done();
+			pool.end();
+		});
+	});
+}
+
+function checkPassword(userId, passIn, callback){
+	var queryString = "SELECT user_id, salt, password FROM users WHERE user_id = $1;";
+	var queryParams = [userId];
+
+	const pool = new pg.Pool({connectionString: conString});
+
+	pool.connect((err, client, done) => {
+		client.query(queryString, queryParams, (err, res) => {
+			var rowsRes = res.rows;
+			if(rowsRes.length > 0 && md5(rowsRes[0].salt + passIn) === rowsRes[0].password){ 
+				callback(true);
+			} else {
+				callback(false);
 			}
 			done();
 			pool.end();
@@ -779,6 +799,7 @@ module.exports = {
 	populateExtendedProfile,
 	getExtendedProfile,
 	checkPassword,
+	checkPasswordWithRefresh,
 	updateExtendedUser,
 	getUsers,
 	addReview,

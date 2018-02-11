@@ -42,7 +42,7 @@ router.post("/", function(req, res){
 		res.status(400).json(requestHelper.jsonError(err)); return;
 	}
 
-	databaseHelper.checkPassword(user.email, user.password, (refreshToken, userId) => {
+	databaseHelper.checkPasswordWithRefresh(user.email, user.password, (refreshToken, userId) => {
 		if (refreshToken != null) {
 			var newJwt = tokenHelper.createTokenForUser(userId, user.email);
 			res.status(200).json({"refresh":refreshToken, "user_id":userId, "token":newJwt});
