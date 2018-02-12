@@ -17,6 +17,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -45,6 +46,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private Toolbar toolbar;
     private NavigationView navigationView;
     private DrawerLayout drawerLayout;
+    private static long back_pressed_time;
+    private static long PERIOD = 2000;
     Intent intent;
 
     @Override
@@ -74,9 +77,18 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     public void onBackPressed(){
         int count = getFragmentManager().getBackStackEntryCount();
-        if(count == 1) setNavItemSelectedById(R.id.action_map);
-        if(count > 1) setNavItemSelectedById(Integer.parseInt(getFragmentManager().getBackStackEntryAt(getFragmentManager().getBackStackEntryCount() - 2).getName()));
-        super.onBackPressed();
+        if (count != 0) {
+            if (count == 1) setNavItemSelectedById(R.id.action_map);
+            if (count > 1)
+                setNavItemSelectedById(Integer.parseInt(getFragmentManager().getBackStackEntryAt(getFragmentManager().getBackStackEntryCount() - 2).getName()));
+            super.onBackPressed();
+        }
+        else
+        {
+            if (back_pressed_time + PERIOD > System.currentTimeMillis()) super.onBackPressed();
+            else Toast.makeText(getBaseContext(), "Press once again to exit!", Toast.LENGTH_SHORT).show();
+            back_pressed_time = System.currentTimeMillis();
+        }
     }
 
     /**
