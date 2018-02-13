@@ -16,7 +16,7 @@ function validateAndCleanRegisterRequest(data){
 }
 
 function validateAndCleanUpdateAdminRequest(user_id, data){
-	var user_details = {
+	/*var user_details = {
 		user_id: parseInt(user_id),
 		username: null,
 		fname: null,
@@ -24,7 +24,8 @@ function validateAndCleanUpdateAdminRequest(user_id, data){
 		gender: null,
 		dob: null,
 		email: null
-	};
+	};*/
+	var user_details = {user_id: parseInt(user_id)};
 
 	if (data.username) {
 		validate(data.username, regex.usernameRegex, strings.invalidUsername);
@@ -56,7 +57,7 @@ function validateAndCleanUpdateAdminRequest(user_id, data){
 			else {
 				throw new Error("Password is incorrect");
 			}
-		})
+		});
 
 	}
 	return user_details;

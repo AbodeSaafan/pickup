@@ -5,7 +5,7 @@ var requestHelper = require("../helpers/requestHelper");
 var databaseHelper = require("../helpers/databaseHelper");
 var strings = require("./universal_strings");
 var md5 = require("md5");
-var crypto = require("crypto");
+
 
 /**
 * @api {put} /changePassword changing password for a user

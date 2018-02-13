@@ -62,17 +62,17 @@ frisby.create("Register a user using the API with valid credentials to use for p
 	.expectStatus(200)
 	.afterJSON(function (body) {
 		frisby.create("Update User password")
-			.put(testHelper.changePasswordEndpoint, {jwt: body.token, old_password: new_user.password, new_password: '/'})
+			.put(testHelper.changePasswordEndpoint, {jwt: body.token, old_password: new_user.password, new_password: "/"})
 			.expectStatus(400)
 			.expectJSON({
 				error: strings.invalidPassword
 			})
-			.afterJSON(function (body) {
+			.afterJSON(function () {
 				frisby.create("check login with old password")
-				.post(testHelper.loginEndpoint, {email: user.email, password: new_user.password})
-				.expectStatus(200)
-				.expectBodyContains("token")
-				.expectBodyContains("user_id")
+					.post(testHelper.loginEndpoint, {email: user.email, password: new_user.password})
+					.expectStatus(200)
+					.expectBodyContains("token")
+					.expectBodyContains("user_id");
 			})
 			.toss();
 	})
