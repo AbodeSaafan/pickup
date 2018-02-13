@@ -2,6 +2,7 @@ var regex = require("../api/universal_regex");
 var strings = require("../api/universal_strings");
 var databaseHelper = require("../helpers/databaseHelper");
 var async = require("async");
+var crypto = require("crypto");
 
 function validateAndCleanRegisterRequest(data){
 	validate(data.username, regex.usernameRegex, strings.invalidUsername);
@@ -15,8 +16,16 @@ function validateAndCleanRegisterRequest(data){
 }
 
 function validateAndCleanUpdateAdminRequest(user_id, data){
-	var user_details = {user_id: parseInt(user_id)};
-	
+	var user_details = {
+		user_id: parseInt(user_id),
+		username: null,
+		fname: null,
+		lname: null,
+		gender: null,
+		dob: null,
+		email: null
+	};
+
 	if (data.username) {
 		validate(data.username, regex.usernameRegex, strings.invalidUsername);
 		user_details.username = data.username;
@@ -37,15 +46,25 @@ function validateAndCleanUpdateAdminRequest(user_id, data){
 		validate(data.dob, regex.dateRegex, strings.invalidDob + " Given: " + data);
 		user_details.dob = data.dob;
 	}
-	if (data.email) {
-		validate(data.email, regex.emailRegex, strings.invalidEmail);
-		user_details.email = data.email;
+	if (data.email && data.password) {
+
+		databaseHelper.checkPassword(user_id, data.password, (success) => {
+			if (success) {
+				validate(data.email, regex.emailRegex, strings.invalidEmail);
+				user_details.email = data.email;
+			}
+			else {
+				throw new Error("Password is incorrect");
+			}
+		})
+
 	}
-	return data;
+	return user_details;
 }
 
 function validateAndCleanChangePasswordRequest(data){
-	validate(data, regex.passwordRegex, strings.invalidPassword);
+	validate(data.old_password, regex.passwordRegex, strings.invalidPassword);
+	validate(data.new_password, regex.passwordRegex, strings.invalidPassword);
 	return data;
 }
 
@@ -218,6 +237,10 @@ function jsonError(Error){
 	return {"error": Error.toString().substring(7)};
 }
 
+function generateSalt(){
+	return crypto.randomBytes(40).toString("hex");
+}
+
 module.exports = {
 	validateAndCleanRegisterRequest,
 	validateAndCleanUpdateRequest,
@@ -237,7 +260,8 @@ module.exports = {
 	addTag,
 	updateTag,
 	validateAndCleanUpdateAdminRequest,
-	validateAndCleanChangePasswordRequest
+	validateAndCleanChangePasswordRequest,
+	generateSalt
 };
 
 //////////////// Helpers ////////////////

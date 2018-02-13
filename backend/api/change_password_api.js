@@ -40,13 +40,12 @@ router.put("/", function (req, res) {
 		var tok = tokenHelper.verifyToken(req.body.jwt);
 
 		var user_id = tok.user_id;
-		var user_old_password = req.body.old_password;
-		var user_new_password = requestHelper.validateAndCleanChangePasswordRequest(req.body.new_password);
+		var password_object = requestHelper.validateAndCleanChangePasswordRequest(req.body);
 
-		databaseHelper.checkPassword(user_id, user_old_password, (success) => {
+		databaseHelper.checkPassword(user_id, password_object.old_password, (success) => {
 			if (success) {
-				var user_salt = generateSalt();
-				var user_new_hashed_Password = md5(user_salt + user_new_password);
+				var user_salt = requestHelper.generateSalt();
+				var user_new_hashed_Password = md5(user_salt + password_object.new_password);
 
 				databaseHelper.updatePassword(user_id, user_salt, user_new_hashed_Password, (update) => {
 					if (update) {
@@ -65,8 +64,5 @@ router.put("/", function (req, res) {
 	}
 });
 
-function generateSalt(){
-	return crypto.randomBytes(40).toString("hex");
-}
 
 module.exports = router;

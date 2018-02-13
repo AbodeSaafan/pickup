@@ -95,13 +95,13 @@ frisby.create("Register a user using the API with valid credentials to use for p
 
 
 //Update only username and email field of Admin User
-
+var user = testHelper.createGenericUserMale();
 frisby.create("Register a user using the API with valid credentials to use for profile testing")
-	.post(testHelper.registerEndpoint, testHelper.createGenericUserMale())
+	.post(testHelper.registerEndpoint, user)
 	.expectStatus(200)
 	.afterJSON(function (body) {
 		frisby.create("Update admin profile of user with username and email")
-			.put(testHelper.adminProfileEndpoint, testHelper.createGenericUserUpdateWithUsernameEmail(body.token))
+			.put(testHelper.adminProfileEndpoint, testHelper.createGenericUserUpdateWithUsernameEmail(body.token, user.password))
 			.expectStatus(200)
 			.afterJSON(function(UpdateUser) {
 				frisby.create("Verify update of user details")

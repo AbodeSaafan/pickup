@@ -36,7 +36,9 @@ frisby.create("Register a user using the API with valid credentials to use for p
 	})
 	.toss();
 
+
 //Check if error is prompted if user logs in with incorrect old Password
+
 frisby.create("Register a user using the API with valid credentials to use for profile testing")
 	.post(testHelper.registerEndpoint, testHelper.createGenericUserMale())
 	.expectStatus(200)
@@ -45,11 +47,13 @@ frisby.create("Register a user using the API with valid credentials to use for p
 			.put(testHelper.changePasswordEndpoint, {jwt: body.token, old_password: "1234", new_password: new_password})
 			.expectStatus(400)
 			.expectJSON({
-				error: strings.invalidOldPassword
+				error: strings.invalidPassword
 			})
 			.toss();
 	})
 	.toss();
+
+
 
 //Check if error is prompted if user enters an invalid new password
 var new_user = testHelper.createGenericUserMale();
@@ -58,8 +62,18 @@ frisby.create("Register a user using the API with valid credentials to use for p
 	.expectStatus(200)
 	.afterJSON(function (body) {
 		frisby.create("Update User password")
-			.put(testHelper.changePasswordEndpoint, {jwt: body.token, old_password: new_user.password, new_password: "*/"})
+			.put(testHelper.changePasswordEndpoint, {jwt: body.token, old_password: new_user.password, new_password: '/'})
 			.expectStatus(400)
+			.expectJSON({
+				error: strings.invalidPassword
+			})
+			.afterJSON(function (body) {
+				frisby.create("check login with old password")
+				.post(testHelper.loginEndpoint, {email: user.email, password: new_user.password})
+				.expectStatus(200)
+				.expectBodyContains("token")
+				.expectBodyContains("user_id")
+			})
 			.toss();
 	})
 	.toss();

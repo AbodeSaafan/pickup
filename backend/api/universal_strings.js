@@ -61,7 +61,7 @@ var refreshDoesNotExist = "The refresh token you want to delete does not exist."
 var refreshMissingParams = "Please provide your current JWT and the refresh token you want revoked.";
 var updateUserFailed = "Update user details failed";
 var updatePassword = "Update user password failed";
-var invalidOldPassword = "Old password entered is incorrect";
+var invalidOldPassword = "Inccorect password entered is incorrect";
 
 module.exports = {
 	invalidUsername,
