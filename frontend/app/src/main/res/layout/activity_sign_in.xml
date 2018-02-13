@@ -31,6 +31,7 @@
             <EditText
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
+                android:imeOptions="actionNext"
                 android:inputType="textEmailAddress"
                 android:id="@+id/emailEditText"
                 android:hint="@string/email"/>
@@ -46,6 +47,7 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:inputType="textPassword"
+                android:imeOptions="actionDone"
                 android:id="@+id/passEditText"
                 android:hint="@string/password"/>
         </android.support.design.widget.TextInputLayout>
