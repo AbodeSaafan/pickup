@@ -92,9 +92,10 @@ var strings = require("./universal_strings");
 
 
 router.get("/", function(req, res){
-	try{
+	try {
 		var tok = tokenHelper.verifyToken(req.query.jwt);  
 		var search_request = requestHelper.validateAndCleanSearchRequest(req.query);
+
 		databaseHelper.searchObjects(search_request, (results) => {
 			if(!results || results.length == 0){
 				res.status(400).json({error: strings.emptySearchResults}); return;
@@ -110,7 +111,6 @@ router.get("/", function(req, res){
 				res.status(200).json({users: results}); return;
 			}
 		});
-
 	}
 	catch (err){
 		res.status(400).json(requestHelper.jsonError(err)); return;

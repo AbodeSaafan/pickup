@@ -249,6 +249,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                         intent = new Intent(getApplicationContext(), SignInActivity.class);
                         startActivity(intent);
                         dialog.dismiss();
+                        finish();
                     }
 
                 })

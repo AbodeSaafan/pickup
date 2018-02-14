@@ -90,11 +90,11 @@ function createGenericUserUpdateWithFnameLname(jwt){
 	};
 }
 
-function createGenericUserUpdateWithUsernameEmail(jwt){
+function createGenericUserUpdateWithUsernameEmail(jwt, password){
 	return {
 		jwt: jwt,
 		username:randomUsername(),
-		password:"",
+		password:password,
 		fname:"",
 		lname: "",
 		gender:"",
