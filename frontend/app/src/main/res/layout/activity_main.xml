@@ -7,7 +7,8 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:id="@+id/container_container">
 
         <include layout="@layout/toolbar"/>
 
@@ -19,7 +20,6 @@
             tools:context="sotifc2017.pickup.MainActivity">
         </RelativeLayout>
     </RelativeLayout>
-
 
     <android.support.design.widget.NavigationView
         android:id="@+id/navigation_view_main"

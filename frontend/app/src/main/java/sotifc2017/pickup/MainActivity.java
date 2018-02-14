@@ -1,5 +1,7 @@
 package sotifc2017.pickup;
 
+import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.DialogInterface;
@@ -10,6 +12,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
@@ -67,11 +70,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         // Obtain the MapFragment and get notified when the map is ready to be used.
         MapFragment mapFragment = new MapFragment();
         replaceFragment(mapFragment, false, R.id.action_map);
-
         mapFragment.getMapAsync(this);
-        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            askForPermissions();
-        }
     }
 
     @Override
@@ -94,58 +93,29 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     /**
      * Manipulates the map once available.
      * This callback is triggered when the map is ready to be used.
-     * This is where we can add markers or lines, add listeners or move the camera.
      */
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
-        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (!checkPermissions()) {
             askForPermissions();
         }
-        mFusedLocationClient.getLastLocation()
-                .addOnSuccessListener(this, new OnSuccessListener<Location>() {
-                    @Override
-                    public void onSuccess(Location location) {
-                        // Got last known location. In some rare situations this can be null.
-                        if (location != null) {
-                            LatLng position = new LatLng(location.getLatitude(), location.getLongitude());
-                            // Generates Sample Games. Take out when connected to backend.
-                            sampleGames = new ArrayList<>();
-                            Random random = new Random();
-                            for (double i = 0; i < 8; i++) {
-                                // Convert radius from meters to degrees.
-                                double radiusInDegrees = 1000 / 111320f;
-
-                                // Get a random distance and a random angle.
-                                double u = random.nextDouble();
-                                double v = random.nextDouble();
-                                double w = radiusInDegrees * Math.sqrt(u);
-                                double t = 2 * Math.PI * v;
-                                // Get the x and y delta values.
-                                double x = w * Math.cos(t);
-                                double y = w * Math.sin(t);
-
-                                // Compensate the x value.
-                                double new_x = x / Math.cos(Math.toRadians(location.getLatitude()));
-
-                                double foundLatitude;
-                                double foundLongitude;
-
-                                foundLatitude = location.getLatitude() + y;
-                                foundLongitude = location.getLongitude() + new_x;
-                                sampleGames.add(new LatLng(foundLatitude, foundLongitude));
-                            }
-                            plotGames(mMap, sampleGames);
-//                                zoomToUser(mMap, position);
-                            zoomToViewPoints(mMap, sampleGames);
-                        }
-                    }
-                });
+        else {
+            //TODO: Display based on user's city.
+            Location cityLoc = new Location("");
+            cityLoc.setLatitude(43);
+            cityLoc.setLongitude(79);
+            displayGames(cityLoc);
+        }
     }
     public void askForPermissions() {
         ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, MY_PERMISSIONS_FINE_LOCATION);
         ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION}, MY_PERMISSIONS_COARSE_LOCATION);
+    }
+
+    public boolean checkPermissions() {
+        return !(ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED ||
+                ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED);
     }
 
     // Have to make sure OnMapReady() is invoked before using this.
@@ -162,7 +132,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     public void zoomToUser(GoogleMap mMap, LatLng userLoc) {
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(userLoc, 15));
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(userLoc, 10));
     }
 
     //From https://stackoverflow.com/questions/14828217/android-map-v2-zoom-to-show-all-the-markers
@@ -175,6 +145,51 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         int padding = 50;
         mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, padding));
     }
+
+    public void displayGames(Location location) {
+        if (location != null && checkPermissions()) {
+            // Generates Sample Games. Take out when connected to backend.
+            sampleGames = new ArrayList<>();
+            Random random = new Random();
+            for (double i = 0; i < 8; i++) {
+                // Convert radius from meters to degrees.
+                double radiusInDegrees = 1000 / 111320f;
+
+                // Get a random distance and a random angle.
+                double u = random.nextDouble();
+                double v = random.nextDouble();
+                double w = radiusInDegrees * Math.sqrt(u);
+                double t = 2 * Math.PI * v;
+                // Get the x and y delta values.
+                double x = w * Math.cos(t);
+                double y = w * Math.sin(t);
+
+                // Compensate the x value.
+                double new_x = x / Math.cos(Math.toRadians(location.getLatitude()));
+
+                double foundLatitude = location.getLatitude() + y;
+                double foundLongitude = location.getLongitude() + new_x;
+                sampleGames.add(new LatLng(foundLatitude, foundLongitude));
+            }
+            mMap.setOnMapLoadedCallback(new GoogleMap.OnMapLoadedCallback() {
+                @Override
+                public void onMapLoaded() {
+                    plotGames(mMap, sampleGames);
+                    zoomToViewPoints(mMap, sampleGames);
+                }
+            });
+        }
+        else {
+            //TODO: Zoom to actual city from user's profile, not random points.
+            mMap.setOnMapLoadedCallback(new GoogleMap.OnMapLoadedCallback() {
+                @Override
+                public void onMapLoaded() {
+                    zoomToUser(mMap, new LatLng(43, -79));
+                }
+            });
+        }
+    }
+
     private void setDrawerLayout() {
         ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.nav_open, R.string.nav_closed) {
             public void onDrawerClosed(View drawerView) {
@@ -202,7 +217,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 }
                 switch(item.getItemId()) {
                     case R.id.action_map:
-                        replaceFragment(new MapFragment(), true, R.id.action_map);
+                        MapFragment mapFragment = new MapFragment();
+                        replaceFragment(mapFragment, true, R.id.action_map);
+                        mapFragment.getMapAsync(MainActivity.this);
                         break;
                     case R.id.action_profile:
                         replaceFragment(new ExtendedProfileFragment(), true, R.id.action_profile);
@@ -237,9 +254,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 })
                 .setNegativeButton("cancel", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-
                         dialog.dismiss();
-
                     }
                 })
                 .create();
@@ -264,5 +279,25 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             navigationView.getMenu().getItem(i).setChecked(false).setEnabled(true);
         }
         navigationView.getMenu().findItem(id).setChecked(true).setEnabled(false);
+    }
+
+    @SuppressLint("MissingPermission")
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        if (checkPermissions()) {
+            mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+            mFusedLocationClient.getLastLocation()
+                    .addOnSuccessListener(this, new OnSuccessListener<Location>() {
+                        @Override
+                        public void onSuccess(Location location) {
+                            // Got last known location. In some rare situations this can be null.
+                            displayGames(location);
+                        }
+                    });
+        }
+        else {
+            displayGames(null);
+        }
+
     }
 }

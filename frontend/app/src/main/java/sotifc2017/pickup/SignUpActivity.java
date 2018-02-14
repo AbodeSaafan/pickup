@@ -1,5 +1,6 @@
 package sotifc2017.pickup;
 
+import android.Manifest;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.SuppressLint;
@@ -11,6 +12,7 @@ import android.app.ProgressDialog;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Typeface;
 import android.location.Geocoder;
@@ -19,6 +21,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -785,14 +789,32 @@ public class SignUpActivity extends AppCompatActivity implements LoaderManager.L
     private void updateProfileSuccess(GetExtendedProfileResponse getExtendedProfileResponse) {
         Toast.makeText(this, "Extended Profile Updated successsfully", Toast.LENGTH_SHORT).show();
 
-        Intent intent = new Intent(SignUpActivity.this, MainActivity.class);
+        if (checkPermissions()) {
+            Intent intent = new Intent(SignUpActivity.this, MainActivity.class);
+            startActivity(intent);
+            progressDialog.cancel();
+            finish();
+        }
+    }
+
+    public boolean checkPermissions(){
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED ||
+                ContextCompat.checkSelfPermission(this,Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED){
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.ACCESS_COARSE_LOCATION},
+                    123);
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
         progressDialog.cancel();
         finish();
-
     }
-
-
 
 }
 
