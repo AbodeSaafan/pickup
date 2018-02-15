@@ -156,47 +156,6 @@
                     android:name="com.google.android.gms.location.places.ui.PlaceAutocompleteFragment"
                     />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/selected_location" />
-
-                <EditText
-                    android:id="@+id/location_autocomplete"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/selected_location"
-                    android:inputType="text"
-                    android:singleLine="true" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Test Where are you?" />
-
-                <!-- Stop auto focussing the EditText -->
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="0dp"
-                    android:background="@android:color/transparent"
-                    android:focusable="true"
-                    android:focusableInTouchMode="true">
-                </LinearLayout>
-
-                <EditText
-                    android:id="@+id/location_autocompleteBetter"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/selected_location"
-                    android:inputType="text"
-                    android:singleLine="true"
-                    android:focusable="false"/>
-
-                <ListView
-                    android:id="@+id/list_view_locations"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
-
             </LinearLayout>
 
             <LinearLayout

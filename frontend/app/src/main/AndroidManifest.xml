@@ -21,7 +21,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".SignInActivity" />
-        <activity android:name=".SignUpActivity" />
+        <activity android:name=".SignUpActivity"
+                  android:windowSoftInputMode="adjustPan"/>
         <activity android:name=".CreateAccountActivity" />
         <!--
  ATTENTION: This was auto-generated to add Google Play services to your project for
