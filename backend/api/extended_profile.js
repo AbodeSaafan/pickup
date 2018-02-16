@@ -61,7 +61,6 @@ router.get("/", function (req, res) {
 					games_created: parseInt(ext_profile.games_created),
 					games_joined: parseInt(ext_profile.games_joined)
 				};
-				//console.log(response)
 				res.status(200).json(response); return;
 			}else{
 				res.status(400).json({"error": strings.userIdFail}); return;
@@ -121,21 +120,17 @@ router.put("/", function (req, res) {
 							Users_SkillLevel: details.skill_level,
 							Users_Location: details.location
 						};
-						//console.log(user_details)
 						res.status(200).json(user_details); return;
 					} else {
-						//console.log("reached here")
 						res.status(400).json({"error": strings.UpdateFailed}); return;
 					}
 				});
 			} else {
-				//console.log("reached here2")
 				res.status(400).json({"error": strings.userIdFail}); return;
 			}
 		});
 
 	} catch (err) {
-		//console.log("reached here3")
 		res.status(400).json(requestHelper.jsonError(err)); return;
 	}
 });
