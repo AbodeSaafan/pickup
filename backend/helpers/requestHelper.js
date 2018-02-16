@@ -151,10 +151,17 @@ function validateAndCleanSearchRequest(data){
 	return data;
 }
 
-function validateAndCleanUpdateExtendedProfileRequest (data) {
-	data.location = validateLocation(data.location);
-	validateSkill(data.skill_level);
-	return data;
+function validateAndCleanUpdateExtendedProfileRequest (user_id, data) {
+	var user_details = {user_id: parseInt(user_id)};
+	if (data.skill_level) {
+		validateSkill(data.skill_level);
+		user_details.skill_level = data.skill_level;
+	}
+	if (data.location) {
+		var location = validateLocation(data.location);
+		user_details.location = "(" + location.lat + "," + location.lng + ")";
+	}
+	return user_details;
 }
 
 function validateAndCleanExtendedProfileRequest(data) {

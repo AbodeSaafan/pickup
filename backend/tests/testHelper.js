@@ -173,11 +173,25 @@ function createGenericExtendedProfile (jwt) {
 	};
 }
 
+function createGenericExtendedProfileWithSkilllevel (jwt) {
+	return {
+		jwt: jwt,
+		skill_level: randomSkillLevel()
+	};
+}
+
+function createGenericExtendedProfileWithLocation (jwt) {
+	return {
+		jwt: jwt,
+		location: randomLocation()
+	};
+}
+
 function createInvalidSkillLevelForExtendedProfile (jwt) {
 	return {
 		jwt: jwt,
 		skill_level: "*",
-		location: randomLocation(),
+		location: randomLocation()
 	};
 }
 
@@ -251,5 +265,7 @@ module.exports = {
 	createGenericUserUpdateWithUsernameEmail,
 	createGenericUserUpdateWithGenderDob,
 	changePasswordEndpoint,
-	randomPassword
+	randomPassword,
+	createGenericExtendedProfileWithSkilllevel,
+	createGenericExtendedProfileWithLocation
 };

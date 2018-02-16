@@ -61,6 +61,7 @@ router.get("/", function (req, res) {
 					games_created: parseInt(ext_profile.games_created),
 					games_joined: parseInt(ext_profile.games_joined)
 				};
+				//console.log(response)
 				res.status(200).json(response); return;
 			}else{
 				res.status(400).json({"error": strings.userIdFail}); return;
@@ -105,34 +106,36 @@ router.get("/", function (req, res) {
 
 router.put("/", function (req, res) {
 	try {
-		var details = requestHelper.validateAndCleanUpdateExtendedProfileRequest(req.body);
+
 
 		var tok = tokenHelper.verifyToken(req.body.jwt);
 
-		var userId = tok.user_id;
-		var skill_level = details.skill_level;
-		var location = details.location;
+		var details = requestHelper.validateAndCleanUpdateExtendedProfileRequest(tok.user_id, req.body);
 
-		databaseHelper.getExtendedProfile(userId, (user_id) => {
+		databaseHelper.getExtendedProfile(details.user_id, (user_id) => {
 			if(user_id) {
-				databaseHelper.updateExtendedUser(userId, skill_level, location, (update) => {
+				databaseHelper.updateExtendedUser(details.user_id, details.skill_level, details.location, (update) => {
 					if (update) {
-						var details = {
-							UserID: userId,
-							Users_SkillLevel: skill_level,
-							Users_Location: location
+						var user_details = {
+							UserID: details.user_id,
+							Users_SkillLevel: details.skill_level,
+							Users_Location: details.location
 						};
-						res.status(200).json(details); return;
+						//console.log(user_details)
+						res.status(200).json(user_details); return;
 					} else {
+						//console.log("reached here")
 						res.status(400).json({"error": strings.UpdateFailed}); return;
 					}
 				});
 			} else {
+				//console.log("reached here2")
 				res.status(400).json({"error": strings.userIdFail}); return;
 			}
 		});
 
 	} catch (err) {
+		//console.log("reached here3")
 		res.status(400).json(requestHelper.jsonError(err)); return;
 	}
 });

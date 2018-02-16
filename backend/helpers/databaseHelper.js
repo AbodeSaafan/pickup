@@ -193,7 +193,7 @@ function checkPassword(userId, passIn, callback){
 	pool.connect((err, client, done) => {
 		client.query(queryString, queryParams, (err, res) => {
 			var rowsRes = res.rows;
-			if(rowsRes.length > 0 && md5(rowsRes[0].salt + passIn) === rowsRes[0].password){ 
+			if(rowsRes.length > 0 && md5(rowsRes[0].salt + passIn) === rowsRes[0].password){
 				callback(true);
 			} else {
 				callback(false);
@@ -250,9 +250,8 @@ function leaveGame(userIdIn, gameIdIn, callback){
 }
 
 function updateExtendedUser (userId, skill_level, location, callback) {
-	var queryString = "UPDATE extended_profile SET skilllevel = $1, location = $2 WHERE user_id = $3;";
-	var dblocation = "(" + location.lat + "," + location.lng + ")";
-	var queryParams = [skill_level, dblocation, userId];
+	var queryString = "UPDATE extended_profile SET skilllevel = COALESCE($2, skilllevel), location = COALESCE($3, location) WHERE user_id = $1;";
+	var queryParams = [userId, skill_level, location];
 
 	const pool = new pg.Pool({connectionString: conString});
 	pool.connect((err, client, done) => {

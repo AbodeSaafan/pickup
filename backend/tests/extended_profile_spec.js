@@ -6,6 +6,7 @@ const util = require("util");
 
 // Check if user can view their extended Profile
 
+
 frisby.create("Register a user using the API with valid credentials to use for extendedProfile testing")
 	.post(testHelper.registerEndpoint, testHelper.createGenericUserMale())
 	.expectStatus(200)
@@ -110,10 +111,54 @@ frisby.create("Register a user using the API with valid credentials to use for e
 						age: body.age,
 						gender: body.gender,
 						skilllevel: parseInt(result.Users_SkillLevel),
-						location: "(" + result.Users_Location.lat + "," + result.Users_Location.lng + ")",
+						location: result.location,
 						average_review: 0,
 						top_tag: null,
 						top_tag_count: null
+					})
+					.afterJSON(function() {
+						frisby.create("Update skilllevel of user")
+							.put(testHelper.extendedProfileEndpoint, testHelper.createGenericExtendedProfileWithSkilllevel(body.token))
+							.expectStatus(200)
+							.afterJSON(function(result2) {
+								frisby.create("Get extendedProfile of user")
+									.get(testHelper.extendedProfileEndpoint + "?jwt=" + body.token + "&userID=" + body.user_id)
+									.expectStatus(200)
+									.expectJSON({
+										user_id: parseInt(body.user_id),
+										age: body.age,
+										gender: body.gender,
+										skilllevel: parseInt(result2.Users_SkillLevel),
+										location: result.location,
+										average_review: 0,
+										top_tag: null,
+										top_tag_count: null
+									})
+									.afterJSON(function() {
+										frisby.create("Update location of user")
+											.put(testHelper.extendedProfileEndpoint, testHelper.createGenericExtendedProfileWithLocation(body.token))
+											.expectStatus(200)
+											.afterJSON(function(result3) {
+												frisby.create("Get extendedProfile of user")
+													.get(testHelper.extendedProfileEndpoint + "?jwt=" + body.token + "&userID=" + body.user_id)
+													.expectStatus(200)
+													.expectJSON({
+														user_id: parseInt(body.user_id),
+														age: body.age,
+														gender: body.gender,
+														skilllevel: parseInt(result2.Users_SkillLevel),
+														location: result3.location,
+														average_review: 0,
+														top_tag: null,
+														top_tag_count: null
+													})
+													.toss();
+											})
+											.toss();
+									})
+									.toss();
+							})
+							.toss();
 					})
 					.toss();
 			})
