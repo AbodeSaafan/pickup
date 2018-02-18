@@ -306,7 +306,6 @@ function searchValidateStartTime(startTime, obj, objParamString){
 }
 
 function validateAgeRange(ageRange){
-	ageRange = JSON.parse(ageRange);
 	if (ageRange == null || ageRange.length != 2 ||
 		ageRange[0] > ageRange[1]){
 		throw new Error(strings.invalidGameAgeRange);
@@ -316,7 +315,6 @@ function validateAgeRange(ageRange){
 
 function validateLocation(location){
 	try{
-		location = JSON.parse(location);
 		if (location == null || location.lng == null || location.lat == null){
 			throw new Error(strings.invalidGameLocation);
 		}
@@ -327,17 +325,16 @@ function validateLocation(location){
 	}
 }
 
-function searchValidateLocation(location, obj, objParamString){
+function searchValidateLocation(location, obj, objParamString){	
 	if(!location || location == ""){
 		delete obj[objParamString]; return;
 	} else {
-		return validateLocation(location);
+		return validateLocation(JSON.parse(location));
 
 	}
 }
 
 function validateEnforcedParamsList(enforcedList){
-	enforcedList = JSON.parse(enforcedList);
 	if (enforcedList != null){
 		for (let param of enforcedList){
 			if (!(regex.gameEnforcedParamRegex.test(param))){
