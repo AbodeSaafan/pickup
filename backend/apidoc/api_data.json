@@ -20,13 +20,6 @@
             "group": "Parameter",
             "type": "String",
             "optional": false,
-            "field": "email",
-            "description": "<p>The email of the user</p>"
-          },
-          {
-            "group": "Parameter",
-            "type": "String",
-            "optional": false,
             "field": "password",
             "description": "<p>Password of the user</p>"
           }
@@ -69,6 +62,77 @@
     "version": "0.0.0",
     "filename": "api/delete_account_api.js",
     "groupTitle": "Account"
+  },
+  {
+    "type": "put",
+    "url": "/changePassword",
+    "title": "changing password for a user",
+    "name": "Change_Password",
+    "group": "Authorization",
+    "description": "<p>API used to change current password for a user.</p>",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "jwt",
+            "description": "<p>The jwt of the user</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "old_password",
+            "description": "<p>The current password of the user</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "new_password",
+            "description": "<p>The new password of the user</p>"
+          }
+        ]
+      }
+    },
+    "error": {
+      "fields": {
+        "Error 4xx": [
+          {
+            "group": "Error 4xx",
+            "optional": false,
+            "field": "error",
+            "description": "<p>The error field has a string with an exact error</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "     HTTP/1.1 200 OK\n\t{\n\t}",
+          "type": "json"
+        }
+      ]
+    },
+    "examples": [
+      {
+        "title": "Example call::",
+        "content": "\t{\n   \"token\": \"b43a545f90ec60bf5ed2a4bd45d81a711de7ba658faa6899d8240343b857664fc967a76cd622235313db8e2ec053fe34c26c\",\n   \"old_password\": \"test1234\",\n\t\t \"new_password\": \"test2876\"\n\t}",
+        "type": "json"
+      }
+    ],
+    "sampleRequest": [
+      {
+        "url": "/api/changePassword"
+      }
+    ],
+    "version": "0.0.0",
+    "filename": "api/change_password_api.js",
+    "groupTitle": "Authorization"
   },
   {
     "type": "post",
@@ -1282,6 +1346,105 @@
       {
         "title": "Example call::",
         "content": "{\n  \"jwt\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMjQwIiwiZW1haWwiOiJhZHNzYWRhQG1haWwuY29tIiwiaWF0IjoxNTA1MTU3NTA3LCJleHAiOjE1MDUxNTg0MDd9.r7h31S_wQTypjiSLh7TgeRZYnRNqJpCJCqUFoSUvxqI\"\n}",
+        "type": "json"
+      }
+    ],
+    "sampleRequest": [
+      {
+        "url": "/api/profile"
+      }
+    ],
+    "version": "0.0.0",
+    "filename": "api/profile_api.js",
+    "groupTitle": "Profiles"
+  },
+  {
+    "type": "put",
+    "url": "profile/",
+    "title": "Update private profile",
+    "name": "UpdateAdminProfile",
+    "group": "Profiles",
+    "description": "<p>API used to update your own administrative profile</p>",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "jwt",
+            "description": "<p>The jwt of the current user.</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "username",
+            "description": "<p>The updated  username of the user (if updated)</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "fname",
+            "description": "<p>The updated first name of the user (if updated)</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "lname",
+            "description": "<p>The updated last name of the user (if updated)</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "gender",
+            "description": "<p>The updated gender of the user (F/M/O) (if updated)</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "dob",
+            "description": "<p>The updated date of birth of the user (MM/DD/YYYY) (if updated)</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "email",
+            "description": "<p>The updated email of the user (if updated)</p>"
+          }
+        ]
+      }
+    },
+    "error": {
+      "fields": {
+        "Error 4xx": [
+          {
+            "group": "Error 4xx",
+            "optional": false,
+            "field": "error",
+            "description": "<p>The error field has a string with an exact error</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "     HTTP/1.1 200 OK\n  {\n    \"user_id\" : 1\n\t  \t\"username\" : \"rads28\"\n\t  \t\"fname\" : \"radhika\"\n\t  \"lname\" : \"krishnan\"\n\t  \t\"dob\" : 28/11/1996\n\t  \"gender\" : \"F\"\n\t  \"email\" : \"rads28@gmail.com\"\n\t}",
+          "type": "json"
+        }
+      ]
+    },
+    "examples": [
+      {
+        "title": "Example call::",
+        "content": "  {\n    \"jwt\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMjQwIiwiZW1haWwiOiJhZHNzYWRhQG1haWwuY29tIiwiaWF0IjoxNTA1MTU3NTA3LCJleHAiOjE1MDUxNTg0MDd9.r7h31S_wQTypjiSLh7TgeRZYnRNqJpCJCqUFoSUvxqI\",\n\t\t\t\"username\": \"rads28\",\n\t\t\t\"fname\": \"radhika\",\n\t\t\t\"lname\": \"\",\n\t\t\t\"dob\": \"\",\n\t\t\t\"gender\": \"\"\n\t\t\t\"email\": \"rads28@gmail.com\"\n  }",
         "type": "json"
       }
     ],

@@ -38,7 +38,7 @@
     "precommit": "lint-staged"
   },
   "lint-staged": {
-    "*.js": ["eslint --fix ./api ./tests ./helpers", "git add"]
+    "*.js": ["eslint --fix","git add"]
   },
   "license": "ISC",
   "directories": {
