@@ -16,15 +16,7 @@ function validateAndCleanRegisterRequest(data){
 }
 
 function validateAndCleanUpdateAdminRequest(user_id, data){
-	/*var user_details = {
-		user_id: parseInt(user_id),
-		username: null,
-		fname: null,
-		lname: null,
-		gender: null,
-		dob: null,
-		email: null
-	};*/
+	
 	var user_details = {user_id: parseInt(user_id)};
 
 	if (data.username) {
@@ -48,18 +40,12 @@ function validateAndCleanUpdateAdminRequest(user_id, data){
 		user_details.dob = data.dob;
 	}
 	if (data.email && data.password) {
-
-		databaseHelper.checkPassword(user_id, data.password, (success) => {
-			if (success) {
-				validate(data.email, regex.emailRegex, strings.invalidEmail);
-				user_details.email = data.email;
-			}
-			else {
-				throw new Error("Password is incorrect");
-			}
-		});
-
+		validate(data.email, regex.emailRegex, strings.invalidEmail);
+		validate(data.password, regex.passwordRegex, strings.invalidPassword);
+		user_details.email = data.email;
+		user_details.password = data.password;
 	}
+
 	return user_details;
 }
 
@@ -325,7 +311,7 @@ function validateLocation(location){
 	}
 }
 
-function searchValidateLocation(location, obj, objParamString){	
+function searchValidateLocation(location, obj, objParamString){
 	if(!location || location == ""){
 		delete obj[objParamString]; return;
 	} else {

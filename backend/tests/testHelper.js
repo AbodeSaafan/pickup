@@ -80,13 +80,8 @@ function createGenericUserUpdate(jwt){
 function createGenericUserUpdateWithFnameLname(jwt){
 	return {
 		jwt: jwt,
-		username:"",
-		password:"",
 		fname:rNameg.first(),
-		lname: rNameg.last(),
-		gender:"",
-		dob:"",
-		email:""
+		lname: rNameg.last()
 	};
 }
 

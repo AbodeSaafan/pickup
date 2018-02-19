@@ -103,6 +103,14 @@ router.put("/", function (req, res) {
 
 		var details = requestHelper.validateAndCleanUpdateAdminRequest(tok.user_id, req.body);
 
+		if (details.email && details.password) {
+			databaseHelper.checkPassword(details.user_id, details.password, (success) => {
+				if (!success) {
+					res.status(400).json({"error": strings.invalidOldPassword}); return;
+				}
+			});
+		}
+
 		databaseHelper.updateUser(details.user_id, details.username, details.fname, details.lname, details.gender, details.dob, details.email, (update) => {
 			if (update) {
 				databaseHelper.getUserRowById(tok.user_id, (new_user_details) => {
