@@ -15,6 +15,7 @@ import org.json.JSONObject;
 
 import java.util.concurrent.TimeUnit;
 
+import sotifc2017.pickup.api.contracts.ChangePasswordRequest;
 import sotifc2017.pickup.api.contracts.LoginRequest;
 import sotifc2017.pickup.api.contracts.RegisterRequest;
 
@@ -32,6 +33,7 @@ public class Authentication {
     private static final String LOGIN_ENDPOINT = Utils.BASE_API + "login";
     private static final String REGISTER_ENDPOINT = Utils.BASE_API + "register";
     private static final String REFRESH_ENDPOINT = Utils.BASE_API + "refresh";
+    private static final String CHANGE_PASSWORD_ENDPOINT = Utils.BASE_API + "changePassword";
 
     private static final long JWT_LIFETIME = 1000 * 60 * 14;
     protected static final long JWT_BUFFER = 1000 * 60 * 1;
@@ -103,5 +105,14 @@ public class Authentication {
                 (Request.Method.GET, REFRESH_ENDPOINT + params, null, responseListener, errorListener);
 
         return loginRequest;
+    }
+
+    public static JsonObjectRequest change_password_request(ChangePasswordRequest req, Response.Listener<JSONObject> responseListener, Response.ErrorListener errorListener) {
+        try {
+            return new JsonObjectRequest(Request.Method.PUT, CHANGE_PASSWORD_ENDPOINT, new JSONObject(Utils.gson.toJson(req)), responseListener, errorListener);
+        } catch (Exception e) {
+            errorListener.onErrorResponse(new VolleyError(e.getMessage()));
+            return null;
+        }
     }
 }

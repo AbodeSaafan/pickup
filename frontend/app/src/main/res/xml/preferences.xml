@@ -5,32 +5,31 @@
         <EditTextPreference
             android:id="@+id/username"
             android:key="editTextPref_username"
-            android:title="Username"
-            android:enabled="false"/>
+            android:title="Username" />
         <EditTextPreference
             android:id="@+id/firstname"
             android:key="editTextPref_firstname"
-            android:title="First Name"
-            android:enabled="false"/>
+            android:title="First Name"/>
         <EditTextPreference
             android:id="@+id/lasttname"
             android:key="editTextPref_lastname"
-            android:title="Last Name"
-            android:enabled="false"/>
-        <EditTextPreference
-            android:id="@+id/dob"
-            android:key="editTextPref_dob"
+            android:title="Last Name"/>
+        <Preference
             android:title="Birthday"
-            android:enabled="false"/>
-        <EditTextPreference
+            android:key="editTextPref_dob" />
+        <ListPreference
             android:id="@+id/gender"
             android:key="editTextPref_gender"
             android:title="Gender"
-            android:enabled="false"/>
-        <EditTextPreference
+            android:entries="@array/gender_array"
+            android:entryValues="@array/gender_array"/>
+        <Preference
             android:id="@+id/email"
             android:key="editTextPref_email"
-            android:title="Email"
-            android:enabled="false"/>
+            android:title="Email"/>
+        <Preference
+            android:id="@+id/password"
+            android:key="editTextPref_password"
+            android:title="Password"/>
     </PreferenceCategory>
 </PreferenceScreen>

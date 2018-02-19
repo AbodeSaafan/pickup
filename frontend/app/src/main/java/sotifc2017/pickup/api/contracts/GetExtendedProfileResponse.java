@@ -11,6 +11,6 @@ public class GetExtendedProfileResponse {
     public String location;
     public String average_review;
     public String username;
-    public int games_created;
-    public int games_joined;
+    public String games_created;
+    public String games_joined;
 }
