@@ -12,10 +12,13 @@ import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
+import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Response;
@@ -45,6 +48,15 @@ public class SignInActivity extends AppCompatActivity {
         emailText = findViewById(R.id.emailEditText);
         passText = findViewById(R.id.passEditText);
 
+        passText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+             @Override
+             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                                        signIn(v);
+                                    }
+                                return false;
+                            }
+         });
         progressDialog = new ProgressDialog(SignInActivity.this,
                 R.style.AppTheme_Dark);
 
