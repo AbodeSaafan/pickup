@@ -28,6 +28,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -227,7 +228,7 @@ public class SignUpActivity extends AppCompatActivity implements LoaderManager.L
             }
         });
         mFirstnameView = findViewById(R.id.fname);
-        mLastnameView = findViewById(R.id.lname);
+        mLastnameView = (EditText) findViewById(R.id.lname);
         skillLevel = findViewById(R.id.skill_level);
         skillLevelBar = findViewById(R.id.skill_level_bar);
         skillLevelBar.setOnProgressChangeListener(new DiscreteSeekBar.OnProgressChangeListener() {
@@ -252,6 +253,28 @@ public class SignUpActivity extends AppCompatActivity implements LoaderManager.L
 
         progressDialog = new ProgressDialog(SignUpActivity.this,
                 R.style.AppTheme_Dark);
+
+        mLastnameView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    InputMethodManager imm = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+                    VF.setDisplayedChild(1);
+                }
+                return false;
+            }
+        });
+
+        mUsernameView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    attemptLogin();
+                }
+                return false;
+            }
+        });
 
         // Location using Google widget
         PlaceAutocompleteFragment autocompleteFragment = (PlaceAutocompleteFragment)
