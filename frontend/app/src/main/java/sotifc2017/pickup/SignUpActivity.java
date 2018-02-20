@@ -199,6 +199,7 @@ public class SignUpActivity extends AppCompatActivity implements LoaderManager.L
         back2.setOnClickListener(page_switch_listener);
 
         DobLabel = findViewById(R.id.Dob);
+        DobLabel.setHintTextColor(-1);
         genderSpinner = findViewById(R.id.gender_spinner);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
                 R.array.gender_array, android.R.layout.simple_spinner_item);
@@ -230,6 +231,7 @@ public class SignUpActivity extends AppCompatActivity implements LoaderManager.L
         mFirstnameView = findViewById(R.id.fname);
         mLastnameView = (EditText) findViewById(R.id.lname);
         skillLevel = findViewById(R.id.skill_level);
+        skillLevel.setText(skillLevels[2]);
         skillLevelBar = findViewById(R.id.skill_level_bar);
         skillLevelBar.setOnProgressChangeListener(new DiscreteSeekBar.OnProgressChangeListener() {
             @Override
