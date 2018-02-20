@@ -12,6 +12,7 @@ import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
@@ -73,6 +74,26 @@ public class SignInActivity extends AppCompatActivity {
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
 
+        View focusView = null;
+        email = emailText.getText().toString();
+        pass = passText.getText().toString();
+        if(TextUtils.isEmpty(email))
+        {
+            emailText.setError(null);
+            emailText.setError(getString(R.string.error_field_required));
+            focusView = emailText;
+            focusView.requestFocus();
+            return;
+        }
+
+        if(TextUtils.isEmpty(pass))
+        {
+            passText.setError(null);
+            passText.setError(getString(R.string.error_field_required));
+            focusView = passText;
+            focusView.requestFocus();
+            return;
+        }
 
         progressDialog.setIndeterminate(true);
         progressDialog.setMessage("Authenticating...");
@@ -82,8 +103,8 @@ public class SignInActivity extends AppCompatActivity {
         progressDialog.setCancelable(false);
         progressDialog.show();
 
-        email = emailText.getText().toString();
-        pass = passText.getText().toString();
+        email = emailText.getText().toString().trim();
+        pass = passText.getText().toString().trim();
 
         Utils.getInstance(this).getRequestQueue(this).add(Authentication.login_request(new LoginRequest(email, pass), successful_signin, error_signin));
     }
