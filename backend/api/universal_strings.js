@@ -2,8 +2,8 @@
 var invalidUsername = "Username: Must be alphanumerical, lowercase and 4 to 10 characters and can include '_'.";
 var uniqueUsernameError = "Username: Someone else has that username.";
 var invalidPassword = "Password: Must be alphanumerical, can include '? ! ~ $ # % *', and must be between 6 to 80 characters.";
-var invalidPassordSignIn = "Password is in invalid format.";
-var invalidUsernameSignIn = "Email is in invalid format";
+var invalidPassordSignIn = "Invalid account information.";
+var invalidUsernameSignIn = "Invalid account information.";
 var invalidFirstName = "First name: Must be Alphabetical.";
 var invalidLastName = "Last name: Must be Alphabetical.";
 var invalidGender = "Gender: It can be specified as M/m, F/f, O/o.";
