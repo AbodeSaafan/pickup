@@ -1,4 +1,4 @@
-package sotifc2017.pickup;
+package sotifc2017.pickup.activities;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -37,6 +37,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import sotifc2017.pickup.fragments.ExtendedProfileFragment;
+import sotifc2017.pickup.R;
+import sotifc2017.pickup.fragments.SettingsFragment;
 import sotifc2017.pickup.api.Authentication;
 
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback {

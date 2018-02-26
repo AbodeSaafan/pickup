@@ -1,4 +1,4 @@
-package sotifc2017.pickup;
+package sotifc2017.pickup.fragments;
 
 import android.app.ActionBar;
 import android.app.Activity;
@@ -30,11 +30,12 @@ import org.json.JSONObject;
 
 
 import java.lang.reflect.Field;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 
+import sotifc2017.pickup.R;
+import sotifc2017.pickup.activities.SignInActivity;
 import sotifc2017.pickup.api.Authentication;
 import sotifc2017.pickup.api.GetJwt;
 import sotifc2017.pickup.api.PrivateProfile;

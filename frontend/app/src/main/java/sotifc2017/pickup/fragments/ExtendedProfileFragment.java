@@ -1,7 +1,6 @@
-package sotifc2017.pickup;
+package sotifc2017.pickup.fragments;
 
 import android.app.Fragment;
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
@@ -24,6 +23,9 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 
+import sotifc2017.pickup.R;
+import sotifc2017.pickup.activities.SignInActivity;
+import sotifc2017.pickup.activities.SignUpActivity;
 import sotifc2017.pickup.api.Authentication;
 import sotifc2017.pickup.api.ExtendedProfile;
 import sotifc2017.pickup.api.GetJwt;

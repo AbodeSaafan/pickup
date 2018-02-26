@@ -12,7 +12,7 @@
         android:paddingTop="56dp"
         android:paddingLeft="24dp"
         android:paddingRight="24dp"
-        tools:context="sotifc2017.pickup.SignInActivity">
+        tools:context="sotifc2017.pickup.activities.SignInActivity">
 
     <TextView
         android:text="@string/welcome"

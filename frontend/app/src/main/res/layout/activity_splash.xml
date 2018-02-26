@@ -10,7 +10,7 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:background="@color/primary"
-    tools:context="sotifc2017.pickup.SplashActivity">
+    tools:context="sotifc2017.pickup.activities.SplashActivity">
 
     <ImageView
         android:id="@+id/logo"

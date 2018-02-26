@@ -1,9 +1,10 @@
-package sotifc2017.pickup;
+package sotifc2017.pickup.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
+import sotifc2017.pickup.R;
 import sotifc2017.pickup.api.GetJwt;
 
 public class SplashActivity extends AppCompatActivity implements GetJwt.Callback {
