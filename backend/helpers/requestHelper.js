@@ -63,8 +63,8 @@ function validateAndCleanUpdateRequest(data){
 }
 
 function validateAndCleanLoginRequest(data){
-	validate(data.password, regex.passwordRegex, strings.invalidPassword);
-	validate(data.email, regex.emailRegex, strings.invalidEmail);
+	validate(data.password, regex.passwordRegex, strings.invalidPassordSignIn);
+	validate(data.email, regex.emailRegex, strings.invalidUsernameSignIn);
 	return data;
 }
 

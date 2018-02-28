@@ -9,7 +9,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="sotifc2017.pickup.SignUpActivity">
+    tools:context="sotifc2017.pickup.activities.SignUpActivity">
 
     <!-- Login progress -->
     <ProgressBar
@@ -104,8 +104,11 @@
                     android:hint="@string/birthday"
                     android:onClick="dobLabelClick"
                     android:layout_height="wrap_content"
-                    android:layout_width="wrap_content"
-                    android:focusable="false"/>
+                    android:layout_width="fill_parent"
+                    android:focusable="false"
+                    android:background="@android:color/transparent"
+                    android:layout_marginTop="6dp"
+                    android:layout_marginBottom="12dp"/>
 
                 <TextView
                     android:id="@+id/genderLabel"
@@ -138,11 +141,21 @@
                     app:dsb_max="10"
                     app:dsb_value="5"
                     />
-
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="vertical">
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/skill_level"/>
+                    android:id="@+id/skill_level"
+                    android:gravity="center"
+                    android:layout_marginTop="6dp"
+                    android:layout_marginBottom="12dp"
+                    android:textColor= "#FFFFFF"
+                    android:textSize="20dp"/>
+            </LinearLayout>
 
                 <TextView
                     android:layout_width="wrap_content"

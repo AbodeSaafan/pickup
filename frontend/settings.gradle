@@ -1,4 +1,2 @@
 include ':app'
-include ':backend'
 
-project(':backend').projectDir = new File('../../MyOtherProject/modules/myModule')

@@ -2,6 +2,8 @@
 var invalidUsername = "Username: Must be alphanumerical, lowercase and 4 to 10 characters and can include '_'.";
 var uniqueUsernameError = "Username: Someone else has that username.";
 var invalidPassword = "Password: Must be alphanumerical, can include '? ! ~ $ # % *', and must be between 6 to 80 characters.";
+var invalidPassordSignIn = "Invalid account information.";
+var invalidUsernameSignIn = "Invalid account information.";
 var invalidFirstName = "First name: Must be Alphabetical.";
 var invalidLastName = "Last name: Must be Alphabetical.";
 var invalidGender = "Gender: It can be specified as M/m, F/f, O/o.";
@@ -34,7 +36,7 @@ var invalidGameSkill = "The game skill value you have entered is invalid.";
 var invalidGameScheduleConflict = "The game you are trying to create can not be created because the time conflicts with another game you have created.";
 var invalidGame = "The game you specified does not exist.";
 var problemWithGameCreation = "The game you tried to create had some errors. Game created but user could not join in own game.";
-var loginError = "Username or password is not valid.";
+var loginError = "Invalid account information.";
 var invalidSearchObject = "The search object is invalid. You must specify 'game' or 'user' as a search object.";
 var invalidGameId = "The game ID you entered is invalid. Game ID's are natural numbers.";
 var invalidGameLocationRange = "The location range must be within 1 and 500 KMs.";
@@ -125,5 +127,7 @@ module.exports = {
 	refreshDoesNotExist,
 	updateUserFailed,
 	updatePassword,
-	invalidOldPassword
+	invalidOldPassword,
+	invalidPassordSignIn,
+	invalidUsernameSignIn
 };

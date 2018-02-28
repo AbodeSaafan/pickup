@@ -1,4 +1,4 @@
-package sotifc2017.pickup;
+package sotifc2017.pickup.activities;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -37,6 +37,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import sotifc2017.pickup.fragments.ExtendedProfileFragment;
+import sotifc2017.pickup.R;
+import sotifc2017.pickup.fragments.SettingsFragment;
 import sotifc2017.pickup.api.Authentication;
 
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback {
@@ -94,18 +97,24 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
      * Manipulates the map once available.
      * This callback is triggered when the map is ready to be used.
      */
+    @SuppressLint("MissingPermission")
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        if (!checkPermissions()) {
-            askForPermissions();
+        if (checkPermissions()) {
+            mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+            mFusedLocationClient.getLastLocation()
+                    .addOnSuccessListener(this, new OnSuccessListener<Location>() {
+                        @Override
+                        public void onSuccess(Location location) {
+                            // Got last known location. In some rare situations this can be null.
+                            displayGames(location);
+                        }
+                    });
         }
         else {
-            //TODO: Display based on user's city.
-            Location cityLoc = new Location("");
-            cityLoc.setLatitude(43);
-            cityLoc.setLongitude(79);
-            displayGames(cityLoc);
+            askForPermissions();
+            displayGames(null);
         }
     }
     public void askForPermissions() {
@@ -148,6 +157,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     public void displayGames(Location location) {
         if (location != null && checkPermissions()) {
+            System.out.println(location.getLatitude() + " : " + location.getLongitude());
             // Generates Sample Games. Take out when connected to backend.
             sampleGames = new ArrayList<>();
             Random random = new Random();

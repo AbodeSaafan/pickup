@@ -1,4 +1,4 @@
-package sotifc2017.pickup;
+package sotifc2017.pickup.activities;
 
 import android.Manifest;
 import android.app.ActionBar;
@@ -12,10 +12,14 @@ import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
+import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Response;
@@ -23,6 +27,7 @@ import com.android.volley.VolleyError;
 
 import org.json.JSONObject;
 
+import sotifc2017.pickup.R;
 import sotifc2017.pickup.api.Authentication;
 import sotifc2017.pickup.api.Utils;
 import sotifc2017.pickup.api.contracts.LoginRequest;
@@ -45,6 +50,15 @@ public class SignInActivity extends AppCompatActivity {
         emailText = findViewById(R.id.emailEditText);
         passText = findViewById(R.id.passEditText);
 
+        passText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+             @Override
+             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                                        signIn(v);
+                                    }
+                                return false;
+                            }
+         });
         progressDialog = new ProgressDialog(SignInActivity.this,
                 R.style.AppTheme_Dark);
 
@@ -61,6 +75,26 @@ public class SignInActivity extends AppCompatActivity {
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
 
+        View focusView = null;
+        email = emailText.getText().toString();
+        pass = passText.getText().toString();
+        if(TextUtils.isEmpty(email))
+        {
+            emailText.setError(null);
+            emailText.setError(getString(R.string.error_field_required));
+            focusView = emailText;
+            focusView.requestFocus();
+            return;
+        }
+
+        if(TextUtils.isEmpty(pass))
+        {
+            passText.setError(null);
+            passText.setError(getString(R.string.error_field_required));
+            focusView = passText;
+            focusView.requestFocus();
+            return;
+        }
 
         progressDialog.setIndeterminate(true);
         progressDialog.setMessage("Authenticating...");
@@ -70,8 +104,8 @@ public class SignInActivity extends AppCompatActivity {
         progressDialog.setCancelable(false);
         progressDialog.show();
 
-        email = emailText.getText().toString();
-        pass = passText.getText().toString();
+        email = emailText.getText().toString().trim();
+        pass = passText.getText().toString().trim();
 
         Utils.getInstance(this).getRequestQueue(this).add(Authentication.login_request(new LoginRequest(email, pass), successful_signin, error_signin));
     }
