@@ -269,8 +269,11 @@ public class SettingsFragment extends PreferenceFragment implements GetJwt.Callb
         });
 
         username.setSummary(response.username);
+        username.setText(username.getSummary().toString());
         fname.setSummary(response.fname);
+        fname.setText(fname.getSummary().toString());
         lname.setSummary(response.lname);
+        lname.setText(lname.getSummary().toString());
         dob_preference.setSummary(response.dob);
         gender.setSummary(response.gender.equalsIgnoreCase("M") ? "Male" : response.gender.equalsIgnoreCase("F") ? "Female" : "Other");
         email.setSummary(response.email);
