@@ -1,0 +1,33 @@
+MVP
+•	Account Management
+o	Create account – Tasks created, almost done 
+o	Sign in - ^^^ 
+o	Delete account – Needs new story, backend should be good, frontend needs to be done
+o	Authentication tokens – Done
+o	Edit profile – Almost done 
+•	Games
+o	Find games near me
+	See games on map
+	Search for games based on criteria
+o	View games
+	Game location
+	Game time
+	Game members
+o	Create games
+o	Join games
+o	Leave games
+•	Styling
+o	App icon
+o	Splash screen
+o	Colour scheme
+o	Name 
+o	Custom map
+o	Custom game pins
+•	Friends
+o	View other users
+Future:
+•	Real time location updates
+•	Review other users
+•	Add friends
+•	Email Verification
+•	Google/FB Authorization
