@@ -31,3 +31,12 @@ Future:
 •	Add friends
 •	Email Verification
 •	Google/FB Authorization
+
+
+V 1.1
+- push notifcation
+- edit game api
+- friends
+V 2
+
+V Next
