@@ -105,7 +105,6 @@
                     android:onClick="dobLabelClick"
                     android:layout_height="wrap_content"
                     android:layout_width="fill_parent"
-                    android:focusable="false"
                     android:background="@android:color/transparent"
                     android:layout_marginTop="6dp"
                     android:layout_marginBottom="12dp"/>
@@ -233,7 +232,7 @@
                         android:hint="@string/prompt_password"
                         android:imeActionId="@+id/login"
                         android:imeOptions="actionNext"
-                        android:inputType="textCapCharacters|textPassword"
+                        android:inputType="textPassword"
                         android:maxLines="1"
                         android:singleLine="true"
                         tools:ignore="InvalidImeActionId" />
@@ -249,7 +248,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="@string/prompt_confirm_password"
-                        android:inputType="textCapCharacters|textPassword"
+                        android:inputType="textPassword"
                         android:imeOptions="actionNext"
                         android:singleLine="true" />
                 </android.support.design.widget.TextInputLayout>

@@ -21,6 +21,7 @@ import android.provider.ContactsContract;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.text.InputType;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -55,6 +56,7 @@ import org.json.JSONObject;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -99,6 +101,7 @@ public class SignUpActivity extends AppCompatActivity implements LoaderManager.L
     private EditText cPasswordView;
     private TextView skillLevel;
     private String dob;
+
     private ProgressDialog progressDialog;
 //    private PlacesAutocompleteTextView placesAutocomplete;
     private String firstname;
@@ -107,6 +110,7 @@ public class SignUpActivity extends AppCompatActivity implements LoaderManager.L
     private String email;
     private String password;
     private String gender;
+    private Boolean underAge;
     public static String[] skillLevels = {"Just for Fun!", "Rookie", "All Star", "Super Star", "Hall of Fame", "God of Basketball"};
 
     Button next0;
@@ -124,49 +128,17 @@ public class SignUpActivity extends AppCompatActivity implements LoaderManager.L
 
     private OnClickListener page_switch_listener = new OnClickListener() {
         public void onClick(View v) {
-            boolean cancel = false;
-            View focusView = null;
             switch (v.getId()) {
                 case R.id.next0:
-                    mUsernameView.setError(null);
-                    mFirstnameView.setError(null);
-                    firstname = mFirstnameView.getText().toString();
-                    lastname = mLastnameView.getText().toString();
-                    // Check for firstname.
-                    if (TextUtils.isEmpty(firstname)) {
-                        mFirstnameView.setError(getString(R.string.error_field_required));
-                        focusView = mFirstnameView;
-                        cancel = true;
-                    }
-                    if (!isNameValid(firstname)) {
-                        mFirstnameView.setError(getString(R.string.error_invalid_name));
-                        focusView = mFirstnameView;
-                        cancel = true;
-                    }
-                    // Check for lastname.
-                    if (TextUtils.isEmpty(lastname)) {
-                        mLastnameView.setError(getString(R.string.error_field_required));
-                        focusView = mLastnameView;
-                        cancel = true;
-                    }
-                    if (!isNameValid(lastname)) {
-                        mLastnameView.setError(getString(R.string.error_invalid_name));
-                        focusView = mLastnameView;
-                        cancel = true;
-                    }
-                    if (cancel) {
-                        // There was an error; don't attempt login and focus the first
-                        // form field with an error.
-                        focusView.requestFocus();
+                    if(validateFullName())
+                    {
                         return;
                     }
                     VF.setDisplayedChild(1);
                     break;
                 case R.id.next1:
-                    DobLabel.setError(null);
-                    if (dob == null) {
-                        DobLabel.setError(getString(R.string.error_field_required));
-                        DobLabel.requestFocus();
+                    if(validateDate())
+                    {
                         return;
                     }
                     VF.setDisplayedChild(2);
@@ -199,7 +171,10 @@ public class SignUpActivity extends AppCompatActivity implements LoaderManager.L
         back1.setOnClickListener(page_switch_listener);
         back2.setOnClickListener(page_switch_listener);
 
+
+
         DobLabel = findViewById(R.id.Dob);
+        DobLabel.setInputType(InputType.TYPE_NULL);
         DobLabel.setHintTextColor(-1);
         genderSpinner = findViewById(R.id.gender_spinner);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
@@ -263,7 +238,10 @@ public class SignUpActivity extends AppCompatActivity implements LoaderManager.L
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
                     InputMethodManager imm = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
                     imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
-                    VF.setDisplayedChild(1);
+                    if(!validateFullName())
+                    {
+                        VF.setDisplayedChild(1);
+                    }
                 }
                 return false;
             }
@@ -328,6 +306,72 @@ public class SignUpActivity extends AppCompatActivity implements LoaderManager.L
     public void onNothingSelected(AdapterView<?> parent) {
         // Another interface callback
     }
+
+    private boolean validateDate()
+    {
+        Date ageCheck = ageCheckCalendar.getTime();
+        underAge = false;
+        if (System.currentTimeMillis() < ageCheck.getTime()){
+            underAge = true;
+    }
+
+        DobLabel.setError(null);
+        if (dob == null) {
+            DobLabel.setError(getString(R.string.error_field_required));
+            DobLabel.requestFocus();
+            return true;
+        }
+
+        if(underAge == true)
+        {
+            DobLabel.setError(getString(R.string.error_under_age));
+            DobLabel.requestFocus();
+            return true;
+        }
+
+        return false;
+    }
+    private boolean validateFullName()
+    {
+        boolean cancel = false;
+        View focusView = null;
+        mUsernameView.setError(null);
+        mFirstnameView.setError(null);
+        firstname = mFirstnameView.getText().toString();
+        lastname = mLastnameView.getText().toString();
+        // Check for firstname.
+        if (TextUtils.isEmpty(firstname)) {
+            mFirstnameView.setError(getString(R.string.error_field_required));
+            focusView = mFirstnameView;
+            cancel = true;
+        }
+        if (!isNameValid(firstname)) {
+            mFirstnameView.setError(getString(R.string.error_invalid_name));
+            focusView = mFirstnameView;
+            cancel = true;
+        }
+        // Check for lastname.
+        if (TextUtils.isEmpty(lastname)) {
+            mLastnameView.setError(getString(R.string.error_field_required));
+            focusView = mLastnameView;
+            cancel = true;
+        }
+        if (!isNameValid(lastname)) {
+            mLastnameView.setError(getString(R.string.error_invalid_name));
+            focusView = mLastnameView;
+            cancel = true;
+        }
+        if (cancel) {
+            // There was an error; don't attempt login and focus the first
+            // form field with an error.
+            focusView.requestFocus();
+            return true;
+        }
+        return false;
+    }
+
+
+
 
 
     /**
@@ -513,6 +557,7 @@ public class SignUpActivity extends AppCompatActivity implements LoaderManager.L
     }
 
     Calendar myCalendar = Calendar.getInstance();
+    Calendar ageCheckCalendar = Calendar.getInstance();
 
 
     private void addEmailsToAutoComplete(List<String> emailAddressCollection) {
@@ -530,6 +575,10 @@ public class SignUpActivity extends AppCompatActivity implements LoaderManager.L
         public void onDateSet(DatePicker view, int year, int monthOfYear,
                               int dayOfMonth) {
             // TODO Auto-generated method stub
+            ageCheckCalendar.set(Calendar.YEAR, (year+18));
+            ageCheckCalendar.set(Calendar.MONTH, monthOfYear);
+            ageCheckCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+
             myCalendar.set(Calendar.YEAR, year);
             myCalendar.set(Calendar.MONTH, monthOfYear);
             myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
@@ -542,6 +591,7 @@ public class SignUpActivity extends AppCompatActivity implements LoaderManager.L
         String myFormat = "MM/dd/yyyy"; //In which you need put here
         SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.CANADA);
         dob = sdf.format(myCalendar.getTime());
+
         DobLabel.setText(sdf.format(myCalendar.getTime()));
     }
 
