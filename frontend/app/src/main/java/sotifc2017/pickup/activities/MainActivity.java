@@ -20,6 +20,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -39,6 +40,7 @@ import java.util.Random;
 
 import sotifc2017.pickup.fragments.ExtendedProfileFragment;
 import sotifc2017.pickup.R;
+import sotifc2017.pickup.fragments.MainSearchFragment;
 import sotifc2017.pickup.fragments.SettingsFragment;
 import sotifc2017.pickup.api.Authentication;
 
@@ -52,6 +54,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private Toolbar toolbar;
     private NavigationView navigationView;
     private DrawerLayout drawerLayout;
+    private ImageView searchButton;
     private static long back_pressed_time;
     private static long PERIOD = 2000;
     Intent intent;
@@ -68,6 +71,13 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         navigationView = findViewById(R.id.navigation_view_main);
         drawerLayout = findViewById(R.id.activity_map);
+        searchButton = findViewById(R.id.toolbar_search_icon);
+        searchButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                replaceFragment(new MainSearchFragment(), false, R.id.toolbar_search_icon);
+            }
+        });
         setDrawerLayout();
 
         // Obtain the MapFragment and get notified when the map is ready to be used.

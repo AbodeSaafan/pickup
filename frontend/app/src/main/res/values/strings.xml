@@ -54,4 +54,8 @@
 
     <string name="nav_open">Opened Nav</string>
     <string name="nav_closed">Closed Nav</string>
+
+    <!-- Main search page -->
+    <string name="main_search_games_tab_title">Games</string>
+    <string name="main_search_users_tab_title">Users</string>
 </resources>
