@@ -75,7 +75,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                replaceFragment(new MainSearchFragment(), false, R.id.toolbar_search_icon);
+                replaceFragment(new MainSearchFragment(), true, R.id.action_search);
             }
         });
         setDrawerLayout();
@@ -247,6 +247,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     case R.id.action_settings:
                         replaceFragment(new SettingsFragment(), true, R.id.action_settings);
                         break;
+                    case R.id.action_search:
+                        replaceFragment(new MainSearchFragment(), true, R.id.action_search);
+                        break;
                     case R.id.action_sign_out:
                         AlertDialog diaBox = AskOption();
                         diaBox.show();
@@ -289,6 +292,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         // and add the transaction to the back stack if needed
         transaction.replace(R.id.fragment_container, frag);
         if(backStackAdd) transaction.addToBackStack(String.valueOf(fragId));
+
+        if(fragId != R.id.action_map) searchButton.setVisibility(View.INVISIBLE);
+        else searchButton.setVisibility(View.VISIBLE);
 
         // Commit the transaction
         transaction.commit();
