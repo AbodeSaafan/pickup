@@ -18,6 +18,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -32,6 +33,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 
 import java.util.ArrayList;
@@ -120,6 +122,12 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                             // Got last known location. In some rare situations this can be null.
                             displayGames(location);
                         }
+                    })
+                    .addOnFailureListener(this, new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.e("SotiFc", "Failed getting user's location");
+                        }
                     });
         }
         else {
@@ -167,7 +175,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     public void displayGames(Location location) {
         if (location != null && checkPermissions()) {
-            System.out.println(location.getLatitude() + " : " + location.getLongitude());
             // Generates Sample Games. Take out when connected to backend.
             sampleGames = new ArrayList<>();
             Random random = new Random();
