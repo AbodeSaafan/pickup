@@ -60,4 +60,7 @@
     <!-- Main search page -->
     <string name="main_search_games_tab_title">Games</string>
     <string name="main_search_users_tab_title">Users</string>
+
+    <!-- -->
+    <string name="search_games_first_section_title">Filters</string>
 </resources>
