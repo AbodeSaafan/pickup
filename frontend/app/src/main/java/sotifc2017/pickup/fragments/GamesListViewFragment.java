@@ -2,11 +2,14 @@ package sotifc2017.pickup.fragments;
 
 import android.app.Fragment;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.RequiresApi;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -18,6 +21,7 @@ import sotifc2017.pickup.activities.SignInActivity;
 import sotifc2017.pickup.api.Authentication;
 import sotifc2017.pickup.api.GetJwt;
 import sotifc2017.pickup.api.models.GameModel;
+import sotifc2017.pickup.helper_classes.GameListAdapter;
 
 /**
  * Created by radhika on 2018-03-10.
@@ -25,46 +29,37 @@ import sotifc2017.pickup.api.models.GameModel;
 
 public class GamesListViewFragment extends Fragment implements GetJwt.Callback {
 
-    public int game_id;
-    public String name;
-    public String type;
-    public int min_skill;
-    public int max_skill;
-    public int total_players_required;
-    public int total_players_added;
-    public int start_time;
-    public int end_time;
-    public Map<String, Double> location;
-    public int creator_id;
-    public String description;
-    public String location_notes;
-    public String gender;
-    public int[] age_range;
-    public String[] enforced_params;
-    public int time_created;
-
+    ListView listview;
+    ArrayList<GameModel> all_games;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_game_list_item, container, false);
+
+        return inflater.inflate(R.layout.fragment_game_list_view, container, false);
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //get Search results here
 
         new GetJwt(this).execute(getActivity());
+        listview = (ListView) getView().findViewById(R.id.gamelist);
 
-        //get Search results here
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     public void jwtSuccess(String jwt) {
 
         //Send search results as params into createListView
 
+        all_games= new ArrayList<GameModel>();
         createListView();
+        GameListAdapter adapter = new GameListAdapter(getContext(), all_games);
+        listview.setAdapter(adapter);
+
     }
 
     @Override
@@ -149,23 +144,13 @@ public class GamesListViewFragment extends Fragment implements GetJwt.Callback {
                 total_players_added [3], start_time[3], end_time[3], locations.get(3), creator_id[3], descriptions[3], location_notes[3], gender[3],
                 age_range.get(3), enforced_params.get(3), time_created[3]);
 
-
-        GameModel[] search_response = new GameModel[] {game_1, game_2, game_3, game_4};
-
-
-        for (int i = 0; i < search_response.length; i++) {
-
-
-
-        }
-
-
-        
-
-
-
-
+        all_games.add(game_1);
+        all_games.add(game_2);
+        all_games.add(game_3);
+        all_games.add(game_4);
 
     }
+
+
 
 }
