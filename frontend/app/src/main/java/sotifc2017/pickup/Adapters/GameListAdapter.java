@@ -1,15 +1,13 @@
-package sotifc2017.pickup.helper_classes;
+package sotifc2017.pickup.Adapters;
 
 import android.content.Context;
 import android.location.Address;
-import android.location.Geocoder;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 

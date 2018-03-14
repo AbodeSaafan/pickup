@@ -12,7 +12,6 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,7 +21,7 @@ import sotifc2017.pickup.activities.SignInActivity;
 import sotifc2017.pickup.api.Authentication;
 import sotifc2017.pickup.api.GetJwt;
 import sotifc2017.pickup.api.models.GameModel;
-import sotifc2017.pickup.helper_classes.GameListAdapter;
+import sotifc2017.pickup.Adapters.GameListAdapter;
 
 /**
  * Created by radhika on 2018-03-10.
