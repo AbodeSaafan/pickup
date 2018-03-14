@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,13 +31,16 @@ import sotifc2017.pickup.helper_classes.GameListAdapter;
 public class GamesListViewFragment extends Fragment implements GetJwt.Callback {
 
     ListView listview;
+    View rootView;
     ArrayList<GameModel> all_games;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        return inflater.inflate(R.layout.fragment_game_list_view, container, false);
+        rootView = inflater.inflate(R.layout.fragment_game_list_view, container, false);
+        listview = (ListView) rootView.findViewById(R.id.gamelist);
+        return rootView;
     }
 
     @Override
@@ -45,7 +49,7 @@ public class GamesListViewFragment extends Fragment implements GetJwt.Callback {
         //get Search results here
 
         new GetJwt(this).execute(getActivity());
-        listview = (ListView) getView().findViewById(R.id.gamelist);
+
 
     }
 
@@ -93,7 +97,9 @@ public class GamesListViewFragment extends Fragment implements GetJwt.Callback {
 
         int[] game_id = new int[] {1, 2, 3, 4};
         String[] game_name = new String[]{"radhika's game", "radhika's game pt II", "radhika's game pt III", "radhika's game pt IV"};
+
         String[] game_type = new String[]{"casual", "serious", "casual", "serious"};
+
         int[] skill_min = new int[] {5, 3, 2, 4};
         int[] skill_max = new int[] {7, 10, 8, 9};
         int[] total_players_required = new int[] {15, 10, 20, 12};
@@ -105,7 +111,7 @@ public class GamesListViewFragment extends Fragment implements GetJwt.Callback {
         locations.add(location_2);
         locations.add(location_3);
         locations.add(location_4);
-        int[] creator_id = new int[] {};
+        int[] creator_id = new int[] {1, 2, 3, 4};
         String[] descriptions = new String[] {"Casual basketball game", "Serious basketball game pt II", "Casual basketball game pt III",
                 "Serious basketball game pt III"};
 
@@ -128,21 +134,13 @@ public class GamesListViewFragment extends Fragment implements GetJwt.Callback {
 
         int[] time_created = new int[] {1504272395, 1504272395, 1504272395, 1504272395};
 
-        GameModel game_1 = new GameModel (game_id[0], game_name[0], game_type[0], skill_min[0], skill_max[0], total_players_required[0],
-        total_players_added [0], start_time[0], end_time[0], locations.get(0), creator_id[0], descriptions[0], location_notes[0], gender[0],
-                age_range.get(0), enforced_params.get(0), time_created[0]);
+        GameModel game_1 = new GameModel (game_id[0], game_name[0], game_type[0], skill_min[0], skill_max[0], total_players_required[0], total_players_added [0], start_time[0], end_time[0], locations.get(0), creator_id[0], descriptions[0], location_notes[0], gender[0], age_range.get(0), enforced_params.get(0), time_created[0]);
 
-        GameModel game_2 = new GameModel (game_id[1], game_name[1], game_type[1], skill_min[1], skill_max[1], total_players_required[1],
-                total_players_added [1], start_time[1], end_time[1], locations.get(1), creator_id[1], descriptions[1], location_notes[1], gender[1],
-                age_range.get(1), enforced_params.get(1), time_created[1]);
+        GameModel game_2 = new GameModel (game_id[1], game_name[1], game_type[1], skill_min[1], skill_max[1], total_players_required[1], total_players_added [1], start_time[1], end_time[1], locations.get(1), creator_id[1], descriptions[1], location_notes[1], gender[1], age_range.get(1), enforced_params.get(1), time_created[1]);
 
-        GameModel game_3 = new GameModel (game_id[2], game_name[2], game_type[2], skill_min[2], skill_max[2], total_players_required[2],
-                total_players_added [2], start_time[2], end_time[2], locations.get(2), creator_id[2], descriptions[2], location_notes[2], gender[2],
-                age_range.get(2), enforced_params.get(2), time_created[2]);
+        GameModel game_3 = new GameModel (game_id[2], game_name[2], game_type[2], skill_min[2], skill_max[2], total_players_required[2], total_players_added [2], start_time[2], end_time[2], locations.get(2), creator_id[2], descriptions[2], location_notes[2], gender[2], age_range.get(2), enforced_params.get(2), time_created[2]);
 
-        GameModel game_4 = new GameModel (game_id[3], game_name[3], game_type[3], skill_min[3], skill_max[3], total_players_required[3],
-                total_players_added [3], start_time[3], end_time[3], locations.get(3), creator_id[3], descriptions[3], location_notes[3], gender[3],
-                age_range.get(3), enforced_params.get(3), time_created[3]);
+        GameModel game_4 = new GameModel (game_id[3], game_name[3], game_type[3], skill_min[3], skill_max[3], total_players_required[3], total_players_added [3], start_time[3], end_time[3], locations.get(3), creator_id[3], descriptions[3], location_notes[3], gender[3], age_range.get(3), enforced_params.get(3), time_created[3]);
 
         all_games.add(game_1);
         all_games.add(game_2);
