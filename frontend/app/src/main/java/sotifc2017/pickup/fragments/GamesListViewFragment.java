@@ -21,7 +21,7 @@ import sotifc2017.pickup.activities.SignInActivity;
 import sotifc2017.pickup.api.Authentication;
 import sotifc2017.pickup.api.GetJwt;
 import sotifc2017.pickup.api.models.GameModel;
-import sotifc2017.pickup.Adapters.GameListAdapter;
+import sotifc2017.pickup.adapters.GameListAdapter;
 
 /**
  * Created by radhika on 2018-03-10.
