@@ -78,21 +78,21 @@ public class GamesListViewFragment extends Fragment implements GetJwt.Callback {
         // create the hard coded game Objects:
 
         Map <String, Double> location_1 = new HashMap<String, Double>();
-        location_1.put("lat", 500.50);
-        location_1.put("lng", 500.50);
+        location_1.put("lat", 43.619257);
+        location_1.put("lng", -79.673967);
 
 
         Map <String, Double> location_2 = new HashMap<String, Double>();
-        location_2.put("lat", 500.50);
-        location_2.put("lng", 500.50);
+        location_2.put("lat", 43.661689);
+        location_2.put("lng", -79.723295);
 
         Map <String, Double> location_3 = new HashMap<String, Double>();
-        location_3.put("lat", 500.50);
-        location_3.put("lng", 500.50);
+        location_3.put("lat", 43.122110);
+        location_3.put("lng", -79.093014);
 
         Map <String, Double> location_4 = new HashMap<String, Double>();
-        location_4.put("lat", 500.50);
-        location_4.put("lng", 500.50);
+        location_4.put("lat", 44.414352);
+        location_4.put("lng", -79.685250);
 
         int[] game_id = new int[] {1, 2, 3, 4};
         String[] game_name = new String[]{"radhika's game", "radhika's game pt II", "radhika's game pt III", "radhika's game pt IV"};
@@ -103,8 +103,16 @@ public class GamesListViewFragment extends Fragment implements GetJwt.Callback {
         int[] skill_max = new int[] {7, 10, 8, 9};
         int[] total_players_required = new int[] {15, 10, 20, 12};
         int[] total_players_added = new int[] {12, 5, 11, 5};
-        int[] start_time = new int[] {1504272395, 1504272380, 1504272350, 1504272358};
-        int[] end_time = new int[] {1504272600, 1504272700, 1504272800, 1504272370};
+        //1522411200 => March 30 (12:00)
+        //1522947600 => April 5 (1:00 PM)
+        //1526846400 => May 20 (4:00 PM)
+        //1528668000 => June 10 (6:00 PM)
+        int[] start_time = new int[] {1522411200, 1522947600, 1526846400, 1528668000};
+        int[] end_time = new int[] {1522428000, 1522950300, 1526848200, 1528671600};
+        //1522428000 => March 30 (12:40 PM)
+        //1522950300 => April 5 (1:45 PM)
+        //1526848200 => May 20 (4:30 PM)
+        //1528671600 => June 10 (7:00 PM)
         List<Map<String, Double>> locations = new ArrayList<Map<String, Double>>();
         locations.add(location_1);
         locations.add(location_2);

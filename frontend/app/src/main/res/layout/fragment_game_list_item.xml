@@ -10,6 +10,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textStyle="bold"
+        android:textSize="18sp"
         android:typeface="sans" />
 
     <TextView
@@ -18,16 +19,14 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/gameName"
         android:layout_marginTop="5dip"
-        android:textColor="#343434"
-        android:textSize="12sp" />
+        android:textSize="14sp" />
 
     <TextView
         android:id="@+id/dateTime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/location"
-        android:textColor="#343434"
-        android:textSize="12sp" />
+        android:textSize="14sp" />
 
     <TextView
         android:id="@+id/players"
@@ -36,7 +35,6 @@
         android:layout_alignBaseline="@+id/dateTime"
         android:layout_alignBottom="@+id/dateTime"
         android:layout_alignParentRight="true"
-        android:textColor="#343434"
-        android:textSize="12sp" />
+        android:textSize="14sp" />
 
 </RelativeLayout>
