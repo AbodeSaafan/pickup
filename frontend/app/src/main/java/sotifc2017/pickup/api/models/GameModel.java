@@ -24,12 +24,13 @@ public class GameModel {
     public int[] age_range;
     public String[] enforced_params;
     public int time_created;
+    public boolean player_restricted;
 
     //function for time-being
 
     public GameModel (int game_id, String name, String type, int min_skill, int max_skill, int total_players_required,
                       int total_players_added, int start_time, int end_time, Map<String, Double> location, int creator_id,
-                      String description, String location_notes, String gender, int[] age_range, String[] enforced_params, int time_created) {
+                      String description, String location_notes, String gender, int[] age_range, String[] enforced_params, int time_created, boolean player_restricted) {
 
     this.game_id = game_id;
     this.name = name;
@@ -47,6 +48,7 @@ public class GameModel {
     this.age_range = age_range;
     this.enforced_params = enforced_params;
     this.time_created = time_created;
+    this.player_restricted = player_restricted;
 
     }
 
