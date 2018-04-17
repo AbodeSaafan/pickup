@@ -212,6 +212,10 @@ function filterGames(games, user_id, finished) {
 	async.forEachOf(games, function (game, i, callback) {
 		databaseHelper.ensureGameIsJoinableByPlayer(game.game_id, user_id, (playable) => {
 			if(playable){
+				game.player_restricted = false;
+				final_results.push(game);
+			} else {
+				game.player_restricted = true;
 				final_results.push(game);
 			}
 			callback();

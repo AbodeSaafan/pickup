@@ -22,7 +22,8 @@ frisby.create("Searching for game using game id/name/type/min_skill/max_skill/to
 							.get(testHelper.searchEndpoint+"?jwt="+new_user.token+"&search_object=game&results_max=1&game_name=" + gameDetails.name)
 							.expectStatus(200)
 							.expectJSON("games.0", {
-								game_id: game.game_id
+								game_id: game.game_id,
+								player_restricted: false
 							})
 							.toss();	
 					})
@@ -31,7 +32,8 @@ frisby.create("Searching for game using game id/name/type/min_skill/max_skill/to
 							.get(testHelper.searchEndpoint+"?jwt="+new_user.token+"&search_object=game&results_max=1&game_type="+gameDetails.type+"&game_id="+game.game_id)
 							.expectStatus(200)
 							.expectJSON("games.0", {
-								game_id: game.game_id
+								game_id: game.game_id,
+								player_restricted: false
 							})
 							.toss();	
 					})
@@ -40,7 +42,8 @@ frisby.create("Searching for game using game id/name/type/min_skill/max_skill/to
 							.get(testHelper.searchEndpoint+"?jwt="+new_user.token+"&search_object=game&results_max=1&game_skill_min=0&game_id="+game.game_id)
 							.expectStatus(200)
 							.expectJSON("games.0", {
-								game_id: game.game_id
+								game_id: game.game_id,
+								player_restricted: false
 							})
 							.toss();	
 					})
@@ -49,7 +52,8 @@ frisby.create("Searching for game using game id/name/type/min_skill/max_skill/to
 							.get(testHelper.searchEndpoint+"?jwt="+new_user.token+"&search_object=game&results_max=1&game_skill_max=10&game_id="+game.game_id)
 							.expectStatus(200)
 							.expectJSON("games.0", {
-								game_id: game.game_id
+								game_id: game.game_id,
+								player_restricted: false
 							})
 							.toss();	
 					})
@@ -58,7 +62,8 @@ frisby.create("Searching for game using game id/name/type/min_skill/max_skill/to
 							.get(testHelper.searchEndpoint+"?jwt="+new_user.token+"&search_object=game&game_id="+game.game_id)
 							.expectStatus(200)
 							.expectJSON("games.0", {
-								game_id: game.game_id
+								game_id: game.game_id,
+								player_restricted: false
 							})
 							.toss();	
 					})
@@ -67,7 +72,8 @@ frisby.create("Searching for game using game id/name/type/min_skill/max_skill/to
 							.get(testHelper.searchEndpoint+"?jwt="+new_user.token+"&search_object=game&results_max=1&game_total_players="+gameDetails.total_players_required+"&game_id="+game.game_id)
 							.expectStatus(200)
 							.expectJSON("games.0", {
-								game_id: game.game_id
+								game_id: game.game_id,
+								player_restricted: false
 							})
 							.toss();	
 					})
@@ -76,7 +82,8 @@ frisby.create("Searching for game using game id/name/type/min_skill/max_skill/to
 							.get(testHelper.searchEndpoint+"?jwt="+new_user.token+"&search_object=game&results_max=1&game_duration="+gameDetails.duration+"&game_id="+game.game_id)
 							.expectStatus(200)
 							.expectJSON("games.0", {
-								game_id: game.game_id
+								game_id: game.game_id,
+								player_restricted: false
 							})
 							.toss();	
 					})
@@ -85,7 +92,8 @@ frisby.create("Searching for game using game id/name/type/min_skill/max_skill/to
 							.get(testHelper.searchEndpoint+"?jwt="+new_user.token+"&search_object=game&results_max=1&game_location="+encodeURIComponent(JSON.stringify(gameDetails.location))+"&game_location_range=5")
 							.expectStatus(200)
 							.expectJSON("games.0", {
-								game_id: game.game_id
+								game_id: game.game_id,
+								player_restricted: false
 							})
 							.toss();	
 					})
@@ -94,7 +102,8 @@ frisby.create("Searching for game using game id/name/type/min_skill/max_skill/to
 							.get(testHelper.searchEndpoint+"?jwt="+new_user.token+"&search_object=game&results_max=1&game_skill_min=0&game_duration="+gameDetails.duration+"&game_id="+game.game_id)
 							.expectStatus(200)
 							.expectJSON("games.0", {
-								game_id: game.game_id
+								game_id: game.game_id,
+								player_restricted: false
 							})
 							.toss();	
 					})
@@ -177,7 +186,7 @@ frisby.create("Searching for game using game id/name/type/min_skill/max_skill/to
 	.toss();
 
 
-frisby.create("Searching for game using game id but player can not join so game should not show up")
+frisby.create("Searching for game using game id but player can not join so game should show up but show that the player can not join it")
 	.post(testHelper.registerEndpoint, testHelper.createGenericUserFemale())
 	.expectStatus(200)
 	.expectBodyContains("token")
@@ -195,8 +204,9 @@ frisby.create("Searching for game using game id but player can not join so game 
 						frisby.create("Search for the game using game id")
 							.get(testHelper.searchEndpoint+"?jwt="+new_user.token+"&search_object=game&game_id="+game.game_id)
 							.expectStatus(200)
-							.expectJSON({
-								games: []
+							.expectJSON("games.0", {
+								game_id: game.game_id,
+								player_restricted: true
 							})
 							.toss();	
 					})

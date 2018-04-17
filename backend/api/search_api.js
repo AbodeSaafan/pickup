@@ -66,7 +66,8 @@ var strings = require("./universal_strings");
 *       "description": "Casual basketball game",
 *       "gender": "A",
 *       "age_range": "[20, 30]",
-*       "enforced_params": ["gender", "age"]
+*       "enforced_params": ["gender", "age"],
+*		"player_restricted": false
 *       },
 *       {
 *       "search_object" : "game",
@@ -82,7 +83,8 @@ var strings = require("./universal_strings");
 *       "description": "Casual basketball game pt II",
 *       "gender": "A",
 *       "age_range": "[20, 35]",
-*       "enforced_params": ["age"]
+*       "enforced_params": ["age"],
+*		"player_restricted": true
 *       }
 *   ]
 * }
