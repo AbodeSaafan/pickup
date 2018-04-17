@@ -13,7 +13,7 @@ frisby.create("Attempt to login a user using the wrong password")
 	.expectStatus(400)
 	.expectHeaderContains("content-type", "application/json")
 	.expectJSON({
-		error: strings.wrongEmailPassword
+		error: strings.invalidPasswordSignin
 	})
 	.toss();
 
