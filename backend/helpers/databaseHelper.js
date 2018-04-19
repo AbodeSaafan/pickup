@@ -426,7 +426,7 @@ function ensureGameIsValidToBeCreated(game, userId, callback) {
 }
 
 function ensureGameIsJoinableByPlayer(gameId, userId, callback) {
-	var queryString = "SELECT total_players_required, total_players_added, to_json(enforced_params) enforced_params, gender, age_range FROM games WHERE game_id = $1";
+	var queryString = "SELECT to_json(enforced_params) enforced_params, gender, age_range FROM games WHERE game_id = $1";
 	var queryParams = [gameId];
 
 	const pool = new pg.Pool({ connectionString: conString });
