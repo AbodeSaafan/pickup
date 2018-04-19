@@ -61,6 +61,7 @@
     <string name="main_search_games_tab_title">Games</string>
         <!-- Game search page -->
         <string name="game_search_minimum_player_message">Minimum Player Capacity: %d</string>
+        <string name="game_search_skill_range">Skill level: %d - %d</string>
     <string name="main_search_users_tab_title">Users</string>
 
     <!-- -->

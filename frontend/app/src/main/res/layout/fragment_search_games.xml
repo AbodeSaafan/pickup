@@ -80,30 +80,53 @@
             android:checked="true"
             android:text="Serious" />
 
-        <org.adw.library.widgets.discreteseekbar.DiscreteSeekBar
-            android:id="@+id/min_players_seekbar"
-            style="@style/Widget.AppCompat.SeekBar.Discrete"
-            android:layout_width="400dp"
+        <TextView
+            android:id="@+id/skill_level_label"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/seriousGameTypeCheckBox"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="66dp"
-            android:max="100"
-            android:progress="1"
-            app:dsb_min="2"
-            app:dsb_max="20"
-            app:dsb_value="10"
-            android:background="@color/primary_dark" />
+            android:layout_marginTop="30dp"
+            android:text="@string/game_search_skill_range" />
+
+
+        <com.appyvet.materialrangebar.RangeBar
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/skill_seekBar"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/skill_level_label"
+            android:layout_centerHorizontal="true"
+            app:mrb_pinMaxFont="10sp"
+            app:mrb_selectorSize="8dp"
+            app:mrb_tickEnd="10"
+            app:mrb_tickInterval="1"
+            app:mrb_tickStart="1"/>
 
 
         <TextView
             android:id="@+id/minimum_players_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/seriousGameTypeCheckBox"
+            android:layout_below="@+id/skill_seekBar"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="30dp"
             android:text="@string/game_search_minimum_player_message" />
+
+        <com.appyvet.materialrangebar.RangeBar
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/min_players_seekbar"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/minimum_players_label"
+            android:layout_centerHorizontal="true"
+            app:mrb_pinMaxFont="10sp"
+            app:mrb_selectorSize="8dp"
+            app:mrb_tickEnd="20"
+            app:mrb_tickInterval="1"
+            app:mrb_tickStart="2"
+            app:mrb_rangeBar="false"/>
+
 
         <CheckBox
             android:id="@+id/show_restricted_checkBox"
