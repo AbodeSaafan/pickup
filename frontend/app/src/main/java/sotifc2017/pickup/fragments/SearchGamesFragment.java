@@ -2,7 +2,6 @@ package sotifc2017.pickup.fragments;
 
 import android.app.Fragment;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,8 +28,8 @@ public class SearchGamesFragment extends Fragment {
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        toggleButton = view.findViewById(R.id.toggle_section_1);
-        childSection = view.findViewById(R.id.child_section_1);
+        toggleButton = view.findViewById(R.id.filters_header_toggle);
+        childSection = view.findViewById(R.id.filters_child_section);
 
         toggleButton.setOnClickListener(new View.OnClickListener() {
             @Override

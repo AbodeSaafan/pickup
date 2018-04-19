@@ -7,22 +7,22 @@
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/header_section_1">
+        android:id="@+id/filters_header">
 
         <TextView
-            android:id="@+id/textView4"
+            android:id="@+id/filters_header_title"
             android:layout_width="62dp"
             android:layout_height="30dp"
             android:layout_marginStart="8dp"
-            android:layout_marginLeft="8dp"
             android:layout_weight="1"
             android:text="@string/search_games_first_section_title"
             android:textAppearance="@android:style/TextAppearance.Large"
-            app:layout_constraintStart_toEndOf="@+id/toggle_section_1"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintStart_toEndOf="@+id/filters_header_toggle"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginLeft="8dp" />
 
         <ImageButton
-            android:id="@+id/toggle_section_1"
+            android:id="@+id/filters_header_toggle"
             android:layout_width="wrap_content"
             android:layout_height="0dp"
             android:layout_weight="1"
@@ -36,23 +36,85 @@
     </android.support.constraint.ConstraintLayout>
 
     <View
-        android:id="@+id/spacer_section_1"
+        android:id="@+id/filters_spacer"
         android:layout_width="fill_parent"
         android:layout_height="15dp"
-        android:layout_below="@id/header_section_1">>
+        android:layout_below="@id/filters_header">>
     </View>
 
+
     <RelativeLayout
-        android:id="@+id/child_section_1"
+        android:id="@+id/filters_child_section"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/spacer_section_1">
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/filters_spacer">
 
-        <RadioButton
-            android:id="@+id/radioButton"
+        <TextView
+            android:id="@+id/game_type_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="RadioButton" />
+            android:layout_centerHorizontal="true"
+            android:paddingBottom="25dp"
+            android:text="Game Type" />
+
+        <CheckBox
+            android:id="@+id/casualGameTypeCheckBox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="60dp"
+            android:layout_below="@id/game_type_label"
+            android:checked="true"
+            android:text="Casual" />
+
+        <CheckBox
+            android:id="@+id/seriousGameTypeCheckBox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_below="@id/game_type_label"
+            android:layout_marginEnd="60dp"
+            android:layout_marginRight="60dp"
+            android:checked="true"
+            android:text="Serious" />
+
+        <org.adw.library.widgets.discreteseekbar.DiscreteSeekBar
+            android:id="@+id/min_players_seekbar"
+            style="@style/Widget.AppCompat.SeekBar.Discrete"
+            android:layout_width="400dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/seriousGameTypeCheckBox"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="66dp"
+            android:max="100"
+            android:progress="1"
+            app:dsb_min="2"
+            app:dsb_max="20"
+            app:dsb_value="10"
+            android:background="@color/primary_dark" />
+
+
+        <TextView
+            android:id="@+id/minimum_players_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/seriousGameTypeCheckBox"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="30dp"
+            android:text="Minimum Players" />
+
+        <CheckBox
+            android:id="@+id/show_restricted_checkBox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/min_players_seekbar"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="41dp"
+            android:text="Show Restricted Games" />
     </RelativeLayout>
+
+
 
 </RelativeLayout>
