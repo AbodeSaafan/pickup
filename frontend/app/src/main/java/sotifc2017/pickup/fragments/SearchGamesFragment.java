@@ -15,10 +15,6 @@ import android.widget.TextView;
 
 import com.appyvet.materialrangebar.RangeBar;
 
-import org.adw.library.widgets.discreteseekbar.DiscreteSeekBar;
-
-import java.util.Locale;
-
 import sotifc2017.pickup.R;
 
 /**
@@ -26,8 +22,9 @@ import sotifc2017.pickup.R;
  */
 
 public class SearchGamesFragment extends Fragment {
-    ImageButton toggleButton;
-    RelativeLayout childSection;
+    // Filters Section
+    ImageButton filterToggleButton;
+    RelativeLayout filterChildSection;
 
     CheckBox casualGameCheck;
     CheckBox seriousGameCheck;
@@ -35,6 +32,10 @@ public class SearchGamesFragment extends Fragment {
     TextView minPlayerText;
     TextView skillRangeText;
     RangeBar skillRange;
+
+    // Game details section
+    ImageButton detailsToggleButton;
+    RelativeLayout detailsChildSection;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -45,6 +46,7 @@ public class SearchGamesFragment extends Fragment {
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        //region Filters section
         casualGameCheck = view.findViewById(R.id.casualGameTypeCheckBox);
         seriousGameCheck = view.findViewById(R.id.seriousGameTypeCheckBox);
 
@@ -57,34 +59,32 @@ public class SearchGamesFragment extends Fragment {
         skillRangeText.setText(String.format(getString(R.string.game_search_skill_range), 1, 10));
 
 
-        // Will generalize later
-        toggleButton = view.findViewById(R.id.filters_header_toggle);
-        childSection = view.findViewById(R.id.filters_child_section);
+        filterToggleButton = view.findViewById(R.id.filters_header_toggle);
+        filterChildSection = view.findViewById(R.id.filters_child_section);
 
-        toggleButton.setOnClickListener(new View.OnClickListener() {
+        filterToggleButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (childSection.isShown()) {
-                    toggleButton.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.ic_expand_more_black_24dp));
-                    childSection.animate().translationY(-1 * childSection.getHeight()).setDuration(300).alpha(0.0f).withEndAction(new Runnable() {
+                if (filterChildSection.isShown()) {
+                    filterToggleButton.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.ic_expand_more_black_24dp));
+                    filterChildSection.animate().translationY(-1 * filterChildSection.getHeight()).setDuration(300).alpha(0.0f).withEndAction(new Runnable() {
                         @Override
                         public void run() {
-                            childSection.setVisibility(View.GONE);
+                            filterChildSection.setVisibility(View.GONE);
                         }
                     });
                 }
                 else {
-                    toggleButton.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.ic_expand_less_black_24dp));
-                    childSection.animate().translationY(0).setDuration(300).alpha(1.0f).withStartAction(new Runnable() {
+                    filterToggleButton.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.ic_expand_less_black_24dp));
+                    filterChildSection.animate().translationY(0).setDuration(300).alpha(1.0f).withStartAction(new Runnable() {
                         @Override
                         public void run() {
-                            childSection.setVisibility(View.VISIBLE);
+                            filterChildSection.setVisibility(View.VISIBLE);
                         }
                     });
                 }
             }
         });
-        // Will generalize later
 
         seriousGameCheck.setOnCheckedChangeListener(new CheckBox.OnCheckedChangeListener() {
             @Override
@@ -112,6 +112,35 @@ public class SearchGamesFragment extends Fragment {
             }
 
         });
+        //endregion
+        detailsChildSection = view.findViewById(R.id.details_child_section);
+        detailsToggleButton = view.findViewById(R.id.details_header_toggle);
+
+        //region game details section
+        detailsToggleButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (detailsChildSection.isShown()) {
+                    detailsToggleButton.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.ic_expand_more_black_24dp));
+                    detailsChildSection.animate().translationY(-1 * detailsChildSection.getHeight()).setDuration(300).alpha(0.0f).withEndAction(new Runnable() {
+                        @Override
+                        public void run() {
+                            detailsChildSection.setVisibility(View.GONE);
+                        }
+                    });
+                }
+                else {
+                    detailsToggleButton.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.ic_expand_less_black_24dp));
+                    detailsChildSection.animate().translationY(0).setDuration(300).alpha(1.0f).withStartAction(new Runnable() {
+                        @Override
+                        public void run() {
+                            detailsChildSection.setVisibility(View.VISIBLE);
+                        }
+                    });
+                }
+            }
+        });
+        //endregion
 
         super.onViewCreated(view, savedInstanceState);
     }

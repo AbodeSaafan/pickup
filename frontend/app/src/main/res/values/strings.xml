@@ -60,10 +60,16 @@
     <!-- Main search page -->
     <string name="main_search_games_tab_title">Games</string>
         <!-- Game search page -->
+        <!-- Filters Section -->
+        <string name="search_games_filters_section_title">Filters</string>
         <string name="game_search_minimum_player_message">Minimum Player Capacity: %d</string>
         <string name="game_search_skill_range">Skill level: %d - %d</string>
+        <string name="game_search_show_restricted_games">Show Restricted Games</string>
+        <string name="game_search_game_type">Game Type</string>
+        <string name="game_search_game_type_casual">Casual</string>
+    <string name="game_search_game_type_serious">Serious</string>
+        <!-- Details Section -->
+    <string name="search_games_details_section_title">Game Details</string>
     <string name="main_search_users_tab_title">Users</string>
 
-    <!-- -->
-    <string name="search_games_first_section_title">Filters</string>
 </resources>
