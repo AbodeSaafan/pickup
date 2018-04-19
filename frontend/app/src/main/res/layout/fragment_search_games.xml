@@ -29,7 +29,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:src="@drawable/ic_expand_more_black_24dp"
+            android:src="@drawable/ic_expand_less_black_24dp"
             android:tint="@android:color/white"
             />
 
@@ -39,7 +39,7 @@
         android:id="@+id/filters_spacer"
         android:layout_width="fill_parent"
         android:layout_height="15dp"
-        android:layout_below="@id/filters_header">>
+        android:layout_below="@id/filters_header">
     </View>
 
 
@@ -103,7 +103,7 @@
             android:layout_below="@+id/seriousGameTypeCheckBox"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="30dp"
-            android:text="Minimum Players" />
+            android:text="@string/game_search_minimum_player_message" />
 
         <CheckBox
             android:id="@+id/show_restricted_checkBox"
@@ -114,7 +114,4 @@
             android:layout_marginTop="41dp"
             android:text="Show Restricted Games" />
     </RelativeLayout>
-
-
-
 </RelativeLayout>
