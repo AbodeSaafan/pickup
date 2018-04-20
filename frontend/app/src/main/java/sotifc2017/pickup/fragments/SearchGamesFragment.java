@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.text.InputType;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +19,12 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.appyvet.materialrangebar.RangeBar;
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.places.AutocompleteFilter;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
+import com.google.android.gms.location.places.ui.PlaceSelectionListener;
+import com.google.android.gms.maps.model.LatLng;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -218,6 +225,33 @@ public class SearchGamesFragment extends Fragment {
         dateRangeText.setOnClickListener(onDateClick);
         // Set default date for search (1 week = 1000ms*60s*60min*24hr*7days = 604800000)
         updateDateRangeLabel(new Date(System.currentTimeMillis()), new Date(System.currentTimeMillis() + 604800000));
+
+        PlaceAutocompleteFragment autocompleteFragment = (PlaceAutocompleteFragment)
+                getChildFragmentManager().findFragmentById(R.id.game_search_city_select);
+
+        final AutocompleteFilter typeFilter = new AutocompleteFilter.Builder()
+                .setTypeFilter(AutocompleteFilter.TYPE_FILTER_CITIES)
+                .build();
+
+        autocompleteFragment.setFilter(typeFilter);
+
+        EditText locationView = autocompleteFragment.getView().findViewById(R.id.place_autocomplete_search_input);
+        locationView.setHintTextColor(-1);
+        //TODO: Replace default text with actual city user is in, remove hint
+        locationView.setHint("Select City");
+        locationView.setTextColor(-1);
+
+        autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
+            @Override
+            public void onPlaceSelected(Place place) {
+                place.getLatLng();
+            }
+
+            @Override
+            public void onError(Status status) {
+                // TODO: Handle the error.
+            }
+        });
 
         //endregion
 

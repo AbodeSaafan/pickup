@@ -192,6 +192,28 @@
             android:ems="10"
             android:inputType="date" />
 
+        <TextView
+            android:id="@+id/location_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/date_range_from"
+            android:layout_centerHorizontal="true"
+            android:layout_marginLeft="30dp"
+            android:layout_marginStart="30dp"
+            android:layout_marginTop="15dp"
+            android:text="@string/game_search_location_label"
+            />
+
+        <fragment
+            android:id="@+id/game_search_city_select"
+            android:layout_width="match_parent"
+            android:layout_height="25dp"
+            android:layout_below="@id/location_label"
+            android:layout_marginTop="15dp"
+            android:layout_centerHorizontal="true"
+            android:name="com.google.android.gms.location.places.ui.PlaceAutocompleteFragment"
+            />
+
     </RelativeLayout>
 
 </RelativeLayout>
