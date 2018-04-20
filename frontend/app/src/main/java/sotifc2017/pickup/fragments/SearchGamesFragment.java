@@ -47,22 +47,30 @@ public class SearchGamesFragment extends Fragment {
     RelativeLayout detailsChildSection;
     Calendar fromCalendar;
     Calendar toCalendar;
-    EditText dateRangeFrom;
+    final String dateFormat = "MM/dd/yy";
+    EditText dateRangeText;
     DatePickerDialog.OnDateSetListener dateListenerFrom = new DatePickerDialog.OnDateSetListener() {
 
         @Override
         public void onDateSet(DatePicker view, int year, int monthOfYear,
                               int dayOfMonth) {
-
             fromCalendar.set(Calendar.YEAR, year);
             fromCalendar.set(Calendar.MONTH, monthOfYear);
             fromCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
 
-            updateDateRangeLabel(fromCalendar, dateRangeFrom);
+            long minDate = System.currentTimeMillis() > fromCalendar.getTimeInMillis()? System.currentTimeMillis() : fromCalendar.getTimeInMillis();
+
+            DatePickerDialog dateToDatePicker = new DatePickerDialog(getActivity(), dateListenerTo, toCalendar
+                    .get(Calendar.YEAR), toCalendar.get(Calendar.MONTH),
+                    toCalendar.get(Calendar.DAY_OF_MONTH));
+
+            dateToDatePicker .getDatePicker().setMinDate(minDate);
+            dateToDatePicker.setMessage(getString(R.string.game_search_date_range_end_message));
+
+            dateToDatePicker.show();
         }
 
     };
-    EditText dateRangeTo;
     DatePickerDialog.OnDateSetListener dateListenerTo = new DatePickerDialog.OnDateSetListener() {
 
         @Override
@@ -73,7 +81,7 @@ public class SearchGamesFragment extends Fragment {
             toCalendar.set(Calendar.MONTH, monthOfYear);
             toCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
 
-            updateDateRangeLabel(toCalendar, dateRangeTo);
+            updateDateRangeLabel(fromCalendar.getTime(), toCalendar.getTime());
         }
 
     };
@@ -159,11 +167,8 @@ public class SearchGamesFragment extends Fragment {
         //region game details section
         detailsChildSection = view.findViewById(R.id.details_child_section);
         detailsToggleButton = view.findViewById(R.id.details_header_toggle);
-        dateRangeFrom = view.findViewById(R.id.date_range_from);
-        dateRangeTo = view.findViewById(R.id.date_range_to);
-
-        dateRangeFrom.setInputType(InputType.TYPE_NULL);
-        dateRangeTo.setInputType(InputType.TYPE_NULL);
+        dateRangeText = view.findViewById(R.id.date_range_from);
+        dateRangeText.setInputType(InputType.TYPE_NULL);
 
         detailsToggleButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -197,44 +202,31 @@ public class SearchGamesFragment extends Fragment {
         // we have one field for the range of dates
             @Override
             public void onClick(View v) {
-                Calendar cal;
-                DatePickerDialog.OnDateSetListener dl;
-                long minDate;
+                long minDate  = System.currentTimeMillis();
 
-                if(v.getId() == dateRangeFrom.getId()){
-                    cal = fromCalendar;
-                    dl = dateListenerFrom;
-                    minDate = System.currentTimeMillis();
-                } else{
-                    cal = toCalendar;
-                    dl = dateListenerTo;
-                    minDate = fromCalendar.getTimeInMillis() >= System.currentTimeMillis() ? fromCalendar.getTimeInMillis() : System.currentTimeMillis();
-                }
-                DatePickerDialog dateFromDatePicker = new DatePickerDialog(getActivity(), dl, cal
-                        .get(Calendar.YEAR), cal.get(Calendar.MONTH),
-                        cal.get(Calendar.DAY_OF_MONTH));
+                DatePickerDialog dateFromDatePicker = new DatePickerDialog(getActivity(), dateListenerFrom, fromCalendar
+                        .get(Calendar.YEAR), fromCalendar.get(Calendar.MONTH),
+                        fromCalendar.get(Calendar.DAY_OF_MONTH));
 
                 dateFromDatePicker.getDatePicker().setMinDate(minDate);
 
+                dateFromDatePicker.setMessage(getString(R.string.game_search_date_range_start_message));
                 dateFromDatePicker.show();
             }
         };
 
-        dateRangeFrom.setOnClickListener(onDateClick);
-        dateRangeTo.setOnClickListener(onDateClick);
+        dateRangeText.setOnClickListener(onDateClick);
+        // Set default date for search (1 week = 1000ms*60s*60min*24hr*7days = 604800000)
+        updateDateRangeLabel(new Date(System.currentTimeMillis()), new Date(System.currentTimeMillis() + 604800000));
 
         //endregion
 
         super.onViewCreated(view, savedInstanceState);
     }
 
-    private void updateDateRangeLabel(Calendar cal, EditText dateLabel) {
-        String myFormat = "MM/dd/yy";
-        SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
+    private void updateDateRangeLabel(Date startDate, Date endDate) {
+        SimpleDateFormat sdf = new SimpleDateFormat(dateFormat, Locale.US);
 
-        dateLabel.setText(sdf.format(cal.getTime()));
+        dateRangeText.setText(String.format(getString(R.string.game_search_date_range_display_text_label),sdf.format(startDate),sdf.format(endDate)));
     }
-
-
-
 }

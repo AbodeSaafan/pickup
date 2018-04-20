@@ -69,9 +69,13 @@
         <string name="game_search_game_type_casual">Casual</string>
         <string name="game_search_game_type_serious">Serious</string>
         <!-- Details Section -->
+        <string name="search_games_details_section_title">Game Details</string>
         <string name="game_search_date_range_label">Date Range</string>
-        <!-- Details Section -->
-    <string name="search_games_details_section_title">Game Details</string>
+        <string name="game_search_date_range_display_text_label">%s - %s</string>
+        <string name="game_search_date_range_start_message">Choose the start date</string>
+        <string name="game_search_date_range_end_message">Choose the end date</string>
+
+
     <string name="main_search_users_tab_title">Users</string>
 
 </resources>
