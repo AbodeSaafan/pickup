@@ -32,6 +32,7 @@ import org.json.JSONObject;
 import java.lang.reflect.Field;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Locale;
 
 import sotifc2017.pickup.R;
@@ -51,6 +52,7 @@ public class SettingsFragment extends PreferenceFragment implements GetJwt.Callb
     private ProgressDialog progressDialog;
     private String jwt;
     private Calendar myCalendar = Calendar.getInstance();
+    Calendar ageCheckCalendar = Calendar.getInstance();
 
 
     @Override
@@ -396,9 +398,15 @@ public class SettingsFragment extends PreferenceFragment implements GetJwt.Callb
         public void onDateSet(DatePicker view, int year, int monthOfYear,
                               int dayOfMonth) {
             // TODO Auto-generated method stub
+
+            ageCheckCalendar.set(Calendar.YEAR, (year+18));
+            ageCheckCalendar.set(Calendar.MONTH, monthOfYear);
+            ageCheckCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+
             myCalendar.set(Calendar.YEAR, year);
             myCalendar.set(Calendar.MONTH, monthOfYear);
             myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+
             updateLabel();
         }
 
@@ -407,8 +415,20 @@ public class SettingsFragment extends PreferenceFragment implements GetJwt.Callb
     private void updateLabel() {
         String myFormat = "MM/dd/yyyy"; //In which you need put here
         SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.CANADA);
-        String newValue = sdf.format(myCalendar.getTime());
-        updatePrivateProfile(jwt, null, null, null, null, null, newValue.toString(), null);
+        Date ageCheck = ageCheckCalendar.getTime();
+        boolean underage = false;
+        if (System.currentTimeMillis() < ageCheck.getTime()) {
+            underage = true;
+        }
+        if (underage == true) {
+
+            Toast.makeText(getActivity(), "You need to be 18 years and above", Toast.LENGTH_SHORT).show();
+
+        } else {
+            
+            String newValue = sdf.format(myCalendar.getTime());
+            updatePrivateProfile(jwt, null, null, null, null, null, newValue.toString(), null);
+        }
     };
 
 
