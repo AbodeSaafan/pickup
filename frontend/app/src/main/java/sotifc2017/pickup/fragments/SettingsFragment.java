@@ -32,7 +32,6 @@ import org.json.JSONObject;
 import java.lang.reflect.Field;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.Locale;
 
 import sotifc2017.pickup.R;
@@ -52,7 +51,6 @@ public class SettingsFragment extends PreferenceFragment implements GetJwt.Callb
     private ProgressDialog progressDialog;
     private String jwt;
     private Calendar myCalendar = Calendar.getInstance();
-    Calendar ageCheckCalendar = Calendar.getInstance();
 
 
     @Override
@@ -141,7 +139,13 @@ public class SettingsFragment extends PreferenceFragment implements GetJwt.Callb
                 int year = Integer.parseInt(birthday_details[2]);
                 int month = Integer.parseInt(birthday_details[0]) - 1;
                 int dayOfMonth = Integer.parseInt(birthday_details[1]);
-                new DatePickerDialog(getContext(), date, year, month, dayOfMonth).show();
+
+                DatePickerDialog dp = new DatePickerDialog(getActivity(), date, year, month, dayOfMonth);
+                Calendar calendar = Calendar.getInstance();
+                calendar.add(Calendar.YEAR, -18);
+                dp.getDatePicker().setMaxDate(calendar.getTimeInMillis());
+                dp.show();
+
                 return false;
             }
         });
@@ -172,9 +176,9 @@ public class SettingsFragment extends PreferenceFragment implements GetJwt.Callb
             @Override
             public boolean onPreferenceClick(Preference preference) {
 
-                LayoutInflater li = LayoutInflater.from(getContext());
+                LayoutInflater li = LayoutInflater.from(getActivity());
                 View promptsView = li.inflate(R.layout.fragment_email_dialog, null);
-                final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getContext());
+                final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
                 alertDialogBuilder.setView(promptsView);
                 final EditText emailInput = (EditText) promptsView.findViewById(R.id.email_val);
                 final EditText passwordInput = (EditText) promptsView.findViewById(R.id.password_val);
@@ -225,9 +229,9 @@ public class SettingsFragment extends PreferenceFragment implements GetJwt.Callb
             @Override
             public boolean onPreferenceClick(Preference preference) {
 
-                LayoutInflater li = LayoutInflater.from(getContext());
+                LayoutInflater li = LayoutInflater.from(getActivity());
                 View promptsView = li.inflate(R.layout.fragment_change_password, null);
-                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getContext());
+                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
                 alertDialogBuilder.setView(promptsView);
                 final EditText oldPasswordInput = (EditText) promptsView.findViewById(R.id.old_password_val);
                 final EditText newpasswordInput = (EditText) promptsView.findViewById(R.id.new_password_val);
@@ -398,15 +402,9 @@ public class SettingsFragment extends PreferenceFragment implements GetJwt.Callb
         public void onDateSet(DatePicker view, int year, int monthOfYear,
                               int dayOfMonth) {
             // TODO Auto-generated method stub
-
-            ageCheckCalendar.set(Calendar.YEAR, (year+18));
-            ageCheckCalendar.set(Calendar.MONTH, monthOfYear);
-            ageCheckCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-
             myCalendar.set(Calendar.YEAR, year);
             myCalendar.set(Calendar.MONTH, monthOfYear);
             myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-
             updateLabel();
         }
 
@@ -415,20 +413,8 @@ public class SettingsFragment extends PreferenceFragment implements GetJwt.Callb
     private void updateLabel() {
         String myFormat = "MM/dd/yyyy"; //In which you need put here
         SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.CANADA);
-        Date ageCheck = ageCheckCalendar.getTime();
-        boolean underage = false;
-        if (System.currentTimeMillis() < ageCheck.getTime()) {
-            underage = true;
-        }
-        if (underage == true) {
-
-            Toast.makeText(getActivity(), "You need to be 18 years and above", Toast.LENGTH_SHORT).show();
-
-        } else {
-            
-            String newValue = sdf.format(myCalendar.getTime());
-            updatePrivateProfile(jwt, null, null, null, null, null, newValue.toString(), null);
-        }
+        String newValue = sdf.format(myCalendar.getTime());
+        updatePrivateProfile(jwt, null, null, null, null, null, newValue.toString(), null);
     };
 
 

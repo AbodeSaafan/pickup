@@ -56,7 +56,6 @@ import org.json.JSONObject;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -137,10 +136,6 @@ public class SignUpActivity extends AppCompatActivity implements LoaderManager.L
                     VF.setDisplayedChild(1);
                     break;
                 case R.id.next1:
-                    if(validateDate())
-                    {
-                        return;
-                    }
                     VF.setDisplayedChild(2);
                     break;
                 case R.id.back1:
@@ -307,30 +302,6 @@ public class SignUpActivity extends AppCompatActivity implements LoaderManager.L
         // Another interface callback
     }
 
-    private boolean validateDate()
-    {
-        Date ageCheck = ageCheckCalendar.getTime();
-        underAge = false;
-        if (System.currentTimeMillis() < ageCheck.getTime()){
-            underAge = true;
-    }
-
-        DobLabel.setError(null);
-        if (dob == null) {
-            DobLabel.setError(getString(R.string.error_field_required));
-            DobLabel.requestFocus();
-            return true;
-        }
-
-        if(underAge == true)
-        {
-            DobLabel.setError(getString(R.string.error_under_age));
-            DobLabel.requestFocus();
-            return true;
-        }
-
-        return false;
-    }
     private boolean validateFullName()
     {
         boolean cancel = false;
@@ -574,11 +545,6 @@ public class SignUpActivity extends AppCompatActivity implements LoaderManager.L
         @Override
         public void onDateSet(DatePicker view, int year, int monthOfYear,
                               int dayOfMonth) {
-            // TODO Auto-generated method stub
-            ageCheckCalendar.set(Calendar.YEAR, (year+18));
-            ageCheckCalendar.set(Calendar.MONTH, monthOfYear);
-            ageCheckCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-
             myCalendar.set(Calendar.YEAR, year);
             myCalendar.set(Calendar.MONTH, monthOfYear);
             myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
@@ -596,9 +562,13 @@ public class SignUpActivity extends AppCompatActivity implements LoaderManager.L
     }
 
     public void dobLabelClick(View view) {
-        new DatePickerDialog(this, date, myCalendar
+        DatePickerDialog dp = new DatePickerDialog(this, date, myCalendar
                 .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
-                myCalendar.get(Calendar.DAY_OF_MONTH)).show();
+                myCalendar.get(Calendar.DAY_OF_MONTH));
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.YEAR, -18);
+        dp.getDatePicker().setMaxDate(cal.getTimeInMillis());
+        dp.show();
     }
 
     private interface ProfileQuery {
