@@ -35,6 +35,7 @@
     </android.support.constraint.ConstraintLayout>
 
 
+    <!--TODO return it to wrap content -->
     <RelativeLayout
         android:id="@+id/filters_child_section"
         android:layout_width="match_parent"
@@ -163,10 +164,11 @@
             app:layout_constraintTop_toTopOf="parent" />
     </android.support.constraint.ConstraintLayout>
 
+    <!--TODO return it to wrap content -->
     <RelativeLayout
         android:id="@+id/details_child_section"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="2dp"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_below="@+id/details_header"
@@ -234,7 +236,77 @@
                 android:entries="@array/game_search_location_range_spinner" />
         </LinearLayout>
 
+    </RelativeLayout>
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/specifics_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/details_child_section"
+        android:layout_marginTop="20dp">
+
+        <TextView
+            android:id="@+id/specifics_header_title"
+            android:layout_width="250dp"
+            android:layout_height="30dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_weight="1"
+            android:text="@string/search_games_specifics_section_title"
+            android:textAppearance="@android:style/TextAppearance.Large"
+            app:layout_constraintStart_toEndOf="@+id/specifics_header_toggle"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageButton
+            android:id="@+id/specifics_header_toggle"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:src="@drawable/ic_expand_less_black_24dp"
+            android:tint="@android:color/white"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </android.support.constraint.ConstraintLayout>
+
+    <RelativeLayout
+        android:id="@+id/specifics_child_section"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/specifics_header"
+        android:layout_marginTop="15dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <CheckBox
+                android:id="@+id/game_name_checkbox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginLeft="8dp"
+                android:text="@string/search_games_specifics_game_name_label" />
+
+            <EditText
+                android:id="@+id/game_name_edittext"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:enabled="false"
+                android:focusable="false"
+                android:hint="@string/search_games_specifics_game_name_hint"
+                android:inputType="text"
+                android:focusableInTouchMode="true"
+                android:selectAllOnFocus="true"
+                android:singleLine="true"
+                android:textAlignment="center" />
+        </LinearLayout>
 
     </RelativeLayout>
+
+
+
 
 </RelativeLayout>

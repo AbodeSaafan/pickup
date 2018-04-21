@@ -86,6 +86,10 @@
             <item><string name="game_search_location_range_option_10">10 KM</string></item>
             <item><string name="game_search_location_range_option_5">5 KM</string></item>
         </string-array>
+        <!-- Specifics Section-->
+        <string name="search_games_specifics_section_title">Game Specifics</string>
+        <string name="search_games_specifics_game_name_label">Game Name:</string>
+        <string name="search_games_specifics_game_name_hint">Game name not specified</string>
 
 
     <string name="main_search_users_tab_title">Users</string>

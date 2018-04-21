@@ -2,6 +2,7 @@ package sotifc2017.pickup.fragments;
 
 import android.app.DatePickerDialog;
 import android.app.Fragment;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
@@ -10,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.DatePicker;
@@ -92,6 +94,12 @@ public class SearchGamesFragment extends Fragment {
         }
 
     };
+
+    //Game specifics section
+    ImageButton specificsToggleButton;
+    RelativeLayout specificsChildSection;
+    CheckBox gameNameCheckbox;
+    EditText gameNameEdittext;
 
 
     @Override
@@ -255,6 +263,54 @@ public class SearchGamesFragment extends Fragment {
 
         //endregion
 
+
+        //region game specifics section
+        specificsChildSection = view.findViewById(R.id.specifics_child_section);
+        specificsToggleButton = view.findViewById(R.id.specifics_header_toggle);
+        gameNameCheckbox = view.findViewById(R.id.game_name_checkbox);
+        gameNameEdittext = view.findViewById(R.id.game_name_edittext);
+
+
+        specificsChildSection.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (specificsChildSection.isShown()) {
+                    specificsToggleButton.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.ic_expand_more_black_24dp));
+                    specificsChildSection.animate().translationY(-1 * specificsChildSection.getHeight()).setDuration(300).alpha(0.0f).withEndAction(new Runnable() {
+                        @Override
+                        public void run() {
+                            specificsChildSection.setVisibility(View.GONE);
+                        }
+                    });
+                }
+                else {
+                    specificsToggleButton.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.ic_expand_less_black_24dp));
+                    specificsChildSection.animate().translationY(0).setDuration(300).alpha(1.0f).withStartAction(new Runnable() {
+                        @Override
+                        public void run() {
+                            specificsChildSection.setVisibility(View.VISIBLE);
+                        }
+                    });
+                }
+            }
+        });
+
+        gameNameCheckbox.setOnCheckedChangeListener(new CheckBox.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean searchByGameName) {
+                gameNameEdittext.setFocusableInTouchMode(searchByGameName);
+                gameNameEdittext.setEnabled(searchByGameName);
+                if(searchByGameName){
+                    gameNameEdittext.requestFocus();
+                    gameNameEdittext.selectAll();
+                    InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+                }
+            }
+        });
+
+
+        //endregion
         super.onViewCreated(view, savedInstanceState);
     }
 
