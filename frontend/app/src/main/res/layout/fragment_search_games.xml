@@ -38,7 +38,7 @@
     <RelativeLayout
         android:id="@+id/filters_child_section"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="2dp"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_below="@+id/filters_header"
@@ -186,33 +186,54 @@
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:clickable="true"
-            android:focusable="false"
-            android:paddingTop="30dp"
-            android:textAlignment="center"
             android:ems="10"
-            android:inputType="date" />
+            android:focusable="false"
+            android:inputType="date"
+            android:paddingTop="30dp"
+            android:layout_marginBottom="20dp"
+            android:textAlignment="center" />
 
-        <TextView
-            android:id="@+id/location_label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/date_range_from"
-            android:layout_centerHorizontal="true"
-            android:layout_marginLeft="30dp"
-            android:layout_marginStart="30dp"
-            android:layout_marginTop="15dp"
-            android:text="@string/game_search_location_label"
-            />
-
-        <fragment
-            android:id="@+id/game_search_city_select"
+        <LinearLayout
+            android:id="@+id/location_label_layout"
             android:layout_width="match_parent"
-            android:layout_height="25dp"
-            android:layout_below="@id/location_label"
-            android:layout_marginTop="15dp"
-            android:layout_centerHorizontal="true"
-            android:name="com.google.android.gms.location.places.ui.PlaceAutocompleteFragment"
-            />
+            android:layout_marginTop="20dp"
+            android:layout_height="40dp"
+            android:layout_below="@id/date_range_from">
+            <TextView
+                android:id="@+id/location_label"
+                android:layout_width="290dp"
+                android:layout_height="wrap_content"
+                android:textAlignment="center"
+                android:text="@string/game_search_location_label" />
+            <TextView
+                android:id="@+id/location_range_label"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAlignment="center"
+                android:text="@string/game_search_location_range_label" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/location_label_layout">
+
+            <fragment
+                android:id="@+id/game_search_city_select"
+                android:name="com.google.android.gms.location.places.ui.PlaceAutocompleteFragment"
+                android:layout_width="290dp"
+                android:layout_height="25dp"
+                 />
+
+
+            <Spinner
+                android:id="@+id/location_range_spinner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:entries="@array/game_search_location_range_spinner" />
+        </LinearLayout>
+
 
     </RelativeLayout>
 
