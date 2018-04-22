@@ -18,6 +18,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             tools:context="sotifc2017.pickup.activities.MainActivity">
+
+            <include layout="@layout/new_game_icon"/>
         </RelativeLayout>
     </RelativeLayout>
 
@@ -27,4 +29,5 @@
         android:layout_height="match_parent"
         android:layout_gravity="start"
         app:menu="@menu/nav_menu"/>
+
 </android.support.v4.widget.DrawerLayout>

@@ -10,7 +10,9 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -54,6 +56,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private int MY_PERMISSIONS_FINE_LOCATION;
     private int MY_PERMISSIONS_COARSE_LOCATION;
     private Toolbar toolbar;
+    private FloatingActionButton floatNewGame;
     private NavigationView navigationView;
     private DrawerLayout drawerLayout;
     private ImageView searchButton;
@@ -66,10 +69,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle(null);
-        toolbar.bringToFront();
+        setUpToolbarSearch();
+        setUpFloatingCreateNewGame();
 
         navigationView = findViewById(R.id.navigation_view_main);
         drawerLayout = findViewById(R.id.activity_map);
@@ -86,6 +87,24 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         MapFragment mapFragment = new MapFragment();
         replaceFragment(mapFragment, false, R.id.action_map);
         mapFragment.getMapAsync(this);
+    }
+
+    private void setUpToolbarSearch() {
+        toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle(null);
+        toolbar.bringToFront();
+    }
+
+    private void setUpFloatingCreateNewGame() {
+        floatNewGame = findViewById(R.id.float_new_game);
+        floatNewGame.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Snackbar.make(view, "We will create a game", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
+            }
+        });
     }
 
     @Override
