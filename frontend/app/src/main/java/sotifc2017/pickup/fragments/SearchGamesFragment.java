@@ -19,6 +19,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.appyvet.materialrangebar.RangeBar;
 import com.google.android.gms.common.api.Status;
@@ -100,6 +101,8 @@ public class SearchGamesFragment extends Fragment {
     RelativeLayout specificsChildSection;
     CheckBox gameNameCheckbox;
     EditText gameNameEdittext;
+    CheckBox gameIdCheckbox;
+    EditText gameIdEdittext;
 
 
     @Override
@@ -269,6 +272,8 @@ public class SearchGamesFragment extends Fragment {
         specificsToggleButton = view.findViewById(R.id.specifics_header_toggle);
         gameNameCheckbox = view.findViewById(R.id.game_name_checkbox);
         gameNameEdittext = view.findViewById(R.id.game_name_edittext);
+        gameIdCheckbox = view.findViewById(R.id.game_id_checkbox);
+        gameIdEdittext = view.findViewById(R.id.game_id_edittext);
 
 
         specificsChildSection.setOnClickListener(new View.OnClickListener() {
@@ -303,6 +308,22 @@ public class SearchGamesFragment extends Fragment {
                 if(searchByGameName){
                     gameNameEdittext.requestFocus();
                     gameNameEdittext.selectAll();
+                    InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+                }
+            }
+        });
+
+
+        gameIdCheckbox.setOnCheckedChangeListener(new CheckBox.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean searchByGameId) {
+                gameIdEdittext.setFocusableInTouchMode(searchByGameId);
+                gameIdEdittext.setEnabled(searchByGameId);
+                if(searchByGameId){
+                    Toast.makeText(getActivity(), getString(R.string.search_games_specifics_game_id_tooltip), Toast.LENGTH_SHORT).show();
+                    gameIdEdittext.requestFocus();
+                    gameIdEdittext.selectAll();
                     InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
                     imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
                 }

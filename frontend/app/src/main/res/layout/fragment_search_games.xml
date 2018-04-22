@@ -279,6 +279,7 @@
         android:layout_marginTop="15dp">
 
         <LinearLayout
+            android:id="@+id/game_name_linear_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
@@ -299,6 +300,33 @@
                 android:hint="@string/search_games_specifics_game_name_hint"
                 android:inputType="text"
                 android:focusableInTouchMode="true"
+                android:selectAllOnFocus="true"
+                android:singleLine="true"
+                android:textAlignment="center" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/game_name_linear_layout">
+
+            <CheckBox
+                android:id="@+id/game_id_checkbox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginLeft="8dp"
+                android:text="@string/search_games_specifics_game_id_label" />
+
+            <EditText
+                android:id="@+id/game_id_edittext"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:enabled="false"
+                android:focusable="false"
+                android:focusableInTouchMode="true"
+                android:hint="@string/search_games_specifics_game_id_hint"
+                android:inputType="number"
                 android:selectAllOnFocus="true"
                 android:singleLine="true"
                 android:textAlignment="center" />
