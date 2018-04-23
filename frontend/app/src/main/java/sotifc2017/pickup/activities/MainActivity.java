@@ -42,6 +42,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import sotifc2017.pickup.fragments.CreateGameFragment;
 import sotifc2017.pickup.fragments.ExtendedProfileFragment;
 import sotifc2017.pickup.R;
 import sotifc2017.pickup.fragments.MainSearchFragment;
@@ -56,7 +57,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private int MY_PERMISSIONS_FINE_LOCATION;
     private int MY_PERMISSIONS_COARSE_LOCATION;
     private Toolbar toolbar;
-    private FloatingActionButton floatNewGame;
+    private FloatingActionButton fabNewGame;
     private NavigationView navigationView;
     private DrawerLayout drawerLayout;
     private ImageView searchButton;
@@ -97,12 +98,11 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     private void setUpFloatingCreateNewGame() {
-        floatNewGame = findViewById(R.id.float_new_game);
-        floatNewGame.setOnClickListener(new View.OnClickListener() {
+        fabNewGame = findViewById(R.id.fab_new_game);
+        fabNewGame.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "We will create a game", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                replaceFragment(new CreateGameFragment(), true, R.id.fab_new_game);
             }
         });
     }
@@ -319,11 +319,18 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         transaction.replace(R.id.fragment_container, frag);
         if(backStackAdd) transaction.addToBackStack(String.valueOf(fragId));
 
-        if(fragId != R.id.action_map) searchButton.setVisibility(View.INVISIBLE);
-        else searchButton.setVisibility(View.VISIBLE);
+        boolean isSearchVisible = fragId != R.id.action_map;
+        enableVisibility(searchButton, isSearchVisible);
+        boolean isNewGameFabVisible = fragId == R.id.action_map;
+        enableVisibility(fabNewGame, isNewGameFabVisible);
 
         // Commit the transaction
         transaction.commit();
+    }
+
+    private void enableVisibility(ImageView object, boolean enable) {
+        int visibility = enable ? View.VISIBLE : View.INVISIBLE;
+        object.setVisibility(visibility);
     }
 
     private void setNavItemSelectedById(int id){
@@ -331,7 +338,19 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         for (int i = 0; i < navigationView.getMenu().size(); i++) {
             navigationView.getMenu().getItem(i).setChecked(false).setEnabled(true);
         }
-        navigationView.getMenu().findItem(id).setChecked(true).setEnabled(false);
+
+        handleFabNewGame(id);
+    }
+
+    private void handleFabNewGame(int id) {
+        MenuItem navItemSelected = navigationView.getMenu().findItem(id);
+        if (navItemSelected != null) { // Fab for new game is not part of the menu
+            navItemSelected.setChecked(true).setEnabled(false);
+        }
+
+        if (id == R.id.action_map) {
+            enableVisibility(fabNewGame, true);
+        }
     }
 
     @SuppressLint("MissingPermission")

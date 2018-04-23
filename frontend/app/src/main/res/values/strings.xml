@@ -57,6 +57,11 @@
     <string name="nav_open">Opened Nav</string>
     <string name="nav_closed">Closed Nav</string>
 
+    <!-- Strings related to Create Game -->
+    <string name="create_new_game_title">Create Game</string>
+    <string name="create_new_game_name">Game Name:</string>
+    <string name="create_new_game_type">Game Type:</string>
+
     <!-- Main search page -->
     <string name="main_search_games_tab_title">Games</string>
     <string name="main_search_search_button_label">Search</string>
