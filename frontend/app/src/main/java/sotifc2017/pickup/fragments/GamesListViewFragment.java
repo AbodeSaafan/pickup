@@ -21,7 +21,7 @@ import sotifc2017.pickup.activities.SignInActivity;
 import sotifc2017.pickup.api.Authentication;
 import sotifc2017.pickup.api.GetJwt;
 import sotifc2017.pickup.api.models.GameModel;
-import sotifc2017.pickup.adapters.GameListAdapter;
+import sotifc2017.pickup.Adapters.GameListAdapter;
 
 /**
  * Created by radhika on 2018-03-10.
@@ -42,7 +42,7 @@ public class GamesListViewFragment extends Fragment implements GetJwt.Callback {
         listview = (ListView) rootView.findViewById(R.id.gamelist);
         all_games= new ArrayList<GameModel>();
         createListView();
-        GameListAdapter adapter = new GameListAdapter(getContext(), all_games);
+        GameListAdapter adapter = new GameListAdapter(getActivity(), all_games);
         listview.setAdapter(adapter);
 
         return rootView;

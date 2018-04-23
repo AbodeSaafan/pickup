@@ -1,7 +1,6 @@
-package sotifc2017.pickup.adapters;
+package sotifc2017.pickup.Adapters;
 
 import android.app.Activity;
-import android.content.Context;
 import android.location.Address;
 import android.location.Geocoder;
 import android.view.LayoutInflater;
@@ -24,8 +23,6 @@ import java.util.TimeZone;
 import sotifc2017.pickup.R;
 import sotifc2017.pickup.api.models.GameModel;
 
-import static java.security.AccessController.getContext;
-
 /**
  * Created by rkrishnan on 3/13/2018.
  */
@@ -33,10 +30,10 @@ import static java.security.AccessController.getContext;
 public class GameListAdapter extends BaseAdapter {
 
     ArrayList<GameModel> gamesList;
-    Context mContext;
+    Activity mContext;
     Geocoder geocoder;
 
-    public GameListAdapter(Context context, ArrayList<GameModel> gameArrayList) {
+    public GameListAdapter(Activity context, ArrayList<GameModel> gameArrayList) {
         this.mContext = context;
         this.gamesList = gameArrayList;
         geocoder = new Geocoder(context, Locale.getDefault());
