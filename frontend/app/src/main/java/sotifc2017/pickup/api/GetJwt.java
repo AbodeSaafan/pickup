@@ -54,6 +54,7 @@ public class GetJwt extends AsyncTask<Context, Integer, Void> {
 
                     } catch (Exception e) {
                         VolleyError err = (VolleyError) e.getCause();
+                        //TODO fix the failure on inital launch (invalid jwt, server down)
                         NetworkResponse response = err.networkResponse;
                         Log.e("jwt", new String(response.data));
                         // idek what to do here, probably check if we have internet access, display correct err

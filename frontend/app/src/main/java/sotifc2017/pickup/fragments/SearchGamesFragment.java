@@ -161,6 +161,20 @@ public class SearchGamesFragment extends Fragment {
                 /*if(!seriousGameChecked){ // Uncomment this section if we want to reset the skill range when serious game is disabled
                     skillRange.setRangePinsByIndices(0, skillRange.getTickCount() - 1);
                 }*/
+                if(!seriousGameChecked && !casualGameCheck.isChecked()){
+                    casualGameCheck.setChecked(true);
+                    seriousGameCheck.setChecked(true);
+                }
+            }
+        });
+
+        casualGameCheck.setOnCheckedChangeListener(new CheckBox.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean casualGameChecked) {
+                if(!casualGameChecked && !seriousGameCheck.isChecked()){
+                    casualGameCheck.setChecked(true);
+                    seriousGameCheck.setChecked(true);
+                }
             }
         });
 
@@ -276,7 +290,7 @@ public class SearchGamesFragment extends Fragment {
         gameIdEdittext = view.findViewById(R.id.game_id_edittext);
 
 
-        specificsChildSection.setOnClickListener(new View.OnClickListener() {
+        specificsToggleButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (specificsChildSection.isShown()) {

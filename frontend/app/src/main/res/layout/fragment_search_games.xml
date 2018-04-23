@@ -1,340 +1,337 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent" android:layout_height="match_parent">
-
-    <android.support.constraint.ConstraintLayout
-        android:id="@+id/filters_header"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <TextView
-            android:id="@+id/filters_header_title"
-            android:layout_width="250dp"
-            android:layout_height="30dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginStart="8dp"
-            android:layout_weight="1"
-            android:text="@string/search_games_filters_section_title"
-            android:textAppearance="@android:style/TextAppearance.Large"
-            app:layout_constraintStart_toEndOf="@+id/filters_header_toggle"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <ImageButton
-            android:id="@+id/filters_header_toggle"
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:src="@drawable/ic_expand_less_black_24dp"
-            android:tint="@android:color/white"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-    </android.support.constraint.ConstraintLayout>
-
-
-    <!--TODO return it to wrap content -->
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
     <RelativeLayout
-        android:id="@+id/filters_child_section"
-        android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/filters_header"
-        android:layout_marginTop="15dp">
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent" android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/game_type_label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:paddingBottom="25dp"
-            android:text="@string/game_search_game_type" />
-
-        <CheckBox
-            android:id="@+id/casualGameTypeCheckBox"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="60dp"
-            android:layout_marginStart="60dp"
-            android:layout_below="@id/game_type_label"
-            android:checked="true"
-            android:text="@string/game_search_game_type_casual" />
-
-        <CheckBox
-            android:id="@+id/seriousGameTypeCheckBox"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_below="@id/game_type_label"
-            android:layout_marginEnd="60dp"
-            android:layout_marginRight="60dp"
-            android:checked="true"
-            android:text="@string/game_search_game_type_serious" />
-
-        <TextView
-            android:id="@+id/skill_level_label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/seriousGameTypeCheckBox"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="30dp"
-            android:text="@string/game_search_skill_range" />
-
-
-        <com.appyvet.materialrangebar.RangeBar
-            xmlns:app="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/skill_seekBar"
-            android:layout_width="300dp"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/skill_level_label"
-            android:layout_centerHorizontal="true"
-            app:mrb_pinMaxFont="10sp"
-            app:mrb_selectorSize="8dp"
-            app:mrb_tickEnd="10"
-            app:mrb_tickInterval="1"
-            app:mrb_tickStart="1"/>
-
-
-        <TextView
-            android:id="@+id/minimum_players_label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/skill_seekBar"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="30dp"
-            android:text="@string/game_search_minimum_player_message" />
-
-        <com.appyvet.materialrangebar.RangeBar
-            xmlns:app="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/min_players_seekbar"
-            android:layout_width="300dp"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/minimum_players_label"
-            android:layout_centerHorizontal="true"
-            app:mrb_pinMaxFont="10sp"
-            app:mrb_selectorSize="8dp"
-            app:mrb_tickEnd="20"
-            app:mrb_tickInterval="1"
-            app:mrb_tickStart="2"
-            app:mrb_rangeBar="false"/>
-
-
-        <CheckBox
-            android:id="@+id/show_restricted_checkBox"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/min_players_seekbar"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="20dp"
-            android:text="@string/game_search_show_restricted_games" />
-    </RelativeLayout>
-
-    <android.support.constraint.ConstraintLayout
-        android:id="@+id/details_header"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/filters_child_section"
-        android:layout_marginTop="20dp">
-
-        <TextView
-            android:id="@+id/details_header_title"
-            android:layout_width="250dp"
-            android:layout_height="30dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginStart="8dp"
-            android:layout_weight="1"
-            android:text="@string/search_games_details_section_title"
-            android:textAppearance="@android:style/TextAppearance.Large"
-            app:layout_constraintStart_toEndOf="@+id/details_header_toggle"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <ImageButton
-            android:id="@+id/details_header_toggle"
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:src="@drawable/ic_expand_less_black_24dp"
-            android:tint="@android:color/white"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-    </android.support.constraint.ConstraintLayout>
-
-    <!--TODO return it to wrap content -->
-    <RelativeLayout
-        android:id="@+id/details_child_section"
-        android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/details_header"
-        android:layout_marginTop="15dp">
-
-        <TextView
-            android:id="@+id/date_range_label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true"
-            android:text="@string/game_search_date_range_label" />
-
-        <EditText
-            android:id="@+id/date_range_from"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:clickable="true"
-            android:ems="10"
-            android:focusable="false"
-            android:inputType="date"
-            android:paddingTop="30dp"
-            android:layout_marginBottom="20dp"
-            android:textAlignment="center" />
-
-        <LinearLayout
-            android:id="@+id/location_label_layout"
-            android:layout_width="match_parent"
-            android:layout_marginTop="20dp"
-            android:layout_height="40dp"
-            android:layout_below="@id/date_range_from">
-            <TextView
-                android:id="@+id/location_label"
-                android:layout_width="290dp"
-                android:layout_height="wrap_content"
-                android:textAlignment="center"
-                android:text="@string/game_search_location_label" />
-            <TextView
-                android:id="@+id/location_range_label"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textAlignment="center"
-                android:text="@string/game_search_location_range_label" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/location_label_layout">
-
-            <fragment
-                android:id="@+id/game_search_city_select"
-                android:name="com.google.android.gms.location.places.ui.PlaceAutocompleteFragment"
-                android:layout_width="290dp"
-                android:layout_height="25dp"
-                 />
-
-
-            <Spinner
-                android:id="@+id/location_range_spinner"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:entries="@array/game_search_location_range_spinner" />
-        </LinearLayout>
-
-    </RelativeLayout>
-
-    <android.support.constraint.ConstraintLayout
-        android:id="@+id/specifics_header"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/details_child_section"
-        android:layout_marginTop="20dp">
-
-        <TextView
-            android:id="@+id/specifics_header_title"
-            android:layout_width="250dp"
-            android:layout_height="30dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginStart="8dp"
-            android:layout_weight="1"
-            android:text="@string/search_games_specifics_section_title"
-            android:textAppearance="@android:style/TextAppearance.Large"
-            app:layout_constraintStart_toEndOf="@+id/specifics_header_toggle"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <ImageButton
-            android:id="@+id/specifics_header_toggle"
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:src="@drawable/ic_expand_less_black_24dp"
-            android:tint="@android:color/white"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-    </android.support.constraint.ConstraintLayout>
-
-    <RelativeLayout
-        android:id="@+id/specifics_child_section"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/specifics_header"
-        android:layout_marginTop="15dp">
-
-        <LinearLayout
-            android:id="@+id/game_name_linear_layout"
+        <android.support.constraint.ConstraintLayout
+            android:id="@+id/filters_header"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <CheckBox
-                android:id="@+id/game_name_checkbox"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
+            <TextView
+                android:id="@+id/filters_header_title"
+                android:layout_width="250dp"
+                android:layout_height="30dp"
                 android:layout_marginLeft="8dp"
-                android:text="@string/search_games_specifics_game_name_label" />
+                android:layout_marginStart="8dp"
+                android:layout_weight="1"
+                android:text="@string/search_games_filters_section_title"
+                android:textAppearance="@android:style/TextAppearance.Large"
+                app:layout_constraintStart_toEndOf="@+id/filters_header_toggle"
+                app:layout_constraintTop_toTopOf="parent" />
 
-            <EditText
-                android:id="@+id/game_name_edittext"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:enabled="false"
-                android:focusable="false"
-                android:hint="@string/search_games_specifics_game_name_hint"
-                android:inputType="text"
-                android:focusableInTouchMode="true"
-                android:selectAllOnFocus="true"
-                android:singleLine="true"
-                android:textAlignment="center" />
-        </LinearLayout>
+            <ImageButton
+                android:id="@+id/filters_header_toggle"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:src="@drawable/ic_expand_less_black_24dp"
+                android:tint="@android:color/white"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-        <LinearLayout
+        </android.support.constraint.ConstraintLayout>
+
+        <RelativeLayout
+            android:id="@+id/filters_child_section"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/game_name_linear_layout">
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/filters_header"
+            android:layout_marginTop="15dp">
 
-            <CheckBox
-                android:id="@+id/game_id_checkbox"
+            <TextView
+                android:id="@+id/game_type_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
+                android:layout_centerHorizontal="true"
+                android:paddingBottom="25dp"
+                android:text="@string/game_search_game_type" />
+
+            <CheckBox
+                android:id="@+id/casualGameTypeCheckBox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="60dp"
+                android:layout_marginStart="60dp"
+                android:layout_below="@id/game_type_label"
+                android:checked="true"
+                android:text="@string/game_search_game_type_casual" />
+
+            <CheckBox
+                android:id="@+id/seriousGameTypeCheckBox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_below="@id/game_type_label"
+                android:layout_marginEnd="60dp"
+                android:layout_marginRight="60dp"
+                android:checked="true"
+                android:text="@string/game_search_game_type_serious" />
+
+            <TextView
+                android:id="@+id/skill_level_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/seriousGameTypeCheckBox"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="30dp"
+                android:text="@string/game_search_skill_range" />
+
+
+            <com.appyvet.materialrangebar.RangeBar
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/skill_seekBar"
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/skill_level_label"
+                android:layout_centerHorizontal="true"
+                app:mrb_pinMaxFont="10sp"
+                app:mrb_selectorSize="8dp"
+                app:mrb_tickEnd="10"
+                app:mrb_tickInterval="1"
+                app:mrb_tickStart="1"/>
+
+
+            <TextView
+                android:id="@+id/minimum_players_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/skill_seekBar"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="30dp"
+                android:text="@string/game_search_minimum_player_message" />
+
+            <com.appyvet.materialrangebar.RangeBar
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/min_players_seekbar"
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/minimum_players_label"
+                android:layout_centerHorizontal="true"
+                app:mrb_pinMaxFont="10sp"
+                app:mrb_selectorSize="8dp"
+                app:mrb_tickEnd="20"
+                app:mrb_tickInterval="1"
+                app:mrb_tickStart="2"
+                app:mrb_rangeBar="false"/>
+
+
+            <CheckBox
+                android:id="@+id/show_restricted_checkBox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/min_players_seekbar"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="20dp"
+                android:text="@string/game_search_show_restricted_games" />
+        </RelativeLayout>
+
+        <android.support.constraint.ConstraintLayout
+            android:id="@+id/details_header"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/filters_child_section"
+            android:layout_marginTop="20dp">
+
+            <TextView
+                android:id="@+id/details_header_title"
+                android:layout_width="250dp"
+                android:layout_height="30dp"
                 android:layout_marginLeft="8dp"
-                android:text="@string/search_games_specifics_game_id_label" />
+                android:layout_marginStart="8dp"
+                android:layout_weight="1"
+                android:text="@string/search_games_details_section_title"
+                android:textAppearance="@android:style/TextAppearance.Large"
+                app:layout_constraintStart_toEndOf="@+id/details_header_toggle"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageButton
+                android:id="@+id/details_header_toggle"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:src="@drawable/ic_expand_less_black_24dp"
+                android:tint="@android:color/white"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+        </android.support.constraint.ConstraintLayout>
+
+        <RelativeLayout
+            android:id="@+id/details_child_section"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/details_header"
+            android:layout_marginTop="15dp">
+
+            <TextView
+                android:id="@+id/date_range_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:text="@string/game_search_date_range_label" />
 
             <EditText
-                android:id="@+id/game_id_edittext"
+                android:id="@+id/date_range_from"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:clickable="true"
+                android:ems="10"
+                android:focusable="false"
+                android:inputType="date"
+                android:paddingTop="30dp"
+                android:layout_marginBottom="20dp"
+                android:textAlignment="center" />
+
+            <LinearLayout
+                android:id="@+id/location_label_layout"
+                android:layout_width="match_parent"
+                android:layout_marginTop="20dp"
+                android:layout_height="40dp"
+                android:layout_below="@id/date_range_from">
+                <TextView
+                    android:id="@+id/location_label"
+                    android:layout_width="290dp"
+                    android:layout_height="wrap_content"
+                    android:textAlignment="center"
+                    android:text="@string/game_search_location_label" />
+                <TextView
+                    android:id="@+id/location_range_label"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAlignment="center"
+                    android:text="@string/game_search_location_range_label" />
+
+            </LinearLayout>
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:enabled="false"
-                android:focusable="false"
-                android:focusableInTouchMode="true"
-                android:hint="@string/search_games_specifics_game_id_hint"
-                android:inputType="number"
-                android:selectAllOnFocus="true"
-                android:singleLine="true"
-                android:textAlignment="center" />
-        </LinearLayout>
+                android:layout_below="@id/location_label_layout">
 
+                <fragment
+                    android:id="@+id/game_search_city_select"
+                    android:name="com.google.android.gms.location.places.ui.PlaceAutocompleteFragment"
+                    android:layout_width="290dp"
+                    android:layout_height="25dp"
+                     />
+
+
+                <Spinner
+                    android:id="@+id/location_range_spinner"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:entries="@array/game_search_location_range_spinner" />
+            </LinearLayout>
+
+        </RelativeLayout>
+
+        <android.support.constraint.ConstraintLayout
+            android:id="@+id/specifics_header"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/details_child_section"
+            android:layout_marginTop="20dp">
+
+            <TextView
+                android:id="@+id/specifics_header_title"
+                android:layout_width="250dp"
+                android:layout_height="30dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_weight="1"
+                android:text="@string/search_games_specifics_section_title"
+                android:textAppearance="@android:style/TextAppearance.Large"
+                app:layout_constraintStart_toEndOf="@+id/specifics_header_toggle"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageButton
+                android:id="@+id/specifics_header_toggle"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:src="@drawable/ic_expand_less_black_24dp"
+                android:tint="@android:color/white"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+        </android.support.constraint.ConstraintLayout>
+
+        <RelativeLayout
+            android:id="@+id/specifics_child_section"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/specifics_header"
+            android:layout_marginTop="15dp">
+
+            <LinearLayout
+                android:id="@+id/game_name_linear_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <CheckBox
+                    android:id="@+id/game_name_checkbox"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginLeft="8dp"
+                    android:text="@string/search_games_specifics_game_name_label" />
+
+                <EditText
+                    android:id="@+id/game_name_edittext"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:enabled="false"
+                    android:focusable="false"
+                    android:hint="@string/search_games_specifics_game_name_hint"
+                    android:inputType="text"
+                    android:focusableInTouchMode="true"
+                    android:selectAllOnFocus="true"
+                    android:singleLine="true"
+                    android:textAlignment="center" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/game_name_linear_layout">
+
+                <CheckBox
+                    android:id="@+id/game_id_checkbox"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginLeft="8dp"
+                    android:text="@string/search_games_specifics_game_id_label" />
+
+                <EditText
+                    android:id="@+id/game_id_edittext"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:enabled="false"
+                    android:focusable="false"
+                    android:focusableInTouchMode="true"
+                    android:hint="@string/search_games_specifics_game_id_hint"
+                    android:inputType="number"
+                    android:selectAllOnFocus="true"
+                    android:singleLine="true"
+                    android:textAlignment="center" />
+            </LinearLayout>
+
+        </RelativeLayout>
     </RelativeLayout>
-
-
-
-
-</RelativeLayout>
+</ScrollView>
