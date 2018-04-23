@@ -122,7 +122,7 @@ public class GameListAdapter extends BaseAdapter {
         players.setText(playerCount);
         dateTime.setText(date);
 
-        if (!game.player_restricted) {
+        if (game.player_restricted) {
             ImageButton warning  = (ImageButton) itemView.findViewById(R.id.warning);
             warning.setVisibility(View.VISIBLE);
             itemView.setOnClickListener(new View.OnClickListener() {
