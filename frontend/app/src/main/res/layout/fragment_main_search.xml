@@ -21,13 +21,27 @@
 
     </android.support.design.widget.TabLayout>
 
+
     <android.support.v4.view.ViewPager
         android:id="@+id/main_search_pager"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_below="@+id/search_tabLayout"
+        android:layout_marginBottom="65dp"
         android:layout_marginTop="20dp">
 
     </android.support.v4.view.ViewPager>
+
+    <Button
+        android:id="@+id/main_search_search_button"
+        android:text="@string/main_search_search_button_label"
+        android:textAlignment="center"
+        android:layout_centerHorizontal="true"
+        android:layout_alignBottom="@id/main_search_pager"
+        android:layout_width="match_parent"
+        android:layout_height="65dp"
+        android:drawableLeft="@android:drawable/ic_menu_search"
+        android:drawableStart="@android:drawable/ic_menu_search"
+        android:layout_marginBottom="-65dp"/>
 
 </RelativeLayout>

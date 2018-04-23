@@ -9,6 +9,7 @@ import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import sotifc2017.pickup.R;
 import sotifc2017.pickup.android_modified_source.FragmentPagerAdapter;
@@ -20,6 +21,7 @@ import sotifc2017.pickup.android_modified_source.FragmentPagerAdapter;
 public class MainSearchFragment extends Fragment {
     private final static int SEARCH_GAMES_TAB_NUMBER = 0;
     private final static int SEARCH_USERS_TAB_NUMBER = 1;
+    Button searchButton;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -33,6 +35,14 @@ public class MainSearchFragment extends Fragment {
         vp.setAdapter(new SectionsPagerAdapter(getFragmentManager()));
         TabLayout tabLayout = getView().findViewById(R.id.search_tabLayout);
         tabLayout.setupWithViewPager(vp);
+
+        searchButton = view.findViewById(R.id.main_search_search_button);
+        searchButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                executeSearch();
+            }
+        });
     }
 
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
@@ -67,6 +77,9 @@ public class MainSearchFragment extends Fragment {
             return null;
         }
     }
+
+    private void executeSearch(){
+
+    }
+
 }
-
-

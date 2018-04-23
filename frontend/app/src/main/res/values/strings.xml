@@ -59,6 +59,7 @@
 
     <!-- Main search page -->
     <string name="main_search_games_tab_title">Games</string>
+    <string name="main_search_search_button_label">Search</string>
         <!-- Game search page -->
         <!-- Filters Section -->
         <string name="search_games_filters_section_title">Filters</string>
