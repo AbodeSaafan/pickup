@@ -99,6 +99,9 @@
         <string name="search_games_specifics_game_id_label">Game Id:</string>
         <string name="search_games_specifics_game_id_hint">Game Id not specified</string>
         <string name="search_games_specifics_game_id_tooltip">Searching by game id will ignore other search parameters as game id is unique to each game.</string>
+        <!-- User search page -->
+        <string name="search_users_username_label">Username: </string>
+        <string name="search_users_username_hint">Enter username here</string>
 
 
     <string name="main_search_users_tab_title">Users</string>
