@@ -39,13 +39,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/ic_people_black_24dp"
-            android:paddingRight="5dp"
-            android:layout_toLeftOf="@+id/players"/>
+            android:layout_alignParentRight="true"
+            />
         <TextView
             android:id="@+id/players"
+            android:layout_toLeftOf="@+id/player_icon"
+            android:paddingRight="10dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
             android:textSize="14sp"/>
     </RelativeLayout>
 
