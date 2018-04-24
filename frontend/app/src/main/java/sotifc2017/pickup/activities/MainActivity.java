@@ -319,7 +319,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         transaction.replace(R.id.fragment_container, frag);
         if(backStackAdd) transaction.addToBackStack(String.valueOf(fragId));
 
-        boolean isSearchVisible = fragId != R.id.action_map;
+        boolean isSearchVisible = fragId == R.id.action_map;
         enableVisibility(searchButton, isSearchVisible);
         boolean isNewGameFabVisible = fragId == R.id.action_map;
         enableVisibility(fabNewGame, isNewGameFabVisible);
