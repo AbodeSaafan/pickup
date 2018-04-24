@@ -42,7 +42,7 @@ public class GamesListViewFragment extends Fragment implements GetJwt.Callback {
         listview = (ListView) rootView.findViewById(R.id.gamelist);
         all_games= new ArrayList<GameModel>();
         createListView();
-        GameListAdapter adapter = new GameListAdapter(getContext(), all_games);
+        GameListAdapter adapter = new GameListAdapter(getActivity(), all_games);
         listview.setAdapter(adapter);
 
         return rootView;
@@ -211,7 +211,7 @@ public class GamesListViewFragment extends Fragment implements GetJwt.Callback {
         enforced_params.add(new String[]{"gender", "age_range"});
 
         int[] time_created = new int[] {1504272395, 1504272395, 1504272395, 1504272395, 1504292395, 1505272395, 1504372395, 1504272495, 1504272595, 1504572495};
-        boolean[] player_restricted = new boolean[] {true, false, true, true, true, true, true, false, false, true};
+        boolean[] player_restricted = new boolean[] {true, false, true, true, true, true, false, false, false, false};
 
         GameModel game_1 = new GameModel (game_id[0], game_name[0], game_type[0], skill_min[0], skill_max[0], total_players_required[0], total_players_added [0], start_time[0], end_time[0], locations.get(0), creator_id[0], descriptions[0], location_notes[0], gender[0], age_range.get(0), enforced_params.get(0), time_created[0], player_restricted[0]);
 

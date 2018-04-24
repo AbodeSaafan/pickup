@@ -1,14 +1,17 @@
 package sotifc2017.pickup.adapters;
 
 import android.app.Activity;
-import android.content.Context;
+import android.graphics.PorterDuff;
 import android.location.Address;
 import android.location.Geocoder;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.graphics.drawable.DrawableCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,8 +27,6 @@ import java.util.TimeZone;
 import sotifc2017.pickup.R;
 import sotifc2017.pickup.api.models.GameModel;
 
-import static java.security.AccessController.getContext;
-
 /**
  * Created by rkrishnan on 3/13/2018.
  */
@@ -33,10 +34,10 @@ import static java.security.AccessController.getContext;
 public class GameListAdapter extends BaseAdapter {
 
     ArrayList<GameModel> gamesList;
-    Context mContext;
+    Activity mContext;
     Geocoder geocoder;
 
-    public GameListAdapter(Context context, ArrayList<GameModel> gameArrayList) {
+    public GameListAdapter(Activity context, ArrayList<GameModel> gameArrayList) {
         this.mContext = context;
         this.gamesList = gameArrayList;
         geocoder = new Geocoder(context, Locale.getDefault());
@@ -66,7 +67,7 @@ public class GameListAdapter extends BaseAdapter {
 
 
         if (itemView == null) {
-            itemView = LayoutInflater.from(this.mContext).inflate(R.layout.fragment_game_list_item,null);
+            itemView = LayoutInflater.from(this.mContext).inflate(R.layout.fragment_game_list_item, null);
         }
 
 
@@ -77,7 +78,6 @@ public class GameListAdapter extends BaseAdapter {
 
         double latitude = game.location.get("lat");
         double longitude = game.location.get("lng");
-
 
 
         String newLocation = "";
@@ -98,11 +98,11 @@ public class GameListAdapter extends BaseAdapter {
         String date = "";
 
         SimpleDateFormat sdf_date = new SimpleDateFormat("d");
-        if(date.endsWith("1") && !date.endsWith("11"))
+        if (date.endsWith("1") && !date.endsWith("11"))
             sdf_date = new SimpleDateFormat("EE MMM d'st' yyyy");
-        else if(date.endsWith("2") && !date.endsWith("12"))
+        else if (date.endsWith("2") && !date.endsWith("12"))
             sdf_date = new SimpleDateFormat("EE MMM d'nd' yyyy");
-        else if(date.endsWith("3") && !date.endsWith("13"))
+        else if (date.endsWith("3") && !date.endsWith("13"))
             sdf_date = new SimpleDateFormat("EE MMM d'rd' yyyy");
         else
             sdf_date = new SimpleDateFormat("EE MMM d'th' yyyy");
@@ -113,8 +113,8 @@ public class GameListAdapter extends BaseAdapter {
 
         DateFormat time_format = new SimpleDateFormat("h:mm a");
         time_format.setTimeZone(TimeZone.getTimeZone("Etc/UTC"));
-        String start_time = time_format.format(new Date(game.start_time*1000L));
-        String end_time = time_format.format(new Date(game.end_time*1000L));
+        String start_time = time_format.format(new Date(game.start_time * 1000L));
+        String end_time = time_format.format(new Date(game.end_time * 1000L));
 
         if (start_date.equals(end_date)) {
             date = start_date + ", " + start_time + "-" + end_time;
@@ -125,8 +125,8 @@ public class GameListAdapter extends BaseAdapter {
         players.setText(playerCount);
         dateTime.setText(date);
 
-        if (!game.player_restricted) {
-            ImageButton warning  = (ImageButton) itemView.findViewById(R.id.warning);
+        if (game.player_restricted) {
+            ImageButton warning = (ImageButton) itemView.findViewById(R.id.warning);
             warning.setVisibility(View.VISIBLE);
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -137,6 +137,24 @@ public class GameListAdapter extends BaseAdapter {
             });
 
 
+        }
+
+        //changing colour of player icon (based on player stats)
+
+        ImageView player_icon = (ImageView) itemView.findViewById(R.id.player_icon);
+
+        int difference = game.total_players_required - game.total_players_added;
+
+        if (difference >= 1 && difference <= 3){
+
+            player_icon.setColorFilter(ContextCompat.getColor(mContext, R.color.red), PorterDuff.Mode.SRC_IN);
+
+        } else if (difference >= 4 && difference <= 7) {
+
+            player_icon.setColorFilter(ContextCompat.getColor(mContext, R.color.light_orange), PorterDuff.Mode.SRC_IN);
+
+        } else if (difference > 7) {
+            player_icon.setColorFilter(ContextCompat.getColor(mContext, R.color.green), PorterDuff.Mode.SRC_IN);
         }
 
 
