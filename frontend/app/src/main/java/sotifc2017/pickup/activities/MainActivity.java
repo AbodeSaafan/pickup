@@ -111,9 +111,17 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     public void onBackPressed(){
         int count = getFragmentManager().getBackStackEntryCount();
         if (count != 0) {
-            if (count == 1) setNavItemSelectedById(R.id.action_map);
-            if (count > 1)
-                setNavItemSelectedById(Integer.parseInt(getFragmentManager().getBackStackEntryAt(getFragmentManager().getBackStackEntryCount() - 2).getName()));
+            int prevFragmentId = R.id.action_map;
+            if (count == 1) {
+                prevFragmentId = R.id.action_map;
+                setNavItemSelectedById(prevFragmentId);
+            } else if (count > 1) {
+                prevFragmentId = Integer.parseInt(getFragmentManager().getBackStackEntryAt(getFragmentManager().getBackStackEntryCount() - 2).getName());
+                setNavItemSelectedById(prevFragmentId);
+            }
+            
+            handleFragmentsNonMenuItems(prevFragmentId);
+            
             super.onBackPressed();
         }
         else
@@ -121,6 +129,20 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             if (back_pressed_time + PERIOD > System.currentTimeMillis()) super.onBackPressed();
             else Toast.makeText(getBaseContext(), "Press once again to exit!", Toast.LENGTH_SHORT).show();
             back_pressed_time = System.currentTimeMillis();
+        }
+    }
+
+    private void handleFragmentsNonMenuItems(int id) {
+        // All options are available on non-menu item fragments. Check menu item only for menu item fragments.
+        MenuItem navItemSelected = navigationView.getMenu().findItem(id);
+        if (navItemSelected != null) {
+            navItemSelected.setChecked(true).setEnabled(false);
+        }
+
+        // Visibility may have been disabled when replacing fragments. Enabling visibility if necessary.
+        if (id == R.id.action_map) {
+            enableVisibility(fabNewGame, true);
+            enableVisibility(searchButton, true);
         }
     }
 
@@ -337,19 +359,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         drawerLayout.closeDrawers();
         for (int i = 0; i < navigationView.getMenu().size(); i++) {
             navigationView.getMenu().getItem(i).setChecked(false).setEnabled(true);
-        }
-
-        handleFabNewGame(id);
-    }
-
-    private void handleFabNewGame(int id) {
-        MenuItem navItemSelected = navigationView.getMenu().findItem(id);
-        if (navItemSelected != null) { // Fab for new game is not part of the menu
-            navItemSelected.setChecked(true).setEnabled(false);
-        }
-
-        if (id == R.id.action_map) {
-            enableVisibility(fabNewGame, true);
         }
     }
 
