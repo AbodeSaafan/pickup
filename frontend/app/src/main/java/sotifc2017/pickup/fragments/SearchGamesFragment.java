@@ -157,24 +157,14 @@ public class SearchGamesFragment extends Fragment {
         seriousGameCheck.setOnCheckedChangeListener(new CheckBox.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean seriousGameChecked) {
-                skillRange.setEnabled(seriousGameChecked);
-                /*if(!seriousGameChecked){ // Uncomment this section if we want to reset the skill range when serious game is disabled
-                    skillRange.setRangePinsByIndices(0, skillRange.getTickCount() - 1);
-                }*/
-                if(!seriousGameChecked && !casualGameCheck.isChecked()){
-                    casualGameCheck.setChecked(true);
-                    seriousGameCheck.setChecked(true);
-                }
+                updateGameTypeCheckboxes();
             }
         });
 
         casualGameCheck.setOnCheckedChangeListener(new CheckBox.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean casualGameChecked) {
-                if(!casualGameChecked && !seriousGameCheck.isChecked()){
-                    casualGameCheck.setChecked(true);
-                    seriousGameCheck.setChecked(true);
-                }
+                updateGameTypeCheckboxes();
             }
         });
 
@@ -353,5 +343,13 @@ public class SearchGamesFragment extends Fragment {
         SimpleDateFormat sdf = new SimpleDateFormat(dateFormat, Locale.US);
 
         dateRangeText.setText(String.format(getString(R.string.game_search_date_range_display_text_label),sdf.format(startDate),sdf.format(endDate)));
+    }
+
+    private void updateGameTypeCheckboxes(){
+        if(!casualGameCheck.isChecked() && !seriousGameCheck.isChecked()){
+            casualGameCheck.setChecked(true);
+            seriousGameCheck.setChecked(true);
+        }
+        skillRange.setEnabled(seriousGameCheck.isChecked());
     }
 }
