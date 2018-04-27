@@ -32,7 +32,7 @@ public class CreateGameFragment extends Fragment implements GetJwt.Callback {
     }
 
     @Override
-    public void jwtFailure(Exception e) {
+    public void jwtFailure(GetJwt.JwtOutcome outcome) {
     }
 
 }

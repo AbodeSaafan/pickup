@@ -68,8 +68,9 @@ public class GamesListViewFragment extends Fragment implements GetJwt.Callback {
     }
 
     @Override
-    public void jwtFailure(Exception e) {
-        Log.e("jwt", e.getMessage());
+    public void jwtFailure(GetJwt.JwtOutcome outcome) {
+        //TODO improve to handle well
+        Log.e("jwt", outcome.toString());
         Authentication.logout(getActivity());
         Intent intent = new Intent(getActivity(), SignInActivity.class);
         startActivity(intent);

@@ -76,8 +76,8 @@ public class ExtendedProfileFragment extends Fragment implements GetJwt.Callback
     }
 
     @Override
-    public void jwtFailure(Exception e) {
-        Log.e("jwt", e.getMessage());
+    public void jwtFailure(GetJwt.JwtOutcome outcome) {
+        //TODO improve to handle well
         Authentication.logout(getActivity());
         Intent intent = new Intent(getActivity(), SignInActivity.class);
         startActivity(intent);

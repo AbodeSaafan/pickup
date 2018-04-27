@@ -1,12 +1,16 @@
 <resources>
     <string name="app_name">Pickup</string>
+
+    <!-- Splash screen strings -->
+    <string name="splashScreenRetryCountdown">It seems like our servers are a bit slow, retrying in %1$d seconds.</string>
+    <string name="splashScreenServerDown">Our servers seem to be down right now. Sorry for the inconvenience, please try again in a few minutes!</string>
+
+    <!-- Strings related to login -->
     <string name="welcome">Welcome to PickUp</string>
     <string name="create_account"> <u>Create an Account</u></string>
     <string name="sign_in">Sign In</string>
     <string name="email">Email</string>
     <string name="password">Password</string>
-
-    <!-- Strings related to login -->
     <string name="prompt_email">Email</string>
     <string name="prompt_firstName">First Name</string>
     <string name="prompt_lastName">Last Name</string>

@@ -11,6 +11,7 @@ import com.android.volley.toolbox.RequestFuture;
 
 import org.json.JSONObject;
 
+import java.net.HttpURLConnection;
 import java.util.concurrent.TimeUnit;
 
 import static sotifc2017.pickup.api.Authentication.JWT_BUFFER;
@@ -23,7 +24,7 @@ import static sotifc2017.pickup.api.Authentication.jwt_request;
 public class GetJwt extends AsyncTask<Context, Integer, Void> {
     public interface Callback {
         void jwtSuccess(String jwt);
-        void jwtFailure(Exception e);
+        void jwtFailure(JwtOutcome outcome);
     }
 
     private final Callback callback;
@@ -54,11 +55,13 @@ public class GetJwt extends AsyncTask<Context, Integer, Void> {
 
                     } catch (Exception e) {
                         VolleyError err = (VolleyError) e.getCause();
-                        //TODO fix the failure on inital launch (invalid jwt, server down)
-                        NetworkResponse response = err.networkResponse;
-                        Log.e("jwt", new String(response.data));
-                        // idek what to do here, probably check if we have internet access, display correct err
-                        callback.jwtFailure(new Exception("Could not get a new JWT")); return null;
+                        if(err != null & err.networkResponse != null && err.networkResponse.statusCode == HttpURLConnection.HTTP_BAD_REQUEST){
+                            Log.e("jwt", new String(err.networkResponse.data));
+                            callback.jwtFailure(JwtOutcome.BadJwtRetrieval); return null;
+                        }
+                        else{
+                            callback.jwtFailure(JwtOutcome.ServerFault); return null;
+                        }
                     }
                 }
                 else {
@@ -67,9 +70,15 @@ public class GetJwt extends AsyncTask<Context, Integer, Void> {
             }
             else {
                 //never had a jwt or refresh so "sign out"
-                callback.jwtFailure(new Exception("Bad JWT")); return null;
+                callback.jwtFailure(JwtOutcome.NoRefresh); return null;
             }
         }
         return null;
+    }
+
+    public enum JwtOutcome {
+        NoRefresh,          //No refresh token in app (not signed in)
+        BadJwtRetrieval,    //Attempt to refresh JWT has failed (400)
+        ServerFault         //Server fault while refreshing JWT
     }
 }
