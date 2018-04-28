@@ -56,7 +56,6 @@ public class SplashActivity extends AppCompatActivity implements GetJwt.Callback
             @Override
             public void run() {
                 if (--tries_left > 0) {
-
                     new CountDownTimer((RETRY_ATTEMPTS - tries_left) * 5 * 1000, 1000) {
 
                         public void onTick(long millisUntilFinished) {
@@ -69,20 +68,7 @@ public class SplashActivity extends AppCompatActivity implements GetJwt.Callback
                     }.start();
 
                 } else {
-                    AlertDialog.Builder exitDialog = new AlertDialog.Builder(SplashActivity.this);
-                    exitDialog.setMessage(getString(R.string.splashScreenServerDown));
-                    exitDialog.setCancelable(true);
-
-                    exitDialog.setPositiveButton(
-                            "Okay",
-                            new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int id) {
-                                    dialog.cancel();
-                                    System.exit(1);
-                                }
-                            });
-
-                    exitDialog.create().show();
+                    GetJwt.exitAppDialog(SplashActivity.this).show();
                 }
             }
         });

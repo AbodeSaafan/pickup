@@ -1,11 +1,12 @@
 package sotifc2017.pickup.api;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.android.volley.NetworkResponse;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.RequestFuture;
 
@@ -13,6 +14,8 @@ import org.json.JSONObject;
 
 import java.net.HttpURLConnection;
 import java.util.concurrent.TimeUnit;
+
+import sotifc2017.pickup.R;
 
 import static sotifc2017.pickup.api.Authentication.JWT_BUFFER;
 import static sotifc2017.pickup.api.Authentication.SHARED_PREF_KEY;
@@ -24,6 +27,7 @@ import static sotifc2017.pickup.api.Authentication.jwt_request;
 public class GetJwt extends AsyncTask<Context, Integer, Void> {
     public interface Callback {
         void jwtSuccess(String jwt);
+
         void jwtFailure(JwtOutcome outcome);
     }
 
@@ -34,7 +38,7 @@ public class GetJwt extends AsyncTask<Context, Integer, Void> {
     }
 
     protected Void doInBackground(Context... contexts) {
-        for(Context ctx : contexts){
+        for (Context ctx : contexts) {
             SharedPreferences prefs = ctx.getApplicationContext().getSharedPreferences(SHARED_PREF_KEY, Context.MODE_PRIVATE);
 
             String jwt_tok = prefs.getString("jwt", null);
@@ -51,26 +55,28 @@ public class GetJwt extends AsyncTask<Context, Integer, Void> {
                         JSONObject response = requestFuture.get(10, TimeUnit.SECONDS);
                         String jwt = response.getString("token");
                         Authentication.saveJwt(ctx, jwt);
-                        callback.jwtSuccess(jwt); return null;
+                        callback.jwtSuccess(jwt);
+                        return null;
 
                     } catch (Exception e) {
                         VolleyError err = (VolleyError) e.getCause();
-                        if(err != null & err.networkResponse != null && err.networkResponse.statusCode == HttpURLConnection.HTTP_BAD_REQUEST){
+                        if (err != null && err.networkResponse != null && err.networkResponse.statusCode == HttpURLConnection.HTTP_BAD_REQUEST) {
                             Log.e("jwt", new String(err.networkResponse.data));
-                            callback.jwtFailure(JwtOutcome.BadJwtRetrieval); return null;
-                        }
-                        else{
-                            callback.jwtFailure(JwtOutcome.ServerFault); return null;
+                            callback.jwtFailure(JwtOutcome.BadJwtRetrieval);
+                            return null;
+                        } else {
+                            callback.jwtFailure(JwtOutcome.ServerFault);
+                            return null;
                         }
                     }
+                } else {
+                    callback.jwtSuccess(jwt_tok);
+                    return null;
                 }
-                else {
-                    callback.jwtSuccess(jwt_tok); return null;
-                }
-            }
-            else {
+            } else {
                 //never had a jwt or refresh so "sign out"
-                callback.jwtFailure(JwtOutcome.NoRefresh); return null;
+                callback.jwtFailure(JwtOutcome.NoRefresh);
+                return null;
             }
         }
         return null;
@@ -80,5 +86,21 @@ public class GetJwt extends AsyncTask<Context, Integer, Void> {
         NoRefresh,          //No refresh token in app (not signed in)
         BadJwtRetrieval,    //Attempt to refresh JWT has failed (400)
         ServerFault         //Server fault while refreshing JWT
+    }
+
+    public static AlertDialog.Builder exitAppDialog(Context ctx) {
+        AlertDialog.Builder exitDialog = new AlertDialog.Builder(ctx);
+        exitDialog.setMessage(ctx.getString(R.string.splashScreenServerDown));
+        exitDialog.setCancelable(true);
+        exitDialog.setPositiveButton(
+                "Okay",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                        System.exit(1);
+                    }
+                });
+        exitDialog.create();
+        return exitDialog;
     }
 }
