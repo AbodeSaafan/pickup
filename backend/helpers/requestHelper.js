@@ -117,6 +117,8 @@ function validateAndCleanSearchRequest(data){
 		data.game_total_players = data.game_total_players - 0; // quick convert to int
 		searchValidateStartTime(data.game_start_time, data, "game_start_time");
 		data.game_start_time = data.game_start_time - 0; // quick convert to int
+		searchValidateEndTime(data.game_end_time, data, "game_end_time");
+		data.game_end_time = data.game_end_time - 0; // quick convert to int
 		searchValidate(data.game_duration, regex.gameDurationRegex, strings.invalidGameDuration, data, "game_duration");
 		data.game_duration = data.game_duration - 0; // quick convert to int
 		data.game_location = searchValidateLocation(data.game_location, data, "game_location");
@@ -284,6 +286,14 @@ function searchValidateStartTime(startTime, obj, objParamString){
 		delete obj[objParamString]; return;
 	} else {
 		validateStartTime(startTime);
+	}
+}
+
+function searchValidateEndTime(endTime, obj, objParamString){
+	if(!(endTime && endTime.trim())){
+		delete obj[objParamString]; return;
+	} else {
+		validateStartTime(endTime);
 	}
 }
 

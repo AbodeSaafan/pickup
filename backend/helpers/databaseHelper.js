@@ -879,6 +879,9 @@ function getConstraintQuery(search_request) {
 		if (search_request.game_start_time && search_request.game_start_time > 0) {
 			queryConstraint.push("start_time >= " + search_request.game_start_time);
 		}
+		if (search_request.game_end_time && search_request.game_end_time > 0) {
+			queryConstraint.push("end_time <= " + search_request.game_end_time);
+		}
 		if (search_request.game_duration && search_request.game_duration) {
 			queryConstraint.push("end_time >= start_time + " + search_request.game_duration);
 		}

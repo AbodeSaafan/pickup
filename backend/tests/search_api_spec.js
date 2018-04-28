@@ -8,7 +8,7 @@ frisby.create("Searching for game using game id/name/type/min_skill/max_skill/to
 	.expectStatus(200)
 	.expectBodyContains("token")
 	.afterJSON(function (user) {
-		var gameDetails = testHelper.createUnrestrictedGame(user.token, 100, 200);
+		var gameDetails = testHelper.createUnrestrictedGame(user.token, 15872, 100);
 		frisby.create("Creating the game")
 			.post(testHelper.createGameEndpoint, gameDetails)
 			.expectBodyContains("game_id")
@@ -30,6 +30,16 @@ frisby.create("Searching for game using game id/name/type/min_skill/max_skill/to
 					.afterJSON(function (new_user) {
 						frisby.create("Search for the game using game type")
 							.get(testHelper.searchEndpoint+"?jwt="+new_user.token+"&search_object=game&results_max=1&game_type="+gameDetails.type+"&game_id="+game.game_id)
+							.expectStatus(200)
+							.expectJSON("games.0", {
+								game_id: game.game_id,
+								player_restricted: false
+							})
+							.toss();	
+					})
+					.afterJSON(function (new_user) {
+						frisby.create("Search for the game using game time restrictions")
+							.get(testHelper.searchEndpoint+"?jwt="+new_user.token+"&search_object=game&results_max=1&game_start_time=15871&game_end_time=15972")
 							.expectStatus(200)
 							.expectJSON("games.0", {
 								game_id: game.game_id,
@@ -128,6 +138,15 @@ frisby.create("Searching for game using game id/name/type/min_skill/max_skill/to
 					.afterJSON(function (new_user) {
 						frisby.create("Search for non-existent game using game start time")
 							.get(testHelper.searchEndpoint+"?jwt="+new_user.token+"&search_object=game&results_max=1&game_start_time=9999999999")
+							.expectJSON({
+								error: strings.emptySearchResults
+							})
+							.expectStatus(400)
+							.toss();	
+					})
+					.afterJSON(function (new_user) {
+						frisby.create("Search for non-existent game using game end time")
+							.get(testHelper.searchEndpoint+"?jwt="+new_user.token+"&search_object=game&results_max=1&game_end_time=1")
 							.expectJSON({
 								error: strings.emptySearchResults
 							})

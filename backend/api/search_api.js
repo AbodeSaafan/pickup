@@ -23,6 +23,7 @@ var strings = require("./universal_strings");
 * @apiParam {int} game_skill_max The maximum skill of the game
 * @apiParam {int} game_total_players The total players of the game 
 * @apiParam {int} game_start_time The time the game starts
+* @apiParam {int} game_end_time The time the game ends
 * @apiParam {int} game_duration The duration of the game
 * @apiParam {point} game_location The location of the game represented in location point object (lat/lng)
 * @apiParam {int} game_location_range The range of location in KM
