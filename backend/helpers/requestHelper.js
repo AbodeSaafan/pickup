@@ -10,7 +10,7 @@ function validateAndCleanRegisterRequest(data){
 	validate(data.fname, regex.nameRegex, strings.invalidFirstName);
 	validate(data.lname, regex.nameRegex, strings.invalidLastName);
 	validate(data.gender, regex.genderRegex, strings.invalidGender);
-	validate(data.dob, regex.dateRegex, strings.invalidDob + " Given: " + data);
+	validateAgeOverMinimum(data.dob);
 	validate(data.email, regex.emailRegex, strings.invalidEmail);
 	return data;
 }
@@ -36,7 +36,7 @@ function validateAndCleanUpdateAdminRequest(user_id, data){
 		user_details.gender = data.gender;
 	}
 	if (data.dob) {
-		validate(data.dob, regex.dateRegex, strings.invalidDob + " Given: " + data);
+		validateAgeOverMinimum(data.dob);
 		user_details.dob = data.dob;
 	}
 	if (data.email && data.password) {
@@ -52,13 +52,6 @@ function validateAndCleanUpdateAdminRequest(user_id, data){
 function validateAndCleanChangePasswordRequest(data){
 	validate(data.old_password, regex.passwordRegex, strings.invalidPassword);
 	validate(data.new_password, regex.passwordRegex, strings.invalidPassword);
-	return data;
-}
-
-function validateAndCleanUpdateRequest(data){
-	validate(data.fname, regex.nameRegex, strings.invalidName);
-	validate(data.lname, regex.nameRegex, strings.invalidName);
-	validate(data.dob, regex.dateRegex, strings.invalidDob);
 	return data;
 }
 
@@ -241,7 +234,6 @@ function generateSalt(){
 
 module.exports = {
 	validateAndCleanRegisterRequest,
-	validateAndCleanUpdateRequest,
 	validateAndCleanLoginRequest,
 	validateAndCleanCreateGameRequest,
 	validateAndCleanJoinRequest,
@@ -392,5 +384,16 @@ function validateTotalPlayersRequired(players){
 	players = players - 0; // quick convert to int
 	if(players < 2 || players > 100){
 		throw new Error(strings.invalidGameTotalPlayers);
+	}
+}
+
+// https://stackoverflow.com/questions/4060004/calculate-age-given-the-birth-date-in-the-format-yyyymmdd
+function validateAgeOverMinimum(dateString){
+	validate(dateString, regex.dateRegex, strings.invalidDob);	
+	var birthday = new Date(dateString);
+	var ageDate = new Date(Date.now() - birthday.getTime()); // miliseconds from epoch
+	var age =  Math.abs(ageDate.getUTCFullYear() - 1970);
+	if(age < 18){
+		throw new Error(strings.ageIsNotAtMinimum);
 	}
 }

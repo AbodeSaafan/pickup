@@ -1,5 +1,6 @@
 var frisby = require("frisby");
 var testHelper = require("./testHelper");
+var strings = require("../api/universal_strings");
 
 
 // Get admin profile properly
@@ -230,6 +231,38 @@ frisby.create("Register a user using the API with valid credentials to use for p
 				email:"rads18@gmail.com"
 			})
 			.expectStatus(400)
+			.toss();
+	})
+	.toss();
+
+
+//Update dob field of Admin User with invalid age
+
+frisby.create("Register a user using the API with valid credentials to use for profile testing")
+	.post(testHelper.registerEndpoint, testHelper.createGenericUserMale())
+	.expectStatus(200)
+	.afterJSON(function (body) {
+		frisby.create("Update admin profile of user with invalid dob")
+			.put(testHelper.adminProfileEndpoint, testHelper.createGenericUserUpdateWithInvalidDob(body.token))
+			.expectStatus(400)
+			.expectJSON({
+				error: strings.ageIsNotAtMinimum
+			})
+			.afterJSON(function () {
+				frisby.create("Verify update of user details")
+					.get(testHelper.adminProfileEndpoint + "?jwt=" + body.token)
+					.expectStatus(200)
+					.expectJSON({
+						user_id: body.user_id,
+						username: body.username,
+						fname: body.fname,
+						lname: body.lname,
+						gender: body.gender,
+						dob: body.dob,
+						email: body.email
+					})
+					.toss();
+			})
 			.toss();
 	})
 	.toss();

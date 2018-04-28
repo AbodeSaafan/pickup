@@ -64,6 +64,18 @@ function createGenericUserMale(){
 	};
 }
 
+function createInvalidAgeUser(){
+	return {
+		username:randomUsername(),
+		password:randomPassword(),
+		fname:rNameg.first(),
+		lname:rNameg.last(),
+		gender:"m",
+		dob:"03/25/2017",
+		email:randomEmail()
+	};
+}
+
 function createGenericUserUpdate(jwt){
 	return {
 		jwt: jwt,
@@ -107,6 +119,19 @@ function createGenericUserUpdateWithGenderDob(jwt){
 		lname: "",
 		gender:"f",
 		dob:randomDob(),
+		email:""
+	};
+}
+
+function createGenericUserUpdateWithInvalidDob(jwt){
+	return {
+		jwt: jwt,
+		username:"",
+		password:"",
+		fname:"",
+		lname: "",
+		gender:"",
+		dob:"03/25/2017",
 		email:""
 	};
 }
@@ -262,5 +287,7 @@ module.exports = {
 	changePasswordEndpoint,
 	randomPassword,
 	createGenericExtendedProfileWithSkilllevel,
-	createGenericExtendedProfileWithLocation
+	createGenericExtendedProfileWithLocation,
+	createInvalidAgeUser,
+	createGenericUserUpdateWithInvalidDob
 };

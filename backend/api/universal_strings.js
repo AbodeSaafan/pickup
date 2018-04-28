@@ -13,6 +13,7 @@ var uniqueEmailError = "Email: Someone else has that email.";
 var registerFailError = "Register: Failed to register user into the database.";
 var userIdFail = "Register: Failed to retrieve user id.";
 var createRefreshFail = "Register: Unable to create refresh token.";
+var ageIsNotAtMinimum = "Register: You must be atleast 18 years of age to sign up for pickup.";
 // Others
 var usersFail = "Failed to retrieve users.";
 var wrongEmailPassword = "Username or password is not valid.";
@@ -129,5 +130,6 @@ module.exports = {
 	updatePassword,
 	invalidOldPassword,
 	invalidPassordSignIn,
-	invalidUsernameSignIn
+	invalidUsernameSignIn,
+	ageIsNotAtMinimum
 };

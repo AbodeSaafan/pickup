@@ -14,6 +14,15 @@ frisby.create("Register a user using the API with valid credentials")
 	.expectBodyContains("refresh")
 	.toss();
 
+// Creating a user with invalid age 
+frisby.create("Register a user using the API with invalid user due to age restriction")
+	.post(testHelper.registerEndpoint, testHelper.createInvalidAgeUser()) 
+	.expectStatus(400)
+	.expectJSON({
+		error: strings.ageIsNotAtMinimum
+	})
+	.toss();
+
 // Sending a register request without some params
 frisby.create("Attempt to register a user using the API with missing parameters")
 	.post(testHelper.registerEndpoint, {
