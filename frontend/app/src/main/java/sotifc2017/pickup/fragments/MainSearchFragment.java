@@ -159,6 +159,7 @@ public class MainSearchFragment extends Fragment implements GetJwt.Callback {
                 // get results
                 // display results by loading correct list view
                 GameModel[] listOfGames = Utils.gson.fromJson(response.toString(), GameModel[].class);
+                //TODO display results list and close progress dialog
             }
             catch (Exception e){
                 Log.e("search", "error parsing results");
@@ -187,6 +188,7 @@ public class MainSearchFragment extends Fragment implements GetJwt.Callback {
                 // get results
                 // display results by loading correct list view
                 UserModel[] listOfUsers = Utils.gson.fromJson(response.get("users").toString(), UserModel[].class);
+                //TODO display results list and close progress dialog
             }
             catch (Exception e){
                 Log.e("search", "error parsing results");
