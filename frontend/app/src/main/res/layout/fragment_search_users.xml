@@ -20,10 +20,11 @@
                 android:id="@+id/username_search_edittext"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:focusable="true"
-                android:lines="1"
                 android:enabled="true"
-                android:hint="@string/search_users_username_hint"/>
+                android:focusable="true"
+                android:hint="@string/search_users_username_hint"
+                android:lines="1"
+                android:singleLine="true" />
         </LinearLayout>
     </ScrollView>
 </RelativeLayout>

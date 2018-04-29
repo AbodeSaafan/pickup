@@ -1,5 +1,7 @@
 package sotifc2017.pickup.api.contracts;
 
+import android.support.annotation.Nullable;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -11,20 +13,20 @@ import java.util.Map;
  * Search request object to search for users or games
  */
 public class GetSearchRequest {
-    private String jwt;
-    private SEARCH_TYPE search_object;
-    private int results_max; //Not implemented in UI yet
-    private int game_id;
-    private String game_name;
-    private GAME_TYPE game_type;
-    private int game_skill_min;
-    private int game_skill_max;
-    private int game_total_players;
-    private long game_start_time;
-    private long game_end_time;
-    private Map<String, Double> game_location= new HashMap<String, Double>();
-    private int game_location_range;
-    private String username;
+    public String jwt;
+    public SEARCH_TYPE search_object;
+    public int results_max; //Not implemented in UI yet
+    public int game_id;
+    public String game_name;
+    public GAME_TYPE game_type;
+    public int game_skill_min;
+    public int game_skill_max;
+    public int game_total_players;
+    public long game_start_time;
+    public long game_end_time;
+    public Map<String, Double> game_location= new HashMap<String, Double>();
+    public int game_location_range;
+    public String username;
 
 
     public enum SEARCH_TYPE {

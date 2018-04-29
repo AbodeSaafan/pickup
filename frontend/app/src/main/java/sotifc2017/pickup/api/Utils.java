@@ -40,13 +40,13 @@ public class Utils {
     }
 
     public static String jsonToUrlParam(Object contractObj){
-        HashMap<String,String> map = gson.fromJson(gson.toJson(contractObj), HashMap.class);
+        HashMap<String,Object> map = gson.fromJson(gson.toJson(contractObj), HashMap.class);
 
         Uri.Builder builder = new Uri.Builder();
 
-        for (Entry<String, String> entry : map.entrySet())
+        for (Entry<String, Object> entry : map.entrySet())
         {
-            builder.appendQueryParameter(entry.getKey(), entry.getValue());
+            builder.appendQueryParameter(entry.getKey(), entry.getValue().toString());
         }
 
         return builder.toString();
