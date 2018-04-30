@@ -20,6 +20,8 @@ import sotifc2017.pickup.R;
 import sotifc2017.pickup.activities.SignInActivity;
 import sotifc2017.pickup.api.Authentication;
 import sotifc2017.pickup.api.GetJwt;
+import sotifc2017.pickup.api.Utils;
+import sotifc2017.pickup.api.contracts.GetSearchRequest;
 import sotifc2017.pickup.api.models.GameModel;
 import sotifc2017.pickup.adapters.GameListAdapter;
 
@@ -27,11 +29,10 @@ import sotifc2017.pickup.adapters.GameListAdapter;
  * Created by radhika on 2018-03-10.
  */
 
-public class GamesListViewFragment extends Fragment implements GetJwt.Callback {
+public class GamesListViewFragment extends Fragment {
 
     ListView listview;
     View rootView;
-    ArrayList<GameModel> all_games;
 
     @Override
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -40,9 +41,10 @@ public class GamesListViewFragment extends Fragment implements GetJwt.Callback {
 
         rootView = inflater.inflate(R.layout.fragment_game_list_view, container, false);
         listview = (ListView) rootView.findViewById(R.id.gamelist);
-        all_games= new ArrayList<GameModel>();
-        createListView();
-        GameListAdapter adapter = new GameListAdapter(getActivity(), all_games);
+
+        GameModel[] gameList = gameListJsonSerialize(savedInstanceState.getString("gameListJson"));
+
+        GameListAdapter adapter = new GameListAdapter(getActivity(), gameList);
         listview.setAdapter(adapter);
 
         return rootView;
@@ -53,35 +55,14 @@ public class GamesListViewFragment extends Fragment implements GetJwt.Callback {
         super.onCreate(savedInstanceState);
         //get Search results here
 
-        new GetJwt(this).execute(getActivity());
+    }
 
-
+    private GameModel[] gameListJsonSerialize(String json){
+        return Utils.gson.fromJson(json, GameModel[].class);
     }
 
 
-    @Override
-    public void jwtSuccess(String jwt) {
-
-        //Send search results as params into createListView
-
-
-    }
-
-    @Override
-    public void jwtFailure(GetJwt.JwtOutcome outcome) {
-        switch(outcome){
-            case NoRefresh:
-            case BadJwtRetrieval:
-                Authentication.logout(getActivity());
-                Intent intent = new Intent(getActivity(), SignInActivity.class);
-                startActivity(intent);
-            case ServerFault:
-            default:
-                GetJwt.exitAppDialog(getActivity()).show();
-        }
-    }
-
-    public void createListView (){
+    /*public void createExampleListView (){
 
         // create the hard coded game Objects:
 
@@ -250,7 +231,7 @@ public class GamesListViewFragment extends Fragment implements GetJwt.Callback {
         all_games.add(game_8);
         all_games.add(game_9);
         all_games.add(game_10);
-    }
+    }*/
 
 
 

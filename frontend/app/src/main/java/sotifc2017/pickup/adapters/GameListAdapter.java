@@ -33,11 +33,11 @@ import sotifc2017.pickup.api.models.GameModel;
 
 public class GameListAdapter extends BaseAdapter {
 
-    ArrayList<GameModel> gamesList;
-    Activity mContext;
-    Geocoder geocoder;
+    private GameModel[] gamesList;
+    private Activity mContext;
+    private Geocoder geocoder;
 
-    public GameListAdapter(Activity context, ArrayList<GameModel> gameArrayList) {
+    public GameListAdapter(Activity context, GameModel[] gameArrayList) {
         this.mContext = context;
         this.gamesList = gameArrayList;
         geocoder = new Geocoder(context, Locale.getDefault());
@@ -46,7 +46,7 @@ public class GameListAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-        return gamesList.size();
+        return gamesList.length;
     }
 
     @Override
@@ -62,7 +62,7 @@ public class GameListAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup viewGroup) {
 
-        GameModel game = gamesList.get(position);
+        GameModel game = gamesList[position];
         View itemView = convertView;
 
 

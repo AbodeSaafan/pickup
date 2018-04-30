@@ -22,6 +22,8 @@ import org.json.JSONObject;
 
 import sotifc2017.pickup.CommonComponents;
 import sotifc2017.pickup.R;
+import sotifc2017.pickup.activities.HostingActivity;
+import sotifc2017.pickup.activities.MainActivity;
 import sotifc2017.pickup.activities.SignInActivity;
 import sotifc2017.pickup.android_modified_source.FragmentPagerAdapter;
 import sotifc2017.pickup.api.Authentication;
@@ -158,8 +160,8 @@ public class MainSearchFragment extends Fragment implements GetJwt.Callback {
             try{
                 // get results
                 // display results by loading correct list view
-                GameModel[] listOfGames = Utils.gson.fromJson(response.toString(), GameModel[].class);
-                //TODO display results list and close progress dialog
+                ((HostingActivity) getActivity()).onDisplayGameSearchResults(response.get("games").toString());
+
             }
             catch (Exception e){
                 Log.e("search", "error parsing results");
@@ -187,8 +189,7 @@ public class MainSearchFragment extends Fragment implements GetJwt.Callback {
             try{
                 // get results
                 // display results by loading correct list view
-                UserModel[] listOfUsers = Utils.gson.fromJson(response.get("users").toString(), UserModel[].class);
-                //TODO display results list and close progress dialog
+                ((HostingActivity) getActivity()).onDisplayUserSearchResults(response.get("users").toString());
             }
             catch (Exception e){
                 Log.e("search", "error parsing results");

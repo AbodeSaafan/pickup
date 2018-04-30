@@ -28,4 +28,9 @@ public class Search {
             return null;
         }
     }
+
+    private String searchJsonToUrlParam(GetSearchRequest request){
+        //TODO create this somehow
+        return "";
+    }
 }

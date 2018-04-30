@@ -42,14 +42,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import sotifc2017.pickup.api.contracts.GetSearchRequest;
+import sotifc2017.pickup.api.models.GameModel;
+import sotifc2017.pickup.api.models.UserModel;
 import sotifc2017.pickup.fragments.CreateGameFragment;
 import sotifc2017.pickup.fragments.ExtendedProfileFragment;
 import sotifc2017.pickup.R;
+import sotifc2017.pickup.fragments.GamesListViewFragment;
 import sotifc2017.pickup.fragments.MainSearchFragment;
 import sotifc2017.pickup.fragments.SettingsFragment;
 import sotifc2017.pickup.api.Authentication;
 
-public class MainActivity extends AppCompatActivity implements OnMapReadyCallback {
+public class MainActivity extends AppCompatActivity implements OnMapReadyCallback, HostingActivity {
 
     private GoogleMap mMap;
     private FusedLocationProviderClient mFusedLocationClient;
@@ -379,6 +383,22 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         else {
             displayGames(null);
         }
+
+    }
+
+    @Override
+    public void onDisplayGameSearchResults(String gameListJson) {
+        Bundle bundle = new Bundle();
+        bundle.putString("gameListJson", gameListJson);
+
+        GamesListViewFragment gamesListViewFragment= new GamesListViewFragment();
+        gamesListViewFragment.setArguments(bundle);
+
+        replaceFragment(gamesListViewFragment, true, -1);
+    }
+
+    @Override
+    public void onDisplayUserSearchResults(String userListJson) {
 
     }
 }
