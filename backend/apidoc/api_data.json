@@ -1776,6 +1776,13 @@
             "group": "Parameter",
             "type": "int",
             "optional": false,
+            "field": "game_end_time",
+            "description": "<p>The time the game ends</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "int",
+            "optional": false,
             "field": "game_duration",
             "description": "<p>The duration of the game</p>"
           },
