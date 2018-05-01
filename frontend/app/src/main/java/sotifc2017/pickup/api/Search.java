@@ -21,16 +21,11 @@ public class Search {
     @NonNull
     public static JsonObjectRequest getSearch_request(GetSearchRequest req, Response.Listener<JSONObject> responseListener, Response.ErrorListener errorListener) {
         try{
-            return new JsonObjectRequest (Request.Method.GET, Search_ENDPOINT + Utils.jsonToUrlParam(req), null, responseListener, errorListener);
+            return new JsonObjectRequest (Request.Method.GET, Search_ENDPOINT + req.ToUrlParameter(), null, responseListener, errorListener);
         }
         catch (Exception e){
             errorListener.onErrorResponse(new VolleyError(e.getMessage()));
             return null;
         }
-    }
-
-    private String searchJsonToUrlParam(GetSearchRequest request){
-        //TODO create this somehow
-        return "";
     }
 }

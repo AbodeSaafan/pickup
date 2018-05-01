@@ -1,5 +1,6 @@
 package sotifc2017.pickup.api.contracts;
 
+import android.net.Uri;
 import android.support.annotation.Nullable;
 
 import java.util.HashMap;
@@ -108,6 +109,28 @@ public class GetSearchRequest {
         GetSearchRequest request = new GetSearchRequest(jwt, SEARCH_TYPE.user);
         request.username = username;
         return request;
+    }
+
+    /**
+     * Used to convert this object into a set of url parameters for a get request
+     * @return Url parameter string
+     */
+    public String ToUrlParameter(){
+        Uri.Builder builder = new Uri.Builder();
+        builder.appendQueryParameter("jwt", this.jwt);
+        builder.appendQueryParameter("search_object", this.search_object.toString());
+
+        switch(this.search_object){
+            case game:
+                //TODO fill this in
+                builder.appendQueryParameter("", "");
+                break;
+            case user:
+                builder.appendQueryParameter("username", this.username);
+                break;
+        }
+
+        return builder.toString();
     }
 
 

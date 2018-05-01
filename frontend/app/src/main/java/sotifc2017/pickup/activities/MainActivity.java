@@ -399,6 +399,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     @Override
     public void onDisplayUserSearchResults(String userListJson) {
+        Bundle bundle = new Bundle();
+        bundle.putString("userListJson", userListJson);
 
+
+        //TODO connect to user list view here, show the fragment
     }
 }
