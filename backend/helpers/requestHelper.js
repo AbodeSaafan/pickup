@@ -379,7 +379,7 @@ function searchValidateLocationRange(locationRange, obj, objParamString){
 		delete obj[objParamString]; return;
 	}
 
-	if(!(isInt(locationRange) && locationRange > 0 && locationRange < 100)){
+	if(!(isInt(locationRange) && locationRange > 0 && locationRange <= 200)){
 		throw new Error(strings.invalidGameLocationRange);
 	}
 }
