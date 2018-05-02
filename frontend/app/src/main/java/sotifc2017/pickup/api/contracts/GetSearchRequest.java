@@ -123,7 +123,29 @@ public class GetSearchRequest {
         switch(this.search_object){
             case game:
                 //TODO fill this in
-                builder.appendQueryParameter("", "");
+                if(this.game_id > 0){
+                    builder.appendQueryParameter("game_id", Integer.toString(this.game_id));
+                    break;
+                }
+                if(this.game_name != null && !this.game_name.isEmpty())
+                    builder.appendQueryParameter("game_name", this.game_name);
+                if(this.game_type != null && this.game_type != GAME_TYPE.both)
+                    builder.appendQueryParameter("game_type", this.game_type.toString());
+                if(this.game_skill_min > 1)
+                    builder.appendQueryParameter("game_skill_min", Integer.toString(this.game_skill_min));
+                if(this.game_skill_max < 10)
+                    builder.appendQueryParameter("game_skill_max", Integer.toString(this.game_skill_max));
+                if(this.game_total_players > 0)
+                    builder.appendQueryParameter("game_total_players", Integer.toString(this.game_total_players));
+                if(this.game_start_time > 0)
+                    builder.appendQueryParameter("game_start_time", Long.toString(this.game_start_time));
+                if(this.game_end_time > 0)
+                    builder.appendQueryParameter("game_end_time", Long.toString(this.game_end_time));
+                if(this.game_location != null && this.game_location.containsKey("lat") && this.game_location.get("lat") > 0
+                        && this.game_location.containsKey("lng") && this.game_location.get("lng") > 0)
+                    builder.appendQueryParameter("game_location", "{\"lat\":%f , \"lng\":%f}");
+                if(this.game_location_range > 0)
+                    builder.appendQueryParameter("game_location_range", Integer.toString(this.game_location_range));
                 break;
             case user:
                 builder.appendQueryParameter("username", this.username);
