@@ -7,5 +7,5 @@
     <dimen name="fab_margin">16dp</dimen>
 
     <!--Text dimension-->
-    <dimen name="app_titles">20sp</dimen>
+    <dimen name="app_titles">30sp</dimen>
 </resources>

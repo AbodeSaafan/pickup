@@ -3,90 +3,204 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context="sotifc2017.pickup.fragments.CreateGameFragment">
 
-    <LinearLayout
+    <RelativeLayout
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_height="wrap_content">
 
-        <LinearLayout
-            android:id="@+id/create_new_game"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="end"
-            android:paddingTop="30dp"
-            android:weightSum="3">
+        <RelativeLayout
+            android:id="@+id/layout_main_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
             <TextView
-                android:id="@+id/create_new_game_title"
-                android:layout_width="380dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:textAlignment="center"
+                android:layout_centerHorizontal="true"
+                android:paddingTop="30dp"
                 android:text="@string/create_new_game_title"
+                android:textAlignment="center"
+                android:textStyle="italic"
+                android:textAppearance="@android:style/TextAppearance.Large"
                 android:textSize="@dimen/app_titles" />
+        </RelativeLayout>
 
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/create_new_game_name"
+        <android.support.constraint.ConstraintLayout
+            android:id="@+id/layout_game_details"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_below="@+id/create_new_game"
-            android:layout_centerHorizontal="true"
-            android:orientation="horizontal"
-            android:paddingTop="20dp">
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/layout_main_title"
+            android:layout_marginTop="20dp">
 
             <TextView
-                android:id="@+id/new_game_name"
+                android:id="@+id/details_header_title"
+                android:layout_width="250dp"
+                android:layout_height="30dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_weight="1"
+                android:text="@string/search_games_details_section_title"
+                android:textAppearance="@android:style/TextAppearance.Large"
+                app:layout_constraintStart_toEndOf="@+id/details_header_toggle"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageButton
+                android:id="@+id/details_header_toggle"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:paddingBottom="3dp"
-                android:paddingStart="20dp"
-                android:paddingLeft="20dp"
-                android:paddingRight="3dp"
-                android:paddingEnd="20dp"
-                android:paddingTop="2dp"
-                android:text="@string/create_new_game_name"/>
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:src="@drawable/ic_expand_less_black_24dp"
+                android:tint="@android:color/white"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+        </android.support.constraint.ConstraintLayout>
 
-            <AutoCompleteTextView
-                android:id="@+id/edit_new_game_name"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"/>
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/create_new_game_type"
+        <RelativeLayout
+            android:id="@+id/layout_game_name"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal"
-            android:paddingTop="20dp">
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/layout_game_details">
 
             <TextView
-                android:id="@+id/new_game_type"
+                android:id="@+id/text_game_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:gravity="center"
-                android:paddingBottom="3dp"
-                android:paddingStart="20dp"
-                android:paddingLeft="20dp"
-                android:paddingRight="3dp"
-                android:paddingEnd="20dp"
-                android:paddingTop="2dp"
-                android:text="@string/create_new_game_type"/>
+                android:paddingTop="30dp"
+                android:text="@string/create_new_game_name"
+                android:textAlignment="center"
+                android:layout_marginLeft="40dp"
+                android:layout_marginStart="40dp" />
 
             <AutoCompleteTextView
-                android:id="@+id/edit_new_game_type"
-                android:layout_width="0dp"
+                android:id="@+id/complete_text_view_game_name"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"/>
-        </LinearLayout>
+                android:layout_toRightOf="@+id/text_game_name"
+                android:layout_toEndOf="@+id/text_game_name"
+                android:layout_marginLeft="5dp"
+                android:layout_marginStart="5dp"
+                android:layout_marginRight="30dp"
+                android:layout_marginEnd="30dp"/>
+        </RelativeLayout>
 
-    </LinearLayout>
+        <RelativeLayout
+            android:id="@+id/layout_location_notes"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/layout_game_name">
+
+            <TextView
+                android:id="@+id/text_location_notes"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingTop="30dp"
+                android:text="@string/create_new_game_location_notes"
+                android:textAlignment="center"
+                android:layout_marginLeft="40dp"
+                android:layout_marginStart="40dp" />
+
+            <AutoCompleteTextView
+                android:id="@+id/complete_text_location_notes"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@+id/text_location_notes"
+                android:layout_toEndOf="@+id/text_location_notes"
+                android:layout_marginLeft="5dp"
+                android:layout_marginStart="5dp"
+                android:layout_marginRight="30dp"
+                android:layout_marginEnd="30dp"/>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/layout_child_game_details"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/layout_location_notes"
+            android:layout_marginTop="15dp">
+
+            <TextView
+                android:id="@+id/text_game_type"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:paddingBottom="25dp"
+                android:text="@string/game_search_game_type" />
+
+            <CheckBox
+                android:id="@+id/checkbox_casual_game_type"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="60dp"
+                android:layout_marginStart="60dp"
+                android:layout_below="@id/text_game_type"
+                android:checked="true"
+                android:text="@string/game_search_game_type_casual" />
+
+            <CheckBox
+                android:id="@+id/checkbox_serious_game_type"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_below="@id/text_game_type"
+                android:layout_marginEnd="60dp"
+                android:layout_marginRight="60dp"
+                android:checked="true"
+                android:text="@string/game_search_game_type_serious" />
+
+            <TextView
+                android:id="@+id/text_skill_level"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/checkbox_serious_game_type"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="15dp"
+                android:text="@string/game_search_skill_range" />
 
 
+            <com.appyvet.materialrangebar.RangeBar xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/range_bar_skill"
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@+id/range_bar_min_players"
+                android:layout_alignStart="@+id/range_bar_min_players"
+                android:layout_below="@+id/text_skill_level"
+                app:mrb_pinMaxFont="10sp"
+                app:mrb_selectorSize="8dp"
+                app:mrb_tickEnd="10"
+                app:mrb_tickInterval="1"
+                app:mrb_tickStart="1" />
+
+
+            <TextView
+                android:id="@+id/text_minimum_players_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/range_bar_skill"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="5dp"
+                android:text="@string/game_search_minimum_player_message" />
+
+            <com.appyvet.materialrangebar.RangeBar
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/range_bar_min_players"
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/text_minimum_players_label"
+                android:layout_centerHorizontal="true"
+                app:mrb_pinMaxFont="10sp"
+                app:mrb_selectorSize="8dp"
+                app:mrb_tickEnd="20"
+                app:mrb_tickInterval="1"
+                app:mrb_tickStart="2"
+                app:mrb_rangeBar="false"/>
+        </RelativeLayout>
+    </RelativeLayout>
 </ScrollView>
