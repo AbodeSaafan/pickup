@@ -70,6 +70,7 @@
     <!-- Main search page -->
     <string name="main_search_games_tab_title">Games</string>
     <string name="main_search_search_button_label">Search</string>
+    <string name="main_search_nothing_matches">Nothing seems to match your search criteria. Please adjust your search and try again.</string>
         <!-- Game search page -->
         <!-- Filters Section -->
         <string name="search_games_filters_section_title">Filters</string>

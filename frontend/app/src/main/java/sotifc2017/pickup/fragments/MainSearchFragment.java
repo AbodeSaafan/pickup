@@ -1,8 +1,10 @@
 package sotifc2017.pickup.fragments;
 
+import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -19,6 +21,8 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 
 import org.json.JSONObject;
+
+import java.net.HttpURLConnection;
 
 import sotifc2017.pickup.CommonComponents;
 import sotifc2017.pickup.R;
@@ -175,6 +179,11 @@ public class MainSearchFragment extends Fragment implements GetJwt.Callback {
         public void onErrorResponse(VolleyError error) {
             try {
                 JSONObject errorJSON = new JSONObject(new String(error.networkResponse.data, "UTF-8"));
+                if(error.networkResponse.statusCode == HttpURLConnection.HTTP_BAD_REQUEST){
+                    searchDoesNotHaveResults();
+                } else{
+                    Log.v("search", "panic?");
+                }
                 Log.e("search", errorJSON.toString());
             }
             catch (Exception e){
@@ -202,6 +211,11 @@ public class MainSearchFragment extends Fragment implements GetJwt.Callback {
         public void onErrorResponse(VolleyError error) {
             try {
                 JSONObject errorJSON = new JSONObject(new String(error.networkResponse.data, "UTF-8"));
+                if(error.networkResponse.statusCode == HttpURLConnection.HTTP_BAD_REQUEST){
+                    searchDoesNotHaveResults();
+                } else{
+                    Log.v("search", "panic?");
+                }
                 Log.e("search", errorJSON.toString());
             }
             catch (Exception e){
@@ -209,4 +223,19 @@ public class MainSearchFragment extends Fragment implements GetJwt.Callback {
             }
         }
     };
+
+    private void searchDoesNotHaveResults(){
+        loadingResponse.cancel();
+        AlertDialog.Builder exitDialog = new AlertDialog.Builder(getActivity()).
+                setMessage(getActivity().getString(R.string.main_search_nothing_matches)).
+                setCancelable(true).
+                setPositiveButton(
+                        "Okay",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                            }
+                        });
+        exitDialog.create().show();
+    }
 }
