@@ -68,6 +68,8 @@ import sotifc2017.pickup.api.contracts.GetExtendedProfileResponse;
 import sotifc2017.pickup.api.contracts.RegisterRequest;
 import sotifc2017.pickup.api.contracts.RegisterResponse;
 
+import static sotifc2017.pickup.Common.Defaults.FC_TAG;
+
 // Custom Implementation
 
 //import static sotifc2017.pickup.R.id.place_autocomplete_fragment;
@@ -81,7 +83,6 @@ public class SignUpActivity extends AppCompatActivity implements LoaderManager.L
      * Id to identity READ_CONTACTS permission request.
      */
     private static final int REQUEST_READ_CONTACTS = 0;
-    private static final String FC_TAG = "sotifc2017";
 
     /**
      * Keep track of the login task to ensure we can cancel it if requested.

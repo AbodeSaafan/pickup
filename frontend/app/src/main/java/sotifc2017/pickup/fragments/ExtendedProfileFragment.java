@@ -1,5 +1,6 @@
 package sotifc2017.pickup.fragments;
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.content.Intent;
 import android.location.Address;
@@ -31,8 +32,11 @@ import sotifc2017.pickup.api.ExtendedProfile;
 import sotifc2017.pickup.api.GetJwt;
 import sotifc2017.pickup.api.Utils;
 import sotifc2017.pickup.api.contracts.GetExtendedProfileResponse;
+import sotifc2017.pickup.fragment_interfaces.OnFragmentReplacement;
 
 public class ExtendedProfileFragment extends Fragment implements GetJwt.Callback {
+    int currentFragmentId = R.id.action_profile;
+    OnFragmentReplacement mCallback;
 
     TextView age;
     TextView gender;
@@ -47,10 +51,24 @@ public class ExtendedProfileFragment extends Fragment implements GetJwt.Callback
     String[] LatLng;
 
     @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+
+        // This makes sure that the container activity has implemented
+        // the callback interface. If not, it throws an exception
+        try {
+            mCallback = (OnFragmentReplacement) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(activity.toString() + "[RefinedMapFragment] must implement OnFragmentReplacement)");
+        }
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_extended_profile, container, false);
     }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,6 +86,13 @@ public class ExtendedProfileFragment extends Fragment implements GetJwt.Callback
             Button addFriendButton = (Button) getView().findViewById(R.id.add_friend);
             addFriendButton.setVisibility (View.VISIBLE);
         }
+    }
+
+    @Override
+    public void onResume() {
+        mCallback.configureMenuItemSelection(currentFragmentId);
+
+        super.onResume();
     }
 
     @Override

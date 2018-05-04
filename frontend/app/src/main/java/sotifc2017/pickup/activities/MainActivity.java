@@ -45,15 +45,18 @@ import java.util.Random;
 import sotifc2017.pickup.api.contracts.GetSearchRequest;
 import sotifc2017.pickup.api.models.GameModel;
 import sotifc2017.pickup.api.models.UserModel;
+import sotifc2017.pickup.fragment_interfaces.OnFragmentReplacement;
+import sotifc2017.pickup.fragment_managers.ConfigurableFragmentItemsManager;
 import sotifc2017.pickup.fragments.CreateGameFragment;
 import sotifc2017.pickup.fragments.ExtendedProfileFragment;
 import sotifc2017.pickup.R;
 import sotifc2017.pickup.fragments.GamesListViewFragment;
 import sotifc2017.pickup.fragments.MainSearchFragment;
+import sotifc2017.pickup.fragments.RefinedMapFragment;
 import sotifc2017.pickup.fragments.SettingsFragment;
 import sotifc2017.pickup.api.Authentication;
 
-public class MainActivity extends AppCompatActivity implements OnMapReadyCallback, HostingActivity {
+public class MainActivity extends AppCompatActivity implements OnMapReadyCallback, HostingActivity, OnFragmentReplacement {
 
     private GoogleMap mMap;
     private FusedLocationProviderClient mFusedLocationClient;
@@ -89,7 +92,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         setDrawerLayout();
 
         // Obtain the MapFragment and get notified when the map is ready to be used.
-        MapFragment mapFragment = new MapFragment();
+        MapFragment mapFragment = new RefinedMapFragment();
         replaceFragment(mapFragment, false, R.id.action_map);
         mapFragment.getMapAsync(this);
     }
@@ -115,38 +118,11 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     public void onBackPressed(){
         int count = getFragmentManager().getBackStackEntryCount();
         if (count != 0) {
-            int prevFragmentId = R.id.action_map;
-            if (count == 1) {
-                prevFragmentId = R.id.action_map;
-                setNavItemSelectedById(prevFragmentId);
-            } else if (count > 1) {
-                prevFragmentId = Integer.parseInt(getFragmentManager().getBackStackEntryAt(getFragmentManager().getBackStackEntryCount() - 2).getName());
-                setNavItemSelectedById(prevFragmentId);
-            }
-            
-            handleFragmentsNonMenuItems(prevFragmentId);
-            
             super.onBackPressed();
-        }
-        else
-        {
+        } else {
             if (back_pressed_time + PERIOD > System.currentTimeMillis()) super.onBackPressed();
             else Toast.makeText(getBaseContext(), "Press once again to exit!", Toast.LENGTH_SHORT).show();
             back_pressed_time = System.currentTimeMillis();
-        }
-    }
-
-    private void handleFragmentsNonMenuItems(int id) {
-        // All options are available on non-menu item fragments. Check menu item only for menu item fragments.
-        MenuItem navItemSelected = navigationView.getMenu().findItem(id);
-        if (navItemSelected != null) {
-            navItemSelected.setChecked(true).setEnabled(false);
-        }
-
-        // Visibility may have been disabled when replacing fragments. Enabling visibility if necessary.
-        if (id == R.id.action_map) {
-            enableVisibility(fabNewGame, true);
-            enableVisibility(searchButton, true);
         }
     }
 
@@ -280,16 +256,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                drawerLayout.closeDrawers();
-                if (item.getItemId() != R.id.action_sign_out) {
-                    for (int i = 0; i < navigationView.getMenu().size(); i++) {
-                        navigationView.getMenu().getItem(i).setChecked(false).setEnabled(true);
-                    }
-                    item.setChecked(true).setEnabled(false);
-                }
                 switch(item.getItemId()) {
                     case R.id.action_map:
-                        MapFragment mapFragment = new MapFragment();
+                        MapFragment mapFragment = new RefinedMapFragment();
                         replaceFragment(mapFragment, true, R.id.action_map);
                         mapFragment.getMapAsync(MainActivity.this);
                         break;
@@ -345,25 +314,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         transaction.replace(R.id.fragment_container, frag);
         if(backStackAdd) transaction.addToBackStack(String.valueOf(fragId));
 
-        boolean isSearchVisible = fragId == R.id.action_map;
-        enableVisibility(searchButton, isSearchVisible);
-        boolean isNewGameFabVisible = fragId == R.id.action_map;
-        enableVisibility(fabNewGame, isNewGameFabVisible);
-
         // Commit the transaction
         transaction.commit();
-    }
-
-    private void enableVisibility(ImageView object, boolean enable) {
-        int visibility = enable ? View.VISIBLE : View.INVISIBLE;
-        object.setVisibility(visibility);
-    }
-
-    private void setNavItemSelectedById(int id){
-        drawerLayout.closeDrawers();
-        for (int i = 0; i < navigationView.getMenu().size(); i++) {
-            navigationView.getMenu().getItem(i).setChecked(false).setEnabled(true);
-        }
     }
 
     @SuppressLint("MissingPermission")
@@ -404,5 +356,12 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
 
         //TODO connect to user list view here, show the fragment
+    }
+
+    // Fragments callbacks
+    @Override
+    public void configureMenuItemSelection(int currentFragmentId) {
+        drawerLayout.closeDrawers();
+        ConfigurableFragmentItemsManager.configureMenuItemSelection(navigationView, currentFragmentId);
     }
 }

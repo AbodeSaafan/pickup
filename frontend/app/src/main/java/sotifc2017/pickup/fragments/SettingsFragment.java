@@ -44,14 +44,29 @@ import sotifc2017.pickup.api.contracts.ChangePasswordRequest;
 import sotifc2017.pickup.api.contracts.GetPrivateProfileRequest;
 import sotifc2017.pickup.api.contracts.GetPrivateProfileResponse;
 import sotifc2017.pickup.api.contracts.UpdatePrivateProfileRequest;
+import sotifc2017.pickup.fragment_interfaces.OnFragmentReplacement;
 
 
 public class SettingsFragment extends PreferenceFragment implements GetJwt.Callback  {
+    int currentFragmentId = R.id.action_settings;
+    OnFragmentReplacement mCallback;
 
     private ProgressDialog progressDialog;
     private String jwt;
     private Calendar myCalendar = Calendar.getInstance();
 
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+
+        // This makes sure that the container activity has implemented
+        // the callback interface. If not, it throws an exception
+        try {
+            mCallback = (OnFragmentReplacement) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(activity.toString() + "[RefinedMapFragment] must implement OnFragmentReplacement)");
+        }
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -74,6 +89,12 @@ public class SettingsFragment extends PreferenceFragment implements GetJwt.Callb
         addPreferencesFromResource(R.xml.preferences);
     }
 
+    @Override
+    public void onResume() {
+        mCallback.configureMenuItemSelection(currentFragmentId);
+
+        super.onResume();
+    }
 
     @Override
     public void jwtSuccess(String jwt) {
