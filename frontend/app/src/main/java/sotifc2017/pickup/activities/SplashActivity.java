@@ -11,6 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.widget.TextView;
 
 import sotifc2017.pickup.R;
+import sotifc2017.pickup.api.Authentication;
 import sotifc2017.pickup.api.GetJwt;
 
 public class SplashActivity extends AppCompatActivity implements GetJwt.Callback {
@@ -41,6 +42,7 @@ public class SplashActivity extends AppCompatActivity implements GetJwt.Callback
         switch (outcome) {
             case BadJwtRetrieval:
             case NoRefresh:
+                Authentication.logout(this);
                 Intent mainIntent = new Intent(SplashActivity.this, SignInActivity.class);
                 startActivity(mainIntent);
                 finish();
