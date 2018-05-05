@@ -59,7 +59,7 @@ public class ExtendedProfileFragment extends Fragment implements GetJwt.Callback
         try {
             mCallback = (OnFragmentReplacement) activity;
         } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString() + "[RefinedMapFragment] must implement OnFragmentReplacement)");
+            throw new ClassCastException(activity.toString() + "[ExtendedProfileFragment] must implement OnFragmentReplacement)");
         }
     }
 

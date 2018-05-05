@@ -64,7 +64,7 @@ public class SettingsFragment extends PreferenceFragment implements GetJwt.Callb
         try {
             mCallback = (OnFragmentReplacement) activity;
         } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString() + "[RefinedMapFragment] must implement OnFragmentReplacement)");
+            throw new ClassCastException(activity.toString() + "[SettingsFragment] must implement OnFragmentReplacement)");
         }
     }
 

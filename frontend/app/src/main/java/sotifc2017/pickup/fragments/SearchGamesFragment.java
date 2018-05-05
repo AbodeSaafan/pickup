@@ -1,6 +1,5 @@
 package sotifc2017.pickup.fragments;
 
-import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Fragment;
 import android.content.Context;
@@ -48,8 +47,6 @@ import sotifc2017.pickup.fragment_interfaces.SearchFragment;
  */
 
 public class SearchGamesFragment extends Fragment implements SearchFragment {
-    int currentFragmentId = R.id.action_search;
-    OnFragmentReplacement mCallback;
 
     // Filters Section
     ImageButton filterToggleButton;
@@ -117,20 +114,6 @@ public class SearchGamesFragment extends Fragment implements SearchFragment {
     EditText gameNameEdittext;
     CheckBox gameIdCheckbox;
     EditText gameIdEdittext;
-
-
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-
-        // This makes sure that the container activity has implemented
-        // the callback interface. If not, it throws an exception
-        try {
-            mCallback = (OnFragmentReplacement) activity;
-        } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString() + "[RefinedMapFragment] must implement OnFragmentReplacement)");
-        }
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -367,13 +350,6 @@ public class SearchGamesFragment extends Fragment implements SearchFragment {
 
         //endregion
         super.onViewCreated(view, savedInstanceState);
-    }
-
-    @Override
-    public void onResume() {
-        mCallback.configureMenuItemSelection(currentFragmentId);
-
-        super.onResume();
     }
 
     private void updateDateRangeLabel(Date startDate, Date endDate) {

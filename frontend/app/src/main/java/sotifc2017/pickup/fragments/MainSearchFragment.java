@@ -1,5 +1,6 @@
 package sotifc2017.pickup.fragments;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.FragmentManager;
@@ -37,6 +38,7 @@ import sotifc2017.pickup.api.Utils;
 import sotifc2017.pickup.api.contracts.GetSearchRequest;
 import sotifc2017.pickup.api.models.GameModel;
 import sotifc2017.pickup.api.models.UserModel;
+import sotifc2017.pickup.fragment_interfaces.OnFragmentReplacement;
 import sotifc2017.pickup.fragment_interfaces.SearchFragment;
 
 /**
@@ -44,6 +46,9 @@ import sotifc2017.pickup.fragment_interfaces.SearchFragment;
  */
 
 public class MainSearchFragment extends Fragment implements GetJwt.Callback {
+    int currentFragmentId = R.id.action_search;
+    OnFragmentReplacement mCallback;
+
     private final static int SEARCH_GAMES_TAB_NUMBER = 0;
     private final static int SEARCH_USERS_TAB_NUMBER = 1;
     private ViewPager vp;
@@ -51,6 +56,19 @@ public class MainSearchFragment extends Fragment implements GetJwt.Callback {
     private Fragment gameSearchFragment;
     private Fragment userSearchFragment;
     private ProgressDialog loadingResponse;
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+
+        // This makes sure that the container activity has implemented
+        // the callback interface. If not, it throws an exception
+        try {
+            mCallback = (OnFragmentReplacement) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(activity.toString() + "[MainSearchFragment] must implement OnFragmentReplacement)");
+        }
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -108,6 +126,13 @@ public class MainSearchFragment extends Fragment implements GetJwt.Callback {
             }
             return null;
         }
+    }
+
+    @Override
+    public void onResume() {
+        mCallback.configureMenuItemSelection(currentFragmentId);
+
+        super.onResume();
     }
 
     private void retrieveJwt(){
