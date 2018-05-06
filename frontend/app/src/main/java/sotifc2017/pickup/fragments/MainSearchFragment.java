@@ -82,7 +82,7 @@ public class MainSearchFragment extends Fragment implements GetJwt.Callback {
         userSearchFragment = new SearchUsersFragment();
 
         vp = getView().findViewById(R.id.main_search_pager);
-        vp.setAdapter(new SectionsPagerAdapter(getFragmentManager()));
+        vp.setAdapter(new SectionsPagerAdapter(getChildFragmentManager()));
         TabLayout tabLayout = getView().findViewById(R.id.search_tabLayout);
         tabLayout.setupWithViewPager(vp);
 
