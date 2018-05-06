@@ -90,7 +90,7 @@ public class ExtendedProfileFragment extends Fragment implements GetJwt.Callback
 
     @Override
     public void onResume() {
-        mCallback.configureMenuItemSelection(currentFragmentId);
+        mCallback.configureMenuItemSelection(currentFragmentId, true);
 
         super.onResume();
     }

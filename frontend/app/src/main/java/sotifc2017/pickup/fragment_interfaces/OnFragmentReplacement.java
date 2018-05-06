@@ -6,6 +6,6 @@ package sotifc2017.pickup.fragment_interfaces;
 
 public interface OnFragmentReplacement {
 
-    void configureMenuItemSelection(int currentFragmentId);
+    void configureMenuItemSelection(int currentFragmentId, boolean addTop);
 
 }

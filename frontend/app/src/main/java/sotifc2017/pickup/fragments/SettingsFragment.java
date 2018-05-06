@@ -91,7 +91,7 @@ public class SettingsFragment extends PreferenceFragment implements GetJwt.Callb
 
     @Override
     public void onResume() {
-        mCallback.configureMenuItemSelection(currentFragmentId);
+        mCallback.configureMenuItemSelection(currentFragmentId, true);
 
         super.onResume();
     }

@@ -12,7 +12,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -24,6 +23,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -42,9 +42,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import sotifc2017.pickup.api.contracts.GetSearchRequest;
-import sotifc2017.pickup.api.models.GameModel;
-import sotifc2017.pickup.api.models.UserModel;
+
 import sotifc2017.pickup.fragment_interfaces.OnFragmentReplacement;
 import sotifc2017.pickup.fragment_managers.ConfigurableFragmentItemsManager;
 import sotifc2017.pickup.fragments.CreateGameFragment;
@@ -360,7 +358,13 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     // Fragments callbacks
     @Override
-    public void configureMenuItemSelection(int currentFragmentId) {
+    public void configureMenuItemSelection(int currentFragmentId, boolean padTop) {
+        RelativeLayout fragmentContainer = (findViewById(R.id.fragment_container));
+        RelativeLayout.LayoutParams layoutParam = (RelativeLayout.LayoutParams) fragmentContainer.getLayoutParams();
+
+        layoutParam.setMargins(0, padTop ? findViewById(R.id.toolbar).getHeight() : 0, 0 , 0);
+
+        fragmentContainer.setLayoutParams(layoutParam);
         drawerLayout.closeDrawers();
         ConfigurableFragmentItemsManager.configureMenuItemSelection(navigationView, currentFragmentId);
     }

@@ -35,7 +35,7 @@ public class RefinedMapFragment extends MapFragment {
 
     @Override
     public void onResume() {
-        mCallback.configureMenuItemSelection(currentFragmentId);
+        mCallback.configureMenuItemSelection(currentFragmentId, false);
 
         activityForFragment = getActivity();
         setUpFragmentSpecificItems(activityForFragment, true);
