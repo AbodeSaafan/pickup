@@ -62,6 +62,7 @@ public class GetJwt extends AsyncTask<Context, Integer, Void> {
                         VolleyError err = (VolleyError) e.getCause();
                         if (err != null && err.networkResponse != null && err.networkResponse.statusCode == HttpURLConnection.HTTP_BAD_REQUEST) {
                             Log.e("jwt", new String(err.networkResponse.data));
+                            Authentication.logout(ctx);
                             callback.jwtFailure(JwtOutcome.BadJwtRetrieval);
                             return null;
                         } else {
@@ -75,6 +76,7 @@ public class GetJwt extends AsyncTask<Context, Integer, Void> {
                 }
             } else {
                 //never had a jwt or refresh so "sign out"
+                Authentication.logout(ctx);
                 callback.jwtFailure(JwtOutcome.NoRefresh);
                 return null;
             }

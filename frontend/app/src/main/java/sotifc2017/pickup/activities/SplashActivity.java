@@ -42,7 +42,6 @@ public class SplashActivity extends AppCompatActivity implements GetJwt.Callback
         switch (outcome) {
             case BadJwtRetrieval:
             case NoRefresh:
-                Authentication.logout(this);
                 Intent mainIntent = new Intent(SplashActivity.this, SignInActivity.class);
                 startActivity(mainIntent);
                 finish();

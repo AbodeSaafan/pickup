@@ -107,7 +107,6 @@ public class SettingsFragment extends PreferenceFragment implements GetJwt.Callb
         switch(outcome){
             case NoRefresh:
             case BadJwtRetrieval:
-                Authentication.logout(getActivity());
                 Intent intent = new Intent(getActivity(), SignInActivity.class);
                 startActivity(intent);
             case ServerFault:
