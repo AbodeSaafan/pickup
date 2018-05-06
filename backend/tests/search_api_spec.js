@@ -248,7 +248,7 @@ frisby.create("Searching for user using user name: Creating a user that will sea
 			.expectBodyContains("token")
 			.afterJSON(function (search_user) {
 				frisby.create("Search for the game using game id")
-					.get(testHelper.searchEndpoint+"?jwt="+user.token+"&search_object=user&username="+search_user_detail.username)
+					.get(testHelper.searchEndpoint+"?jwt="+user.token+"&search_object=user&username="+search_user_detail.username.slice(2))
 					.expectStatus(200)
 					.expectJSON("users.0", {
 						user_id: search_user.user_id

@@ -862,7 +862,7 @@ function getConstraintQuery(search_request) {
 			return query;
 		}
 		else if (search_request.game_name && search_request.game_name != "") {
-			queryConstraint.push("name = '" + search_request.game_name + "' ");
+			queryConstraint.push("name LIKE '%" + search_request.game_name + "%' ");
 		}
 		if (search_request.game_type && search_request.game_type != "") {
 			queryConstraint.push("type = '" + search_request.game_type + "'");
@@ -897,7 +897,7 @@ function getConstraintQuery(search_request) {
 	}
 	else if (search_request.search_object == "user") {
 		// User param validation
-		query += "SELECT user_id, username, fname FROM users WHERE username = '" + search_request.username + "';";
+		query += "SELECT user_id, username, fname FROM users WHERE username LIKE '%" + search_request.username + "%';";
 	}
 	return query;
 }
