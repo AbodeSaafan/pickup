@@ -4,6 +4,7 @@ import android.net.Uri;
 import android.support.annotation.Nullable;
 
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -141,9 +142,10 @@ public class GetSearchRequest {
                     builder.appendQueryParameter("game_start_time", Long.toString(this.game_start_time));
                 if(this.game_end_time > 0)
                     builder.appendQueryParameter("game_end_time", Long.toString(this.game_end_time));
-                if(this.game_location != null && this.game_location.containsKey("lat") && this.game_location.get("lat") > 0
-                        && this.game_location.containsKey("lng") && this.game_location.get("lng") > 0)
-                    builder.appendQueryParameter("game_location", "{\"lat\":%f , \"lng\":%f}");
+                if(this.game_location != null && this.game_location.containsKey("lat")
+                        && this.game_location.containsKey("lng"))
+                    builder.appendQueryParameter("game_location",
+                            String.format(Locale.CANADA, "{\"lat\":%f , \"lng\":%f}", this.game_location.get("lat"), this.game_location.get("lng")));
                 if(this.game_location_range > 0)
                     builder.appendQueryParameter("game_location_range", Integer.toString(this.game_location_range));
                 break;

@@ -1,9 +1,12 @@
 package sotifc2017.pickup.fragments;
 
+import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.app.Fragment;
 import android.content.Context;
+import android.location.Location;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.text.InputType;
@@ -24,11 +27,15 @@ import android.widget.Toast;
 
 import com.appyvet.materialrangebar.RangeBar;
 import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.places.AutocompleteFilter;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
 import com.google.android.gms.location.places.ui.PlaceSelectionListener;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -38,6 +45,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import sotifc2017.pickup.R;
+import sotifc2017.pickup.activities.MainActivity;
 import sotifc2017.pickup.api.contracts.GetSearchRequest;
 import sotifc2017.pickup.fragment_interfaces.OnFragmentReplacement;
 import sotifc2017.pickup.fragment_interfaces.SearchFragment;
@@ -49,24 +57,24 @@ import sotifc2017.pickup.fragment_interfaces.SearchFragment;
 public class SearchGamesFragment extends Fragment implements SearchFragment {
 
     // Filters Section
-    ImageButton filterToggleButton;
-    RelativeLayout filterChildSection;
+    private ImageButton filterToggleButton;
+    private RelativeLayout filterChildSection;
 
-    CheckBox casualGameCheck;
-    CheckBox seriousGameCheck;
-    RangeBar minPlayerSeekBar;
-    TextView minPlayerText;
-    TextView skillRangeText;
-    RangeBar skillRange;
+    private CheckBox casualGameCheck;
+    private CheckBox seriousGameCheck;
+    private RangeBar minPlayerSeekBar;
+    private TextView minPlayerText;
+    private TextView skillRangeText;
+    private RangeBar skillRange;
 
     // Game details section
-    ImageButton detailsToggleButton;
-    RelativeLayout detailsChildSection;
-    Calendar fromCalendar;
-    Calendar toCalendar;
-    final String dateFormat = "MM/dd/yy";
-    EditText dateRangeText;
-    DatePickerDialog.OnDateSetListener dateListenerFrom = new DatePickerDialog.OnDateSetListener() {
+    private ImageButton detailsToggleButton;
+    private RelativeLayout detailsChildSection;
+    private Calendar fromCalendar;
+    private Calendar toCalendar;
+    private final String dateFormat = "MM/dd/yy";
+    private EditText dateRangeText;
+    private DatePickerDialog.OnDateSetListener dateListenerFrom = new DatePickerDialog.OnDateSetListener() {
 
         @Override
         public void onDateSet(DatePicker view, int year, int monthOfYear,
@@ -88,7 +96,7 @@ public class SearchGamesFragment extends Fragment implements SearchFragment {
         }
 
     };
-    DatePickerDialog.OnDateSetListener dateListenerTo = new DatePickerDialog.OnDateSetListener() {
+    private DatePickerDialog.OnDateSetListener dateListenerTo = new DatePickerDialog.OnDateSetListener() {
 
         @Override
         public void onDateSet(DatePicker view, int year, int monthOfYear,
@@ -102,18 +110,20 @@ public class SearchGamesFragment extends Fragment implements SearchFragment {
         }
 
     };
-    PlaceAutocompleteFragment placesFragment;
-    double cityLat;
-    double cityLng;
-    Spinner location_range_spinner;
+    private PlaceAutocompleteFragment placesFragment;
+    private boolean locationSet;
+    private FusedLocationProviderClient mFusedLocationClient;
+    private double cityLat;
+    private double cityLng;
+    private Spinner location_range_spinner;
 
     //Game specifics section
-    ImageButton specificsToggleButton;
-    RelativeLayout specificsChildSection;
-    CheckBox gameNameCheckbox;
-    EditText gameNameEdittext;
-    CheckBox gameIdCheckbox;
-    EditText gameIdEdittext;
+    private ImageButton specificsToggleButton;
+    private RelativeLayout specificsChildSection;
+    private CheckBox gameNameCheckbox;
+    private EditText gameNameEdittext;
+    private CheckBox gameIdCheckbox;
+    private EditText gameIdEdittext;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -122,6 +132,7 @@ public class SearchGamesFragment extends Fragment implements SearchFragment {
         return inflater.inflate(R.layout.fragment_search_games, container, false);
     }
 
+    @SuppressLint("MissingPermission")
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         //region Filters section
@@ -264,13 +275,13 @@ public class SearchGamesFragment extends Fragment implements SearchFragment {
 
         EditText locationView = placesFragment.getView().findViewById(R.id.place_autocomplete_search_input);
         locationView.setHintTextColor(-1);
-        //TODO: Replace default text with actual city user is in, remove hint
-        locationView.setHint("Select City");
+        locationView.setHint("Current Location");
         locationView.setTextColor(-1);
 
         placesFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
             public void onPlaceSelected(Place place) {
+                locationSet = true;
                 cityLat = place.getLatLng().latitude;
                 cityLng = place.getLatLng().longitude;
             }
@@ -281,6 +292,29 @@ public class SearchGamesFragment extends Fragment implements SearchFragment {
             }
         });
 
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(getActivity());
+
+        // Set default location if available
+        if (((MainActivity) getActivity()).checkPermissions()) {
+            mFusedLocationClient.getLastLocation()
+                    .addOnSuccessListener(getActivity(), new OnSuccessListener<Location>() {
+                        @Override
+                        public void onSuccess(Location location) {
+                            // Got last known location. In some rare situations this can be null.
+                            if(location != null){
+                                locationSet = true;
+                                cityLat = location.getLatitude();
+                                cityLng = location.getLongitude();
+                            }
+                        }
+                    })
+                    .addOnFailureListener(getActivity(), new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.e("search", "Failed getting user's location");
+                        }
+                    });
+        }
         //endregion
 
 
@@ -394,8 +428,14 @@ public class SearchGamesFragment extends Fragment implements SearchFragment {
             long game_end_time = toCalendar.getTimeInMillis();
 
             Map<String, Double> game_location = new HashMap<String, Double>();
-            game_location.put("lat", cityLat);
-            game_location.put("lng", cityLng);
+
+            if(locationSet) {
+                game_location.put("lat", cityLat);
+                game_location.put("lng", cityLng);
+            }
+            else {
+                // TODO: improvement, we need a location to search (ensure we always have one)
+            }
             int game_location_range = Integer.parseInt(location_range_spinner.getSelectedItem().toString().replace("KM", "").trim());
 
             return GetSearchRequest.CreateGameRequest
