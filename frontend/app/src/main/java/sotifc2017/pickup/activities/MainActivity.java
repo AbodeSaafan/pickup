@@ -42,17 +42,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-
+import sotifc2017.pickup.R;
+import sotifc2017.pickup.api.Authentication;
 import sotifc2017.pickup.fragment_interfaces.OnFragmentReplacement;
 import sotifc2017.pickup.fragment_managers.ConfigurableFragmentItemsManager;
 import sotifc2017.pickup.fragments.CreateGameFragment;
 import sotifc2017.pickup.fragments.ExtendedProfileFragment;
-import sotifc2017.pickup.R;
-import sotifc2017.pickup.fragments.GamesListViewFragment;
+import sotifc2017.pickup.fragments.ListViewFragment;
 import sotifc2017.pickup.fragments.MainSearchFragment;
 import sotifc2017.pickup.fragments.RefinedMapFragment;
 import sotifc2017.pickup.fragments.SettingsFragment;
-import sotifc2017.pickup.api.Authentication;
 
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback, HostingActivity, OnFragmentReplacement {
 
@@ -341,10 +340,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         Bundle bundle = new Bundle();
         bundle.putString("gameListJson", gameListJson);
 
-        GamesListViewFragment gamesListViewFragment= new GamesListViewFragment();
-        gamesListViewFragment.setArguments(bundle);
+        ListViewFragment listViewFragment = new ListViewFragment();
+        listViewFragment.setArguments(bundle);
 
-        replaceFragment(gamesListViewFragment, true, -1);
+        replaceFragment(listViewFragment, true, -1);
     }
 
     @Override
@@ -352,8 +351,13 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         Bundle bundle = new Bundle();
         bundle.putString("userListJson", userListJson);
 
-
         //TODO connect to user list view here, show the fragment
+
+        ListViewFragment listViewFragment = new ListViewFragment();
+        listViewFragment.setArguments(bundle);
+
+        replaceFragment(listViewFragment, true, -1);
+
     }
 
     // Fragments callbacks

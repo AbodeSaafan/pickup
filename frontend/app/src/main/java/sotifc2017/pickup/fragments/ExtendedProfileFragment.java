@@ -6,11 +6,9 @@ import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -66,6 +64,18 @@ public class ExtendedProfileFragment extends Fragment implements GetJwt.Callback
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+        new GetJwt(this).execute(getActivity());
+
+        if (getArguments() != null) {
+            user_id = getArguments().getString("userID");
+
+        } else {
+            user_id = String.valueOf(Authentication.getUserId(getActivity()));
+            //Button addFriendButton = (Button) getView().findViewById(R.id.add_friend);
+            //addFriendButton.setVisibility (View.VISIBLE);
+        }
+
         return inflater.inflate(R.layout.fragment_extended_profile, container, false);
     }
 
@@ -75,17 +85,6 @@ public class ExtendedProfileFragment extends Fragment implements GetJwt.Callback
         //getActivity().setContentView(R.layout.fragment_extended_profile);
         geocoder = new Geocoder(getActivity(), Locale.getDefault());
 
-        user_id =  getActivity().getIntent().getStringExtra("userID");
-
-        new GetJwt(this).execute(getActivity());
-
-        if (user_id == null) {
-            //Log.d("CREATION", "reached here");
-            user_id = String.valueOf(Authentication.getUserId(getActivity()));
-        } else {
-            Button addFriendButton = (Button) getView().findViewById(R.id.add_friend);
-            addFriendButton.setVisibility (View.VISIBLE);
-        }
     }
 
     @Override

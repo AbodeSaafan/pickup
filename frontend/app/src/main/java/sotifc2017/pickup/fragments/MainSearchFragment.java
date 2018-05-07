@@ -19,7 +19,6 @@ import android.widget.Button;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
 
 import org.json.JSONObject;
 
@@ -28,16 +27,12 @@ import java.net.HttpURLConnection;
 import sotifc2017.pickup.CommonComponents;
 import sotifc2017.pickup.R;
 import sotifc2017.pickup.activities.HostingActivity;
-import sotifc2017.pickup.activities.MainActivity;
 import sotifc2017.pickup.activities.SignInActivity;
 import sotifc2017.pickup.android_modified_source.FragmentPagerAdapter;
-import sotifc2017.pickup.api.Authentication;
 import sotifc2017.pickup.api.GetJwt;
 import sotifc2017.pickup.api.Search;
 import sotifc2017.pickup.api.Utils;
 import sotifc2017.pickup.api.contracts.GetSearchRequest;
-import sotifc2017.pickup.api.models.GameModel;
-import sotifc2017.pickup.api.models.UserModel;
 import sotifc2017.pickup.fragment_interfaces.OnFragmentReplacement;
 import sotifc2017.pickup.fragment_interfaces.SearchFragment;
 
@@ -223,6 +218,7 @@ public class MainSearchFragment extends Fragment implements GetJwt.Callback {
                 // get results
                 // display results by loading correct list view
                 ((HostingActivity) getActivity()).onDisplayUserSearchResults(response.get("users").toString());
+                loadingResponse.cancel();
             }
             catch (Exception e){
                 Log.e("search", "error parsing results");
