@@ -1,11 +1,10 @@
-package sotifc2017.pickup.adapters;
+package sotifc2017.pickup.Adapters;
 
 import android.app.Activity;
 import android.graphics.PorterDuff;
 import android.location.Address;
 import android.location.Geocoder;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.graphics.drawable.DrawableCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,7 +17,6 @@ import android.widget.Toast;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -145,7 +143,7 @@ public class GameListAdapter extends BaseAdapter {
 
         int difference = game.total_players_required - game.total_players_added;
 
-        if (difference >= 1 && difference <= 3){
+        if (difference >= 0 && difference <= 3){
 
             player_icon.setColorFilter(ContextCompat.getColor(mContext, R.color.red), PorterDuff.Mode.SRC_IN);
 
