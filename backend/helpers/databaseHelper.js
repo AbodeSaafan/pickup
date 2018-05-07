@@ -386,7 +386,7 @@ function createGame(userId, name, type, min_skill, max_skill, totalPlayers, star
 	var queryString = "INSERT INTO games(creator_id, name, type, min_skill, max_skill, total_players_required, start_time, end_time, location, location_notes, description, gender, age_range, enforced_params)"
 		+ "VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14) RETURNING game_id;";
 	var dblocation = "(" + location.lat + "," + location.lng + ")";
-	var queryParams = [userId, name, type, min_skill, max_skill, totalPlayers, startTime, startTime + duration, dblocation, locationNotes, description, gender, ageRange, enforcedParams];
+	var queryParams = [userId, name, type, min_skill, max_skill, totalPlayers, startTime, startTime + duration, dblocation, locationNotes, description, gender, ageRange ? ageRange : [], enforcedParams ? enforcedParams : []];
 
 	const pool = new pg.Pool({ connectionString: conString });
 

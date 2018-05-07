@@ -72,11 +72,11 @@ function validateAndCleanCreateGameRequest(data){
 	data.duration = data.duration - 0; // quick convert to int
 	validateTotalPlayersRequired(data.total_players_required);
 	validate(data.gender, regex.gameGenderRegex, strings.invalidGameGenderPreference);
-	data.age_range = validateAgeRange(data.age_range);
+	data.age_range = data.age_range ? validateAgeRange(data.age_range) : [];
 	data.location = validateLocation(data.location);
 	validate(data.location_notes, regex.gameLocationNotesRegex, strings.invalidLocationNotes);
 	validate(data.description, regex.gameDescriptionRegex, strings.invalidGameDescription);
-	data.enforced_params = validateEnforcedParamsList(data.enforced_params);
+	data.enforced_params = data.enforced_params ? validateEnforcedParamsList(data.enforced_params) : [];
 	return data;
 }
 
@@ -298,7 +298,7 @@ function searchValidateEndTime(endTime, obj, objParamString){
 }
 
 function validateAgeRange(ageRange){
-	if (ageRange == null || ageRange.length != 2 ||
+	if (!ageRange || ageRange.length != 2 ||
 		ageRange[0] > ageRange[1]){
 		throw new Error(strings.invalidGameAgeRange);
 	}
