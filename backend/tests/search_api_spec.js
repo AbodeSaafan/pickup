@@ -99,7 +99,7 @@ frisby.create("Searching for game using game id/name/type/min_skill/max_skill/to
 					})
 					.afterJSON(function (new_user) {
 						frisby.create("Search for the game using game location and range")
-							.get(testHelper.searchEndpoint+"?jwt="+new_user.token+"&search_object=game&results_max=1&game_location="+encodeURIComponent(JSON.stringify(gameDetails.location))+"&game_location_range=5")
+							.get(testHelper.searchEndpoint+"?jwt="+new_user.token+"&search_object=game&results_max=1&game_location="+encodeURIComponent(gameDetails.location)+"&game_location_range=5")
 							.expectStatus(200)
 							.expectJSON("games.0", {
 								game_id: game.game_id,

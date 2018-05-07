@@ -64,8 +64,12 @@ function validateAndCleanLoginRequest(data){
 function validateAndCleanCreateGameRequest(data){
 	validate(data.name, regex.gameNameRegex, strings.invalidGameName);
 	validate(data.type, regex.gameTypeRegex, strings.invalidGameType);
-	validateSkillOffset(data.skill_offset);
-	data.skill_offset = data.skill_offset - 0; // quick convert to int
+	if(data.skill_offset && data.type.toLowerCase == "serious"){
+		validateSkillOffset(data.skill_offset);
+		data.skill_offset = data.skill_offset - 0; // quick convert to int
+	} else {
+		data.skill_offset = 0;
+	}
 	validateStartTime(data.start_time);
 	data.start_time = data.start_time - 0; // quick convert to int
 	validate(data.duration, regex.gameDurationRegex, strings.invalidGameDuration);
@@ -73,7 +77,7 @@ function validateAndCleanCreateGameRequest(data){
 	validateTotalPlayersRequired(data.total_players_required);
 	validate(data.gender, regex.gameGenderRegex, strings.invalidGameGenderPreference);
 	data.age_range = data.age_range ? validateAgeRange(data.age_range) : [];
-	data.location = validateLocation(data.location);
+	data.location = validateLocation(JSON.parse(data.location));
 	validate(data.location_notes, regex.gameLocationNotesRegex, strings.invalidLocationNotes);
 	validate(data.description, regex.gameDescriptionRegex, strings.invalidGameDescription);
 	data.enforced_params = data.enforced_params ? validateEnforcedParamsList(data.enforced_params) : [];

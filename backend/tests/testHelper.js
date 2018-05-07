@@ -33,10 +33,10 @@ function randomUsername(){
 }
 
 function randomLocation(){
-	return {
-		lng: (Math.random() * (180 - (-180)) - 180).toFixed(3) * 1,
-		lat: (Math.random() * (180 - (-180)) - 180).toFixed(3) * 1
-	};
+	return JSON.stringify({
+		"lng": (Math.random() * (180 - (-180)) - 180).toFixed(3) * 1,
+		"lat": (Math.random() * (180 - (-180)) - 180).toFixed(3) * 1
+	});
 }
 
 function randomDob(){
