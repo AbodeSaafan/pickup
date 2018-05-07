@@ -77,7 +77,7 @@ function validateAndCleanCreateGameRequest(data){
 	validateTotalPlayersRequired(data.total_players_required);
 	validate(data.gender, regex.gameGenderRegex, strings.invalidGameGenderPreference);
 	data.age_range = data.age_range ? validateAgeRange(data.age_range) : [];
-	data.location = validateLocation(JSON.parse(data.location));
+	data.location = validateLocation(data.location);
 	validate(data.location_notes, regex.gameLocationNotesRegex, strings.invalidLocationNotes);
 	validate(data.description, regex.gameDescriptionRegex, strings.invalidGameDescription);
 	data.enforced_params = data.enforced_params ? validateEnforcedParamsList(data.enforced_params) : [];
@@ -316,6 +316,7 @@ function validateAgeRange(ageRange){
 
 function validateLocation(location){
 	try{
+		location = JSON.parse(location);
 		if (location == null || location.lng == null || location.lat == null){
 			throw new Error(strings.invalidGameLocation);
 		}
@@ -330,7 +331,7 @@ function searchValidateLocation(location, obj, objParamString){
 	if(!location || location == ""){
 		delete obj[objParamString]; return;
 	} else {
-		return validateLocation(JSON.parse(location));
+		return validateLocation(location);
 
 	}
 }
