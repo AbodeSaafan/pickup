@@ -217,6 +217,11 @@ function filterGames(games, user_id, finished) {
 				game.player_restricted = true;
 				final_results.push(game);
 			}
+			// This changes x and y to lat and lng
+			game.location.lat = game.location.x; 
+			game.location.lng = game.location.y;
+			game.location.x = undefined;
+			game.location.y = undefined;
 			callback();
 		});
 
