@@ -33,7 +33,6 @@ import sotifc2017.pickup.api.Utils;
 import sotifc2017.pickup.api.contracts.LoginRequest;
 import sotifc2017.pickup.api.contracts.LoginResponse;
 
-@RequiresApi(api = Build.VERSION_CODES.KITKAT)
 public class SignInActivity extends AppCompatActivity {
 
     private EditText emailText;

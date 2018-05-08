@@ -128,7 +128,6 @@ public class SettingsFragment extends PreferenceFragment implements GetJwt.Callb
 
 
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
     private void LoadProfileValuesFromResponse(GetPrivateProfileResponse response) {
         EditTextPreference username = (EditTextPreference) findPreference("editTextPref_username");
         username.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
@@ -158,7 +157,6 @@ public class SettingsFragment extends PreferenceFragment implements GetJwt.Callb
         final Preference dob_preference = (Preference)findPreference("editTextPref_dob");
 
         dob_preference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-            @RequiresApi(api = Build.VERSION_CODES.M)
             @Override
             public boolean onPreferenceClick(Preference preference) {
                 String[] birthday_details = dob_preference.getSummary().toString().split("/");

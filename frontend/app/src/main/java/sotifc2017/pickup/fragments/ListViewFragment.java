@@ -27,7 +27,6 @@ public class ListViewFragment extends Fragment {
 
 
     @Override
-    @RequiresApi(api = Build.VERSION_CODES.M)
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 

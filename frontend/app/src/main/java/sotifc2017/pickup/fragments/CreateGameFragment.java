@@ -38,7 +38,6 @@ public class CreateGameFragment extends Fragment implements GetJwt.Callback {
     }
 
     @Override
-    @RequiresApi(api = Build.VERSION_CODES.M)
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_create_new_game, container, false);
