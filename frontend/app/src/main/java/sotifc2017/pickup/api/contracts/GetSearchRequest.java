@@ -108,7 +108,7 @@ public class GetSearchRequest {
      */
     public static GetSearchRequest CreateUserRequest(String jwt, String username){
         GetSearchRequest request = new GetSearchRequest(jwt, SEARCH_TYPE.user);
-        request.username = username;
+        request.username = username.toLowerCase();
         return request;
     }
 
