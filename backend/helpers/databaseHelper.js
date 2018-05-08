@@ -137,7 +137,7 @@ function populateExtendedProfile(user, callback) {
 function getExtendedProfile(userID, callback) {
 	var queryString =
 		"(SELECT * FROM " +
-		"(SELECT * FROM extended_profile WHERE user_id = $1) ext_profile_row " +
+		"(SELECT * FROM ((SELECT user_id, dob, gender FROM users where user_id = $1) user_info INNER JOIN  (SELECT * FROM extended_profile where user_id = $1) extended_profile ON user_info.user_id = extended_profile.user_id)) t1 " +
 		"LEFT JOIN " +
 		"(SELECT tag top_tag, count(tag) top_tag_count from tags where review_id in (SELECT review_id from reviews where user_id = $1) group by top_tag, review_id ORDER BY top_tag_count DESC LIMIT 1) top_tag_row on 1=1 " +
 		"LEFT JOIN " +

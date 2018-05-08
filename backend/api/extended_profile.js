@@ -51,7 +51,7 @@ router.get("/", function (req, res) {
 				var response = {
 					user_id: ext_profile.user_id,
 					username: ext_profile.username,
-					age: ext_profile.age,
+					age: calculateAge(ext_profile.dob),
 					gender: ext_profile.gender,
 					skilllevel: ext_profile.skilllevel,
 					location: ext_profile.location,
@@ -61,7 +61,9 @@ router.get("/", function (req, res) {
 					games_created: parseInt(ext_profile.games_created),
 					games_joined: parseInt(ext_profile.games_joined)
 				};
+
 				res.status(200).json(response); return;
+
 			}else{
 				res.status(400).json({"error": strings.userIdFail}); return;
 			}
@@ -136,3 +138,10 @@ router.put("/", function (req, res) {
 });
 
 module.exports = router;
+
+function calculateAge(userDob) {
+	var birth = new Date(userDob);
+	var curr = new Date();
+	var diff = Math.abs(birth.getTime() - curr.getTime());
+	return Math.ceil(diff / (1000 * 3600 * 24 * 365));
+}

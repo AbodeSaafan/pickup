@@ -6,7 +6,6 @@ const util = require("util");
 
 // Check if user can view their extended Profile
 
-
 frisby.create("Register a user using the API with valid credentials to use for extendedProfile testing")
 	.post(testHelper.registerEndpoint, testHelper.createGenericUserMale())
 	.expectStatus(200)
@@ -409,6 +408,46 @@ frisby.create("Register a user using the API with valid credentials to use for c
 								games_joined: 0
 							})
 							.toss();
+					})
+					.toss();
+			})
+			.toss();
+	})
+	.toss();
+
+
+//Update Age and Gender in Private Profile and check if that's reflected in Extended Profile
+frisby.create("Register a user using the API with valid credentials to use for profile testing")
+	.post(testHelper.registerEndpoint, testHelper.createGenericUserMale())
+	.expectStatus(200)
+	.afterJSON(function (body) {
+		frisby.create("Update admin profile of user with valid age and gender")
+			.put(testHelper.adminProfileEndpoint, {
+				jwt: body.token,
+				username:"",
+				password:"",
+				fname:"",
+				lname: "",
+				gender:"F",
+				dob:"04/30/1996",
+				email:""
+			})
+			.expectStatus(200)
+			.afterJSON(function () {
+				frisby.create("Get Updated Extended Profile of User")
+					.get(testHelper.extendedProfileEndpoint + "?jwt=" + body.token + "&userID=" + body.user_id)
+					.expectStatus(200)
+					.expectJSON({
+						user_id: parseInt(body.user_id),
+						age: testHelper.calculateAge("04/30/1996"),
+						gender: "F",
+						skilllevel: 0,
+						location: null,
+						average_review: 0,
+						top_tag: null,
+						top_tag_count: null,
+						games_created: 0,
+						games_joined: 0
 					})
 					.toss();
 			})

@@ -52,6 +52,14 @@ function randomPassword(){
 	return crypto.randomBytes(4).toString("hex");
 }
 
+
+function calculateAge(userDob) {
+	var birth = new Date(userDob);
+	var curr = new Date();
+	var diff = Math.abs(birth.getTime() - curr.getTime());
+	return Math.ceil(diff / (1000 * 3600 * 24 * 365));
+}
+
 function createGenericUserMale(){
 	return {
 		username:randomUsername(),
@@ -290,5 +298,6 @@ module.exports = {
 	createGenericExtendedProfileWithSkilllevel,
 	createGenericExtendedProfileWithLocation,
 	createInvalidAgeUser,
-	createGenericUserUpdateWithInvalidDob
+	createGenericUserUpdateWithInvalidDob,
+	calculateAge
 };
