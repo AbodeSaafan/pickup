@@ -316,7 +316,6 @@ function validateAgeRange(ageRange){
 
 function validateLocation(location){
 	try{
-		location = JSON.parse(location);
 		if (location == null || location.lng == null || location.lat == null){
 			throw new Error(strings.invalidGameLocation);
 		}
@@ -331,7 +330,7 @@ function searchValidateLocation(location, obj, objParamString){
 	if(!location || location == ""){
 		delete obj[objParamString]; return;
 	} else {
-		return validateLocation(location);
+		return validateLocation(JSON.parse(location));
 
 	}
 }
