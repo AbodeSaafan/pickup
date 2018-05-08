@@ -1,4 +1,4 @@
-package sotifc2017.pickup.Adapters;
+package sotifc2017.pickup.adapters;
 
 import android.app.Activity;
 import android.graphics.PorterDuff;
