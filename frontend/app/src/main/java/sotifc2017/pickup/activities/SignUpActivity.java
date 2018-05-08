@@ -67,6 +67,7 @@ import sotifc2017.pickup.api.contracts.GetExtendedProfileRequest;
 import sotifc2017.pickup.api.contracts.GetExtendedProfileResponse;
 import sotifc2017.pickup.api.contracts.RegisterRequest;
 import sotifc2017.pickup.api.contracts.RegisterResponse;
+import sotifc2017.pickup.api.enums.API_GENDER;
 
 import static sotifc2017.pickup.Common.Defaults.FC_TAG;
 
@@ -109,8 +110,7 @@ public class SignUpActivity extends AppCompatActivity implements LoaderManager.L
     private String username;
     private String email;
     private String password;
-    private String gender;
-    private Boolean underAge;
+    private API_GENDER gender;
     public static String[] skillLevels = {"Just for Fun!", "Rookie", "All Star", "Super Star", "Hall of Fame", "God of Basketball"};
 
     Button next0;
@@ -289,13 +289,13 @@ public class SignUpActivity extends AppCompatActivity implements LoaderManager.L
                                int pos, long id) {
         switch (genderSpinner.getSelectedItem().toString()) {
             case "Male":
-                gender = "M";
+                gender = API_GENDER.m;
                 break;
             case "Female":
-                gender = "F";
+                gender = API_GENDER.f;
                 break;
             default:
-                gender = "O";
+                gender = API_GENDER.o;
         }
     }
 
@@ -610,7 +610,7 @@ public class SignUpActivity extends AppCompatActivity implements LoaderManager.L
         }
     };
 
-    private void ExecuteLogin(String email, String firstname, String lastname, String password, String gender, String username, String dob) {
+    private void ExecuteLogin(String email, String firstname, String lastname, String password, API_GENDER gender, String username, String dob) {
 
         Utils.getInstance(this).getRequestQueue(this).add(Authentication.register_request(new RegisterRequest(email, password, username, firstname, lastname, gender, dob), successful_register, error_register));
     }

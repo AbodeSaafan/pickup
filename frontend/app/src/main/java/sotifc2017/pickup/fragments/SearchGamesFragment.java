@@ -47,6 +47,7 @@ import java.util.Map;
 import sotifc2017.pickup.R;
 import sotifc2017.pickup.activities.MainActivity;
 import sotifc2017.pickup.api.contracts.GetSearchRequest;
+import sotifc2017.pickup.api.enums.GAME_TYPE;
 import sotifc2017.pickup.fragment_interfaces.OnFragmentReplacement;
 import sotifc2017.pickup.fragment_interfaces.SearchFragment;
 
@@ -413,11 +414,11 @@ public class SearchGamesFragment extends Fragment implements SearchFragment {
                                !gameNameEdittext.getText().toString().trim().isEmpty() ?
                                     gameNameEdittext.getText().toString().trim() : null;
 
-            GetSearchRequest.GAME_TYPE game_type = casualGameCheck.isChecked() ?
+            GAME_TYPE game_type = casualGameCheck.isChecked() ?
                     seriousGameCheck.isChecked() ?
-                            GetSearchRequest.GAME_TYPE.both : GetSearchRequest.GAME_TYPE.casual
+                            GAME_TYPE.both : GAME_TYPE.casual
                     : seriousGameCheck.isChecked() ?
-                            GetSearchRequest.GAME_TYPE.serious : GetSearchRequest.GAME_TYPE.both;
+                            GAME_TYPE.serious : GAME_TYPE.both;
 
 
             int  game_skill_min = seriousGameCheck.isChecked() && skillRange.isEnabled() ? Integer.parseInt(skillRange.getLeftPinValue()) : -1;

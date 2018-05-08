@@ -7,6 +7,9 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
+import sotifc2017.pickup.api.enums.GAME_TYPE;
+import sotifc2017.pickup.api.enums.SEARCH_TYPE;
+
 /**
  * Created by Abode on 4/23/2018.
  */
@@ -29,15 +32,6 @@ public class GetSearchRequest {
     public Map<String, Double> game_location= new HashMap<String, Double>();
     public int game_location_range;
     public String username;
-
-
-    public enum SEARCH_TYPE {
-        game, user
-    }
-
-    public enum GAME_TYPE {
-        casual, serious, both
-    }
 
     private GetSearchRequest(String jwt, SEARCH_TYPE search_object){
         this.jwt = jwt;
