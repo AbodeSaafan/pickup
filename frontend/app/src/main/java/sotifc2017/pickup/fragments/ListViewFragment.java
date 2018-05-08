@@ -9,8 +9,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
-import sotifc2017.pickup.Adapters.GameListAdapter;
-import sotifc2017.pickup.Adapters.UserListAdapter;
+import sotifc2017.pickup.adapters.GameListAdapter;
+import sotifc2017.pickup.adapters.UserListAdapter;
 import sotifc2017.pickup.R;
 import sotifc2017.pickup.api.Utils;
 import sotifc2017.pickup.api.models.GameModel;
