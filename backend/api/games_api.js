@@ -14,12 +14,12 @@ var strings = require("./universal_strings");
 *
 * @apiParam {string} jwt Valid JWT
 * @apiParam {string} name The name of the game you are creating
-* @apiParam {string} type The type of the game you are creating (Serious, casual, ..)
-* @apiParam {int} skill_offset The intended skill offset range for this game (0-10)
+* @apiParam {string="casual","serious"} type The type of the game you are creating (Serious, casual, ..)
+* @apiParam {int} skill_offset The intended skill offset range for this game (0-10) (Serious games only)
 * @apiParam {int} total_players_required The total required players for the game (between 2 and 100)
 * @apiParam {int} start_time The time the game starts (in unix epoch time)
 * @apiParam {int} duration The duration of the game (in seconds as an int)
-* @apiParam {string} location The location of the game represented in location point object (lat/lng)
+* @apiParam {point} location The location of the game represented in location point object (lat/lng)
 * @apiParam {string} location_notes how to get into the court
 * @apiParam {string} description Short description for the game (less than 250 characters)
 * @apiParam {string} gender The preferred for the game (if any)
@@ -66,8 +66,12 @@ router.post("/", function(req, res){
 				res.status(400).json({"error": strings.invalidGameScheduleConflict});
 			} else {
 				databaseHelper.getUserSkilllevel(tok.user_id, (userSkill) => {
-					var minSkill = ((userSkill - game.skill_offset) < 0) ? 0 : userSkill-game.skill_offset;
-					var maxSkill = ((userSkill + game.skill_offset) > 10) ? 10 : userSkill+game.skill_offset;
+					var minSkill = 0;
+					var maxSkill = 10;
+					if(game.type.toLowerCase() == "serious"){
+						minSkill = ((userSkill - game.skill_offset) < 0) ? 0 : userSkill-game.skill_offset;
+						maxSkill = ((userSkill + game.skill_offset) > 10) ? 10 : userSkill+game.skill_offset;
+					}
 
 					databaseHelper.createGame(tok.user_id, game.name, game.type, minSkill, maxSkill,
 						game.total_players_required, game.start_time,

@@ -33,10 +33,10 @@ function randomUsername(){
 }
 
 function randomLocation(){
-	return {
-		lng: (Math.random() * (180 - (-180)) - 180).toFixed(3) * 1,
-		lat: (Math.random() * (180 - (-180)) - 180).toFixed(3) * 1
-	};
+	return JSON.stringify({
+		"lng": (Math.random() * (180 - (-180)) - 180).toFixed(3) * 1,
+		"lat": (Math.random() * (180 - (-180)) - 180).toFixed(3) * 1
+	});
 }
 
 function randomDob(){
@@ -181,7 +181,8 @@ function createGenericGame(jwt, start, duration){
 
 function createUnrestrictedGame(jwt, start, duration){
 	var game = createGenericGame(jwt, start, duration);
-	game.enforced_params = [];
+	game.enforced_params = null;
+	game.age_range = null;
 	return game;
 }
 

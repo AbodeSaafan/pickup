@@ -64,19 +64,23 @@ function validateAndCleanLoginRequest(data){
 function validateAndCleanCreateGameRequest(data){
 	validate(data.name, regex.gameNameRegex, strings.invalidGameName);
 	validate(data.type, regex.gameTypeRegex, strings.invalidGameType);
-	validateSkillOffset(data.skill_offset);
-	data.skill_offset = data.skill_offset - 0; // quick convert to int
+	if(data.skill_offset && data.type.toLowerCase == "serious"){
+		validateSkillOffset(data.skill_offset);
+		data.skill_offset = data.skill_offset - 0; // quick convert to int
+	} else {
+		data.skill_offset = 0;
+	}
 	validateStartTime(data.start_time);
 	data.start_time = data.start_time - 0; // quick convert to int
 	validate(data.duration, regex.gameDurationRegex, strings.invalidGameDuration);
 	data.duration = data.duration - 0; // quick convert to int
 	validateTotalPlayersRequired(data.total_players_required);
 	validate(data.gender, regex.gameGenderRegex, strings.invalidGameGenderPreference);
-	data.age_range = validateAgeRange(data.age_range);
+	data.age_range = data.age_range ? validateAgeRange(data.age_range) : [];
 	data.location = validateLocation(data.location);
 	validate(data.location_notes, regex.gameLocationNotesRegex, strings.invalidLocationNotes);
 	validate(data.description, regex.gameDescriptionRegex, strings.invalidGameDescription);
-	data.enforced_params = validateEnforcedParamsList(data.enforced_params);
+	data.enforced_params = data.enforced_params ? validateEnforcedParamsList(data.enforced_params) : [];
 	return data;
 }
 
@@ -213,6 +217,11 @@ function filterGames(games, user_id, finished) {
 				game.player_restricted = true;
 				final_results.push(game);
 			}
+			// This changes x and y to lat and lng
+			game.location.lat = game.location.x; 
+			game.location.lng = game.location.y;
+			game.location.x = undefined;
+			game.location.y = undefined;
 			callback();
 		});
 
@@ -298,7 +307,7 @@ function searchValidateEndTime(endTime, obj, objParamString){
 }
 
 function validateAgeRange(ageRange){
-	if (ageRange == null || ageRange.length != 2 ||
+	if (!ageRange || ageRange.length != 2 ||
 		ageRange[0] > ageRange[1]){
 		throw new Error(strings.invalidGameAgeRange);
 	}
@@ -307,6 +316,7 @@ function validateAgeRange(ageRange){
 
 function validateLocation(location){
 	try{
+		location = JSON.parse(location);
 		if (location == null || location.lng == null || location.lat == null){
 			throw new Error(strings.invalidGameLocation);
 		}
@@ -321,7 +331,7 @@ function searchValidateLocation(location, obj, objParamString){
 	if(!location || location == ""){
 		delete obj[objParamString]; return;
 	} else {
-		return validateLocation(JSON.parse(location));
+		return validateLocation(location);
 
 	}
 }

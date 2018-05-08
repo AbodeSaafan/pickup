@@ -991,6 +991,10 @@
           {
             "group": "Parameter",
             "type": "string",
+            "allowedValues": [
+              "\"casual\"",
+              "\"serious\""
+            ],
             "optional": false,
             "field": "type",
             "description": "<p>The type of the game you are creating (Serious, casual, ..)</p>"
@@ -1000,7 +1004,7 @@
             "type": "int",
             "optional": false,
             "field": "skill_offset",
-            "description": "<p>The intended skill offset range for this game (0-10)</p>"
+            "description": "<p>The intended skill offset range for this game (0-10) (Serious games only)</p>"
           },
           {
             "group": "Parameter",
@@ -1025,7 +1029,7 @@
           },
           {
             "group": "Parameter",
-            "type": "string",
+            "type": "point",
             "optional": false,
             "field": "location",
             "description": "<p>The location of the game represented in location point object (lat/lng)</p>"
