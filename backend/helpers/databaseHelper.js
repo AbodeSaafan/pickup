@@ -93,7 +93,7 @@ function getRefreshToken(userId, refreshToken, callback) {
 
 	pool.connect((err, client, done) => {
 		client.query(queryString, queryParams, (err, res) => {
-			if (!err && res.rows[0].refresh_token) {
+			if (!err && res && res.rows && res.rows[0] && res.rows[0].refresh_token) {
 				callback(res.rows[0].refresh_token);
 			} else {
 				callback(false);
