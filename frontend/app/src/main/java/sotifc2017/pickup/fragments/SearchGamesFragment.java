@@ -387,6 +387,15 @@ public class SearchGamesFragment extends Fragment implements SearchFragment {
         super.onViewCreated(view, savedInstanceState);
     }
 
+    @Override
+    public void onStop() {
+        if (placesFragment != null) { // Necessary to avoid duplication exception
+            getFragmentManager().beginTransaction().remove(placesFragment).commit();
+        }
+        super.onStop();
+    }
+
+
     private void updateDateRangeLabel(Date startDate, Date endDate) {
         SimpleDateFormat sdf = new SimpleDateFormat(dateFormat, Locale.US);
 

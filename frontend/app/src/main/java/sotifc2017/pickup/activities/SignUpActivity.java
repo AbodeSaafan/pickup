@@ -103,8 +103,10 @@ public class SignUpActivity extends AppCompatActivity implements LoaderManager.L
     private TextView skillLevel;
     private String dob;
 
+    // Location using Google widget
+    private PlaceAutocompleteFragment autocompleteFragment;
+
     private ProgressDialog progressDialog;
-//    private PlacesAutocompleteTextView placesAutocomplete;
     private String firstname;
     private String lastname;
     private String username;
@@ -253,8 +255,7 @@ public class SignUpActivity extends AppCompatActivity implements LoaderManager.L
             }
         });
 
-        // Location using Google widget
-        PlaceAutocompleteFragment autocompleteFragment = (PlaceAutocompleteFragment)
+        autocompleteFragment = (PlaceAutocompleteFragment)
                 getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
 
         final AutocompleteFilter typeFilter = new AutocompleteFilter.Builder()
@@ -283,6 +284,14 @@ public class SignUpActivity extends AppCompatActivity implements LoaderManager.L
                 Log.i(FC_TAG, "An error occurred: " + status);
             }
         });
+    }
+
+    @Override
+    protected void onStop() {
+        if (autocompleteFragment != null) { // Necessary to avoid duplication exception
+            getFragmentManager().beginTransaction().remove(autocompleteFragment).commit();
+        }
+        super.onStop();
     }
 
     public void onItemSelected(AdapterView<?> parent, View view,
