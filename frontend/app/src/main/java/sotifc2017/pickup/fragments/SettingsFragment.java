@@ -151,7 +151,7 @@ public class SettingsFragment extends PreferenceFragment implements GetJwt.Callb
                 return false;
             }
         });
-        final Preference dob_preference = (Preference)findPreference("editTextPref_dob");
+        final Preference dob_preference = findPreference("editTextPref_dob");
 
         dob_preference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
@@ -192,7 +192,7 @@ public class SettingsFragment extends PreferenceFragment implements GetJwt.Callb
             }
         });
 
-        final Preference email = (Preference) findPreference("editTextPref_email");
+        final Preference email = findPreference("editTextPref_email");
         email.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
@@ -201,8 +201,8 @@ public class SettingsFragment extends PreferenceFragment implements GetJwt.Callb
                 View promptsView = li.inflate(R.layout.fragment_email_dialog, null);
                 final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
                 alertDialogBuilder.setView(promptsView);
-                final EditText emailInput = (EditText) promptsView.findViewById(R.id.email_val);
-                final EditText passwordInput = (EditText) promptsView.findViewById(R.id.password_val);
+                final EditText emailInput = promptsView.findViewById(R.id.email_val);
+                final EditText passwordInput = promptsView.findViewById(R.id.password_val);
                 // set dialog message
                 alertDialogBuilder
                         .setCancelable(false)
@@ -245,7 +245,7 @@ public class SettingsFragment extends PreferenceFragment implements GetJwt.Callb
             }
 
         });
-        final Preference password = (Preference) findPreference("editTextPref_password");
+        final Preference password = findPreference("editTextPref_password");
         password.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
@@ -254,9 +254,9 @@ public class SettingsFragment extends PreferenceFragment implements GetJwt.Callb
                 View promptsView = li.inflate(R.layout.fragment_change_password, null);
                 AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
                 alertDialogBuilder.setView(promptsView);
-                final EditText oldPasswordInput = (EditText) promptsView.findViewById(R.id.old_password_val);
-                final EditText newpasswordInput = (EditText) promptsView.findViewById(R.id.new_password_val);
-                final EditText confirmpasswordInput = (EditText) promptsView.findViewById(R.id.confirm_password_val);
+                final EditText oldPasswordInput = promptsView.findViewById(R.id.old_password_val);
+                final EditText newpasswordInput = promptsView.findViewById(R.id.new_password_val);
+                final EditText confirmpasswordInput = promptsView.findViewById(R.id.confirm_password_val);
                 // set dialog message
                 alertDialogBuilder
                         .setCancelable(false)
@@ -308,7 +308,7 @@ public class SettingsFragment extends PreferenceFragment implements GetJwt.Callb
 
 
 
-    };
+    }
 
     private void block_alert_dialog(DialogInterface dialog, boolean val) {
         try {
@@ -436,8 +436,7 @@ public class SettingsFragment extends PreferenceFragment implements GetJwt.Callb
         SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.CANADA);
         String newValue = sdf.format(myCalendar.getTime());
         updatePrivateProfile(jwt, null, null, null, null, null, newValue.toString(), null);
-    };
-
+    }
 
 
     private Response.Listener<JSONObject> successful_profile = new Response.Listener<JSONObject>() {
@@ -488,7 +487,7 @@ public class SettingsFragment extends PreferenceFragment implements GetJwt.Callb
         @Override
         public void onResponse(JSONObject response) {
             try {
-;               LoadProfileValuesFromResponse((Utils.gson.fromJson(response.toString(), GetPrivateProfileResponse.class)));
+                LoadProfileValuesFromResponse((Utils.gson.fromJson(response.toString(), GetPrivateProfileResponse.class)));
                 progressDialog.cancel();
             }
             //TODO: Implement Failure

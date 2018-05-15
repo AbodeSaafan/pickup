@@ -29,7 +29,7 @@ public class ListViewFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         rootView = inflater.inflate(R.layout.fragment_list_view, container, false);
-        listview = (ListView) rootView.findViewById(R.id.list);
+        listview = rootView.findViewById(R.id.list);
 
 
         if (getArguments().containsKey("gameListJson")) {

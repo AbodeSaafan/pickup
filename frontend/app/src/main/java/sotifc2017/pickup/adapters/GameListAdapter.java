@@ -69,10 +69,10 @@ public class GameListAdapter extends BaseAdapter {
         }
 
 
-        TextView gameName = (TextView) itemView.findViewById(R.id.gameName);
-        TextView location = (TextView) itemView.findViewById(R.id.location);
-        TextView dateTime = (TextView) itemView.findViewById(R.id.dateTime);
-        TextView players = (TextView) itemView.findViewById(R.id.players);
+        TextView gameName = itemView.findViewById(R.id.gameName);
+        TextView location = itemView.findViewById(R.id.location);
+        TextView dateTime = itemView.findViewById(R.id.dateTime);
+        TextView players = itemView.findViewById(R.id.players);
 
         double latitude = game.location.get("lat");
         double longitude = game.location.get("lng");
@@ -124,7 +124,7 @@ public class GameListAdapter extends BaseAdapter {
         dateTime.setText(date);
 
         if (game.player_restricted) {
-            ImageButton warning = (ImageButton) itemView.findViewById(R.id.warning);
+            ImageButton warning = itemView.findViewById(R.id.warning);
             warning.setVisibility(View.VISIBLE);
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -139,7 +139,7 @@ public class GameListAdapter extends BaseAdapter {
 
         //changing colour of player icon (based on player stats)
 
-        ImageView player_icon = (ImageView) itemView.findViewById(R.id.player_icon);
+        ImageView player_icon = itemView.findViewById(R.id.player_icon);
 
         int difference = game.total_players_required - game.total_players_added;
 

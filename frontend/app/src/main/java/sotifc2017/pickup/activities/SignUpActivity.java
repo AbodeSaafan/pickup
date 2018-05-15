@@ -181,9 +181,9 @@ public class SignUpActivity extends AppCompatActivity implements LoaderManager.L
         genderSpinner.setAdapter(adapter);
         genderSpinner.setOnItemSelectedListener(this);
         // Set up the login form.
-        mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
-        mPasswordView = (EditText) findViewById(R.id.password);
-        cPasswordView = (EditText) findViewById(R.id.confirmPassword);
+        mEmailView = findViewById(R.id.email);
+        mPasswordView = findViewById(R.id.password);
+        cPasswordView = findViewById(R.id.confirmPassword);
         cPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
@@ -194,7 +194,7 @@ public class SignUpActivity extends AppCompatActivity implements LoaderManager.L
                 return false;
             }
         });
-        mUsernameView = (EditText) findViewById(R.id.username);
+        mUsernameView = findViewById(R.id.username);
         Button mEmailSignInButton = findViewById(R.id.email_sign_in_button);
         mEmailSignInButton.setOnClickListener(new OnClickListener() {
             @Override
@@ -203,7 +203,7 @@ public class SignUpActivity extends AppCompatActivity implements LoaderManager.L
             }
         });
         mFirstnameView = findViewById(R.id.fname);
-        mLastnameView = (EditText) findViewById(R.id.lname);
+        mLastnameView = findViewById(R.id.lname);
         skillLevel = findViewById(R.id.skill_level);
         skillLevel.setText(skillLevels[2]);
         skillLevelBar = findViewById(R.id.skill_level_bar);
@@ -264,7 +264,7 @@ public class SignUpActivity extends AppCompatActivity implements LoaderManager.L
 
         autocompleteFragment.setFilter(typeFilter);
 
-        EditText locationView = (EditText) autocompleteFragment.getView().findViewById(R.id.place_autocomplete_search_input);
+        EditText locationView = autocompleteFragment.getView().findViewById(R.id.place_autocomplete_search_input);
         locationView.setHintTextColor(-1);
         locationView.setHint("Select Location");
         locationView.setTextColor(-1);

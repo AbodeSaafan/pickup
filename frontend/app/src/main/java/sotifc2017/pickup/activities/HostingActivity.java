@@ -9,6 +9,6 @@ import sotifc2017.pickup.api.models.UserModel;
 
 public interface HostingActivity {
 
-    public void onDisplayGameSearchResults(String gameListJson);
-    public void onDisplayUserSearchResults(String userListJson);
+    void onDisplayGameSearchResults(String gameListJson);
+    void onDisplayUserSearchResults(String userListJson);
 }

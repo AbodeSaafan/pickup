@@ -55,8 +55,8 @@ public class UserListAdapter extends BaseAdapter {
             itemView = LayoutInflater.from(this.mContext).inflate(R.layout.fragment_user_list_item, null);
         }
 
-        TextView firstLastName = (TextView) itemView.findViewById(R.id.firstLastName);
-        TextView username = (TextView) itemView.findViewById(R.id.username);
+        TextView firstLastName = itemView.findViewById(R.id.firstLastName);
+        TextView username = itemView.findViewById(R.id.username);
         final String user_id = String.valueOf(user.user_id);
 
         firstLastName.setText(user.fname);

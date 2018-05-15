@@ -150,23 +150,23 @@ public class ExtendedProfileFragment extends Fragment implements GetJwt.Callback
 
     private void ExtendedProfileSuccess(GetExtendedProfileResponse response) throws IOException {
         Toast.makeText(getActivity(), "ExtendedProfile successsful", Toast.LENGTH_SHORT).show();
-        age = (TextView) getView().findViewById(R.id.age);
+        age = getView().findViewById(R.id.age);
         age.setText(response.age + " years old");
-        gender = (TextView)getView().findViewById(R.id.gender);
+        gender = getView().findViewById(R.id.gender);
         if (response.gender.equals("M")) {
             gender.setText("Male");
         } else if (response.gender.equals("F")) {
             gender.setText("Female");
         }
 
-        skillevel = (TextView) getView().findViewById(R.id.skill_level);
+        skillevel = getView().findViewById(R.id.skill_level);
         String skill = SignUpActivity.skillLevels[Integer.parseInt(response.skilllevel)] + "(" + response.skilllevel + ")";
 
         //Log.d("CREATION", "skilllevel " + SignUpActivity.skillLevels[Integer.parseInt(response.skilllevel)]);
 
         skillevel.setText(skill);
 
-        location = (TextView) getView().findViewById(R.id.location);
+        location = getView().findViewById(R.id.location);
         LatLng = response.location.split(",");
         double latitude = Double.parseDouble(LatLng[0].substring(1));
         double longitude = Double.parseDouble(LatLng[1].substring(0, LatLng[1].length() - 1));
@@ -180,21 +180,21 @@ public class ExtendedProfileFragment extends Fragment implements GetJwt.Callback
 
         location.setText(newLocation);
 
-        username = (TextView) getView().findViewById(R.id.user_profile_name);
+        username = getView().findViewById(R.id.user_profile_name);
         username.setText(response.username);
 
 
-        averageReview = (RatingBar)getView().findViewById(R.id.averageReviewValue);
+        averageReview = getView().findViewById(R.id.averageReviewValue);
         float aReviewValue = Float.parseFloat(response.average_review);
         averageReview.setRating(aReviewValue);
 
         /*GamesCreated and GamesPlayed not working*/
 
-        gamesCreated = (TextView) getView().findViewById(R.id.gamesCreatedValue);
+        gamesCreated = getView().findViewById(R.id.gamesCreatedValue);
         gamesCreated.setText(response.games_created);
         //Log.d("CREATION", String.valueOf(response.games_created));
 
-        gamesPlayed = (TextView) getView().findViewById(R.id.gamesCreatedValue);
+        gamesPlayed = getView().findViewById(R.id.gamesCreatedValue);
         gamesPlayed.setText(response.games_joined);
         //Log.d("CREATION", String.valueOf(response.games_joined));
 

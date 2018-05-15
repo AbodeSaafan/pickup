@@ -7,5 +7,5 @@ import sotifc2017.pickup.api.contracts.GetSearchRequest;
  */
 
 public interface SearchFragment {
-    public GetSearchRequest constructSearchRequest(String jwt);
+    GetSearchRequest constructSearchRequest(String jwt);
 }
