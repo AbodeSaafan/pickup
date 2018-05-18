@@ -1,5 +1,6 @@
 package sotifc2017.pickup.api.models;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -7,6 +8,10 @@ import java.util.Map;
  */
 
 public class GameModel {
+    private final int DEFAULT_INT = -1;
+    private final String DEFAULT_STRING = "";
+    private final boolean DEFAULT_BOOLEAN = false;
+    
     public int game_id;
     public String name;
     public String type;
@@ -26,8 +31,28 @@ public class GameModel {
     public int time_created;
     public boolean player_restricted;
 
-    //function for time-being
+    public GameModel () {
+        this.game_id = DEFAULT_INT;
+        this.name = DEFAULT_STRING ;
+        this.type = DEFAULT_STRING ;
+        this.min_skill = DEFAULT_INT;
+        this.total_players_required = DEFAULT_INT;
+        this.total_players_added = DEFAULT_INT;
+        this.start_time = DEFAULT_INT;
+        this.end_time = DEFAULT_INT;
+        this.location = new HashMap<String, Double>();
+        this.creator_id = DEFAULT_INT;
+        this.description = DEFAULT_STRING;
+        this.location_notes = DEFAULT_STRING;
+        this.gender = DEFAULT_STRING;
+        this.age_range = new int[] { DEFAULT_INT, DEFAULT_INT };
+        this.enforced_params = new String[] {};
+        this.time_created = DEFAULT_INT;
+        this.player_restricted = DEFAULT_BOOLEAN;
+    }
 
+
+    //function for time-being
     public GameModel (int game_id, String name, String type, int min_skill, int max_skill, int total_players_required,
                       int total_players_added, int start_time, int end_time, Map<String, Double> location, int creator_id,
                       String description, String location_notes, String gender, int[] age_range, String[] enforced_params, int time_created, boolean player_restricted) {
@@ -51,5 +76,4 @@ public class GameModel {
     this.player_restricted = player_restricted;
 
     }
-
 }

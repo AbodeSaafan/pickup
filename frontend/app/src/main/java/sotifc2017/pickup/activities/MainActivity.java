@@ -362,6 +362,15 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     }
 
+    public void onAgeRadioButtonClicked(View view) {
+        CreateGameFragment.onAgeRadioButtonClicked(view);
+    }
+
+    public void onGenderRadioButtonClicked(View view) {
+        CreateGameFragment.onGenderRadioButtonClicked(view);
+    }
+
+
     // Fragments callbacks
     @Override
     public void configureMenuItemSelection(int currentFragmentId, boolean padTop) {

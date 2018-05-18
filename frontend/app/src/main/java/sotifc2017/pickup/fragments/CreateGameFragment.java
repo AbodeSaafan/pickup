@@ -6,15 +6,19 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RadioButton;
 
 import sotifc2017.pickup.R;
 import sotifc2017.pickup.api.GetJwt;
+import sotifc2017.pickup.api.models.GameModel;
 import sotifc2017.pickup.fragment_interfaces.OnFragmentReplacement;
 
 public class CreateGameFragment extends Fragment implements GetJwt.Callback {
 
     int currentFragmentId = R.id.action_create_game;
     OnFragmentReplacement mCallback;
+
+    GameModel gameModel = new GameModel();
 
     @Override
     public void onAttach(Activity activity) {
@@ -33,6 +37,8 @@ public class CreateGameFragment extends Fragment implements GetJwt.Callback {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         new GetJwt(this).execute(getActivity());
+
+        initGameModel(gameModel);
     }
 
     @Override
@@ -54,6 +60,42 @@ public class CreateGameFragment extends Fragment implements GetJwt.Callback {
 
     @Override
     public void jwtFailure(GetJwt.JwtOutcome outcome) {
+    }
+
+    private void initGameModel(GameModel gameModel) {
+        // Init game details we know on creation of a new game
+    }
+
+    public static void onAgeRadioButtonClicked(View view) {
+        boolean checked = ((RadioButton) view).isChecked();
+
+        if (checked) {
+            switch(view.getId()) {
+                case R.id.radio_18_range:
+                    break;
+                case R.id.radio_25_range:
+                    break;
+                case R.id.radio_35_range:
+                    break;
+                case R.id.radio_45_range:
+                    break;
+            }
+        }
+    }
+
+    public static void onGenderRadioButtonClicked(View view) {
+        boolean checked = ((RadioButton) view).isChecked();
+
+        if (checked) {
+            switch(view.getId()) {
+                case R.id.radio_male_gender:
+                    break;
+                case R.id.radio_female_gender:
+                    break;
+                case R.id.radio_other_gender:
+                    break;
+            }
+        }
     }
 
 }
