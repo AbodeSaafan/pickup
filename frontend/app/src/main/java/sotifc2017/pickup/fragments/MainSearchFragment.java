@@ -145,15 +145,20 @@ public class MainSearchFragment extends Fragment implements GetJwt.Callback {
         Response.Listener<JSONObject> successful_search;
         Response.ErrorListener error_search;
 
+        // A way to get the current fragment instead of using a global
+        // https://stackoverflow.com/questions/18609261/getting-the-current-fragment-instance-in-the-viewpager
+        Fragment page = getChildFragmentManager()
+                .findFragmentByTag("android:switcher:" + R.id.main_search_pager + ":" + vp.getCurrentItem());
+
         // construct search
         switch(vp.getCurrentItem()){
             case SEARCH_GAMES_TAB_NUMBER:
-                searchRequest = ((SearchFragment) gameSearchFragment).constructSearchRequest(jwt);
+                searchRequest = ((SearchFragment) page).constructSearchRequest(jwt);
                 successful_search = successful_game_search;
                 error_search = error_game_search;
                 break;
             case SEARCH_USERS_TAB_NUMBER:
-                searchRequest = ((SearchFragment) userSearchFragment).constructSearchRequest(jwt);
+                searchRequest = ((SearchFragment) page).constructSearchRequest(jwt);
                 successful_search = successful_user_search;
                 error_search = error_user_search;
                 break;
