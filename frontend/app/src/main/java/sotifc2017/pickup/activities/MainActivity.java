@@ -115,7 +115,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         fabNewGame.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                replaceFragment(new CreateGameFragment(), true, R.id.fab_new_game);
+                replaceFragment(new CreateGameFragment(), true, R.id.action_create_game);
             }
         });
     }
@@ -318,8 +318,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         // Replace whatever is in the fragment_container view with this fragment,
         // and add the transaction to the back stack if needed
-        transaction.replace(R.id.fragment_container, frag);
-        if(backStackAdd) transaction.addToBackStack(String.valueOf(fragId));
+        transaction.replace(R.id.fragment_container, frag, String.valueOf(fragId));
+        if(backStackAdd) transaction.addToBackStack(null);
 
         // Commit the transaction
         transaction.commit();
@@ -372,20 +372,41 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     // Create game UI items
     public void onAgeRadioButtonClicked(View view) {
-        CreateGameFragment.onAgeRadioButtonClicked(view);
+        CreateGameFragment createGameFrag =
+                (CreateGameFragment) getFragmentManager().findFragmentByTag(String.valueOf(R.id.action_create_game));
+
+        if (createGameFrag != null) {
+            createGameFrag.onAgeRadioButtonClicked(view);
+        }
     }
 
     public void onGenderRadioButtonClicked(View view) {
-        CreateGameFragment.onGenderRadioButtonClicked(view);
+        CreateGameFragment createGameFrag =
+                (CreateGameFragment) getFragmentManager().findFragmentById(R.id.action_create_game);
+
+        if (createGameFrag != null) {
+            createGameFrag.onGenderRadioButtonClicked(view);
+        }
     }
 
     public void onPlayerRestrictedRadioButtonClicked(View view) {
-        CreateGameFragment.onPlayerRestrictedRadioButtonClicked(view);
+        CreateGameFragment createGameFrag =
+                (CreateGameFragment) getFragmentManager().findFragmentById(R.id.action_create_game);
+
+        if (createGameFrag != null) {
+            createGameFrag.onPlayerRestrictedRadioButtonClicked(view);
+        }
     }
 
     @Override
     public void onSelectedTime(int hourStart, int minuteStart, int hourEnd, int minuteEnd)
     {
+        CreateGameFragment createGameFrag =
+                (CreateGameFragment) getFragmentManager().findFragmentById(R.id.action_create_game);
+
+        if (createGameFrag != null) {
+            createGameFrag.onSelectedTime(hourStart, minuteStart, hourEnd, minuteEnd);
+        }
         Toast.makeText(this, "Start: "+hourStart+":"+minuteStart+"\nEnd: "+hourEnd+":"+minuteEnd, Toast.LENGTH_SHORT).show();
     }
 

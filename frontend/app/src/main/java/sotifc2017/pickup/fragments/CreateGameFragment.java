@@ -6,6 +6,7 @@ import android.app.FragmentManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,6 +35,8 @@ import sotifc2017.pickup.api.contracts.CreateGameResponse;
 import sotifc2017.pickup.api.models.GameModel;
 import sotifc2017.pickup.fragment_interfaces.OnFragmentReplacement;
 
+import static sotifc2017.pickup.Common.Defaults.FC_TAG;
+
 public class CreateGameFragment extends Fragment implements GetJwt.Callback {
 
     int currentFragmentId = R.id.action_create_game;
@@ -43,7 +46,7 @@ public class CreateGameFragment extends Fragment implements GetJwt.Callback {
     private EditText gameDescription;
     private EditText gameLocationNotes;
 
-    private static GameModel gameModel = new GameModel();
+    private GameModel gameModel;
     public CreateGameFragment() {
     }
 
@@ -104,9 +107,12 @@ public class CreateGameFragment extends Fragment implements GetJwt.Callback {
             }
         });
 
+        gameModel = new GameModel();
+
         gameName = view.findViewById(R.id.complete_text_view_game_name);
         gameDescription = view.findViewById(R.id.multiTextViewDescription);
         gameLocationNotes = view.findViewById(R.id.complete_text_location_notes);
+
         super.onViewCreated(view, savedInstanceState);
     }
 
@@ -155,11 +161,16 @@ public class CreateGameFragment extends Fragment implements GetJwt.Callback {
         dialog.show(fragmentManager, "");
     }
 
+    public void onSelectedTime(int hourStart, int minuteStart, int hourEnd, int minuteEnd)
+    {
+        Log.d(FC_TAG, "Start: "+hourStart+":"+minuteStart+"\nEnd: "+hourEnd+":"+minuteEnd);
+    }
+
     private void showPlacePicker() {
         mCallback.startPlacePickerActivity();
     }
 
-    public static void onAgeRadioButtonClicked(View view) {
+    public void onAgeRadioButtonClicked(View view) {
         boolean checked = ((RadioButton) view).isChecked();
 
         if (checked) {
@@ -180,7 +191,7 @@ public class CreateGameFragment extends Fragment implements GetJwt.Callback {
         }
     }
 
-    public static void onGenderRadioButtonClicked(View view) {
+    public void onGenderRadioButtonClicked(View view) {
         boolean checked = ((RadioButton) view).isChecked();
 
         if (checked) {
@@ -198,7 +209,7 @@ public class CreateGameFragment extends Fragment implements GetJwt.Callback {
         }
     }
 
-    public static void onPlayerRestrictedRadioButtonClicked(View view) {
+    public void onPlayerRestrictedRadioButtonClicked(View view) {
         boolean checked = ((RadioButton) view).isChecked();
 
         if (checked) {
@@ -266,5 +277,4 @@ public class CreateGameFragment extends Fragment implements GetJwt.Callback {
     private void CreateGameFailure(String message) {
         Toast.makeText(getActivity(), "CreateGameResponse failed: " + message, Toast.LENGTH_SHORT).show();
     }
-
 }
