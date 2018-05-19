@@ -9,6 +9,7 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.Toast;
@@ -38,8 +39,7 @@ public class CreateGameFragment extends Fragment implements GetJwt.Callback {
     int currentFragmentId = R.id.action_create_game;
     OnFragmentReplacement mCallback;
 
-    GameModel gameModel = new GameModel();
-
+    private static GameModel gameModel = new GameModel();
     public CreateGameFragment() {
     }
 
@@ -60,7 +60,6 @@ public class CreateGameFragment extends Fragment implements GetJwt.Callback {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         new GetJwt(this).execute(getActivity());
-        initGameModel(gameModel);
     }
 
     @Override
@@ -91,6 +90,16 @@ public class CreateGameFragment extends Fragment implements GetJwt.Callback {
             }
         });
 
+        Button createGameSubmitButton = view.findViewById(R.id.button_create_game_submit);
+        createGameSubmitButton.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+                onCreateGameButtonClick();
+            }
+        });
+
         super.onViewCreated(view, savedInstanceState);
     }
 
@@ -103,48 +112,6 @@ public class CreateGameFragment extends Fragment implements GetJwt.Callback {
 
     @Override
     public void jwtSuccess(String jwt) {
-        // TODO: Replace request call with data gathered from user input
-        CreateGameRequest req = new CreateGameRequest();
-        JsonObjectRequest request = Games.createGame_request(req, successful_create_game_profile, error_create_game_profile);
-
-        if (request != null) {
-            Utils.getInstance(getActivity()).getRequestQueue(getActivity()).add(request);
-        }
-    }
-
-    private Response.Listener<JSONObject> successful_create_game_profile = new Response.Listener<JSONObject>() {
-        @Override
-        public void onResponse(JSONObject response) {
-            try{
-                CreateGameSuccess(Utils.gson.fromJson(response.toString(), CreateGameResponse.class));
-            }
-            catch (Exception e){
-                CreateGameFailure(e.getMessage());
-            }
-
-        }
-    };
-
-    private Response.ErrorListener error_create_game_profile =  new Response.ErrorListener() {
-        @Override
-        public void onErrorResponse(VolleyError error) {
-            try {
-                JSONObject errorJSON = new JSONObject(new String(error.networkResponse.data, "UTF-8"));
-                CreateGameFailure(errorJSON.getString("jwtFailure"));
-            }
-            catch (Exception e){
-                CreateGameFailure(e.getMessage());
-            }
-        }
-    };
-
-    private void CreateGameSuccess(CreateGameResponse response) throws IOException {
-        Toast.makeText(getActivity(), "CreateGameResponse successsful. GameId: " + response.game_id, Toast.LENGTH_SHORT).show();
-
-    }
-
-    private void CreateGameFailure(String message) {
-        Toast.makeText(getActivity(), "CreateGameResponse failed: " + message, Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -159,10 +126,6 @@ public class CreateGameFragment extends Fragment implements GetJwt.Callback {
             default:
                 GetJwt.exitAppDialog(getActivity()).show();
         }
-    }
-
-    private void initGameModel(GameModel gameModel) {
-        // Init game details we know on creation of a new game
     }
 
 
@@ -233,4 +196,52 @@ public class CreateGameFragment extends Fragment implements GetJwt.Callback {
             }
         }
     }
+
+    public void onCreateGameButtonClick() {
+        Activity activity = getActivity();
+        gameModel.setCreator_id(Authentication.getUserId(activity));
+        // TODO: Replace request call with data gathered from user input
+        CreateGameRequest req = new CreateGameRequest();
+        JsonObjectRequest request = Games.createGame_request(req, successful_create_game_profile, error_create_game_profile);
+
+        if (request != null) {
+            Utils.getInstance(activity).getRequestQueue(activity).add(request);
+        }
+    }
+
+    private Response.Listener<JSONObject> successful_create_game_profile = new Response.Listener<JSONObject>() {
+        @Override
+        public void onResponse(JSONObject response) {
+            try{
+                CreateGameSuccess(Utils.gson.fromJson(response.toString(), CreateGameResponse.class));
+            }
+            catch (Exception e){
+                CreateGameFailure(e.getMessage());
+            }
+
+        }
+    };
+
+    private Response.ErrorListener error_create_game_profile =  new Response.ErrorListener() {
+        @Override
+        public void onErrorResponse(VolleyError error) {
+            try {
+                JSONObject errorJSON = new JSONObject(new String(error.networkResponse.data, "UTF-8"));
+                CreateGameFailure(errorJSON.getString("jwtFailure"));
+            }
+            catch (Exception e){
+                CreateGameFailure(e.getMessage());
+            }
+        }
+    };
+
+    private void CreateGameSuccess(CreateGameResponse response) throws IOException {
+        Toast.makeText(getActivity(), "CreateGameResponse successsful. GameId: " + response.game_id, Toast.LENGTH_SHORT).show();
+
+    }
+
+    private void CreateGameFailure(String message) {
+        Toast.makeText(getActivity(), "CreateGameResponse failed: " + message, Toast.LENGTH_SHORT).show();
+    }
+
 }

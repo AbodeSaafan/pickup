@@ -461,8 +461,7 @@
             android:id="@+id/layout_player_restricted"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/layout_gender_restriction"
-            android:paddingBottom="30dp">
+            android:layout_below="@+id/layout_gender_restriction">
 
             <TextView
                 android:id="@+id/text_player_restricted"
@@ -497,7 +496,22 @@
                     android:text="@string/create_new_game_no_restricted"
                     android:onClick="onPlayerRestrictedRadioButtonClicked"/>
             </RadioGroup>
+        </RelativeLayout>
 
+        <RelativeLayout
+            android:id="@+id/layout_create_game_submit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/layout_player_restricted"
+            android:paddingBottom="15dp">
+
+            <Button
+                android:id="@+id/button_create_game_submit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_centerInParent="true"
+                android:text="@string/create_new_game_title" />
         </RelativeLayout>
     </RelativeLayout>
 </ScrollView>
