@@ -39,6 +39,10 @@ public class CreateGameFragment extends Fragment implements GetJwt.Callback {
     int currentFragmentId = R.id.action_create_game;
     OnFragmentReplacement mCallback;
 
+    private EditText gameName;
+    private EditText gameDescription;
+    private EditText gameLocationNotes;
+
     private static GameModel gameModel = new GameModel();
     public CreateGameFragment() {
     }
@@ -100,6 +104,9 @@ public class CreateGameFragment extends Fragment implements GetJwt.Callback {
             }
         });
 
+        gameName = view.findViewById(R.id.complete_text_view_game_name);
+        gameDescription = view.findViewById(R.id.multiTextViewDescription);
+        gameLocationNotes = view.findViewById(R.id.complete_text_location_notes);
         super.onViewCreated(view, savedInstanceState);
     }
 
@@ -158,12 +165,16 @@ public class CreateGameFragment extends Fragment implements GetJwt.Callback {
         if (checked) {
             switch(view.getId()) {
                 case R.id.radio_18_range:
+                    gameModel.setAgeRange(new int[] {18, 25});
                     break;
                 case R.id.radio_25_range:
+                    gameModel.setAgeRange(new int[] {25, 35});
                     break;
                 case R.id.radio_35_range:
+                    gameModel.setAgeRange(new int[] {35, 45});
                     break;
                 case R.id.radio_45_range:
+                    gameModel.setAgeRange(new int[] {45, 123});
                     break;
             }
         }
@@ -175,10 +186,13 @@ public class CreateGameFragment extends Fragment implements GetJwt.Callback {
         if (checked) {
             switch(view.getId()) {
                 case R.id.radio_male_gender:
+                    gameModel.setGender("male");
                     break;
                 case R.id.radio_female_gender:
+                    gameModel.setGender("female");
                     break;
                 case R.id.radio_other_gender:
+                    gameModel.setGender("other");
                     break;
             }
         }
@@ -190,8 +204,10 @@ public class CreateGameFragment extends Fragment implements GetJwt.Callback {
         if (checked) {
             switch(view.getId()) {
                 case R.id.radio_restricted:
+                    gameModel.setPlayerRestricted(true);
                     break;
                 case R.id.radio_not_restricted:
+                    gameModel.setPlayerRestricted(false);
                     break;
             }
         }
@@ -200,6 +216,7 @@ public class CreateGameFragment extends Fragment implements GetJwt.Callback {
     public void onCreateGameButtonClick() {
         Activity activity = getActivity();
         gameModel.setCreator_id(Authentication.getUserId(activity));
+        gatherUserInput();
         // TODO: Replace request call with data gathered from user input
         CreateGameRequest req = new CreateGameRequest();
         JsonObjectRequest request = Games.createGame_request(req, successful_create_game_profile, error_create_game_profile);
@@ -207,6 +224,12 @@ public class CreateGameFragment extends Fragment implements GetJwt.Callback {
         if (request != null) {
             Utils.getInstance(activity).getRequestQueue(activity).add(request);
         }
+    }
+
+    private void gatherUserInput() {
+        gameModel.setName(gameName.getText().toString());
+        gameModel.setDescription(gameDescription.getText().toString());
+        gameModel.setLocationNotes(gameLocationNotes.getText().toString());
     }
 
     private Response.Listener<JSONObject> successful_create_game_profile = new Response.Listener<JSONObject>() {

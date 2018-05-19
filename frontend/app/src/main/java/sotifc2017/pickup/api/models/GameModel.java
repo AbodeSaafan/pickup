@@ -77,23 +77,11 @@ public class GameModel {
 
     }
 
-    public int getDEFAULT_INT() {
-        return DEFAULT_INT;
-    }
-
-    public String getDEFAULT_STRING() {
-        return DEFAULT_STRING;
-    }
-
-    public boolean isDEFAULT_BOOLEAN() {
-        return DEFAULT_BOOLEAN;
-    }
-
-    public int getGame_id() {
+    public int getGameId() {
         return game_id;
     }
 
-    public void setGame_id(int game_id) {
+    public void setGameId(int game_id) {
         this.game_id = game_id;
     }
 
@@ -113,51 +101,51 @@ public class GameModel {
         this.type = type;
     }
 
-    public int getMin_skill() {
+    public int getMinSkill() {
         return min_skill;
     }
 
-    public void setMin_skill(int min_skill) {
+    public void setMinSkill(int min_skill) {
         this.min_skill = min_skill;
     }
 
-    public int getMax_skill() {
+    public int getMaxSkill() {
         return max_skill;
     }
 
-    public void setMax_skill(int max_skill) {
+    public void setMaxSkill(int max_skill) {
         this.max_skill = max_skill;
     }
 
-    public int getTotal_players_required() {
+    public int getTotalPlayersRequired() {
         return total_players_required;
     }
 
-    public void setTotal_players_required(int total_players_required) {
+    public void setTotalPlayersRequired(int total_players_required) {
         this.total_players_required = total_players_required;
     }
 
-    public int getTotal_players_added() {
+    public int getTotalPlayersAdded() {
         return total_players_added;
     }
 
-    public void setTotal_players_added(int total_players_added) {
+    public void setTotalPlayersAdded(int total_players_added) {
         this.total_players_added = total_players_added;
     }
 
-    public int getStart_time() {
+    public int getStartTime() {
         return start_time;
     }
 
-    public void setStart_time(int start_time) {
+    public void setStartTime(int start_time) {
         this.start_time = start_time;
     }
 
-    public int getEnd_time() {
+    public int getEndTime() {
         return end_time;
     }
 
-    public void setEnd_time(int end_time) {
+    public void setEndTime(int end_time) {
         this.end_time = end_time;
     }
 
@@ -185,11 +173,11 @@ public class GameModel {
         this.description = description;
     }
 
-    public String getLocation_notes() {
+    public String getLocationNotes() {
         return location_notes;
     }
 
-    public void setLocation_notes(String location_notes) {
+    public void setLocationNotes(String location_notes) {
         this.location_notes = location_notes;
     }
 
@@ -201,35 +189,35 @@ public class GameModel {
         this.gender = gender;
     }
 
-    public int[] getAge_range() {
+    public int[] getAgeRange() {
         return age_range;
     }
 
-    public void setAge_range(int[] age_range) {
+    public void setAgeRange(int[] age_range) {
         this.age_range = age_range;
     }
 
-    public String[] getEnforced_params() {
+    public String[] getEnforcedParams() {
         return enforced_params;
     }
 
-    public void setEnforced_params(String[] enforced_params) {
+    public void setEnforcedParams(String[] enforced_params) {
         this.enforced_params = enforced_params;
     }
 
-    public int getTime_created() {
+    public int getTimeCreated() {
         return time_created;
     }
 
-    public void setTime_created(int time_created) {
+    public void setTimeCreated(int time_created) {
         this.time_created = time_created;
     }
 
-    public boolean isPlayer_restricted() {
+    public boolean isPlayerRestricted() {
         return player_restricted;
     }
 
-    public void setPlayer_restricted(boolean player_restricted) {
+    public void setPlayerRestricted(boolean player_restricted) {
         this.player_restricted = player_restricted;
     }
 }

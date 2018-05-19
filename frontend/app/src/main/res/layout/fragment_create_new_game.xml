@@ -144,7 +144,7 @@
                 android:layout_marginStart="40dp" />
 
             <MultiAutoCompleteTextView
-                android:id="@+id/multiAutoCompleteTextView"
+                android:id="@+id/multiTextViewDescription"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
