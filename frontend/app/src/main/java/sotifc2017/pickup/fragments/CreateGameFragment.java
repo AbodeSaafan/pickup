@@ -3,6 +3,7 @@ package sotifc2017.pickup.fragments;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -10,11 +11,25 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.RadioButton;
+import android.widget.Toast;
 
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.mcsoft.timerangepickerdialog.RangeTimePickerDialog;
 
+import org.json.JSONObject;
+
+import java.io.IOException;
+
 import sotifc2017.pickup.R;
+import sotifc2017.pickup.activities.SignInActivity;
+import sotifc2017.pickup.api.Authentication;
+import sotifc2017.pickup.api.Games;
 import sotifc2017.pickup.api.GetJwt;
+import sotifc2017.pickup.api.Utils;
+import sotifc2017.pickup.api.contracts.CreateGameRequest;
+import sotifc2017.pickup.api.contracts.CreateGameResponse;
 import sotifc2017.pickup.api.models.GameModel;
 import sotifc2017.pickup.fragment_interfaces.OnFragmentReplacement;
 
@@ -88,10 +103,62 @@ public class CreateGameFragment extends Fragment implements GetJwt.Callback {
 
     @Override
     public void jwtSuccess(String jwt) {
+        // TODO: Replace request call with data gathered from user input
+        CreateGameRequest req = new CreateGameRequest();
+        JsonObjectRequest request = Games.createGame_request(req, successful_create_game_profile, error_create_game_profile);
+
+        if (request != null) {
+            Utils.getInstance(getActivity()).getRequestQueue(getActivity()).add(request);
+        }
+    }
+
+    private Response.Listener<JSONObject> successful_create_game_profile = new Response.Listener<JSONObject>() {
+        @Override
+        public void onResponse(JSONObject response) {
+            try{
+                CreateGameSuccess(Utils.gson.fromJson(response.toString(), CreateGameResponse.class));
+            }
+            catch (Exception e){
+                CreateGameFailure(e.getMessage());
+            }
+
+        }
+    };
+
+    private Response.ErrorListener error_create_game_profile =  new Response.ErrorListener() {
+        @Override
+        public void onErrorResponse(VolleyError error) {
+            try {
+                JSONObject errorJSON = new JSONObject(new String(error.networkResponse.data, "UTF-8"));
+                CreateGameFailure(errorJSON.getString("jwtFailure"));
+            }
+            catch (Exception e){
+                CreateGameFailure(e.getMessage());
+            }
+        }
+    };
+
+    private void CreateGameSuccess(CreateGameResponse response) throws IOException {
+        Toast.makeText(getActivity(), "CreateGameResponse successsful. GameId: " + response.game_id, Toast.LENGTH_SHORT).show();
+
+    }
+
+    private void CreateGameFailure(String message) {
+        Toast.makeText(getActivity(), "CreateGameResponse failed: " + message, Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void jwtFailure(GetJwt.JwtOutcome outcome) {
+        switch(outcome){
+            case NoRefresh:
+            case BadJwtRetrieval:
+                Authentication.logout(getActivity());
+                Intent intent = new Intent(getActivity(), SignInActivity.class);
+                startActivity(intent);
+            case ServerFault:
+            default:
+                GetJwt.exitAppDialog(getActivity()).show();
+        }
     }
 
     private void initGameModel(GameModel gameModel) {
