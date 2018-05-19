@@ -46,6 +46,7 @@ dependencies {
     compile 'de.hdodenhof:circleimageview:2.1.0'
     compile 'com.android.volley:volley:1.0.0'
     compile 'com.google.code.gson:gson:2.8.2'
+    compile 'com.github.PuffoCyano:Range-Time-Picker-Dialog:v1.5'
     compile 'org.adw.library:discrete-seekbar:1.0.1'
     compile ('com.appyvet:materialrangebar:1.4.1') {
         exclude module: 'support-compat'

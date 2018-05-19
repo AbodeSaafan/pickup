@@ -68,6 +68,7 @@
     <string name="create_new_game_location_notes">Location Notes:</string>
     <string name="create_new_game_description">Description:</string>
     <string name="create_new_game_description_hint">Tell us about your game</string>
+
     <string name="create_new_game_restrictions_section_title">Game Restrictions</string>
     <string name="create_new_game_want_restrictions">Would you like to apply any restrictions?</string>
     <string name="create_new_game_age_restriction">Age</string>
@@ -79,6 +80,15 @@
     <string name="create_new_game_male_gender">Male</string>
     <string name="create_new_game_female_gender">Female</string>
     <string name="create_new_game_other_gender">Other</string>
+    <string name="create_new_game_player_restricted">Player Restricted</string>
+    <string name="create_new_game_yes_restricted">Yes</string>
+    <string name="create_new_game_no_restricted">No</string>
+
+    <string name="create_new_game_time">"Time: "</string>
+    <string name="create_new_game_time_hint">"Select start and end time"</string>
+    <string name="create_new_game_location">"Location: "</string>
+    <string name="create_new_game_location_hint">"Select the game's location"</string>
+
 
     <!-- Main search page -->
     <string name="main_search_games_tab_title">Games</string>

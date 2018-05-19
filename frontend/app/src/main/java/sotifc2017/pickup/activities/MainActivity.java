@@ -2,6 +2,7 @@ package sotifc2017.pickup.activities;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.DialogInterface;
@@ -26,8 +27,12 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
+import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
@@ -38,6 +43,7 @@ import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.mcsoft.timerangepickerdialog.RangeTimePickerDialog;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,7 +60,9 @@ import sotifc2017.pickup.fragments.MainSearchFragment;
 import sotifc2017.pickup.fragments.RefinedMapFragment;
 import sotifc2017.pickup.fragments.SettingsFragment;
 
-public class MainActivity extends AppCompatActivity implements OnMapReadyCallback, HostingActivity, OnFragmentReplacement {
+import static sotifc2017.pickup.Common.Defaults.FC_TAG;
+
+public class MainActivity extends AppCompatActivity implements OnMapReadyCallback, HostingActivity, OnFragmentReplacement, RangeTimePickerDialog.ISelectedTime {
 
     private GoogleMap mMap;
     private FusedLocationProviderClient mFusedLocationClient;
@@ -68,6 +76,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private ImageView searchButton;
     private static long back_pressed_time;
     private static long PERIOD = 2000;
+    private int PLACE_PICKER_REQUEST = 1;
     Intent intent;
 
     @Override
@@ -362,6 +371,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     }
 
+    // Create game UI items
     public void onAgeRadioButtonClicked(View view) {
         CreateGameFragment.onAgeRadioButtonClicked(view);
     }
@@ -370,6 +380,15 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         CreateGameFragment.onGenderRadioButtonClicked(view);
     }
 
+    public void onPlayerRestrictedRadioButtonClicked(View view) {
+        CreateGameFragment.onPlayerRestrictedRadioButtonClicked(view);
+    }
+
+    @Override
+    public void onSelectedTime(int hourStart, int minuteStart, int hourEnd, int minuteEnd)
+    {
+        Toast.makeText(this, "Start: "+hourStart+":"+minuteStart+"\nEnd: "+hourEnd+":"+minuteEnd, Toast.LENGTH_SHORT).show();
+    }
 
     // Fragments callbacks
     @Override
@@ -382,5 +401,31 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         fragmentContainer.setLayoutParams(layoutParam);
         drawerLayout.closeDrawers();
         ConfigurableFragmentItemsManager.configureMenuItemSelection(navigationView, currentFragmentId);
+    }
+
+    public void startPlacePickerActivity() {
+        PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
+
+        try {
+            startActivityForResult(builder.build(this), PLACE_PICKER_REQUEST);
+        } catch (GooglePlayServicesRepairableException e) {
+            Log.e(FC_TAG, "May recover from: ", e);
+            Toast.makeText(this, "Please try selecting your location again", Toast.LENGTH_SHORT).show();
+        } catch (GooglePlayServicesNotAvailableException e) {
+            Log.e(FC_TAG, "Google Services: ", e);
+            Toast.makeText(this, "Check Google services. Are they installed? ", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == PLACE_PICKER_REQUEST) {
+            if (resultCode == RESULT_OK) {
+                Place place = PlacePicker.getPlace(data, this);
+                LatLngBounds locationChosen = PlacePicker.getLatLngBounds(data);
+                String toastMsg = String.format("Place: %s, Location: %s", place.getName(), locationChosen);
+                Toast.makeText(this, toastMsg, Toast.LENGTH_LONG).show();
+
+            }
+        }
     }
 }

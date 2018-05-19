@@ -8,4 +8,6 @@ public interface OnFragmentReplacement {
 
     void configureMenuItemSelection(int currentFragmentId, boolean addTop);
 
+    void startPlacePickerActivity();
+
 }

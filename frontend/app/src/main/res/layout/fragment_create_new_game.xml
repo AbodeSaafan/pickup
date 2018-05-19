@@ -160,12 +160,42 @@
         </RelativeLayout>
 
         <RelativeLayout
+            android:id="@+id/layout_time"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/layout_description">
+
+            <TextView
+                android:id="@+id/text_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:layout_marginStart="40dp"
+                android:text="@string/create_new_game_time"
+                android:textAlignment="center"/>
+
+            <EditText
+                android:id="@+id/edit_text_time_selector"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_marginStart="5dp"
+                android:layout_toEndOf="@+id/text_time"
+                android:layout_marginEnd="30dp"
+                android:ems="10"
+                android:inputType="time"
+                android:text="@string/create_new_game_time_hint"
+                android:textSize="15sp"
+                android:focusableInTouchMode="false"/>
+        </RelativeLayout>
+
+        <RelativeLayout
             android:id="@+id/layout_range_bars"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
-            android:layout_below="@+id/layout_description"
+            android:layout_below="@+id/layout_time"
             android:layout_marginTop="15dp">
 
             <TextView
@@ -174,7 +204,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="15dp"
-                android:text="@string/game_search_skill_range" />
+                android:text="@string/game_search_skill_range"/>
 
 
             <com.appyvet.materialrangebar.RangeBar xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -216,10 +246,40 @@
         </RelativeLayout>
 
         <RelativeLayout
-            android:id="@+id/layout_location_notes"
+            android:id="@+id/layout_location_picker"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/layout_range_bars">
+
+            <TextView
+                android:id="@+id/text_location"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:layout_marginStart="40dp"
+                android:text="@string/create_new_game_location"
+                android:textAlignment="center"/>
+
+            <EditText
+                android:id="@+id/edit_text_location_selector"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_marginStart="5dp"
+                android:layout_toEndOf="@+id/text_location"
+                android:layout_marginEnd="30dp"
+                android:ems="10"
+                android:inputType="time"
+                android:text="@string/create_new_game_location_hint"
+                android:textSize="15sp"
+                android:focusableInTouchMode="false"/>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/layout_location_notes"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/layout_location_picker">
 
             <TextView
                 android:id="@+id/text_location_notes"
@@ -395,6 +455,49 @@
                     android:text="@string/create_new_game_other_gender"
                     android:onClick="onGenderRadioButtonClicked"/>
             </RadioGroup>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/layout_player_restricted"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/layout_gender_restriction"
+            android:paddingBottom="30dp">
+
+            <TextView
+                android:id="@+id/text_player_restricted"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingTop="30dp"
+                android:text="@string/create_new_game_player_restricted"
+                android:textAlignment="center"
+                android:layout_marginLeft="40dp"
+                android:layout_marginStart="40dp" />
+
+            <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@+id/text_player_restricted"
+                android:layout_marginTop="20dp"
+                android:layout_marginStart="40dp"
+                android:layout_marginEnd="40dp"
+                android:background="@drawable/radio_button_background"
+                android:orientation="vertical">
+                <RadioButton android:id="@+id/radio_restricted"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="15dp"
+                    android:text="@string/create_new_game_yes_restricted"
+                    android:onClick="onPlayerRestrictedRadioButtonClicked"/>
+                <RadioButton android:id="@+id/radio_not_restricted"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="15dp"
+                    android:layout_marginBottom="10dp"
+                    android:text="@string/create_new_game_no_restricted"
+                    android:onClick="onPlayerRestrictedRadioButtonClicked"/>
+            </RadioGroup>
+
         </RelativeLayout>
     </RelativeLayout>
 </ScrollView>
