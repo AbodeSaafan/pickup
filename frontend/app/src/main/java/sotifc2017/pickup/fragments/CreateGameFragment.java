@@ -29,9 +29,11 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.mcsoft.timerangepickerdialog.RangeTimePickerDialog;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -419,7 +421,7 @@ public class CreateGameFragment extends Fragment implements GetJwt.Callback {
         Activity activity = getActivity();
         gameModel.setCreatorId(Authentication.getUserId(activity));
         gatherUserInput();
-        // TODO: Replace some more data in request call with data gathered from user input
+
         CreateGameRequest req = new CreateGameRequest(jwtToken,
                 gameModel.getCreatorId(),
                 gameModel.getType(),
@@ -506,14 +508,30 @@ public class CreateGameFragment extends Fragment implements GetJwt.Callback {
         @Override
         public void onErrorResponse(VolleyError error) {
             try {
-                JSONObject errorJSON = new JSONObject(new String(error.networkResponse.data, "UTF-8"));
-                CreateGameFailure(errorJSON.getString("jwtFailure"));
+                String message = getErrorMessage(error);
+                CreateGameFailure(message);
             }
             catch (Exception e){
                 CreateGameFailure(e.getMessage());
             }
         }
     };
+
+    private String getErrorMessage(VolleyError error) throws UnsupportedEncodingException, JSONException {
+        JSONObject errorJSON = new JSONObject(new String(error.networkResponse.data, "UTF-8"));
+
+        String message;
+        if (errorJSON.has("jwtFailure")) {
+            message = errorJSON.getString("jwtFailure");
+        } else if (errorJSON.has("error")) {
+            message = errorJSON.getString("error");
+        } else {
+            message = "Status: " + error.networkResponse.statusCode;
+        }
+        Log.e(FC_TAG, message);
+
+        return message;
+    }
 
     private void CreateGameSuccess(CreateGameResponse response) throws IOException {
         Toast.makeText(getActivity(), "CreateGameResponse successsful. GameId: " + response.game_id, Toast.LENGTH_SHORT).show();
