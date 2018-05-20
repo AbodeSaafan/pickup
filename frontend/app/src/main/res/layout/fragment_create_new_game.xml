@@ -253,7 +253,7 @@
 
 
             <TextView
-                android:id="@+id/text_minimum_players_label"
+                android:id="@+id/text_minimum_players"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/range_bar_skill"
@@ -266,7 +266,7 @@
                 android:id="@+id/range_bar_min_players"
                 android:layout_width="300dp"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/text_minimum_players_label"
+                android:layout_below="@+id/text_minimum_players"
                 android:layout_centerHorizontal="true"
                 app:mrb_pinMaxFont="10sp"
                 app:mrb_selectorSize="8dp"

@@ -3,6 +3,8 @@ package sotifc2017.pickup.api.models;
 import java.util.HashMap;
 import java.util.Map;
 
+import sotifc2017.pickup.api.enums.ENFORCED_PARAMS;
+
 /**
  * Created by asaafan on 3/8/2018.
  */
@@ -25,13 +27,13 @@ public class GameModel {
 //    public int endDate;
     public int finalStartTime;
     public int finalEndTime;
-    public Map<String, Double> location;
-    public int creator_id;
+    public HashMap<String, Double> location;
+    public int creatorId;
     public String description;
     public String location_notes;
     public String gender;
     public int[] ageRange;
-    public String[] enforced_params;
+    public ENFORCED_PARAMS[] enforced_params;
     public int time_created;
     public boolean player_restricted;
 
@@ -50,12 +52,12 @@ public class GameModel {
         this.finalStartTime = DEFAULT_INT;
         this.finalEndTime = DEFAULT_INT;
         this.location = new HashMap<String, Double>();
-        this.creator_id = DEFAULT_INT;
+        this.creatorId = DEFAULT_INT;
         this.description = DEFAULT_STRING;
         this.location_notes = DEFAULT_STRING;
         this.gender = DEFAULT_STRING;
         this.ageRange = new int[] { DEFAULT_INT, DEFAULT_INT };
-        this.enforced_params = new String[] {};
+        this.enforced_params = new ENFORCED_PARAMS[] {};
         this.time_created = DEFAULT_INT;
         this.player_restricted = DEFAULT_BOOLEAN;
     }
@@ -64,9 +66,9 @@ public class GameModel {
     //function for time-being
     public GameModel (int game_id, String name, String type, int minSkill, int maxSkill, int totalPlayersRequired,
                       int totalPlayersAdded, String startTime, String endTime,
-                      int finalStartTime, int finalEndTime, Map<String, Double> location,
-                      int creator_id, String description, String location_notes, String gender,
-                      int[] ageRange, String[] enforced_params, int time_created, boolean player_restricted) {
+                      int finalStartTime, int finalEndTime, HashMap<String, Double> location,
+                      int creatorId, String description, String location_notes, String gender,
+                      int[] ageRange, ENFORCED_PARAMS[] enforced_params, int time_created, boolean player_restricted) {
 
         this.game_id = game_id;
         this.name = name;
@@ -80,7 +82,7 @@ public class GameModel {
         this.finalStartTime = finalStartTime;
         this.finalEndTime = finalEndTime;
         this.location = location;
-        this.creator_id = creator_id;
+        this.creatorId = creatorId;
         this.description = description;
         this.location_notes = location_notes;
         this.gender = gender;
@@ -179,20 +181,20 @@ public class GameModel {
         this.finalEndTime = final_end_time;
     }
 
-    public Map<String, Double> getLocation() {
+    public HashMap<String, Double> getLocation() {
         return location;
     }
 
-    public void setLocation(Map<String, Double> location) {
+    public void setLocation(HashMap<String, Double> location) {
         this.location = location;
     }
 
-    public int getCreator_id() {
-        return creator_id;
+    public int getCreatorId() {
+        return creatorId;
     }
 
-    public void setCreator_id(int creator_id) {
-        this.creator_id = creator_id;
+    public void setCreatorId(int creatorId) {
+        this.creatorId = creatorId;
     }
 
     public String getDescription() {
@@ -227,11 +229,11 @@ public class GameModel {
         this.ageRange = age_range;
     }
 
-    public String[] getEnforcedParams() {
+    public ENFORCED_PARAMS[] getEnforcedParams() {
         return enforced_params;
     }
 
-    public void setEnforcedParams(String[] enforced_params) {
+    public void setEnforcedParams(ENFORCED_PARAMS[] enforced_params) {
         this.enforced_params = enforced_params;
     }
 

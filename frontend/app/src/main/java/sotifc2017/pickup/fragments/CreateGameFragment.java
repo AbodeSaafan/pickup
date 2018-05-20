@@ -13,14 +13,18 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.RadioButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.appyvet.materialrangebar.RangeBar;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.mcsoft.timerangepickerdialog.RangeTimePickerDialog;
@@ -43,6 +47,7 @@ import sotifc2017.pickup.api.GetJwt;
 import sotifc2017.pickup.api.Utils;
 import sotifc2017.pickup.api.contracts.CreateGameRequest;
 import sotifc2017.pickup.api.contracts.CreateGameResponse;
+import sotifc2017.pickup.api.enums.GAME_TYPE;
 import sotifc2017.pickup.api.models.GameModel;
 import sotifc2017.pickup.fragment_interfaces.OnFragmentReplacement;
 
@@ -52,9 +57,21 @@ public class CreateGameFragment extends Fragment implements GetJwt.Callback {
 
     int currentFragmentId = R.id.action_create_game;
     OnFragmentReplacement mCallback;
+    private String jwtToken;
+
+    private GameModel gameModel;
 
     private EditText gameName;
     private EditText gameDescription;
+
+    private CheckBox casualGameCheck;
+    private CheckBox seriousGameCheck;
+
+    private TextView skillRangeText;
+    private RangeBar skillRange;
+
+    private RangeBar minPlayerSeekBar;
+    private TextView minPlayerText;
 
     private Calendar fromCalendar;
     private Calendar toCalendar;
@@ -99,7 +116,6 @@ public class CreateGameFragment extends Fragment implements GetJwt.Callback {
 
     private EditText gameLocationNotes;
 
-    private GameModel gameModel;
     public CreateGameFragment() {
     }
 
@@ -161,9 +177,47 @@ public class CreateGameFragment extends Fragment implements GetJwt.Callback {
         });
 
         gameModel = new GameModel();
-
         gameName = view.findViewById(R.id.complete_text_view_game_name);
+
+        casualGameCheck = view.findViewById(R.id.checkbox_casual_game_type);
+        casualGameCheck.setOnCheckedChangeListener(new CheckBox.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean casualGameChecked) {
+                updateGameTypeCheckboxes();
+            }
+        });
+        seriousGameCheck = view.findViewById(R.id.checkbox_serious_game_type);
+        seriousGameCheck.setOnCheckedChangeListener(new CheckBox.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean seriousGameChecked) {
+                updateGameTypeCheckboxes();
+            }
+        });
+
         gameDescription = view.findViewById(R.id.multiTextViewDescription);
+
+        skillRange = view.findViewById(R.id.range_bar_skill);
+        skillRangeText = view.findViewById(R.id.text_skill_level);
+        skillRangeText.setText(String.format(getString(R.string.game_search_skill_range), 1, 10));
+        skillRange.setOnRangeBarChangeListener(new RangeBar.OnRangeBarChangeListener() {
+            @Override
+            public void onRangeChangeListener(RangeBar rangeBar, int leftPinIndex,
+                                              int rightPinIndex, String leftPinValue, String rightPinValue) {
+                skillRangeText.setText(String.format(getString(R.string.game_search_skill_range), Integer.parseInt(leftPinValue), Integer.parseInt(rightPinValue)));
+            }
+
+        });
+
+        minPlayerSeekBar = view.findViewById(R.id.range_bar_min_players);
+        minPlayerText = view.findViewById(R.id.text_minimum_players);
+        minPlayerText.setText(String.format(getString(R.string.game_search_minimum_player_message), 20));
+        minPlayerSeekBar.setOnRangeBarChangeListener(new RangeBar.OnRangeBarChangeListener() {
+            @Override
+            public void onRangeChangeListener(RangeBar rangeBar, int leftPinIndex,
+                                              int rightPinIndex, String leftPinValue, String rightPinValue) {
+                minPlayerText.setText(String.format(getString(R.string.game_search_minimum_player_message), Integer.parseInt(rightPinValue)));
+            }
+        });
 
         dateRangeText = view.findViewById(R.id.create_game_date_range_from);
         dateRangeText.setInputType(InputType.TYPE_NULL);
@@ -210,6 +264,7 @@ public class CreateGameFragment extends Fragment implements GetJwt.Callback {
 
     @Override
     public void jwtSuccess(String jwt) {
+        jwtToken = jwt;
     }
 
     @Override
@@ -226,6 +281,13 @@ public class CreateGameFragment extends Fragment implements GetJwt.Callback {
         }
     }
 
+    private void updateGameTypeCheckboxes(){
+        if(!casualGameCheck.isChecked() && !seriousGameCheck.isChecked()){
+            casualGameCheck.setChecked(true);
+            seriousGameCheck.setChecked(true);
+        }
+        skillRange.setEnabled(seriousGameCheck.isChecked());
+    }
 
     public void showCustomDialogTimePicker()
     {
@@ -323,11 +385,26 @@ public class CreateGameFragment extends Fragment implements GetJwt.Callback {
 
     public void onCreateGameButtonClick() {
         Activity activity = getActivity();
-        gameModel.setCreator_id(Authentication.getUserId(activity));
+        gameModel.setCreatorId(Authentication.getUserId(activity));
         gatherUserInput();
-        // TODO: Replace request call with data gathered from user input
-        CreateGameRequest req = new CreateGameRequest();
-        JsonObjectRequest request = Games.createGame_request(req, successful_create_game_profile, error_create_game_profile);
+        // TODO: Replace some more data in request call with data gathered from user input
+        CreateGameRequest req = new CreateGameRequest(jwtToken,
+                gameModel.getCreatorId(),
+                gameModel.getType(),
+                gameModel.getName(),
+                gameModel.getMinSkill(),
+                gameModel.getMaxSkill(),
+                gameModel.getTotalPlayersRequired(),
+                gameModel.getFinalStartTime(),
+                gameModel.getFinalEndTime() - gameModel.getFinalStartTime(),
+                gameModel.getLocation(),
+                gameModel.getLocationNotes(),
+                gameModel.getDescription(),
+                gameModel.getGender(),
+                gameModel.getAgeRange(),
+                gameModel.getEnforcedParams());
+
+        JsonObjectRequest request = Games.createGameRequest(req, successful_create_game_profile, error_create_game_profile);
 
         if (request != null) {
             Utils.getInstance(activity).getRequestQueue(activity).add(request);
@@ -336,7 +413,22 @@ public class CreateGameFragment extends Fragment implements GetJwt.Callback {
 
     private void gatherUserInput() {
         gameModel.setName(gameName.getText().toString());
+        GAME_TYPE game_type = casualGameCheck.isChecked() ?
+                seriousGameCheck.isChecked() ?
+                        GAME_TYPE.both : GAME_TYPE.casual
+                : seriousGameCheck.isChecked() ?
+                GAME_TYPE.serious : GAME_TYPE.both;
+        gameModel.setType(game_type.name());
+
         gameModel.setDescription(gameDescription.getText().toString());
+
+        int  minSkill = seriousGameCheck.isChecked() && skillRange.isEnabled() ? Integer.parseInt(skillRange.getLeftPinValue()) : -1;
+        gameModel.setMinSkill(minSkill);
+        int  maxSkill = seriousGameCheck.isChecked() && skillRange.isEnabled() ? Integer.parseInt(skillRange.getRightPinValue()) : -1;
+        gameModel.setMaxSkill(maxSkill);
+
+        int totalPlayersRequired = Integer.parseInt(minPlayerSeekBar.getLeftPinValue());
+        gameModel.setTotalPlayersRequired(totalPlayersRequired);
 
         String[] dates = dateRangeText.getText().toString().split(" - ");
         String startDate = dates[0];

@@ -16,7 +16,7 @@ import sotifc2017.pickup.api.contracts.CreateGameRequest;
 public class Games {
     private static final String createGame_ENDPOINT = Utils.BASE_API + "games";
 
-    public static JsonObjectRequest createGame_request(CreateGameRequest req, Response.Listener<JSONObject> responseListener, Response.ErrorListener errorListener) {
+    public static JsonObjectRequest createGameRequest(CreateGameRequest req, Response.Listener<JSONObject> responseListener, Response.ErrorListener errorListener) {
         try{
             return new JsonObjectRequest (Request.Method.POST, createGame_ENDPOINT, new JSONObject(Utils.gson.toJson(req)), responseListener, errorListener);
         }
