@@ -1,16 +1,19 @@
 package sotifc2017.pickup.fragments;
 
 import android.app.Activity;
+import android.app.DatePickerDialog;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.Toast;
@@ -23,6 +26,10 @@ import com.mcsoft.timerangepickerdialog.RangeTimePickerDialog;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
 
 import sotifc2017.pickup.R;
 import sotifc2017.pickup.activities.SignInActivity;
@@ -44,6 +51,48 @@ public class CreateGameFragment extends Fragment implements GetJwt.Callback {
 
     private EditText gameName;
     private EditText gameDescription;
+
+    private Calendar fromCalendar;
+    private Calendar toCalendar;
+    private final String dateFormat = "MM/dd/yy";
+    private EditText dateRangeText;
+    private DatePickerDialog.OnDateSetListener dateListenerFrom = new DatePickerDialog.OnDateSetListener() {
+
+        @Override
+        public void onDateSet(DatePicker view, int year, int monthOfYear,
+                              int dayOfMonth) {
+            fromCalendar.set(Calendar.YEAR, year);
+            fromCalendar.set(Calendar.MONTH, monthOfYear);
+            fromCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+
+            long minDate = System.currentTimeMillis() > fromCalendar.getTimeInMillis()? System.currentTimeMillis() : fromCalendar.getTimeInMillis();
+
+            DatePickerDialog dateToDatePicker = new DatePickerDialog(getActivity(), dateListenerTo, toCalendar
+                    .get(Calendar.YEAR), toCalendar.get(Calendar.MONTH),
+                    toCalendar.get(Calendar.DAY_OF_MONTH));
+
+            dateToDatePicker .getDatePicker().setMinDate(minDate);
+            dateToDatePicker.setMessage(getString(R.string.game_search_date_range_end_message));
+
+            dateToDatePicker.show();
+        }
+
+    };
+    private DatePickerDialog.OnDateSetListener dateListenerTo = new DatePickerDialog.OnDateSetListener() {
+
+        @Override
+        public void onDateSet(DatePicker view, int year, int monthOfYear,
+                              int dayOfMonth) {
+
+            toCalendar.set(Calendar.YEAR, year);
+            toCalendar.set(Calendar.MONTH, monthOfYear);
+            toCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+
+            updateDateRangeLabel(fromCalendar.getTime(), toCalendar.getTime());
+        }
+
+    };
+
     private EditText gameLocationNotes;
 
     private GameModel gameModel;
@@ -111,9 +160,41 @@ public class CreateGameFragment extends Fragment implements GetJwt.Callback {
 
         gameName = view.findViewById(R.id.complete_text_view_game_name);
         gameDescription = view.findViewById(R.id.multiTextViewDescription);
+
+        dateRangeText = view.findViewById(R.id.create_game_date_range_from);
+        dateRangeText.setInputType(InputType.TYPE_NULL);
+        fromCalendar = Calendar.getInstance();
+        toCalendar = Calendar.getInstance();
+        View.OnClickListener onDateClick = new View.OnClickListener() {
+            //  Could/should  possibly change this to one date picker, that triggers another, that way
+            // we have one field for the range of dates
+            @Override
+            public void onClick(View v) {
+                long minDate  = System.currentTimeMillis();
+
+                DatePickerDialog dateFromDatePicker = new DatePickerDialog(getActivity(), dateListenerFrom, fromCalendar
+                        .get(Calendar.YEAR), fromCalendar.get(Calendar.MONTH),
+                        fromCalendar.get(Calendar.DAY_OF_MONTH));
+
+                dateFromDatePicker.getDatePicker().setMinDate(minDate);
+
+                dateFromDatePicker.setMessage(getString(R.string.game_search_date_range_start_message));
+                dateFromDatePicker.show();
+            }
+        };
+
+        dateRangeText.setOnClickListener(onDateClick);
+        // Set default date for search (1 week = 1000ms*60s*60min*24hr*7days = 604800000)
+        updateDateRangeLabel(new Date(System.currentTimeMillis()), new Date(System.currentTimeMillis() + 604800000));
+
         gameLocationNotes = view.findViewById(R.id.complete_text_location_notes);
 
         super.onViewCreated(view, savedInstanceState);
+    }
+
+    private void updateDateRangeLabel(Date startDate, Date endDate) {
+        SimpleDateFormat sdf = new SimpleDateFormat(dateFormat, Locale.US);
+        dateRangeText.setText(String.format(getString(R.string.game_search_date_range_display_text_label),sdf.format(startDate),sdf.format(endDate)));
     }
 
     @Override
