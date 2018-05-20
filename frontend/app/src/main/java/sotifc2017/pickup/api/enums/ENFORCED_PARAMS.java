@@ -5,5 +5,5 @@ package sotifc2017.pickup.api.enums;
  */
 
 public enum ENFORCED_PARAMS {
-    game, gender
+    age, gender, player
 }

@@ -13,6 +13,7 @@ public class GameModel {
     private final int DEFAULT_INT = -1;
     private final String DEFAULT_STRING = "";
     private final boolean DEFAULT_BOOLEAN = false;
+    private final int START_NUM_PLAYERS_ADDED = 0;
     
     public int game_id;
     public String name;
@@ -44,7 +45,7 @@ public class GameModel {
         this.minSkill = DEFAULT_INT;
         this.maxSkill = DEFAULT_INT;
         this.totalPlayersRequired = DEFAULT_INT;
-        this.totalPlayersAdded = DEFAULT_INT;
+        this.totalPlayersAdded = START_NUM_PLAYERS_ADDED;
         this.startTime = String.valueOf(DEFAULT_INT);
         this.endTime = String.valueOf(DEFAULT_INT);
 //        this.startDate = DEFAULT_INT;

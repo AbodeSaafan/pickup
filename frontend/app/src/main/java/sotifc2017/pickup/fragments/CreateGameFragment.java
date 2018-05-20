@@ -47,6 +47,7 @@ import sotifc2017.pickup.api.GetJwt;
 import sotifc2017.pickup.api.Utils;
 import sotifc2017.pickup.api.contracts.CreateGameRequest;
 import sotifc2017.pickup.api.contracts.CreateGameResponse;
+import sotifc2017.pickup.api.enums.ENFORCED_PARAMS;
 import sotifc2017.pickup.api.enums.GAME_TYPE;
 import sotifc2017.pickup.api.models.GameModel;
 import sotifc2017.pickup.fragment_interfaces.OnFragmentReplacement;
@@ -333,6 +334,8 @@ public class CreateGameFragment extends Fragment implements GetJwt.Callback {
         boolean checked = ((RadioButton) view).isChecked();
 
         if (checked) {
+            ENFORCED_PARAMS[] newEnforcedParams = getEnforcedParamFor(ENFORCED_PARAMS.age);
+            gameModel.setEnforcedParams(newEnforcedParams);
             switch(view.getId()) {
                 case R.id.radio_18_range:
                     gameModel.setAgeRange(new int[] {18, 25});
@@ -354,6 +357,8 @@ public class CreateGameFragment extends Fragment implements GetJwt.Callback {
         boolean checked = ((RadioButton) view).isChecked();
 
         if (checked) {
+            ENFORCED_PARAMS[] newEnforcedParams = getEnforcedParamFor(ENFORCED_PARAMS.gender);
+            gameModel.setEnforcedParams(newEnforcedParams);
             switch(view.getId()) {
                 case R.id.radio_male_gender:
                     gameModel.setGender("male");
@@ -372,6 +377,8 @@ public class CreateGameFragment extends Fragment implements GetJwt.Callback {
         boolean checked = ((RadioButton) view).isChecked();
 
         if (checked) {
+            ENFORCED_PARAMS[] newEnforcedParams = getEnforcedParamFor(ENFORCED_PARAMS.player);
+            gameModel.setEnforcedParams(newEnforcedParams);
             switch(view.getId()) {
                 case R.id.radio_restricted:
                     gameModel.setPlayerRestricted(true);
@@ -381,6 +388,31 @@ public class CreateGameFragment extends Fragment implements GetJwt.Callback {
                     break;
             }
         }
+    }
+
+    private ENFORCED_PARAMS[] getEnforcedParamFor(ENFORCED_PARAMS paramToEnforce) {
+        boolean alreadyEnforced = false;
+        ENFORCED_PARAMS[] prevEnforfedParams = gameModel.getEnforcedParams();
+        for (ENFORCED_PARAMS param : prevEnforfedParams) {
+            if (param.equals(paramToEnforce)) {
+                alreadyEnforced = true;
+            }
+        }
+
+        if (alreadyEnforced) {
+            return prevEnforfedParams;
+        } else {
+            return combine(prevEnforfedParams, new ENFORCED_PARAMS[] {paramToEnforce});
+        }
+    }
+
+    // https://javarevisited.blogspot.ca/2013/02/combine-integer-and-string-array-java-example-tutorial.html
+    public static ENFORCED_PARAMS[] combine(ENFORCED_PARAMS[] a, ENFORCED_PARAMS[] b){
+        int length = a.length + b.length;
+        ENFORCED_PARAMS[] result = new ENFORCED_PARAMS[length];
+        System.arraycopy(a, 0, result, 0, a.length);
+        System.arraycopy(b, 0, result, a.length, b.length);
+        return result;
     }
 
     public void onCreateGameButtonClick() {
@@ -445,6 +477,8 @@ public class CreateGameFragment extends Fragment implements GetJwt.Callback {
         }
 
         gameModel.setLocationNotes(gameLocationNotes.getText().toString());
+
+        gameModel.setTimeCreated((int) System.currentTimeMillis());
     }
 
     private long createFinalTime(String startDate, String startTime) throws ParseException {
