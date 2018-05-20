@@ -21,6 +21,8 @@ import android.widget.Toast;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.mcsoft.timerangepickerdialog.RangeTimePickerDialog;
 
 import org.json.JSONObject;
@@ -30,6 +32,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Locale;
 
 import sotifc2017.pickup.R;
@@ -253,6 +256,15 @@ public class CreateGameFragment extends Fragment implements GetJwt.Callback {
 
     private void showPlacePicker() {
         mCallback.startPlacePickerActivity();
+    }
+
+    public void onSelectedLocation(LatLngBounds locationChosen)
+    {
+        final LatLng latLong = locationChosen.getCenter();
+        gameModel.setLocation(new HashMap<String, Double>(){{
+            this.put("lat", latLong.latitude);
+            this.put("lng", latLong.longitude);
+        }});
     }
 
     public void onAgeRadioButtonClicked(View view) {

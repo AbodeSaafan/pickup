@@ -440,11 +440,13 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == PLACE_PICKER_REQUEST) {
             if (resultCode == RESULT_OK) {
-                Place place = PlacePicker.getPlace(data, this);
                 LatLngBounds locationChosen = PlacePicker.getLatLngBounds(data);
-                String toastMsg = String.format("Place: %s, Location: %s", place.getName(), locationChosen);
-                Toast.makeText(this, toastMsg, Toast.LENGTH_LONG).show();
+                CreateGameFragment createGameFrag =
+                        (CreateGameFragment) getFragmentManager().findFragmentByTag(String.valueOf(R.id.action_create_game));
 
+                if (createGameFrag != null) {
+                    createGameFrag.onSelectedLocation(locationChosen);
+                }
             }
         }
     }
