@@ -382,7 +382,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     public void onGenderRadioButtonClicked(View view) {
         CreateGameFragment createGameFrag =
-                (CreateGameFragment) getFragmentManager().findFragmentById(R.id.action_create_game);
+                (CreateGameFragment) getFragmentManager().findFragmentByTag(String.valueOf(R.id.action_create_game));
 
         if (createGameFrag != null) {
             createGameFrag.onGenderRadioButtonClicked(view);
@@ -391,7 +391,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     public void onPlayerRestrictedRadioButtonClicked(View view) {
         CreateGameFragment createGameFrag =
-                (CreateGameFragment) getFragmentManager().findFragmentById(R.id.action_create_game);
+                (CreateGameFragment) getFragmentManager().findFragmentByTag(String.valueOf(R.id.action_create_game));
 
         if (createGameFrag != null) {
             createGameFrag.onPlayerRestrictedRadioButtonClicked(view);
@@ -402,7 +402,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     public void onSelectedTime(int hourStart, int minuteStart, int hourEnd, int minuteEnd)
     {
         CreateGameFragment createGameFrag =
-                (CreateGameFragment) getFragmentManager().findFragmentById(R.id.action_create_game);
+                (CreateGameFragment) getFragmentManager().findFragmentByTag(String.valueOf(R.id.action_create_game));
 
         if (createGameFrag != null) {
             createGameFrag.onSelectedTime(hourStart, minuteStart, hourEnd, minuteEnd);

@@ -92,7 +92,7 @@ public class GameListAdapter extends BaseAdapter {
 
         }
 
-        String playerCount = String.valueOf(game.total_players_added) + "/" + String.valueOf(game.total_players_required);
+        String playerCount = String.valueOf(game.totalPlayersAdded) + "/" + String.valueOf(game.totalPlayersRequired);
         String date = "";
 
         SimpleDateFormat sdf_date = new SimpleDateFormat("d");
@@ -106,13 +106,13 @@ public class GameListAdapter extends BaseAdapter {
             sdf_date = new SimpleDateFormat("EE MMM d'th' yyyy");
 
 
-        String start_date = sdf_date.format(new Date(game.start_time * 1000L));
-        String end_date = sdf_date.format(new Date(game.end_time * 1000L));
+        String start_date = sdf_date.format(new Date(game.finalStartTime));
+        String end_date = sdf_date.format(new Date(game.finalEndTime));
 
         DateFormat time_format = new SimpleDateFormat("h:mm a");
         time_format.setTimeZone(TimeZone.getTimeZone("Etc/UTC"));
-        String start_time = time_format.format(new Date(game.start_time * 1000L));
-        String end_time = time_format.format(new Date(game.end_time * 1000L));
+        String start_time = time_format.format(new Date(game.finalStartTime));
+        String end_time = time_format.format(new Date(game.finalEndTime));
 
         if (start_date.equals(end_date)) {
             date = start_date + ", " + start_time + "-" + end_time;
@@ -141,7 +141,7 @@ public class GameListAdapter extends BaseAdapter {
 
         ImageView player_icon = itemView.findViewById(R.id.player_icon);
 
-        int difference = game.total_players_required - game.total_players_added;
+        int difference = game.totalPlayersRequired - game.totalPlayersAdded;
 
         if (difference >= 0 && difference <= 3){
 

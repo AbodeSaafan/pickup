@@ -26,6 +26,7 @@ import com.mcsoft.timerangepickerdialog.RangeTimePickerDialog;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -244,7 +245,10 @@ public class CreateGameFragment extends Fragment implements GetJwt.Callback {
 
     public void onSelectedTime(int hourStart, int minuteStart, int hourEnd, int minuteEnd)
     {
-        Log.d(FC_TAG, "Start: "+hourStart+":"+minuteStart+"\nEnd: "+hourEnd+":"+minuteEnd);
+        Log.d(FC_TAG, "Start: " + hourStart + ":" + minuteStart + "\nEnd: " + hourEnd + ":" + minuteEnd);
+
+        gameModel.setStartTime(hourStart + ":" + minuteStart);
+        gameModel.setEndTime(hourEnd + ":" + minuteEnd);
     }
 
     private void showPlacePicker() {
@@ -321,7 +325,30 @@ public class CreateGameFragment extends Fragment implements GetJwt.Callback {
     private void gatherUserInput() {
         gameModel.setName(gameName.getText().toString());
         gameModel.setDescription(gameDescription.getText().toString());
+
+        String[] dates = dateRangeText.getText().toString().split(" - ");
+        String startDate = dates[0];
+        String startTime = gameModel.getStartTime();
+        String endDate = dates[1];
+        String endTime = gameModel.getEndTime();
+        try {
+            int finalStartTime = (int) createFinalTime(startDate, startTime);
+            gameModel.setFinalStartTime(finalStartTime);
+            int finalEndTime = (int) createFinalTime(endDate, endTime);
+            gameModel.setFinalEndTime(finalEndTime);
+        } catch (ParseException e) {
+            Log.e(FC_TAG, "Parsing time: " + e);
+        }
+
         gameModel.setLocationNotes(gameLocationNotes.getText().toString());
+    }
+
+    private long createFinalTime(String startDate, String startTime) throws ParseException {
+        String finalDate = startDate + " " + startTime;
+        SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy HH:mm");
+        Date date = sdf.parse(finalDate);
+
+        return date.getTime();
     }
 
     private Response.Listener<JSONObject> successful_create_game_profile = new Response.Listener<JSONObject>() {
