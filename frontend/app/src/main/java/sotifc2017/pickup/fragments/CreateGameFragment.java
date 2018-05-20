@@ -363,13 +363,13 @@ public class CreateGameFragment extends Fragment implements GetJwt.Callback {
             gameModel.setEnforcedParams(newEnforcedParams);
             switch(view.getId()) {
                 case R.id.radio_male_gender:
-                    gameModel.setGender("male");
+                    gameModel.setGender("m");
                     break;
                 case R.id.radio_female_gender:
-                    gameModel.setGender("female");
+                    gameModel.setGender("f");
                     break;
                 case R.id.radio_other_gender:
-                    gameModel.setGender("other");
+                    gameModel.setGender("a");
                     break;
             }
         }
@@ -424,8 +424,8 @@ public class CreateGameFragment extends Fragment implements GetJwt.Callback {
 
         CreateGameRequest req = new CreateGameRequest(jwtToken,
                 gameModel.getCreatorId(),
-                gameModel.getType(),
                 gameModel.getName(),
+                gameModel.getType(),
                 gameModel.getMinSkill(),
                 gameModel.getMaxSkill(),
                 gameModel.getTotalPlayersRequired(),
@@ -447,11 +447,9 @@ public class CreateGameFragment extends Fragment implements GetJwt.Callback {
 
     private void gatherUserInput() {
         gameModel.setName(gameName.getText().toString());
-        GAME_TYPE game_type = casualGameCheck.isChecked() ?
-                seriousGameCheck.isChecked() ?
-                        GAME_TYPE.both : GAME_TYPE.casual
-                : seriousGameCheck.isChecked() ?
-                GAME_TYPE.serious : GAME_TYPE.both;
+
+        // If both options are selected treat the game as serious for now.
+        GAME_TYPE game_type = seriousGameCheck.isChecked() ? GAME_TYPE.serious : GAME_TYPE.casual;
         gameModel.setType(game_type.name());
 
         gameModel.setDescription(gameDescription.getText().toString());
@@ -523,12 +521,10 @@ public class CreateGameFragment extends Fragment implements GetJwt.Callback {
         String message;
         if (errorJSON.has("jwtFailure")) {
             message = errorJSON.getString("jwtFailure");
-        } else if (errorJSON.has("error")) {
-            message = errorJSON.getString("error");
         } else {
             message = "Status: " + error.networkResponse.statusCode;
         }
-        Log.e(FC_TAG, message);
+        Log.e(FC_TAG, message + " Error: " + errorJSON.getString("error"));
 
         return message;
     }
