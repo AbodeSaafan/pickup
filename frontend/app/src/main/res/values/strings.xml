@@ -121,7 +121,7 @@
             <item><string name="game_search_location_range_option_10">10 KM</string></item>
             <item><string name="game_search_location_range_option_5">5 KM</string></item>
         </string-array>
-        <!-- Specifics Section-->
+        <!-- Specifics Section -->
         <string name="search_games_specifics_section_title">Game Specifics</string>
         <string name="search_games_specifics_game_name_label">Game Name:</string>
         <string name="search_games_specifics_game_name_hint">Game name not specified</string>
@@ -131,8 +131,13 @@
         <!-- User search page -->
         <string name="search_users_username_label">Username: </string>
         <string name="search_users_username_hint">Enter username here</string>
-
-
     <string name="main_search_users_tab_title">Users</string>
+
+    <!-- Extended Profile strings -->
+    <string name="extended_profile_games_created">Games Created</string>
+    <string name="extended_profile_games_played">Games Played</string>
+    <string name="extended_profile_top_tag">Top Tag</string>
+    <string name="extended_profile_top_tag_awarded">Top Tag Awarded</string>
+    <string name="extended_profile_age_text">%s years old</string>
 
 </resources>

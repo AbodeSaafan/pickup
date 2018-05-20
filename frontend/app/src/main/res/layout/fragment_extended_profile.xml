@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -34,7 +33,6 @@
                     android:layout_height="wrap_content"
                     android:layout_centerHorizontal="true"
                     android:paddingTop="20dp"
-                    android:text="rads28"
                     android:textColor="#552582"
                     android:textSize="24sp"
                     android:textStyle="bold" />
@@ -68,8 +66,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="0.5"
                         android:gravity="center"
-                        android:textColor="#552582"
-                        android:text="10" />
+                        android:textColor="#552582" />
 
                     <TextView
                         android:id="@+id/gamesPlayedValue"
@@ -77,8 +74,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="0.5"
                         android:gravity="center"
-                        android:textColor="#552582"
-                        android:text="25" />
+                        android:textColor="#552582" />
                 </LinearLayout>
 
                 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -96,7 +92,7 @@
                         android:layout_weight="0.5"
                         android:gravity="center"
                         android:textColor="#552582"
-                        android:text="Games Created" />
+                        android:text="@string/extended_profile_games_created" />
 
                     <TextView
                         android:id="@+id/gamesPlayed"
@@ -105,7 +101,7 @@
                         android:layout_weight="0.5"
                         android:gravity="center"
                         android:textColor="#552582"
-                        android:text="Games Played" />
+                        android:text="@string/extended_profile_games_played" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -146,7 +142,7 @@
                         android:layout_weight="0.5"
                         android:gravity="center"
                         android:textColor="#552582"
-                        android:text="Top Tag" />
+                        android:text="@string/extended_profile_top_tag" />
 
                     <TextView
                         android:id="@+id/topTagAwarded"
@@ -155,7 +151,7 @@
                         android:layout_weight="0.5"
                         android:gravity="center"
                         android:textColor="#552582"
-                        android:text="Top Tag Awarded" />
+                        android:text="@string/extended_profile_top_tag_awarded" />
                 </LinearLayout>
 
             </RelativeLayout>
@@ -174,24 +170,21 @@
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="22 years old" />
+                    android:gravity="center" />
 
                 <TextView
                     android:id="@+id/skill_level"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="All Star (3)" />
+                    android:gravity="center" />
 
                 <TextView
                     android:id="@+id/gender"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="Female" />
+                    android:gravity="center" />
             </LinearLayout>
 
 
@@ -218,8 +211,7 @@
                     android:paddingBottom="3dp"
                     android:paddingLeft="5dp"
                     android:paddingRight="3dp"
-                    android:paddingTop="2dp"
-                    android:text="Mississauga"/>
+                    android:paddingTop="2dp" />
             </LinearLayout>
 
         </RelativeLayout>

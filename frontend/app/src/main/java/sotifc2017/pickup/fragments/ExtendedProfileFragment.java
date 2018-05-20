@@ -2,6 +2,7 @@ package sotifc2017.pickup.fragments;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
@@ -22,6 +23,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 
+import sotifc2017.pickup.CommonComponents;
 import sotifc2017.pickup.R;
 import sotifc2017.pickup.activities.SignInActivity;
 import sotifc2017.pickup.activities.SignUpActivity;
@@ -35,6 +37,8 @@ import sotifc2017.pickup.fragment_interfaces.OnFragmentReplacement;
 public class ExtendedProfileFragment extends Fragment implements GetJwt.Callback {
     int currentFragmentId = R.id.action_profile;
     OnFragmentReplacement mCallback;
+
+    ProgressDialog loadingResponse;
 
     TextView age;
     TextView gender;
@@ -65,6 +69,8 @@ public class ExtendedProfileFragment extends Fragment implements GetJwt.Callback
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
+        loadingResponse = CommonComponents.getLoadingProgressDialog(getActivity());
+        loadingResponse.show();
         new GetJwt(this).execute(getActivity());
 
         if (getArguments() != null) {
@@ -149,20 +155,18 @@ public class ExtendedProfileFragment extends Fragment implements GetJwt.Callback
 
 
     private void ExtendedProfileSuccess(GetExtendedProfileResponse response) throws IOException {
-        Toast.makeText(getActivity(), "ExtendedProfile successsful", Toast.LENGTH_SHORT).show();
         age = getView().findViewById(R.id.age);
-        age.setText(response.age + " years old");
+        age.setText(String.format(getResources().getString(R.string.extended_profile_age_text), response.age));
+
         gender = getView().findViewById(R.id.gender);
         if (response.gender.equals("M")) {
-            gender.setText("Male");
+            gender.setText(getResources().getString(R.string.prompt_male));
         } else if (response.gender.equals("F")) {
-            gender.setText("Female");
+            gender.setText(getResources().getString(R.string.prompt_female));
         }
 
         skillevel = getView().findViewById(R.id.skill_level);
         String skill = SignUpActivity.skillLevels[Integer.parseInt(response.skilllevel)] + "(" + response.skilllevel + ")";
-
-        //Log.d("CREATION", "skilllevel " + SignUpActivity.skillLevels[Integer.parseInt(response.skilllevel)]);
 
         skillevel.setText(skill);
 
@@ -192,13 +196,11 @@ public class ExtendedProfileFragment extends Fragment implements GetJwt.Callback
 
         gamesCreated = getView().findViewById(R.id.gamesCreatedValue);
         gamesCreated.setText(response.games_created);
-        //Log.d("CREATION", String.valueOf(response.games_created));
 
         gamesPlayed = getView().findViewById(R.id.gamesCreatedValue);
         gamesPlayed.setText(response.games_joined);
-        //Log.d("CREATION", String.valueOf(response.games_joined));
 
-
+        loadingResponse.cancel();
     }
 
     private void ExtendedProfileFailure(String message) {
