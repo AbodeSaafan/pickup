@@ -1,5 +1,6 @@
 package sotifc2017.pickup.fragments;
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.content.Intent;
 import android.location.Address;
@@ -36,6 +37,7 @@ import sotifc2017.pickup.api.contracts.GetUsersRequest;
 import sotifc2017.pickup.api.contracts.SimpleJWTRequest;
 import sotifc2017.pickup.api.models.GameModel;
 import sotifc2017.pickup.api.models.UserModel;
+import sotifc2017.pickup.fragment_interfaces.OnFragmentReplacement;
 
 /**
  * Created by parezina on 4/4/2018.
@@ -43,6 +45,7 @@ import sotifc2017.pickup.api.models.UserModel;
 
 public class GameViewFragment extends Fragment implements GetJwt.Callback {
 
+    OnFragmentReplacement mCallback;
     GameModel gameList;
     TextView gameId;
     TextView gameName;
@@ -58,6 +61,26 @@ public class GameViewFragment extends Fragment implements GetJwt.Callback {
     String jwtReal;
 
 
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+
+        // This makes sure that the container activity has implemented
+        // the callback interface. If not, it throws an exception
+        try {
+            mCallback = (OnFragmentReplacement) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(activity.toString() + "[Gameviewfragment] must implement OnFragmentReplacement)");
+        }
+    }
+
+
+    @Override
+    public void onResume() {
+        mCallback.configureMenuItemSelection(R.id.hidden, true);
+
+        super.onResume();
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

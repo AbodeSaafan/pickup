@@ -33,4 +33,11 @@
         android:enabled="true"
         android:icon="@drawable/ic_power_settings_new_black_24dp"
         />
+    <item
+        android:title="@string/title_activity_settings"
+        android:id="@+id/hidden"
+        android:enabled="true"
+        android:visible="false"
+        android:icon="@drawable/ic_settings_black_24dp"
+        />
 </menu>
