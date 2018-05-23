@@ -72,9 +72,8 @@ function validateAndCleanCreateGameRequest(data){
 	}
 	validateStartTime(data.start_time);
 	data.start_time = data.start_time - 0; // quick convert to int
-	validate(data.duration, regex.gameDurationRegex, strings.invalidGameDuration);
-	data.duration = data.duration - 0; // quick convert to int
-	validateTotalPlayersRequired(data.total_players_required);
+	validateNumber(data.duration, strings.invalidGameDuration, 0, Number.MAX_SAFE_INTEGER);
+	validateNumber(data.total_players_required, strings.invalidGameTotalPlayers, 2, 100);
 	validate(data.gender, regex.gameGenderRegex, strings.invalidGameGenderPreference);
 	data.age_range = data.age_range ? validateAgeRange(data.age_range) : [];
 	data.location = validateLocation(data.location);
@@ -276,6 +275,12 @@ function validate(param, regexPattern, errorMessage){
 	}
 }
 
+function validateNumber(param, errorMessage, lowerBound, upperBound){
+	if(!(param && typeof param==="number" && param >= lowerBound && param <= upperBound)){
+		throw new Error(errorMessage);
+	}
+}
+
 function searchValidate(param, regexPattern, errorMessage, obj, objParamString){
 	if(!(param && param.trim())){
 		delete obj[objParamString]; return; // Clear non-applicable term
@@ -396,14 +401,6 @@ function searchValidateLocationRange(locationRange, obj, objParamString){
 function isInt(number){
 	number = number - 0;
 	return (typeof number==="number" && (number%1)===0);
-}
-
-function validateTotalPlayersRequired(players){
-	validate(players, regex.gameTotalPlayersRegex, strings.invalidGameTotalPlayers);
-	players = players - 0; // quick convert to int
-	if(players < 2 || players > 100){
-		throw new Error(strings.invalidGameTotalPlayers);
-	}
 }
 
 // https://stackoverflow.com/questions/4060004/calculate-age-given-the-birth-date-in-the-format-yyyymmdd
