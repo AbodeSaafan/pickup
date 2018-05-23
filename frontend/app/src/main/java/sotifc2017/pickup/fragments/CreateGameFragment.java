@@ -422,13 +422,11 @@ public class CreateGameFragment extends Fragment implements GetJwt.Callback {
         gameModel.setCreatorId(Authentication.getUserId(activity));
         gatherUserInput();
 
-        CreateGameRequest req = new CreateGameRequest(jwtToken,
-                gameModel.getCreatorId(),
+        CreateGameRequest req = new CreateGameRequest(
                 gameModel.getName(),
                 gameModel.getType(),
-                gameModel.getMinSkill(),
-                gameModel.getMaxSkill(),
-                gameModel.getTotalPlayersRequired(),
+                gameModel.getMaxSkill() - gameModel.getMinSkill(),
+                gameModel.totalPlayersRequired,
                 gameModel.getFinalStartTime(),
                 gameModel.getFinalEndTime() - gameModel.getFinalStartTime(),
                 gameModel.getLocation(),
@@ -436,7 +434,8 @@ public class CreateGameFragment extends Fragment implements GetJwt.Callback {
                 gameModel.getDescription(),
                 gameModel.getGender(),
                 gameModel.getAgeRange(),
-                gameModel.getEnforcedParams());
+                gameModel.getEnforcedParams(),
+                jwtToken);
 
         JsonObjectRequest request = Games.createGameRequest(req, successful_create_game_profile, error_create_game_profile);
 

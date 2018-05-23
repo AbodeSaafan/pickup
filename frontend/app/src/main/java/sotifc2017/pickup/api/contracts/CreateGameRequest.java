@@ -11,11 +11,9 @@ import sotifc2017.pickup.api.enums.ENFORCED_PARAMS;
 
 public class CreateGameRequest {
     public String jwt;
-    public int userId;
     public String name;
     public String type;
-    public int min_skill;
-    public int max_skill;
+    public int skill_offset;
     public int total_players_required;
     public long start_time;
     public long duration;
@@ -26,12 +24,9 @@ public class CreateGameRequest {
     public int[] age_range;
     public ENFORCED_PARAMS[] enforced_params;
 
-     public CreateGameRequest(String jwt,
-                              int userId,
-                              String name,
+     public CreateGameRequest(String name,
                               String type,
-                              int min_skill,
-                              int max_skill,
+                              int skillOffset,
                               int total_players_required,
                               long start_time,
                               long duration,
@@ -40,13 +35,11 @@ public class CreateGameRequest {
                               String description,
                               String gender,
                               int[] age_range,
-                              ENFORCED_PARAMS[] enforced_params) {
-          this.jwt = jwt;
-          this.userId = userId;
+                              ENFORCED_PARAMS[] enforced_params,
+                              String jwt) {
           this.name = name;
           this.type = type;
-          this.min_skill = min_skill;
-          this.max_skill = max_skill;
+          this.skill_offset = skillOffset;
           this.total_players_required = total_players_required;
           this.start_time = start_time;
           this.duration = duration;
@@ -56,5 +49,6 @@ public class CreateGameRequest {
           this.gender = gender;
           this.age_range = age_range;
           this.enforced_params = enforced_params;
+          this.jwt = jwt;
      }
 }

@@ -1,7 +1,6 @@
 package sotifc2017.pickup.api.models;
 
 import java.util.HashMap;
-import java.util.Map;
 
 import sotifc2017.pickup.api.enums.ENFORCED_PARAMS;
 
@@ -11,7 +10,6 @@ import sotifc2017.pickup.api.enums.ENFORCED_PARAMS;
 
 public class GameModel {
     private final int DEFAULT_INT = -1;
-    private final String DEFAULT_STRING = "";
     private final boolean DEFAULT_BOOLEAN = false;
     private final int START_NUM_PLAYERS_ADDED = 0;
     
@@ -40,10 +38,10 @@ public class GameModel {
 
     public GameModel () {
         this.game_id = DEFAULT_INT;
-        this.name = DEFAULT_STRING ;
-        this.type = DEFAULT_STRING ;
-        this.minSkill = DEFAULT_INT;
-        this.maxSkill = DEFAULT_INT;
+        this.name = "My game";
+        this.type = "casual";
+        this.minSkill = 1;
+        this.maxSkill = 5;
         this.totalPlayersRequired = DEFAULT_INT;
         this.totalPlayersAdded = START_NUM_PLAYERS_ADDED;
         this.startTime = String.valueOf(DEFAULT_INT);
@@ -52,13 +50,13 @@ public class GameModel {
 //        this.endDate = DEFAULT_INT;
         this.finalStartTime = DEFAULT_INT;
         this.finalEndTime = DEFAULT_INT;
-        this.location = new HashMap<String, Double>();
+        this.location = new HashMap<String, Double>() {};
         this.creatorId = DEFAULT_INT;
-        this.description = DEFAULT_STRING;
-        this.location_notes = DEFAULT_STRING;
-        this.gender = DEFAULT_STRING;
-        this.ageRange = new int[] { DEFAULT_INT, DEFAULT_INT };
-        this.enforced_params = new ENFORCED_PARAMS[] {};
+        this.description = "Casual basketball game";
+        this.location_notes = "Come around the back and knock on the blue door";
+        this.gender = "f";
+        this.ageRange = new int[] { 20, 30 };
+        this.enforced_params = new ENFORCED_PARAMS[] { ENFORCED_PARAMS.gender, ENFORCED_PARAMS.age };
         this.time_created = DEFAULT_INT;
         this.player_restricted = DEFAULT_BOOLEAN;
     }
