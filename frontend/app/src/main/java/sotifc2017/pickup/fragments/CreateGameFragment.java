@@ -375,36 +375,19 @@ public class CreateGameFragment extends Fragment implements GetJwt.Callback {
         }
     }
 
-    public void onPlayerRestrictedRadioButtonClicked(View view) {
-        boolean checked = ((RadioButton) view).isChecked();
-
-        if (checked) {
-            ENFORCED_PARAMS[] newEnforcedParams = getEnforcedParamFor(ENFORCED_PARAMS.player);
-            gameModel.setEnforcedParams(newEnforcedParams);
-            switch(view.getId()) {
-                case R.id.radio_restricted:
-                    gameModel.setPlayerRestricted(true);
-                    break;
-                case R.id.radio_not_restricted:
-                    gameModel.setPlayerRestricted(false);
-                    break;
-            }
-        }
-    }
-
     private ENFORCED_PARAMS[] getEnforcedParamFor(ENFORCED_PARAMS paramToEnforce) {
         boolean alreadyEnforced = false;
-        ENFORCED_PARAMS[] prevEnforfedParams = gameModel.getEnforcedParams();
-        for (ENFORCED_PARAMS param : prevEnforfedParams) {
+        ENFORCED_PARAMS[] prevEnforcedParams = gameModel.getEnforcedParams();
+        for (ENFORCED_PARAMS param : prevEnforcedParams) {
             if (param.equals(paramToEnforce)) {
                 alreadyEnforced = true;
             }
         }
 
         if (alreadyEnforced) {
-            return prevEnforfedParams;
+            return prevEnforcedParams;
         } else {
-            return combine(prevEnforfedParams, new ENFORCED_PARAMS[] {paramToEnforce});
+            return combine(prevEnforcedParams, new ENFORCED_PARAMS[] {paramToEnforce});
         }
     }
 

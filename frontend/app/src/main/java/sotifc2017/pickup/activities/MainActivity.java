@@ -391,15 +391,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
     }
 
-    public void onPlayerRestrictedRadioButtonClicked(View view) {
-        CreateGameFragment createGameFrag =
-                (CreateGameFragment) getFragmentManager().findFragmentByTag(String.valueOf(R.id.action_create_game));
-
-        if (createGameFrag != null) {
-            createGameFrag.onPlayerRestrictedRadioButtonClicked(view);
-        }
-    }
-
     @Override
     public void onSelectedTime(int hourStart, int minuteStart, int hourEnd, int minuteEnd)
     {
