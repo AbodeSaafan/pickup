@@ -209,13 +209,14 @@ function filterGames(games, user_id, finished) {
 	var final_results = [];
 	async.forEachOf(games, function (game, i, callback) {
 		databaseHelper.ensureGameIsJoinableByPlayer(game.game_id, user_id, (playable) => {
-			if(playable){
-				game.player_restricted = false;
-				final_results.push(game);
+			game.player_restricted = !playable;
+			// Make sure enforced params is an array 
+			if (game.enforced_params && game.enforced_params.trim() != "" && game.enforced_params.trim() != "{}"){
+				game.enforced_params = convertEnforcedParam(game.enforced_params);
 			} else {
-				game.player_restricted = true;
-				final_results.push(game);
+				game.enforced_params = undefined;
 			}
+			final_results.push(game);
 			// This changes x and y to lat and lng
 			game.location.lat = game.location.x; 
 			game.location.lng = game.location.y;
@@ -227,6 +228,10 @@ function filterGames(games, user_id, finished) {
 	}, function () {
 		finished(final_results);
 	});
+}
+
+function convertEnforcedParam(stringValue){
+	return stringValue.replace("{", "").replace("}", "").split(",");
 }
 
 function validateAndCleanDeleteAccountRequest(data){
