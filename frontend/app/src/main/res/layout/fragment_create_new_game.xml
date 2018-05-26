@@ -235,28 +235,52 @@
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="15dp"
-                android:text="@string/game_search_skill_range"/>
+                android:text="@string/create_new_game_skill_message"/>
 
 
-            <com.appyvet.materialrangebar.RangeBar xmlns:app="http://schemas.android.com/apk/res-auto"
+            <com.appyvet.materialrangebar.RangeBar
+                xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/range_bar_skill"
                 android:layout_width="300dp"
                 android:layout_height="wrap_content"
-                android:layout_alignLeft="@+id/range_bar_min_players"
-                android:layout_alignStart="@+id/range_bar_min_players"
                 android:layout_below="@+id/text_skill_level"
+                android:layout_centerHorizontal="true"
                 app:mrb_pinMaxFont="10sp"
                 app:mrb_selectorSize="8dp"
+                app:mrb_tickStart="1"
                 app:mrb_tickEnd="10"
                 app:mrb_tickInterval="1"
-                app:mrb_tickStart="1" />
+                app:mrb_rangeBar="false"/>
+
+            <TextView
+                android:id="@+id/text_skill_offset_level"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="15dp"
+                android:layout_below="@+id/range_bar_skill"
+                android:text="@string/create_new_game_skill_offset_message"/>
+
+
+            <com.appyvet.materialrangebar.RangeBar
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/range_bar_skill_offset"
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/text_skill_offset_level"
+                android:layout_centerHorizontal="true"
+                app:mrb_pinMaxFont="10sp"
+                app:mrb_selectorSize="8dp"
+                app:mrb_tickEnd="9"
+                app:mrb_tickInterval="1"
+                app:mrb_rangeBar="false"/>
 
 
             <TextView
                 android:id="@+id/text_minimum_players"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/range_bar_skill"
+                android:layout_below="@+id/range_bar_skill_offset"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="5dp"
                 android:text="@string/game_search_minimum_player_message" />

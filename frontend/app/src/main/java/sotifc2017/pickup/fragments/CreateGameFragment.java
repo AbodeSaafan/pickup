@@ -73,6 +73,9 @@ public class CreateGameFragment extends Fragment implements GetJwt.Callback {
     private TextView skillRangeText;
     private RangeBar skillRange;
 
+    private TextView skillOffsetRangeText;
+    private RangeBar skillOffsetRange;
+
     private RangeBar minPlayerSeekBar;
     private TextView minPlayerText;
 
@@ -201,12 +204,24 @@ public class CreateGameFragment extends Fragment implements GetJwt.Callback {
 
         skillRange = view.findViewById(R.id.range_bar_skill);
         skillRangeText = view.findViewById(R.id.text_skill_level);
-        skillRangeText.setText(String.format(getString(R.string.game_search_skill_range), 1, 10));
+        skillRangeText.setText(String.format(getString(R.string.create_new_game_skill_message), 10));
         skillRange.setOnRangeBarChangeListener(new RangeBar.OnRangeBarChangeListener() {
             @Override
             public void onRangeChangeListener(RangeBar rangeBar, int leftPinIndex,
                                               int rightPinIndex, String leftPinValue, String rightPinValue) {
-                skillRangeText.setText(String.format(getString(R.string.game_search_skill_range), Integer.parseInt(leftPinValue), Integer.parseInt(rightPinValue)));
+                skillRangeText.setText(String.format(getString(R.string.create_new_game_skill_message), Integer.parseInt(rightPinValue)));
+            }
+
+        });
+
+        skillOffsetRange = view.findViewById(R.id.range_bar_skill_offset);
+        skillOffsetRangeText = view.findViewById(R.id.text_skill_offset_level);
+        skillOffsetRangeText.setText(String.format(getString(R.string.create_new_game_skill_offset_message), 9));
+        skillOffsetRange.setOnRangeBarChangeListener(new RangeBar.OnRangeBarChangeListener() {
+            @Override
+            public void onRangeChangeListener(RangeBar rangeBar, int leftPinIndex,
+                                              int rightPinIndex, String leftPinValue, String rightPinValue) {
+                skillOffsetRangeText.setText(String.format(getString(R.string.create_new_game_skill_offset_message), Integer.parseInt(rightPinValue)));
             }
 
         });

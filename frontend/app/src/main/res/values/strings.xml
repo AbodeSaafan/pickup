@@ -68,6 +68,8 @@
     <string name="create_new_game_location_notes">Location Notes:</string>
     <string name="create_new_game_description">Description:</string>
     <string name="create_new_game_description_hint">Tell us about your game</string>
+    <string name="create_new_game_skill_message">Skill: %d </string>
+    <string name="create_new_game_skill_offset_message">Skill offset: up to %d levels away from you </string>
 
     <string name="create_new_game_restrictions_section_title">Game Restrictions</string>
     <string name="create_new_game_want_restrictions">Would you like to apply any restrictions?</string>
