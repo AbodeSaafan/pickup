@@ -87,7 +87,7 @@
     <string name="create_new_game_no_restricted">No</string>
 
     <string name="create_new_game_time">"Time: "</string>
-    <string name="create_new_game_time_hint">"Select start and end time"</string>
+    <string name="create_new_game_time_hint">%s - %s</string>
     <string name="create_new_game_location">"Location: "</string>
     <string name="create_new_game_location_hint">"Select the game's location"</string>
 

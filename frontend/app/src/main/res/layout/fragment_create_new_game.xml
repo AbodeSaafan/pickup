@@ -216,7 +216,7 @@
                 android:ems="10"
                 android:inputType="time"
                 android:text="@string/create_new_game_time_hint"
-                android:textSize="15sp"
+                android:textAlignment="center"
                 android:focusableInTouchMode="false"/>
         </RelativeLayout>
 

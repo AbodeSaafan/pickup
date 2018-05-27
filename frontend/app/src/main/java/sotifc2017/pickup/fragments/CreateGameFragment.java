@@ -82,6 +82,9 @@ public class CreateGameFragment extends Fragment implements GetJwt.Callback {
     private Calendar fromCalendar;
     private Calendar toCalendar;
     private final String dateFormat = "MM/dd/yy";
+    private final String timeFormat = "HH:mm:ss";
+    Date startDefaultDate = new Date(System.currentTimeMillis());
+    Date endDefaultDate = new Date(System.currentTimeMillis() + 604800000);
     private EditText dateRangeText;
     private DatePickerDialog.OnDateSetListener dateListenerFrom = new DatePickerDialog.OnDateSetListener() {
 
@@ -92,13 +95,13 @@ public class CreateGameFragment extends Fragment implements GetJwt.Callback {
             fromCalendar.set(Calendar.MONTH, monthOfYear);
             fromCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
 
-            long minDate = System.currentTimeMillis() > fromCalendar.getTimeInMillis()? System.currentTimeMillis() : fromCalendar.getTimeInMillis();
+            long minDate = System.currentTimeMillis() > fromCalendar.getTimeInMillis() ? System.currentTimeMillis() : fromCalendar.getTimeInMillis();
 
             DatePickerDialog dateToDatePicker = new DatePickerDialog(getActivity(), dateListenerTo, toCalendar
                     .get(Calendar.YEAR), toCalendar.get(Calendar.MONTH),
                     toCalendar.get(Calendar.DAY_OF_MONTH));
 
-            dateToDatePicker .getDatePicker().setMinDate(minDate);
+            dateToDatePicker.getDatePicker().setMinDate(minDate);
             dateToDatePicker.setMessage(getString(R.string.game_search_date_range_end_message));
 
             dateToDatePicker.show();
@@ -119,6 +122,8 @@ public class CreateGameFragment extends Fragment implements GetJwt.Callback {
         }
 
     };
+
+    private EditText timeSelector;
 
     private EditText gameLocationNotes;
 
@@ -152,7 +157,7 @@ public class CreateGameFragment extends Fragment implements GetJwt.Callback {
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        EditText timeSelector = view.findViewById(R.id.edit_text_time_selector);
+        timeSelector = view.findViewById(R.id.edit_text_time_selector);
         timeSelector.setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -261,7 +266,12 @@ public class CreateGameFragment extends Fragment implements GetJwt.Callback {
 
         dateRangeText.setOnClickListener(onDateClick);
         // Set default date for search (1 week = 1000ms*60s*60min*24hr*7days = 604800000)
-        updateDateRangeLabel(new Date(System.currentTimeMillis()), new Date(System.currentTimeMillis() + 604800000));
+        updateDateRangeLabel(startDefaultDate, endDefaultDate);
+
+        SimpleDateFormat sdf = new SimpleDateFormat(timeFormat, Locale.US);
+        timeSelector.setText(String.format(getString(R.string.create_new_game_time_hint),
+                sdf.format(startDefaultDate),
+                sdf.format(endDefaultDate)));
 
         gameLocationNotes = view.findViewById(R.id.complete_text_location_notes);
 
@@ -318,7 +328,8 @@ public class CreateGameFragment extends Fragment implements GetJwt.Callback {
         dialog.setTextTabEnd("End");
         dialog.setTextBtnPositive("Accept");
         dialog.setTextBtnNegative("Close");
-        dialog.setValidateRange(false);
+        dialog.setValidateRange(true);
+        dialog.setMessageErrorRangeTime("The start time cannot come after the end time");
         dialog.setColorBackgroundHeader(R.color.paleturquoise);
         dialog.setColorBackgroundTimePickerHeader(R.color.paleturquoise);
         dialog.setColorTextButton(R.color.colorPrimaryDark);
@@ -331,6 +342,9 @@ public class CreateGameFragment extends Fragment implements GetJwt.Callback {
     public void onSelectedTime(int hourStart, int minuteStart, int hourEnd, int minuteEnd)
     {
         Log.d(FC_TAG, "Start: " + hourStart + ":" + minuteStart + "\nEnd: " + hourEnd + ":" + minuteEnd);
+        timeSelector.setText(String.format(getString(R.string.create_new_game_time_hint),
+                hourStart+ ":" + minuteStart + ":00",
+                hourEnd + ":" + minuteEnd + ":00"));
 
         gameModel.setStartTime(hourStart + ":" + minuteStart);
         gameModel.setEndTime(hourEnd + ":" + minuteEnd);
