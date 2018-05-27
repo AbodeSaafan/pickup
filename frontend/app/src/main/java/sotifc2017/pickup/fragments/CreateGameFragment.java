@@ -25,6 +25,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.appyvet.materialrangebar.RangeBar;
+import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.mcsoft.timerangepickerdialog.RangeTimePickerDialog;
@@ -125,6 +126,7 @@ public class CreateGameFragment extends Fragment implements GetJwt.Callback {
 
     private EditText timeSelector;
 
+    private EditText locationSelector;
     private EditText gameLocationNotes;
 
     public CreateGameFragment() {
@@ -167,7 +169,7 @@ public class CreateGameFragment extends Fragment implements GetJwt.Callback {
             }
         });
 
-        EditText locationSelector = view.findViewById(R.id.edit_text_location_selector);
+        locationSelector = view.findViewById(R.id.edit_text_location_selector);
         locationSelector.setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -354,12 +356,14 @@ public class CreateGameFragment extends Fragment implements GetJwt.Callback {
         mCallback.startPlacePickerActivity();
     }
 
-    public void onSelectedLocation(LatLngBounds locationChosen)
+    public void onSelectedLocation(LatLngBounds locationChosen, Intent intent)
     {
+        locationSelector.setText(PlacePicker.getPlace(this.getActivity(), intent).getAddress());
+
         final LatLng latLong = locationChosen.getCenter();
         gameModel.setLocation(new HashMap<String, Double>(){{
-            this.put("lat", latLong.latitude);
             this.put("lng", latLong.longitude);
+            this.put("lat", latLong.latitude);
         }});
     }
 

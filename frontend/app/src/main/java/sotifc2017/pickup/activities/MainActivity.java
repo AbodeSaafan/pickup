@@ -438,7 +438,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                         (CreateGameFragment) getFragmentManager().findFragmentByTag(String.valueOf(R.id.action_create_game));
 
                 if (createGameFrag != null) {
-                    createGameFrag.onSelectedLocation(locationChosen);
+                    createGameFrag.onSelectedLocation(locationChosen, data);
                 }
             }
         }
