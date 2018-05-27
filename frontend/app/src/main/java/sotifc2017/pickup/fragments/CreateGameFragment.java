@@ -7,6 +7,7 @@ import android.app.FragmentManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -17,8 +18,10 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -66,6 +69,11 @@ public class CreateGameFragment extends Fragment implements GetJwt.Callback {
     private String jwtToken;
 
     private GameModel gameModel;
+
+    private ImageButton detailsHeaderToggle;
+    private RelativeLayout gameDetailsSection;
+    private ImageButton restrictionsHeaderToggle;
+    private RelativeLayout gameRestrictionsSection;
 
     private EditText gameName;
     private EditText gameDescription;
@@ -168,6 +176,59 @@ public class CreateGameFragment extends Fragment implements GetJwt.Callback {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         gameModel = new GameModel();
+
+        detailsHeaderToggle = view.findViewById(R.id.details_header_toggle);
+        gameDetailsSection = view.findViewById(R.id.game_details_section);
+        detailsHeaderToggle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (gameDetailsSection.isShown()) {
+                    detailsHeaderToggle.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.ic_expand_more_black_24dp));
+                    gameDetailsSection.animate().translationY(-1 * gameDetailsSection.getHeight()).setDuration(300).alpha(0.0f).withEndAction(new Runnable() {
+                        @Override
+                        public void run() {
+                            gameDetailsSection.setVisibility(View.GONE);
+                        }
+                    });
+                }
+                else {
+                    detailsHeaderToggle.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.ic_expand_less_black_24dp));
+                    gameDetailsSection.animate().translationY(0).setDuration(300).alpha(1.0f).withStartAction(new Runnable() {
+                        @Override
+                        public void run() {
+                            gameDetailsSection.setVisibility(View.VISIBLE);
+                        }
+                    });
+                }
+            }
+        });
+
+        restrictionsHeaderToggle = view.findViewById(R.id.restrictions_header_toggle);
+        gameRestrictionsSection = view.findViewById(R.id.game_restrictions_section);
+        restrictionsHeaderToggle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (gameRestrictionsSection.isShown()) {
+                    restrictionsHeaderToggle.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.ic_expand_more_black_24dp));
+                    gameRestrictionsSection.animate().translationY(-1 * gameRestrictionsSection.getHeight()).setDuration(300).alpha(0.0f).withEndAction(new Runnable() {
+                        @Override
+                        public void run() {
+                            gameRestrictionsSection.setVisibility(View.GONE);
+                        }
+                    });
+                }
+                else {
+                    restrictionsHeaderToggle.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.ic_expand_less_black_24dp));
+                    gameRestrictionsSection.animate().translationY(0).setDuration(300).alpha(1.0f).withStartAction(new Runnable() {
+                        @Override
+                        public void run() {
+                            gameRestrictionsSection.setVisibility(View.VISIBLE);
+                        }
+                    });
+                }
+            }
+        });
+
         gameName = view.findViewById(R.id.complete_text_view_game_name);
 
         casualGameCheck = view.findViewById(R.id.checkbox_casual_game_type);

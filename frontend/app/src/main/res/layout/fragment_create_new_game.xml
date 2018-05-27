@@ -60,321 +60,327 @@
         </android.support.constraint.ConstraintLayout>
 
         <RelativeLayout
-            android:id="@+id/layout_game_name"
+            android:id="@+id/game_details_section"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/layout_game_details">
 
-            <TextView
-                android:id="@+id/text_game_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingTop="30dp"
-                android:text="@string/create_new_game_name"
-                android:textAlignment="center"
-                android:layout_marginLeft="40dp"
-                android:layout_marginStart="40dp" />
+            <RelativeLayout
+                android:id="@+id/layout_game_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" >
 
-            <AutoCompleteTextView
-                android:id="@+id/complete_text_view_game_name"
+                <TextView
+                    android:id="@+id/text_game_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="30dp"
+                    android:text="@string/create_new_game_name"
+                    android:textAlignment="center"
+                    android:layout_marginLeft="40dp"
+                    android:layout_marginStart="40dp" />
+
+                <AutoCompleteTextView
+                    android:id="@+id/complete_text_view_game_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_toRightOf="@+id/text_game_name"
+                    android:layout_toEndOf="@+id/text_game_name"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginRight="30dp"
+                    android:layout_marginEnd="30dp"/>
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/layout_child_game_details"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_toRightOf="@+id/text_game_name"
-                android:layout_toEndOf="@+id/text_game_name"
-                android:layout_marginLeft="5dp"
-                android:layout_marginStart="5dp"
-                android:layout_marginRight="30dp"
-                android:layout_marginEnd="30dp"/>
-        </RelativeLayout>
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_below="@+id/layout_game_name"
+                android:layout_marginTop="15dp">
 
-        <RelativeLayout
-            android:id="@+id/layout_child_game_details"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_below="@+id/layout_game_name"
-            android:layout_marginTop="15dp">
+                <TextView
+                    android:id="@+id/text_game_type"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:paddingBottom="25dp"
+                    android:text="@string/game_search_game_type" />
 
-            <TextView
-                android:id="@+id/text_game_type"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:paddingBottom="25dp"
-                android:text="@string/game_search_game_type" />
+                <CheckBox
+                    android:id="@+id/checkbox_casual_game_type"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="60dp"
+                    android:layout_marginStart="60dp"
+                    android:layout_below="@id/text_game_type"
+                    android:checked="true"
+                    android:text="@string/game_search_game_type_casual" />
 
-            <CheckBox
-                android:id="@+id/checkbox_casual_game_type"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="60dp"
-                android:layout_marginStart="60dp"
-                android:layout_below="@id/text_game_type"
-                android:checked="true"
-                android:text="@string/game_search_game_type_casual" />
+                <CheckBox
+                    android:id="@+id/checkbox_serious_game_type"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_below="@id/text_game_type"
+                    android:layout_marginEnd="60dp"
+                    android:layout_marginRight="60dp"
+                    android:checked="true"
+                    android:text="@string/game_search_game_type_serious" />
+            </RelativeLayout>
 
-            <CheckBox
-                android:id="@+id/checkbox_serious_game_type"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentRight="true"
-                android:layout_below="@id/text_game_type"
-                android:layout_marginEnd="60dp"
-                android:layout_marginRight="60dp"
-                android:checked="true"
-                android:text="@string/game_search_game_type_serious" />
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:id="@+id/layout_description"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/layout_child_game_details">
-
-            <TextView
-                android:id="@+id/text_description"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingTop="30dp"
-                android:text="@string/create_new_game_description"
-                android:textAlignment="center"
-                android:layout_marginLeft="40dp"
-                android:layout_marginStart="40dp" />
-
-            <MultiAutoCompleteTextView
-                android:id="@+id/multiTextViewDescription"
+            <RelativeLayout
+                android:id="@+id/layout_description"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:layout_marginEnd="30dp"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="30dp"
-                android:layout_marginStart="5dp"
-                android:layout_toEndOf="@+id/text_description"
-                android:layout_toRightOf="@+id/text_description"
-                android:paddingTop="30dp"
-                android:text="@string/create_new_game_description_hint"
-                android:textSize="15sp"/>
-        </RelativeLayout>
+                android:layout_below="@+id/layout_child_game_details">
 
-        <RelativeLayout
-            android:id="@+id/layout_date_range"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/layout_description">
+                <TextView
+                    android:id="@+id/text_description"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="30dp"
+                    android:text="@string/create_new_game_description"
+                    android:textAlignment="center"
+                    android:layout_marginLeft="40dp"
+                    android:layout_marginStart="40dp" />
 
-            <TextView
-                android:id="@+id/date_range_label"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                android:layout_centerHorizontal="true"
-                android:paddingTop="10dp"
-                android:text="@string/game_search_date_range_label" />
+                <MultiAutoCompleteTextView
+                    android:id="@+id/multiTextViewDescription"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginEnd="30dp"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="30dp"
+                    android:layout_marginStart="5dp"
+                    android:layout_toEndOf="@+id/text_description"
+                    android:layout_toRightOf="@+id/text_description"
+                    android:paddingTop="30dp"
+                    android:text="@string/create_new_game_description_hint"
+                    android:textSize="15sp"/>
+            </RelativeLayout>
 
-            <EditText
-                android:id="@+id/create_game_date_range_from"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:layout_alignParentBottom="true"
-                android:clickable="true"
-                android:ems="10"
-                android:focusable="false"
-                android:inputType="date"
-                android:layout_marginBottom="20dp"
-                android:textAlignment="center" />
-
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:id="@+id/layout_time"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/layout_date_range">
-
-            <TextView
-                android:id="@+id/text_time"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="15dp"
-                android:layout_marginStart="40dp"
-                android:layout_centerHorizontal="true"
-                android:text="@string/create_new_game_time"
-                android:textAlignment="center"/>
-
-            <EditText
-                android:id="@+id/edit_text_time_selector"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:layout_marginStart="40dp"
-                android:layout_below="@+id/text_time"
-                android:layout_centerHorizontal="true"
-                android:ems="10"
-                android:inputType="time"
-                android:text="@string/create_new_game_time_hint"
-                android:textAlignment="center"
-                android:focusableInTouchMode="false"/>
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:id="@+id/layout_range_bars"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_below="@+id/layout_time"
-            android:layout_marginTop="10dp">
-
-            <TextView
-                android:id="@+id/text_skill_level"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="15dp"
-                android:text="@string/create_new_game_skill_message"/>
-
-
-            <com.appyvet.materialrangebar.RangeBar
-                xmlns:app="http://schemas.android.com/apk/res-auto"
-                android:id="@+id/range_bar_skill"
-                android:layout_width="300dp"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/text_skill_level"
-                android:layout_centerHorizontal="true"
-                app:mrb_pinMaxFont="10sp"
-                app:mrb_selectorSize="8dp"
-                app:mrb_tickStart="1"
-                app:mrb_tickEnd="10"
-                app:mrb_tickInterval="1"
-                app:mrb_rangeBar="false"
-                app:mrb_connectingLineColor="@color/light_orange"
-                app:mrb_selectorColor="@color/paleturquoise"
-                app:mrb_pinColor="@color/paleturquoise"
-                app:mrb_pinTextColor="@color/jet"/>
-
-            <TextView
-                android:id="@+id/text_skill_offset_level"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="15dp"
-                android:layout_below="@+id/range_bar_skill"
-                android:text="@string/create_new_game_skill_offset_message"/>
-
-
-            <com.appyvet.materialrangebar.RangeBar
-                xmlns:app="http://schemas.android.com/apk/res-auto"
-                android:id="@+id/range_bar_skill_offset"
-                android:layout_width="300dp"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/text_skill_offset_level"
-                android:layout_centerHorizontal="true"
-                app:mrb_pinMaxFont="10sp"
-                app:mrb_selectorSize="8dp"
-                app:mrb_tickEnd="9"
-                app:mrb_tickInterval="1"
-                app:mrb_rangeBar="false"
-                app:mrb_connectingLineColor="@color/light_orange"
-                app:mrb_selectorColor="@color/paleturquoise"
-                app:mrb_pinColor="@color/paleturquoise"
-                app:mrb_pinTextColor="@color/jet"/>
-
-
-            <TextView
-                android:id="@+id/text_minimum_players"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/range_bar_skill_offset"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="5dp"
-                android:text="@string/game_search_minimum_player_message" />
-
-            <com.appyvet.materialrangebar.RangeBar
-                xmlns:app="http://schemas.android.com/apk/res-auto"
-                android:id="@+id/range_bar_min_players"
-                android:layout_width="300dp"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/text_minimum_players"
-                android:layout_centerHorizontal="true"
-                app:mrb_pinMaxFont="10sp"
-                app:mrb_selectorSize="8dp"
-                app:mrb_tickEnd="20"
-                app:mrb_tickInterval="1"
-                app:mrb_tickStart="2"
-                app:mrb_rangeBar="false"
-                app:mrb_connectingLineColor="@color/light_orange"
-                app:mrb_selectorColor="@color/paleturquoise"
-                app:mrb_pinColor="@color/paleturquoise"
-                app:mrb_pinTextColor="@color/jet"/>
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:id="@+id/layout_location_picker"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/layout_range_bars">
-
-            <TextView
-                android:id="@+id/text_location"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="15dp"
-                android:layout_marginStart="40dp"
-                android:text="@string/create_new_game_location"
-                android:textAlignment="center"/>
-
-            <EditText
-                android:id="@+id/edit_text_location_selector"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_marginStart="5dp"
-                android:layout_toEndOf="@+id/text_location"
-                android:layout_marginEnd="30dp"
-                android:ems="10"
-                android:inputType="time"
-                android:text="@string/create_new_game_location_hint"
-                android:textSize="15sp"
-                android:focusableInTouchMode="false"/>
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:id="@+id/layout_location_notes"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/layout_location_picker">
-
-            <TextView
-                android:id="@+id/text_location_notes"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingTop="30dp"
-                android:text="@string/create_new_game_location_notes"
-                android:textAlignment="center"
-                android:layout_marginLeft="40dp"
-                android:layout_marginStart="40dp" />
-
-            <AutoCompleteTextView
-                android:id="@+id/complete_text_location_notes"
+            <RelativeLayout
+                android:id="@+id/layout_date_range"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_toRightOf="@+id/text_location_notes"
-                android:layout_toEndOf="@+id/text_location_notes"
-                android:layout_marginLeft="5dp"
-                android:layout_marginStart="5dp"
-                android:layout_marginRight="30dp"
-                android:layout_marginEnd="30dp"/>
+                android:layout_below="@+id/layout_description">
+
+                <TextView
+                    android:id="@+id/date_range_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_centerHorizontal="true"
+                    android:paddingTop="10dp"
+                    android:text="@string/game_search_date_range_label" />
+
+                <EditText
+                    android:id="@+id/create_game_date_range_from"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_alignParentBottom="true"
+                    android:clickable="true"
+                    android:ems="10"
+                    android:focusable="false"
+                    android:inputType="date"
+                    android:layout_marginBottom="20dp"
+                    android:textAlignment="center" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/layout_time"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/layout_date_range">
+
+                <TextView
+                    android:id="@+id/text_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginStart="40dp"
+                    android:layout_centerHorizontal="true"
+                    android:text="@string/create_new_game_time"
+                    android:textAlignment="center"/>
+
+                <EditText
+                    android:id="@+id/edit_text_time_selector"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginStart="40dp"
+                    android:layout_below="@+id/text_time"
+                    android:layout_centerHorizontal="true"
+                    android:ems="10"
+                    android:inputType="time"
+                    android:text="@string/create_new_game_time_hint"
+                    android:textAlignment="center"
+                    android:focusableInTouchMode="false"/>
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/layout_range_bars"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_below="@+id/layout_time"
+                android:layout_marginTop="10dp">
+
+                <TextView
+                    android:id="@+id/text_skill_level"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="15dp"
+                    android:text="@string/create_new_game_skill_message"/>
+
+
+                <com.appyvet.materialrangebar.RangeBar
+                    xmlns:app="http://schemas.android.com/apk/res-auto"
+                    android:id="@+id/range_bar_skill"
+                    android:layout_width="300dp"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/text_skill_level"
+                    android:layout_centerHorizontal="true"
+                    app:mrb_pinMaxFont="10sp"
+                    app:mrb_selectorSize="8dp"
+                    app:mrb_tickStart="1"
+                    app:mrb_tickEnd="10"
+                    app:mrb_tickInterval="1"
+                    app:mrb_rangeBar="false"
+                    app:mrb_connectingLineColor="@color/light_orange"
+                    app:mrb_selectorColor="@color/paleturquoise"
+                    app:mrb_pinColor="@color/paleturquoise"
+                    app:mrb_pinTextColor="@color/jet"/>
+
+                <TextView
+                    android:id="@+id/text_skill_offset_level"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="15dp"
+                    android:layout_below="@+id/range_bar_skill"
+                    android:text="@string/create_new_game_skill_offset_message"/>
+
+
+                <com.appyvet.materialrangebar.RangeBar
+                    xmlns:app="http://schemas.android.com/apk/res-auto"
+                    android:id="@+id/range_bar_skill_offset"
+                    android:layout_width="300dp"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/text_skill_offset_level"
+                    android:layout_centerHorizontal="true"
+                    app:mrb_pinMaxFont="10sp"
+                    app:mrb_selectorSize="8dp"
+                    app:mrb_tickEnd="9"
+                    app:mrb_tickInterval="1"
+                    app:mrb_rangeBar="false"
+                    app:mrb_connectingLineColor="@color/light_orange"
+                    app:mrb_selectorColor="@color/paleturquoise"
+                    app:mrb_pinColor="@color/paleturquoise"
+                    app:mrb_pinTextColor="@color/jet"/>
+
+
+                <TextView
+                    android:id="@+id/text_minimum_players"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/range_bar_skill_offset"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="5dp"
+                    android:text="@string/game_search_minimum_player_message" />
+
+                <com.appyvet.materialrangebar.RangeBar
+                    xmlns:app="http://schemas.android.com/apk/res-auto"
+                    android:id="@+id/range_bar_min_players"
+                    android:layout_width="300dp"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/text_minimum_players"
+                    android:layout_centerHorizontal="true"
+                    app:mrb_pinMaxFont="10sp"
+                    app:mrb_selectorSize="8dp"
+                    app:mrb_tickEnd="20"
+                    app:mrb_tickInterval="1"
+                    app:mrb_tickStart="2"
+                    app:mrb_rangeBar="false"
+                    app:mrb_connectingLineColor="@color/light_orange"
+                    app:mrb_selectorColor="@color/paleturquoise"
+                    app:mrb_pinColor="@color/paleturquoise"
+                    app:mrb_pinTextColor="@color/jet"/>
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/layout_location_picker"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/layout_range_bars">
+
+                <TextView
+                    android:id="@+id/text_location"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginStart="40dp"
+                    android:text="@string/create_new_game_location"
+                    android:textAlignment="center"/>
+
+                <EditText
+                    android:id="@+id/edit_text_location_selector"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginStart="5dp"
+                    android:layout_toEndOf="@+id/text_location"
+                    android:layout_marginEnd="30dp"
+                    android:ems="10"
+                    android:inputType="time"
+                    android:text="@string/create_new_game_location_hint"
+                    android:textSize="15sp"
+                    android:focusableInTouchMode="false"/>
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/layout_location_notes"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/layout_location_picker">
+
+                <TextView
+                    android:id="@+id/text_location_notes"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="30dp"
+                    android:text="@string/create_new_game_location_notes"
+                    android:textAlignment="center"
+                    android:layout_marginLeft="40dp"
+                    android:layout_marginStart="40dp" />
+
+                <AutoCompleteTextView
+                    android:id="@+id/complete_text_location_notes"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_toRightOf="@+id/text_location_notes"
+                    android:layout_toEndOf="@+id/text_location_notes"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginRight="30dp"
+                    android:layout_marginEnd="30dp"/>
+            </RelativeLayout>
         </RelativeLayout>
 
         <android.support.constraint.ConstraintLayout
             android:id="@+id/layout_game_restrictions"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/layout_location_notes"
+            android:layout_below="@+id/game_details_section"
             android:layout_marginTop="20dp">
 
             <TextView
@@ -402,151 +408,157 @@
         </android.support.constraint.ConstraintLayout>
 
         <RelativeLayout
-            android:id="@+id/layout_want_restrictions"
+            android:id="@+id/game_restrictions_section"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/layout_game_restrictions">
 
-            <TextView
-                android:id="@+id/text_want_restrictions"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingTop="30dp"
-                android:text="@string/create_new_game_want_restrictions"
-                android:textAlignment="center"
-                android:layout_marginLeft="40dp"
-                android:layout_marginStart="40dp" />
-        </RelativeLayout>
+            <RelativeLayout
+                android:id="@+id/layout_want_restrictions"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" >
 
-        <RelativeLayout
-            android:id="@+id/layout_age_restriction"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/layout_want_restrictions">
-
-            <CheckBox
-                android:id="@+id/checkbox_restrict_age"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                android:layout_marginEnd="28dp"
-                android:layout_marginStart="40dp"
-                android:paddingTop="60dp" />
-
-            <TextView
-                android:id="@+id/text_age_restriction"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_toEndOf="@+id/checkbox_restrict_age"
-                android:paddingTop="30dp"
-                android:text="@string/create_new_game_age_restriction"
-                android:textAlignment="center"
-                android:layout_marginStart="10dp" />
-
-            <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="40dp"
-                android:layout_marginStart="60dp"
-                android:layout_marginTop="20dp"
-                android:layout_toRightOf="@+id/text_age_restriction"
-                android:background="@drawable/radio_button_background"
-                android:orientation="vertical"
-                android:id="@+id/age_radio_group">
-
-                <RadioButton
-                    android:id="@+id/radio_18_range"
+                <TextView
+                    android:id="@+id/text_want_restrictions"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="15dp"
-                    android:onClick="onAgeRadioButtonClicked"
-                    android:text="@string/create_new_game_18_range" />
+                    android:paddingTop="30dp"
+                    android:text="@string/create_new_game_want_restrictions"
+                    android:textAlignment="center"
+                    android:layout_marginLeft="40dp"
+                    android:layout_marginStart="40dp" />
+            </RelativeLayout>
 
-                <RadioButton
-                    android:id="@+id/radio_25_range"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="15dp"
-                    android:onClick="onAgeRadioButtonClicked"
-                    android:text="@string/create_new_game_25_range" />
-
-                <RadioButton
-                    android:id="@+id/radio_35_range"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="15dp"
-                    android:onClick="onAgeRadioButtonClicked"
-                    android:text="@string/create_new_game_35_range" />
-
-                <RadioButton
-                    android:id="@+id/radio_45_range"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="15dp"
-                    android:layout_marginStart="15dp"
-                    android:onClick="onAgeRadioButtonClicked"
-                    android:text="@string/create_new_game_45_range" />
-            </RadioGroup>
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:id="@+id/layout_gender_restriction"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/layout_age_restriction">
-
-            <CheckBox
-                android:id="@+id/checkbox_restrict_gender"
-                android:layout_width="wrap_content"
+            <RelativeLayout
+                android:id="@+id/layout_age_restriction"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                android:layout_marginEnd="28dp"
-                android:layout_marginStart="40dp"
-                android:paddingTop="60dp" />
+                android:layout_below="@+id/layout_want_restrictions">
 
-            <TextView
-                android:id="@+id/text_gender_restriction"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_toEndOf="@+id/checkbox_restrict_gender"
-                android:paddingTop="30dp"
-                android:text="@string/create_new_game_gender_restriction"
-                android:textAlignment="center"
-                android:layout_marginStart="10dp" />
-
-            <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_toRightOf="@+id/text_gender_restriction"
-                android:layout_marginTop="20dp"
-                android:layout_marginStart="40dp"
-                android:layout_marginEnd="40dp"
-                android:background="@drawable/radio_button_background"
-                android:orientation="vertical"
-                android:id="@+id/gender_radio_group">
-
-                <RadioButton android:id="@+id/radio_male_gender"
+                <CheckBox
+                    android:id="@+id/checkbox_restrict_age"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="15dp"
-                    android:text="@string/create_new_game_male_gender"
-                    android:onClick="onGenderRadioButtonClicked"/>
+                    android:layout_alignParentTop="true"
+                    android:layout_marginEnd="28dp"
+                    android:layout_marginStart="40dp"
+                    android:paddingTop="60dp" />
 
-                <RadioButton android:id="@+id/radio_female_gender"
+                <TextView
+                    android:id="@+id/text_age_restriction"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="15dp"
-                    android:layout_marginBottom="15dp"
-                    android:text="@string/create_new_game_female_gender"
-                    android:onClick="onGenderRadioButtonClicked"/>
-            </RadioGroup>
+                    android:layout_toEndOf="@+id/checkbox_restrict_age"
+                    android:paddingTop="30dp"
+                    android:text="@string/create_new_game_age_restriction"
+                    android:textAlignment="center"
+                    android:layout_marginStart="10dp" />
+
+                <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="40dp"
+                    android:layout_marginStart="60dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_toRightOf="@+id/text_age_restriction"
+                    android:background="@drawable/radio_button_background"
+                    android:orientation="vertical"
+                    android:id="@+id/age_radio_group">
+
+                    <RadioButton
+                        android:id="@+id/radio_18_range"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="15dp"
+                        android:onClick="onAgeRadioButtonClicked"
+                        android:text="@string/create_new_game_18_range" />
+
+                    <RadioButton
+                        android:id="@+id/radio_25_range"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="15dp"
+                        android:onClick="onAgeRadioButtonClicked"
+                        android:text="@string/create_new_game_25_range" />
+
+                    <RadioButton
+                        android:id="@+id/radio_35_range"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="15dp"
+                        android:onClick="onAgeRadioButtonClicked"
+                        android:text="@string/create_new_game_35_range" />
+
+                    <RadioButton
+                        android:id="@+id/radio_45_range"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="15dp"
+                        android:layout_marginStart="15dp"
+                        android:onClick="onAgeRadioButtonClicked"
+                        android:text="@string/create_new_game_45_range" />
+                </RadioGroup>
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/layout_gender_restriction"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/layout_age_restriction">
+
+                <CheckBox
+                    android:id="@+id/checkbox_restrict_gender"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginEnd="28dp"
+                    android:layout_marginStart="40dp"
+                    android:paddingTop="60dp" />
+
+                <TextView
+                    android:id="@+id/text_gender_restriction"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toEndOf="@+id/checkbox_restrict_gender"
+                    android:paddingTop="30dp"
+                    android:text="@string/create_new_game_gender_restriction"
+                    android:textAlignment="center"
+                    android:layout_marginStart="10dp" />
+
+                <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_toRightOf="@+id/text_gender_restriction"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginStart="40dp"
+                    android:layout_marginEnd="40dp"
+                    android:background="@drawable/radio_button_background"
+                    android:orientation="vertical"
+                    android:id="@+id/gender_radio_group">
+
+                    <RadioButton android:id="@+id/radio_male_gender"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="15dp"
+                        android:text="@string/create_new_game_male_gender"
+                        android:onClick="onGenderRadioButtonClicked"/>
+
+                    <RadioButton android:id="@+id/radio_female_gender"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="15dp"
+                        android:layout_marginBottom="15dp"
+                        android:text="@string/create_new_game_female_gender"
+                        android:onClick="onGenderRadioButtonClicked"/>
+                </RadioGroup>
+            </RelativeLayout>
         </RelativeLayout>
 
         <RelativeLayout
             android:id="@+id/layout_create_game_submit"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/layout_gender_restriction"
+            android:layout_below="@+id/game_restrictions_section"
             android:paddingBottom="15dp">
 
             <Button
