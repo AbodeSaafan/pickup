@@ -97,7 +97,11 @@
                 app:mrb_selectorSize="8dp"
                 app:mrb_tickEnd="10"
                 app:mrb_tickInterval="1"
-                app:mrb_tickStart="1"/>
+                app:mrb_tickStart="1"
+                app:mrb_connectingLineColor="@color/light_orange"
+                app:mrb_selectorColor="@color/paleturquoise"
+                app:mrb_pinColor="@color/paleturquoise"
+                app:mrb_pinTextColor="@color/jet"/>
 
 
             <TextView
@@ -121,7 +125,11 @@
                 app:mrb_tickEnd="20"
                 app:mrb_tickInterval="1"
                 app:mrb_tickStart="2"
-                app:mrb_rangeBar="false"/>
+                app:mrb_rangeBar="false"
+                app:mrb_connectingLineColor="@color/light_orange"
+                app:mrb_selectorColor="@color/paleturquoise"
+                app:mrb_pinColor="@color/paleturquoise"
+                app:mrb_pinTextColor="@color/jet"/>
 
 
             <CheckBox

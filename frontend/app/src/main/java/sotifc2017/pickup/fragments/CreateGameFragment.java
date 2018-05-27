@@ -319,9 +319,11 @@ public class CreateGameFragment extends Fragment implements GetJwt.Callback {
         dialog.setTextBtnPositive("Accept");
         dialog.setTextBtnNegative("Close");
         dialog.setValidateRange(false);
-        dialog.setColorBackgroundHeader(R.color.colorPrimary);
-        dialog.setColorBackgroundTimePickerHeader(R.color.colorPrimary);
+        dialog.setColorBackgroundHeader(R.color.paleturquoise);
+        dialog.setColorBackgroundTimePickerHeader(R.color.paleturquoise);
         dialog.setColorTextButton(R.color.colorPrimaryDark);
+        dialog.setColorTextButton(R.color.paleturquoise);
+        dialog.setColorTabSelected(R.color.light_orange);
         FragmentManager fragmentManager = getFragmentManager();
         dialog.show(fragmentManager, "");
     }
