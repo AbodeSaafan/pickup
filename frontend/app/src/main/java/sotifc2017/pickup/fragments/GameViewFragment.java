@@ -112,7 +112,7 @@ public class GameViewFragment extends Fragment implements GetJwt.Callback {
         createGameTag(gameList.type);
         createGameTag(gameList.gender);
         createGameTag(gameList.ageRange[0] + "-" + gameList.ageRange[1] +" years old");
-        createGameTag("Skill" + gameList.minSkill + "-" + gameList.maxSkill);
+        createGameTag("Skill offset" + gameList.offsetSkill);
 
         latitude = gameList.location.get("lat");
         longitude = gameList.location.get("lng");

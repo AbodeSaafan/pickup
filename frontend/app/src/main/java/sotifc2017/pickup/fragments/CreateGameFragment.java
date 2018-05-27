@@ -81,9 +81,6 @@ public class CreateGameFragment extends Fragment implements GetJwt.Callback {
     private CheckBox casualGameCheck;
     private CheckBox seriousGameCheck;
 
-    private TextView skillRangeText;
-    private RangeBar skillRange;
-
     private TextView skillOffsetRangeText;
     private RangeBar skillOffsetRange;
 
@@ -247,18 +244,6 @@ public class CreateGameFragment extends Fragment implements GetJwt.Callback {
         });
 
         gameDescription = view.findViewById(R.id.multiTextViewDescription);
-
-        skillRange = view.findViewById(R.id.range_bar_skill);
-        skillRangeText = view.findViewById(R.id.text_skill_level);
-        skillRangeText.setText(String.format(getString(R.string.create_new_game_skill_message), 10));
-        skillRange.setOnRangeBarChangeListener(new RangeBar.OnRangeBarChangeListener() {
-            @Override
-            public void onRangeChangeListener(RangeBar rangeBar, int leftPinIndex,
-                                              int rightPinIndex, String leftPinValue, String rightPinValue) {
-                skillRangeText.setText(String.format(getString(R.string.create_new_game_skill_message), Integer.parseInt(rightPinValue)));
-            }
-
-        });
 
         skillOffsetRange = view.findViewById(R.id.range_bar_skill_offset);
         skillOffsetRangeText = view.findViewById(R.id.text_skill_offset_level);
@@ -429,7 +414,7 @@ public class CreateGameFragment extends Fragment implements GetJwt.Callback {
             casualGameCheck.setChecked(true);
             seriousGameCheck.setChecked(true);
         }
-        skillRange.setEnabled(seriousGameCheck.isChecked());
+        skillOffsetRange.setEnabled(seriousGameCheck.isChecked());
     }
 
     public void showCustomDialogTimePicker()
@@ -567,7 +552,7 @@ public class CreateGameFragment extends Fragment implements GetJwt.Callback {
         CreateGameRequest req = new CreateGameRequest(
                 gameModel.getName(),
                 gameModel.getType(),
-                gameModel.getMaxSkill() - gameModel.getMinSkill(),
+                gameModel.getOffsetSkill(),
                 gameModel.totalPlayersRequired,
                 gameModel.getFinalStartTime(),
                 gameModel.getFinalEndTime() - gameModel.getFinalStartTime(),
@@ -595,10 +580,8 @@ public class CreateGameFragment extends Fragment implements GetJwt.Callback {
 
         gameModel.setDescription(gameDescription.getText().toString());
 
-        int  minSkill = seriousGameCheck.isChecked() && skillRange.isEnabled() ? Integer.parseInt(skillRange.getLeftPinValue()) : -1;
-        gameModel.setMinSkill(minSkill);
-        int  maxSkill = seriousGameCheck.isChecked() && skillRange.isEnabled() ? Integer.parseInt(skillRange.getRightPinValue()) : -1;
-        gameModel.setMaxSkill(maxSkill);
+        int  offsetSkill = seriousGameCheck.isChecked() && skillOffsetRange.isEnabled() ? Integer.parseInt(skillOffsetRange.getRightPinValue()) : -1;
+        gameModel.setOffsetSkill(offsetSkill);
 
         int totalPlayersRequired = Integer.parseInt(minPlayerSeekBar.getLeftPinValue());
         gameModel.setTotalPlayersRequired(totalPlayersRequired);

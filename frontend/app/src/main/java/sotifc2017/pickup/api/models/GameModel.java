@@ -16,14 +16,11 @@ public class GameModel {
     public int game_id;
     public String name;
     public String type;
-    public int minSkill;
-    public int maxSkill;
+    public int offsetSkill;
     public int totalPlayersRequired;
     public int totalPlayersAdded;
     public String startTime;
     public String endTime;
-//    public int startDate;
-//    public int endDate;
     public int finalStartTime;
     public int finalEndTime;
     public HashMap<String, Double> location;
@@ -40,14 +37,11 @@ public class GameModel {
         this.game_id = DEFAULT_INT;
         this.name = "My game";
         this.type = "casual";
-        this.minSkill = 1;
-        this.maxSkill = 5;
+        this.offsetSkill = DEFAULT_INT;
         this.totalPlayersRequired = DEFAULT_INT;
         this.totalPlayersAdded = START_NUM_PLAYERS_ADDED;
         this.startTime = String.valueOf(DEFAULT_INT);
         this.endTime = String.valueOf(DEFAULT_INT);
-//        this.startDate = DEFAULT_INT;
-//        this.endDate = DEFAULT_INT;
         this.finalStartTime = DEFAULT_INT;
         this.finalEndTime = DEFAULT_INT;
         this.location = new HashMap<String, Double>() {};
@@ -63,7 +57,7 @@ public class GameModel {
 
 
     //function for time-being
-    public GameModel (int game_id, String name, String type, int minSkill, int maxSkill, int totalPlayersRequired,
+    public GameModel (int game_id, String name, String type, int offsetSkill, int totalPlayersRequired,
                       int totalPlayersAdded, String startTime, String endTime,
                       int finalStartTime, int finalEndTime, HashMap<String, Double> location,
                       int creatorId, String description, String location_notes, String gender,
@@ -72,8 +66,7 @@ public class GameModel {
         this.game_id = game_id;
         this.name = name;
         this.type = type;
-        this.minSkill = minSkill;
-        this.maxSkill = maxSkill;
+        this.offsetSkill = offsetSkill;
         this.totalPlayersRequired = totalPlayersRequired;
         this.totalPlayersAdded = totalPlayersAdded;
         this.startTime = startTime;
@@ -116,20 +109,12 @@ public class GameModel {
         this.type = type;
     }
 
-    public int getMinSkill() {
-        return minSkill;
+    public int getOffsetSkill() {
+        return offsetSkill;
     }
 
-    public void setMinSkill(int min_skill) {
-        this.minSkill = min_skill;
-    }
-
-    public int getMaxSkill() {
-        return maxSkill;
-    }
-
-    public void setMaxSkill(int max_skill) {
-        this.maxSkill = max_skill;
+    public void setOffsetSkill(int offsetSkill) {
+        this.offsetSkill = offsetSkill;
     }
 
     public int getTotalPlayersRequired() {
