@@ -56,7 +56,7 @@ public class GameModel {
         this.location_notes = "Come around the back and knock on the blue door";
         this.gender = "f";
         this.ageRange = new int[] { 20, 30 };
-        this.enforced_params = new ENFORCED_PARAMS[] { ENFORCED_PARAMS.gender, ENFORCED_PARAMS.age };
+        this.enforced_params = new ENFORCED_PARAMS[] {};
         this.time_created = DEFAULT_INT;
         this.player_restricted = DEFAULT_BOOLEAN;
     }

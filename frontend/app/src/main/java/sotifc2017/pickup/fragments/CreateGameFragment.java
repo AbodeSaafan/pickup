@@ -18,6 +18,7 @@ import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -37,6 +38,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -129,6 +131,12 @@ public class CreateGameFragment extends Fragment implements GetJwt.Callback {
     private EditText locationSelector;
     private EditText gameLocationNotes;
 
+    private CheckBox checkboxRestrictAge;
+    private RadioGroup ageRadioGroup;
+
+    private CheckBox checkboxRestrictGender;
+    private RadioGroup genderRadioGroup;
+
     public CreateGameFragment() {
     }
 
@@ -159,36 +167,6 @@ public class CreateGameFragment extends Fragment implements GetJwt.Callback {
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        timeSelector = view.findViewById(R.id.edit_text_time_selector);
-        timeSelector.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View view)
-            {
-                showCustomDialogTimePicker();
-            }
-        });
-
-        locationSelector = view.findViewById(R.id.edit_text_location_selector);
-        locationSelector.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View view)
-            {
-                showPlacePicker();
-            }
-        });
-
-        Button createGameSubmitButton = view.findViewById(R.id.button_create_game_submit);
-        createGameSubmitButton.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View view)
-            {
-                onCreateGameButtonClick();
-            }
-        });
-
         gameModel = new GameModel();
         gameName = view.findViewById(R.id.complete_text_view_game_name);
 
@@ -270,14 +248,88 @@ public class CreateGameFragment extends Fragment implements GetJwt.Callback {
         // Set default date for search (1 week = 1000ms*60s*60min*24hr*7days = 604800000)
         updateDateRangeLabel(startDefaultDate, endDefaultDate);
 
+        timeSelector = view.findViewById(R.id.edit_text_time_selector);
+        timeSelector.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+                showCustomDialogTimePicker();
+            }
+        });
         SimpleDateFormat sdf = new SimpleDateFormat(timeFormat, Locale.US);
         timeSelector.setText(String.format(getString(R.string.create_new_game_time_hint),
                 sdf.format(startDefaultDate),
                 sdf.format(endDefaultDate)));
 
+        locationSelector = view.findViewById(R.id.edit_text_location_selector);
+        locationSelector.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+                showPlacePicker();
+            }
+        });
+
+        Button createGameSubmitButton = view.findViewById(R.id.button_create_game_submit);
+        createGameSubmitButton.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+                onCreateGameButtonClick();
+            }
+        });
+
         gameLocationNotes = view.findViewById(R.id.complete_text_location_notes);
 
+        ageRadioGroup = view.findViewById(R.id.age_radio_group);
+        disableRadioButtonsFor(ageRadioGroup);
+        checkboxRestrictAge = view.findViewById(R.id.checkbox_restrict_age);
+        checkboxRestrictAge.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton checkBox, boolean checked) {
+                updateRadioButtonsStateFor(ageRadioGroup, checked);
+
+                if (!checked) {
+                    removeEnforcedParams(ENFORCED_PARAMS.age);
+                }
+            }
+        });
+
+        genderRadioGroup = view.findViewById(R.id.gender_radio_group);
+        disableRadioButtonsFor(genderRadioGroup);
+        checkboxRestrictGender = view.findViewById(R.id.checkbox_restrict_gender);
+        checkboxRestrictGender.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton checkBox, boolean checked) {
+                updateRadioButtonsStateFor(genderRadioGroup, checked);
+
+                if (!checked) {
+                    removeEnforcedParams(ENFORCED_PARAMS.gender);
+                    gameModel.setGender("a");
+                }
+            }
+        });
+
         super.onViewCreated(view, savedInstanceState);
+    }
+
+    private void disableRadioButtonsFor(RadioGroup radioGroup) {
+        for(int i = 0; i < radioGroup.getChildCount(); i++){
+            radioGroup.getChildAt(i).setEnabled(false);
+        }
+    }
+
+    private void updateRadioButtonsStateFor(RadioGroup radioGroup, boolean enabled) {
+        for(int i = 0; i < radioGroup.getChildCount(); i++){
+            RadioButton radioButton = ((RadioButton) radioGroup.getChildAt(i));
+            radioButton.setEnabled(enabled);
+            if (!enabled) {
+                radioButton.setChecked(false);
+            }
+        }
     }
 
     private void updateDateRangeLabel(Date startDate, Date endDate) {
@@ -371,8 +423,7 @@ public class CreateGameFragment extends Fragment implements GetJwt.Callback {
         boolean checked = ((RadioButton) view).isChecked();
 
         if (checked) {
-            ENFORCED_PARAMS[] newEnforcedParams = getEnforcedParamFor(ENFORCED_PARAMS.age);
-            gameModel.setEnforcedParams(newEnforcedParams);
+            addEnforcedParam(ENFORCED_PARAMS.age);
             switch(view.getId()) {
                 case R.id.radio_18_range:
                     gameModel.setAgeRange(new int[] {18, 25});
@@ -394,8 +445,7 @@ public class CreateGameFragment extends Fragment implements GetJwt.Callback {
         boolean checked = ((RadioButton) view).isChecked();
 
         if (checked) {
-            ENFORCED_PARAMS[] newEnforcedParams = getEnforcedParamFor(ENFORCED_PARAMS.gender);
-            gameModel.setEnforcedParams(newEnforcedParams);
+            addEnforcedParam(ENFORCED_PARAMS.gender);
             switch(view.getId()) {
                 case R.id.radio_male_gender:
                     gameModel.setGender("m");
@@ -403,14 +453,11 @@ public class CreateGameFragment extends Fragment implements GetJwt.Callback {
                 case R.id.radio_female_gender:
                     gameModel.setGender("f");
                     break;
-                case R.id.radio_other_gender:
-                    gameModel.setGender("a");
-                    break;
             }
         }
     }
 
-    private ENFORCED_PARAMS[] getEnforcedParamFor(ENFORCED_PARAMS paramToEnforce) {
+    private void addEnforcedParam(ENFORCED_PARAMS paramToEnforce) {
         boolean alreadyEnforced = false;
         ENFORCED_PARAMS[] prevEnforcedParams = gameModel.getEnforcedParams();
         for (ENFORCED_PARAMS param : prevEnforcedParams) {
@@ -420,10 +467,23 @@ public class CreateGameFragment extends Fragment implements GetJwt.Callback {
         }
 
         if (alreadyEnforced) {
-            return prevEnforcedParams;
+            gameModel.setEnforcedParams(prevEnforcedParams);
         } else {
-            return combine(prevEnforcedParams, new ENFORCED_PARAMS[] {paramToEnforce});
+            gameModel.setEnforcedParams(combine(prevEnforcedParams, new ENFORCED_PARAMS[] {paramToEnforce}));
         }
+    }
+
+    private void removeEnforcedParams(ENFORCED_PARAMS paramToRemove) {
+        ENFORCED_PARAMS[] prevEnforcedParams = gameModel.getEnforcedParams();
+        ArrayList<ENFORCED_PARAMS> newEnforcedParams = new ArrayList<>();
+        for (ENFORCED_PARAMS param : prevEnforcedParams) {
+            if (!param.equals(paramToRemove)) {
+                newEnforcedParams.add(param);
+            }
+        }
+        ENFORCED_PARAMS[] newEnforcedParamsArray = new ENFORCED_PARAMS[] {};
+
+        gameModel.setEnforcedParams(newEnforcedParams.toArray(newEnforcedParamsArray));
     }
 
     // https://javarevisited.blogspot.ca/2013/02/combine-integer-and-string-array-java-example-tutorial.html

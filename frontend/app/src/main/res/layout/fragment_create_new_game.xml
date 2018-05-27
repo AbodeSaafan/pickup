@@ -424,14 +424,24 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/layout_want_restrictions">
 
+            <CheckBox
+                android:id="@+id/checkbox_restrict_age"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_marginEnd="28dp"
+                android:layout_marginStart="40dp"
+                android:paddingTop="60dp" />
+
             <TextView
                 android:id="@+id/text_age_restriction"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_toEndOf="@+id/checkbox_restrict_age"
                 android:paddingTop="30dp"
                 android:text="@string/create_new_game_age_restriction"
                 android:textAlignment="center"
-                android:layout_marginStart="80dp" />
+                android:layout_marginStart="10dp" />
 
             <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
                 android:layout_width="fill_parent"
@@ -441,7 +451,8 @@
                 android:layout_marginTop="20dp"
                 android:layout_toRightOf="@+id/text_age_restriction"
                 android:background="@drawable/radio_button_background"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:id="@+id/age_radio_group">
 
                 <RadioButton
                     android:id="@+id/radio_18_range"
@@ -484,14 +495,24 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/layout_age_restriction">
 
+            <CheckBox
+                android:id="@+id/checkbox_restrict_gender"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_marginEnd="28dp"
+                android:layout_marginStart="40dp"
+                android:paddingTop="60dp" />
+
             <TextView
                 android:id="@+id/text_gender_restriction"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_toEndOf="@+id/checkbox_restrict_gender"
                 android:paddingTop="30dp"
                 android:text="@string/create_new_game_gender_restriction"
                 android:textAlignment="center"
-                android:layout_marginStart="80dp" />
+                android:layout_marginStart="10dp" />
 
             <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
                 android:layout_width="fill_parent"
@@ -501,25 +522,22 @@
                 android:layout_marginStart="40dp"
                 android:layout_marginEnd="40dp"
                 android:background="@drawable/radio_button_background"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:id="@+id/gender_radio_group">
+
                 <RadioButton android:id="@+id/radio_male_gender"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="15dp"
                     android:text="@string/create_new_game_male_gender"
                     android:onClick="onGenderRadioButtonClicked"/>
+
                 <RadioButton android:id="@+id/radio_female_gender"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="15dp"
+                    android:layout_marginBottom="15dp"
                     android:text="@string/create_new_game_female_gender"
-                    android:onClick="onGenderRadioButtonClicked"/>
-                <RadioButton android:id="@+id/radio_other_gender"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="15dp"
-                    android:layout_marginBottom="10dp"
-                    android:text="@string/create_new_game_other_gender"
                     android:onClick="onGenderRadioButtonClicked"/>
             </RadioGroup>
         </RelativeLayout>
