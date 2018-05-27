@@ -400,7 +400,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         if (createGameFrag != null) {
             createGameFrag.onSelectedTime(hourStart, minuteStart, hourEnd, minuteEnd);
         }
-        Toast.makeText(this, "Start: "+hourStart+":"+minuteStart+"\nEnd: "+hourEnd+":"+minuteEnd, Toast.LENGTH_SHORT).show();
     }
 
     // Fragments callbacks
