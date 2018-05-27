@@ -73,7 +73,7 @@ public class SearchGamesFragment extends Fragment implements SearchFragment {
     private RelativeLayout detailsChildSection;
     private Calendar fromCalendar;
     private Calendar toCalendar;
-    private final String dateFormat = "MM/dd/yy";
+    private final String dateFormat = "MM/dd/yyyy";
     private EditText dateRangeText;
     private DatePickerDialog.OnDateSetListener dateListenerFrom = new DatePickerDialog.OnDateSetListener() {
 

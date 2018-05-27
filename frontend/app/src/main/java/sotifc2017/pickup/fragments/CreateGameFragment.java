@@ -92,7 +92,7 @@ public class CreateGameFragment extends Fragment implements GetJwt.Callback {
 
     private Calendar fromCalendar;
     private Calendar toCalendar;
-    private final String dateFormat = "MM/dd/yy";
+    private final String dateFormat = "MM/dd/yyyy";
     private final String timeFormat = "HH:mm:ss";
     Date startDefaultDate = new Date(System.currentTimeMillis());
     Date endDefaultDate = new Date(System.currentTimeMillis() + 604800000);
@@ -456,13 +456,16 @@ public class CreateGameFragment extends Fragment implements GetJwt.Callback {
 
     public void onSelectedTime(int hourStart, int minuteStart, int hourEnd, int minuteEnd)
     {
-        Log.d(FC_TAG, "Start: " + hourStart + ":" + minuteStart + "\nEnd: " + hourEnd + ":" + minuteEnd);
-        timeSelector.setText(String.format(getString(R.string.create_new_game_time_hint),
-                hourStart+ ":" + minuteStart + ":00",
-                hourEnd + ":" + minuteEnd + ":00"));
+        String startTime = hourStart + ":" + minuteStart + ":00";
+        String endTime = hourEnd + ":" + minuteEnd + ":00";
+        Log.d(FC_TAG, "Start: " + startTime + "\nEnd: " + endTime);
 
-        gameModel.setStartTime(hourStart + ":" + minuteStart);
-        gameModel.setEndTime(hourEnd + ":" + minuteEnd);
+        timeSelector.setText(String.format(getString(R.string.create_new_game_time_hint),
+                startTime,
+                endTime));
+
+        gameModel.setStartTime(startTime);
+        gameModel.setEndTime(endTime);
     }
 
     private void showPlacePicker() {
@@ -620,9 +623,8 @@ public class CreateGameFragment extends Fragment implements GetJwt.Callback {
     }
 
     private long createFinalTime(String startDate, String startTime) throws ParseException {
-        String finalDate = startDate + " " + startTime;
-        SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy HH:mm");
-        Date date = sdf.parse(finalDate);
+        SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss", Locale.US);
+        Date date = sdf.parse(startDate + " " + startTime);
 
         return date.getTime();
     }
