@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -75,11 +76,11 @@ public class ExtendedProfileFragment extends Fragment implements GetJwt.Callback
 
         if (getArguments() != null) {
             user_id = getArguments().getString("userID");
+            ImageButton addFriendButton = getView().findViewById(R.id.add_friend);
+            addFriendButton.setVisibility(View.VISIBLE);
 
         } else {
             user_id = String.valueOf(Authentication.getUserId(getActivity()));
-            //Button addFriendButton = (Button) getView().findViewById(R.id.add_friend);
-            //addFriendButton.setVisibility (View.VISIBLE);
         }
 
         return inflater.inflate(R.layout.fragment_extended_profile, container, false);

@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">Pickup</string>
 
+    <string name="zero">0</string>
+
     <!-- Splash screen strings -->
     <string name="splashScreenRetryCountdown">It seems like our servers are a bit slow, retrying in %1$d seconds.</string>
     <string name="splashScreenServerDown">Our servers seem to be down right now. Sorry for the inconvenience, please try again in a few minutes!</string>
@@ -136,8 +138,8 @@
     <string name="main_search_users_tab_title">Users</string>
 
     <!-- Extended Profile strings -->
-    <string name="extended_profile_games_created">Games Created</string>
-    <string name="extended_profile_games_played">Games Played</string>
+    <string name="extended_profile_games_created">Game(s) Created</string>
+    <string name="extended_profile_games_played">Game(s) Played</string>
     <string name="extended_profile_top_tag">Top Tag</string>
     <string name="extended_profile_top_tag_awarded">Top Tag Awarded</string>
     <string name="extended_profile_age_text">%s years old</string>

@@ -6,6 +6,7 @@
     <color name="primary_darker">#393939</color>
 
     <color name="light_orange">#FCA960</color>
+    <color name="dark_orange">#FF7700</color>
     <color name="white">#FFFFFF</color>
     <color name="black">#000000</color>
     <color name="jet">#222222</color>

@@ -22,7 +22,7 @@
                 android:id="@+id/profile_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="#FDB927"
+                android:background="@color/light_orange"
                 android:elevation="4dp"
                 android:paddingBottom="24dp">
 
@@ -33,7 +33,7 @@
                     android:layout_height="wrap_content"
                     android:layout_centerHorizontal="true"
                     android:paddingTop="20dp"
-                    android:textColor="#552582"
+                    android:textColor="@color/primary_dark"
                     android:textSize="24sp"
                     android:textStyle="bold" />
 
@@ -46,7 +46,9 @@
                     android:layout_alignParentRight="true"
                     android:layout_marginEnd="19dp"
                     android:layout_marginRight="19dp"
+                    android:visibility="invisible"
                     android:background="@null"
+                    android:tint="@color/primary_dark"
                     android:src="@drawable/ic_person_add_black_24dp" />
 
 
@@ -66,7 +68,8 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="0.5"
                         android:gravity="center"
-                        android:textColor="#552582" />
+                        android:text="@string/zero"
+                        android:textColor="@color/primary_dark" />
 
                     <TextView
                         android:id="@+id/gamesPlayedValue"
@@ -74,7 +77,8 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="0.5"
                         android:gravity="center"
-                        android:textColor="#552582" />
+                        android:text="@string/zero"
+                        android:textColor="@color/primary_dark" />
                 </LinearLayout>
 
                 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -91,7 +95,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="0.5"
                         android:gravity="center"
-                        android:textColor="#552582"
+                        android:textColor="@color/primary_dark"
                         android:text="@string/extended_profile_games_created" />
 
                     <TextView
@@ -100,7 +104,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="0.5"
                         android:gravity="center"
-                        android:textColor="#552582"
+                        android:textColor="@color/primary_dark"
                         android:text="@string/extended_profile_games_played" />
                 </LinearLayout>
 
@@ -120,6 +124,8 @@
                         android:numStars="5"
                         android:scaleX="0.5"
                         android:scaleY="0.5"
+                        android:isIndicator="true"
+                        android:progressTint="@color/white"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"/>
 
@@ -141,7 +147,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="0.5"
                         android:gravity="center"
-                        android:textColor="#552582"
+                        android:textColor="@color/primary_dark"
                         android:text="@string/extended_profile_top_tag" />
 
                     <TextView
@@ -150,7 +156,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="0.5"
                         android:gravity="center"
-                        android:textColor="#552582"
+                        android:textColor="@color/primary_dark"
                         android:text="@string/extended_profile_top_tag_awarded" />
                 </LinearLayout>
 
