@@ -50,6 +50,7 @@ public class ExtendedProfileFragment extends Fragment implements GetJwt.Callback
     TextView gamesCreated;
     TextView gamesPlayed;
     String user_id;
+    TextView topTagValue;
     Geocoder geocoder;
     String[] LatLng;
 
@@ -126,7 +127,7 @@ public class ExtendedProfileFragment extends Fragment implements GetJwt.Callback
             try{
                 ExtendedProfileSuccess(Utils.gson.fromJson(response.toString(), GetExtendedProfileResponse.class));
             }
-            //TODO: Implement Failure
+            //TODO we should deal with this another way, how many failures can we have, lets deal with those per case
             catch (Exception e){
                 ExtendedProfileFailure(e.getMessage());
             }
@@ -150,14 +151,15 @@ public class ExtendedProfileFragment extends Fragment implements GetJwt.Callback
 
     private void GetExtendedProfile(String jwt) {
         Utils.getInstance(getActivity()).getRequestQueue(getActivity()).add(ExtendedProfile.getProfile_request(jwt, user_id, successful_extendedProfile, error_extendedProfile));
-
     }
 
 
 
     private void ExtendedProfileSuccess(GetExtendedProfileResponse response) throws IOException {
+        //TODO clean this up and we should avoid throwing an exception here
         age = getView().findViewById(R.id.age);
-        age.setText(String.format(getResources().getString(R.string.extended_profile_age_text), response.age));
+        age.setText(String.format(getResources().getString(R.string.extended_profile_age_text), Integer.toString(response.age)));
+
 
         gender = getView().findViewById(R.id.gender);
         if (response.gender.equals("M")) {
@@ -167,7 +169,8 @@ public class ExtendedProfileFragment extends Fragment implements GetJwt.Callback
         }
 
         skillevel = getView().findViewById(R.id.skill_level);
-        String skill = SignUpActivity.skillLevels[Integer.parseInt(response.skilllevel)] + "(" + response.skilllevel + ")";
+        //TODO this is bad, we should move (what looks like an enum) somewhere common
+        String skill = SignUpActivity.skillLevels[response.skilllevel] + "(" + response.skilllevel + ")";
 
         skillevel.setText(skill);
 
@@ -190,22 +193,24 @@ public class ExtendedProfileFragment extends Fragment implements GetJwt.Callback
 
 
         averageReview = getView().findViewById(R.id.averageReviewValue);
-        float aReviewValue = Float.parseFloat(response.average_review);
-        averageReview.setRating(aReviewValue);
+        averageReview.setRating(response.average_review);
 
         /*GamesCreated and GamesPlayed not working*/
 
         gamesCreated = getView().findViewById(R.id.gamesCreatedValue);
-        gamesCreated.setText(response.games_created);
+        gamesCreated.setText(Integer.toString(response.games_created));
 
-        gamesPlayed = getView().findViewById(R.id.gamesCreatedValue);
-        gamesPlayed.setText(response.games_joined);
+        gamesPlayed = getView().findViewById(R.id.gamesPlayedValue);
+        gamesPlayed.setText(Integer.toString(response.games_joined));
+
+        //TODO when cleaning up and splitting functions here, we actually should show 'tag (xCount)'
+        topTagValue = getView().findViewById(R.id.topTagAwardedValue);
+        topTagValue.setText(response.top_tag != null ? response.top_tag : getResources().getString(R.string.extended_profile_no_tags));
 
         loadingResponse.cancel();
     }
 
     private void ExtendedProfileFailure(String message) {
-
         Toast.makeText(getActivity(), "ExtendedProfile failed: " + message, Toast.LENGTH_SHORT).show();
 
     }

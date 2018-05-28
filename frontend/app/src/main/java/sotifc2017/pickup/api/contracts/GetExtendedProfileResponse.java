@@ -5,12 +5,15 @@ package sotifc2017.pickup.api.contracts;
  */
 
 public class GetExtendedProfileResponse {
-    public String age;
-    public String skilllevel;
+    public int age;
+    public int skilllevel;
     public String gender;
+    //TODO we need to change this to not a string and send/get location consistently across api
     public String location;
-    public String average_review;
+    public float average_review;
     public String username;
-    public String games_created;
-    public String games_joined;
+    public int games_created;
+    public int games_joined;
+    public String top_tag;
+    public int top_tag_count;
 }

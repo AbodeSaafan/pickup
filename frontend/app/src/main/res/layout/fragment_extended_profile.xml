@@ -24,7 +24,7 @@
                 android:layout_height="wrap_content"
                 android:background="@color/light_orange"
                 android:elevation="4dp"
-                android:paddingBottom="24dp">
+                android:paddingBottom="14dp">
 
 
                 <TextView
@@ -96,6 +96,7 @@
                         android:layout_weight="0.5"
                         android:gravity="center"
                         android:textColor="@color/primary_dark"
+                        android:textStyle="bold"
                         android:text="@string/extended_profile_games_created" />
 
                     <TextView
@@ -105,17 +106,21 @@
                         android:layout_weight="0.5"
                         android:gravity="center"
                         android:textColor="@color/primary_dark"
+                        android:textStyle="bold"
                         android:text="@string/extended_profile_games_played" />
                 </LinearLayout>
 
-                <LinearLayout
-                    android:id="@+id/averageReview"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerHorizontal="true"
-                    android:paddingTop="10dp"
-                    android:layout_below="@+id/gamesTitle"
-                    android:orientation="horizontal" >
+
+                    <TextView
+                        android:id="@+id/averageReviewLabel"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:paddingTop="15dp"
+                        android:layout_below="@+id/gamesTitle"
+                        android:textColor="@color/primary_dark"
+                        android:textStyle="bold"
+                        android:text="@string/extended_profile_average_review_label" />
 
                     <RatingBar
                         android:id="@+id/averageReviewValue"
@@ -125,40 +130,32 @@
                         android:scaleX="0.5"
                         android:scaleY="0.5"
                         android:isIndicator="true"
+                        android:layout_below="@+id/averageReviewLabel"
+                        android:layout_centerHorizontal="true"
                         android:progressTint="@color/white"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"/>
 
-                </LinearLayout>
-
-
-                <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                    android:id="@+id/TopTag"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/averageReview"
-                    android:paddingTop="10dp"
-                    android:orientation="horizontal"
-                    android:weightSum="1" >
-
-                    <TextView
-                        android:id="@+id/toptag"
-                        android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="0.5"
-                        android:gravity="center"
-                        android:textColor="@color/primary_dark"
-                        android:text="@string/extended_profile_top_tag" />
 
                     <TextView
                         android:id="@+id/topTagAwarded"
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="0.5"
                         android:gravity="center"
+                        android:layout_below="@+id/averageReviewValue"
                         android:textColor="@color/primary_dark"
+                        android:textStyle="bold"
                         android:text="@string/extended_profile_top_tag_awarded" />
-                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/topTagAwardedValue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/topTagAwarded"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="5dp"
+                    android:textColor="@color/primary_dark" />
+
 
             </RelativeLayout>
 
