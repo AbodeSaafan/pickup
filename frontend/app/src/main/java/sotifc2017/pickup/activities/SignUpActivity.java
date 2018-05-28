@@ -59,6 +59,8 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
+import sotifc2017.pickup.Common.SkillLevel;
+import sotifc2017.pickup.Common.SkillLevelEnum;
 import sotifc2017.pickup.R;
 import sotifc2017.pickup.api.Authentication;
 import sotifc2017.pickup.api.ExtendedProfile;
@@ -113,7 +115,6 @@ public class SignUpActivity extends AppCompatActivity implements LoaderManager.L
     private String email;
     private String password;
     private API_GENDER gender;
-    public static String[] skillLevels = {"Just for Fun!", "Rookie", "All Star", "Super Star", "Hall of Fame", "God of Basketball"};
 
     Button next0;
     Button next1;
@@ -205,12 +206,14 @@ public class SignUpActivity extends AppCompatActivity implements LoaderManager.L
         mFirstnameView = findViewById(R.id.fname);
         mLastnameView = findViewById(R.id.lname);
         skillLevel = findViewById(R.id.skill_level);
-        skillLevel.setText(skillLevels[2]);
+
+
         skillLevelBar = findViewById(R.id.skill_level_bar);
+        skillLevel.setText(getResources().getString(SkillLevel.GetFriendlyTextResourceId(skillLevelBar.getProgress())));
         skillLevelBar.setOnProgressChangeListener(new DiscreteSeekBar.OnProgressChangeListener() {
             @Override
             public void onProgressChanged(DiscreteSeekBar seekBar, int value, boolean fromUser) {
-                skillLevel.setText(skillLevels[value / 2]);
+                skillLevel.setText(getResources().getString(SkillLevel.GetFriendlyTextResourceId(value)));
                 skilllevel_Value = value / 2;
             }
 

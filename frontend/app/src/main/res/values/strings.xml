@@ -2,6 +2,14 @@
     <string name="app_name">Pickup</string>
 
     <string name="zero">0</string>
+    <string name="none">N/A</string>
+
+    <!-- Skill levels -->
+    <string name="skill_beginner">Beginner</string>
+    <string name="skill_rookie">Rookie</string>
+    <string name="skill_intermediate">Intermediate</string>
+    <string name="skill_highschool">HighSchool Level</string>
+    <string name="skill_college">College Level</string>
 
     <!-- Splash screen strings -->
     <string name="splashScreenRetryCountdown">It seems like our servers are a bit slow, retrying in %1$d seconds.</string>
@@ -142,8 +150,10 @@
     <string name="extended_profile_games_played">Game(s) Played</string>
     <string name="extended_profile_top_tag">Top Tag</string>
     <string name="extended_profile_top_tag_awarded">Top Tag Awarded</string>
+    <string name="extended_profile_top_tag_value">%s (x%d)</string>
     <string name="extended_profile_age_text">%s years old</string>
     <string name="extended_profile_average_review_label">Average Rating</string>
     <string name="extended_profile_no_tags">You have not been reviewed yet</string>
+    <string name="extended_profile_skill_text">%s (%d)</string>
 
 </resources>

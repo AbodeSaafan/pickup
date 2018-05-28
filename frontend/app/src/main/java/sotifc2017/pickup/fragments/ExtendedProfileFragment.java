@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 
+import sotifc2017.pickup.Common.SkillLevel;
 import sotifc2017.pickup.CommonComponents;
 import sotifc2017.pickup.R;
 import sotifc2017.pickup.activities.SignInActivity;
@@ -38,24 +39,24 @@ import sotifc2017.pickup.fragment_interfaces.OnFragmentReplacement;
 
 public class ExtendedProfileFragment extends Fragment implements GetJwt.Callback {
     int currentFragmentId = R.id.action_profile;
-    OnFragmentReplacement mCallback;
+    private OnFragmentReplacement mCallback;
 
-    ProgressDialog loadingResponse;
+    private ProgressDialog loadingResponse;
 
-    TextView age;
-    TextView gender;
-    TextView skillevel;
-    TextView location;
-    RatingBar averageReview;
-    TextView username;
-    TextView gamesCreated;
-    TextView gamesPlayed;
-    String user_id;
-    TextView topTagValue;
-    Geocoder geocoder;
-    String[] LatLng;
+    private TextView age;
+    private TextView gender;
+    private TextView skillevel;
+    private TextView location;
+    private RatingBar averageReview;
+    private TextView username;
+    private TextView gamesCreated;
+    private TextView gamesPlayed;
+    private String user_id;
+    private TextView topTagValue;
+    private Geocoder geocoder;
+    private String[] LatLng;
 
-    boolean viewingSelfProfile;
+    private boolean viewingSelfProfile;
 
     @Override
     public void onAttach(Activity activity) {
@@ -101,7 +102,6 @@ public class ExtendedProfileFragment extends Fragment implements GetJwt.Callback
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //getActivity().setContentView(R.layout.fragment_extended_profile);
         geocoder = new Geocoder(getActivity(), Locale.getDefault());
 
     }
@@ -168,70 +168,76 @@ public class ExtendedProfileFragment extends Fragment implements GetJwt.Callback
         Utils.getInstance(getActivity()).getRequestQueue(getActivity()).add(ExtendedProfile.getProfile_request(jwt, user_id, successful_extendedProfile, error_extendedProfile));
     }
 
-
-
-    private void ExtendedProfileSuccess(GetExtendedProfileResponse response) throws IOException {
-        //TODO clean this up and we should avoid throwing an exception here
-        age = getView().findViewById(R.id.age);
-        age.setText(String.format(getResources().getString(R.string.extended_profile_age_text), Integer.toString(response.age)));
-
-
-        gender = getView().findViewById(R.id.gender);
-        if (response.gender.equals("M")) {
-            gender.setText(getResources().getString(R.string.prompt_male));
-        } else if (response.gender.equals("F")) {
-            gender.setText(getResources().getString(R.string.prompt_female));
-        }
-
-        skillevel = getView().findViewById(R.id.skill_level);
-        //TODO this is bad, we should move (what looks like an enum) somewhere common
-        String skill = SignUpActivity.skillLevels[response.skilllevel] + "(" + response.skilllevel + ")";
-
-        skillevel.setText(skill);
-
-        location = getView().findViewById(R.id.location);
-        LatLng = response.location.split(",");
-        double latitude = Double.parseDouble(LatLng[0].substring(1));
-        double longitude = Double.parseDouble(LatLng[1].substring(0, LatLng[1].length() - 1));
-        String newLocation;
-        List<Address> addresses  = geocoder.getFromLocation(latitude, longitude, 1);
-        if (addresses.size() > 0) {
-            newLocation = addresses.get(0).getLocality() + ", " + addresses.get(0).getAdminArea() + ", " + addresses.get(0).getCountryCode();
-        } else {
-            newLocation = "N/A";
-        }
-
-        location.setText(newLocation);
-
-        username = getView().findViewById(R.id.user_profile_name);
-        username.setText(response.username);
-
-
-        averageReview = getView().findViewById(R.id.averageReviewValue);
-        averageReview.setRating(response.average_review);
-
-        /*GamesCreated and GamesPlayed not working*/
-
-        gamesCreated = getView().findViewById(R.id.gamesCreatedValue);
-        gamesCreated.setText(Integer.toString(response.games_created));
-
-        gamesPlayed = getView().findViewById(R.id.gamesPlayedValue);
-        gamesPlayed.setText(Integer.toString(response.games_joined));
-
-        //TODO when cleaning up and splitting functions here, we actually should show 'tag (xCount)'
-        topTagValue = getView().findViewById(R.id.topTagAwardedValue);
-        topTagValue.setText(response.top_tag != null ? response.top_tag : getResources().getString(R.string.extended_profile_no_tags));
+    private void ExtendedProfileSuccess(GetExtendedProfileResponse response) {
+        SetGlobalsBasedOnView(getView());
+        SetElementsBasedOnProfile(response);
 
         loadingResponse.cancel();
     }
 
     private void ExtendedProfileFailure(String message) {
         Toast.makeText(getActivity(), "ExtendedProfile failed: " + message, Toast.LENGTH_SHORT).show();
-
+        loadingResponse.cancel();
     }
 
+    private void SetGlobalsBasedOnView(View view){
+        age = view.findViewById(R.id.age);
+        gender = getView().findViewById(R.id.gender);
+        skillevel = getView().findViewById(R.id.skill_level);
+        location = getView().findViewById(R.id.location);
+        username = getView().findViewById(R.id.user_profile_name);
+        averageReview = getView().findViewById(R.id.averageReviewValue);
+        gamesCreated = getView().findViewById(R.id.gamesCreatedValue);
+        gamesPlayed = getView().findViewById(R.id.gamesPlayedValue);
+        topTagValue = getView().findViewById(R.id.topTagAwardedValue);
+    }
+    private void SetElementsBasedOnProfile(GetExtendedProfileResponse response){
+
+        //TODO separate into functions with more checking
+        age.setText(String.format(getResources().getString(R.string.extended_profile_age_text), Integer.toString(response.age)));
+
+        if (response.gender.equals("M")) {
+            gender.setText(getResources().getString(R.string.prompt_male));
+        } else if (response.gender.equals("F")) {
+            gender.setText(getResources().getString(R.string.prompt_female));
+        } else {
+            gender.setText(getResources().getString(R.string.prompt_other_gender));
+        }
+
+        skillevel.setText(
+                String.format(
+                        getResources().getString(R.string.extended_profile_skill_text),
+                        getResources().getString(SkillLevel.GetFriendlyTextResourceId(response.skilllevel)),
+                        response.skilllevel));
 
 
+        LatLng = response.location.split(",");
+        double latitude = Double.parseDouble(LatLng[0].substring(1));
+        double longitude = Double.parseDouble(LatLng[1].substring(0, LatLng[1].length() - 1));
+        String newLocation;
+        try {
+            List<Address> addresses  = geocoder.getFromLocation(latitude, longitude, 1);
+            if (addresses.size() > 0) {
+                newLocation = addresses.get(0).getLocality() + ", " + addresses.get(0).getAdminArea() + ", " + addresses.get(0).getCountryCode();
+            } else {
+                newLocation = "N/A";
+            }
+        } catch (IOException e){
+            newLocation = "N/A";
+        }
+
+        location.setText(newLocation);
+
+        username.setText(response.username);
+
+        averageReview.setRating(response.average_review);
+
+        gamesCreated.setText(Integer.toString(response.games_created));
+
+        gamesPlayed.setText(Integer.toString(response.games_joined));
+
+        topTagValue.setText(response.top_tag != null ? String.format(getResources().getString(R.string.extended_profile_top_tag_value), response.top_tag, response.top_tag_count) : getResources().getString(R.string.extended_profile_no_tags));
+    }
 }
 
 
