@@ -415,6 +415,11 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         ConfigurableFragmentItemsManager.configureMenuItemSelection(navigationView, currentFragmentId);
     }
 
+    @Override
+    public void clearMenuItemSelection(){
+        ConfigurableFragmentItemsManager.enableFullMenu(navigationView);
+    }
+
     public void startPlacePickerActivity() {
         PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
 

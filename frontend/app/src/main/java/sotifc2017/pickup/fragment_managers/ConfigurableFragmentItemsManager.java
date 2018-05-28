@@ -24,15 +24,20 @@ public class ConfigurableFragmentItemsManager {
     }
 
     public static void configureMenuItemSelection(NavigationView navigationView, int currentFragmentId) {
+        enableFullMenu(navigationView);
+
         MenuItem navItemSelected = navigationView.getMenu().findItem(currentFragmentId);
-        for (int i = 0; i < navigationView.getMenu().size(); i++) {
-            navigationView.getMenu().getItem(i).setChecked(false).setEnabled(true);
-        }
 
         if (navItemSelected != null) { // Fragment for menu item
             navItemSelected.setChecked(true).setEnabled(false);
         } else {
             Log.d(FC_TAG, "[FragmentItemsManager][configureMenuItemSelection] Not in menu");
+        }
+    }
+
+    public static void enableFullMenu(NavigationView navigationView){
+        for (int i = 0; i < navigationView.getMenu().size(); i++) {
+            navigationView.getMenu().getItem(i).setChecked(false).setEnabled(true);
         }
     }
 

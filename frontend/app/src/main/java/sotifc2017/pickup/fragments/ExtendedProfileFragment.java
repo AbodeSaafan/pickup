@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -54,6 +55,8 @@ public class ExtendedProfileFragment extends Fragment implements GetJwt.Callback
     Geocoder geocoder;
     String[] LatLng;
 
+    boolean viewingSelfProfile;
+
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
@@ -77,14 +80,22 @@ public class ExtendedProfileFragment extends Fragment implements GetJwt.Callback
 
         if (getArguments() != null) {
             user_id = getArguments().getString("userID");
-            ImageButton addFriendButton = getView().findViewById(R.id.add_friend);
-            addFriendButton.setVisibility(View.VISIBLE);
+            viewingSelfProfile = false;
 
         } else {
+            viewingSelfProfile = true;
             user_id = String.valueOf(Authentication.getUserId(getActivity()));
         }
 
         return inflater.inflate(R.layout.fragment_extended_profile, container, false);
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        ImageButton addFriendButton = view.findViewById(R.id.add_friend);
+        if(!viewingSelfProfile){
+            addFriendButton.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
@@ -97,7 +108,11 @@ public class ExtendedProfileFragment extends Fragment implements GetJwt.Callback
 
     @Override
     public void onResume() {
-        mCallback.configureMenuItemSelection(currentFragmentId, true);
+        if(viewingSelfProfile){
+            mCallback.configureMenuItemSelection(currentFragmentId, true);
+        } else {
+            mCallback.clearMenuItemSelection();
+        }
 
         super.onResume();
     }

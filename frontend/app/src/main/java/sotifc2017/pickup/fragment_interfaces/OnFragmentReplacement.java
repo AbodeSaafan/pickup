@@ -10,4 +10,5 @@ public interface OnFragmentReplacement {
 
     void startPlacePickerActivity();
 
+    void clearMenuItemSelection();
 }
