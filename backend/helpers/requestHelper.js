@@ -162,7 +162,9 @@ function getIfReviewed(users, reviewerId, finished){
 	var final_results = [];
 	async.forEachOf(users, function(user, i, callback){
 		databaseHelper.getIfReviewed(reviewerId, user.user_id, (reviewed)=>{
-			final_results.push({"user_id": users[i].user_id, "reviewed" : reviewed});
+			databaseHelper.getUsernameById(user.user_id, (username) =>{
+				final_results.push({"user_id": users[i].user_id, "username": username, "reviewed" : reviewed});
+			});
 			callback();
 		});
 	}, function () {

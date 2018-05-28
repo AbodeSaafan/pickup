@@ -85,6 +85,21 @@ function getUserRowById(userId, callback) {
 	});
 }
 
+function getUsernameById(userId, callback) {
+	var queryString = "SELECT username FROM users WHERE user_id = $1 AND disabled = false";
+	var queryParams = [userId];
+
+	const pool = new pg.Pool({ connectionString: conString });
+
+	pool.connect((err, client, done) => {
+		client.query(queryString, queryParams, (err, res) => {
+			callback(!err && (res && res.rows[0]));
+			done();
+			pool.end();
+		});
+	});
+}
+
 function getRefreshToken(userId, refreshToken, callback) {
 	var queryString = "SELECT * FROM refresh WHERE user_id = $1 and refresh_token = $2;";
 	var queryParams = [userId, refreshToken];
@@ -822,7 +837,8 @@ module.exports = {
 	updateReview,
 	addTag,
 	deleteTag,
-	updatePassword
+	updatePassword,
+	getUsernameById
 };
 
 //////////////// Helpers ////////////////
