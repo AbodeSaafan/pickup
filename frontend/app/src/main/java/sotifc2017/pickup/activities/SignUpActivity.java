@@ -301,13 +301,13 @@ public class SignUpActivity extends AppCompatActivity implements LoaderManager.L
                                int pos, long id) {
         switch (genderSpinner.getSelectedItem().toString()) {
             case "Male":
-                gender = API_GENDER.m;
+                gender = API_GENDER.M;
                 break;
             case "Female":
-                gender = API_GENDER.f;
+                gender = API_GENDER.F;
                 break;
             default:
-                gender = API_GENDER.o;
+                gender = API_GENDER.O;
         }
     }
 

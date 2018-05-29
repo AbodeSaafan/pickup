@@ -5,5 +5,8 @@ package sotifc2017.pickup.api.enums;
  */
 
 public enum API_GENDER {
-    m, f, a, o
+    M,
+    F,
+    A,
+    O
 }

@@ -1,5 +1,7 @@
 package sotifc2017.pickup.api.contracts;
 
+import sotifc2017.pickup.api.enums.API_GENDER;
+
 /**
  * Created by rkrishnan on 1/16/2018.
  */
@@ -7,7 +9,7 @@ package sotifc2017.pickup.api.contracts;
 public class GetExtendedProfileResponse {
     public int age;
     public int skilllevel;
-    public String gender;
+    public API_GENDER gender;
     //TODO we need to change this to not a string and send/get location consistently across api
     public String location;
     public float average_review;

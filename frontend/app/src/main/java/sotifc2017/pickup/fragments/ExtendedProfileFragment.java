@@ -1,5 +1,6 @@
 package sotifc2017.pickup.fragments;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.ProgressDialog;
@@ -29,12 +30,12 @@ import sotifc2017.pickup.Common.SkillLevel;
 import sotifc2017.pickup.CommonComponents;
 import sotifc2017.pickup.R;
 import sotifc2017.pickup.activities.SignInActivity;
-import sotifc2017.pickup.activities.SignUpActivity;
 import sotifc2017.pickup.api.Authentication;
 import sotifc2017.pickup.api.ExtendedProfile;
 import sotifc2017.pickup.api.GetJwt;
 import sotifc2017.pickup.api.Utils;
 import sotifc2017.pickup.api.contracts.GetExtendedProfileResponse;
+import sotifc2017.pickup.api.enums.API_GENDER;
 import sotifc2017.pickup.fragment_interfaces.OnFragmentReplacement;
 
 public class ExtendedProfileFragment extends Fragment implements GetJwt.Callback {
@@ -43,20 +44,19 @@ public class ExtendedProfileFragment extends Fragment implements GetJwt.Callback
 
     private ProgressDialog loadingResponse;
 
-    private TextView age;
-    private TextView gender;
-    private TextView skillevel;
-    private TextView location;
-    private RatingBar averageReview;
-    private TextView username;
-    private TextView gamesCreated;
-    private TextView gamesPlayed;
-    private String user_id;
-    private TextView topTagValue;
-    private Geocoder geocoder;
-    private String[] LatLng;
+    private TextView ageTextView;
+    private TextView genderTextView;
+    private TextView skillevelTextView;
+    private TextView locationTextView;
+    private RatingBar averageReviewRatingBar;
+    private TextView usernameTextView;
+    private TextView gamesCreatedTextView;
+    private TextView gamesPlayedTextView;
+    private TextView topTagValueTextView;
 
-    private boolean viewingSelfProfile;
+    private String user_id;
+
+    private Geocoder geocoder;
 
     @Override
     public void onAttach(Activity activity) {
@@ -74,27 +74,26 @@ public class ExtendedProfileFragment extends Fragment implements GetJwt.Callback
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
         loadingResponse = CommonComponents.getLoadingProgressDialog(getActivity());
         loadingResponse.show();
-        new GetJwt(this).execute(getActivity());
 
-        if (getArguments() != null) {
-            user_id = getArguments().getString("userID");
-            viewingSelfProfile = false;
+        String userIdPassedIn = getArguments() == null ? "" : getArguments().getString("userID");
 
+        if (userIdPassedIn != null && !userIdPassedIn.isEmpty()) {
+            user_id = userIdPassedIn;
         } else {
-            viewingSelfProfile = true;
             user_id = String.valueOf(Authentication.getUserId(getActivity()));
         }
+
+        new GetJwt(this).execute(getActivity());
 
         return inflater.inflate(R.layout.fragment_extended_profile, container, false);
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        ImageButton addFriendButton = view.findViewById(R.id.add_friend);
-        if(!viewingSelfProfile){
+        if(!viewingSelfProfile()){
+            ImageButton addFriendButton = view.findViewById(R.id.add_friend);
             addFriendButton.setVisibility(View.VISIBLE);
         }
     }
@@ -103,12 +102,11 @@ public class ExtendedProfileFragment extends Fragment implements GetJwt.Callback
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         geocoder = new Geocoder(getActivity(), Locale.getDefault());
-
     }
 
     @Override
     public void onResume() {
-        if(viewingSelfProfile){
+        if(viewingSelfProfile()){
             mCallback.configureMenuItemSelection(currentFragmentId, true);
         } else {
             mCallback.clearMenuItemSelection();
@@ -181,64 +179,101 @@ public class ExtendedProfileFragment extends Fragment implements GetJwt.Callback
     }
 
     private void SetGlobalsBasedOnView(View view){
-        age = view.findViewById(R.id.age);
-        gender = getView().findViewById(R.id.gender);
-        skillevel = getView().findViewById(R.id.skill_level);
-        location = getView().findViewById(R.id.location);
-        username = getView().findViewById(R.id.user_profile_name);
-        averageReview = getView().findViewById(R.id.averageReviewValue);
-        gamesCreated = getView().findViewById(R.id.gamesCreatedValue);
-        gamesPlayed = getView().findViewById(R.id.gamesPlayedValue);
-        topTagValue = getView().findViewById(R.id.topTagAwardedValue);
+        ageTextView = view.findViewById(R.id.age);
+        genderTextView = view.findViewById(R.id.gender);
+        skillevelTextView = view.findViewById(R.id.skill_level);
+        locationTextView = view.findViewById(R.id.location);
+        usernameTextView = view.findViewById(R.id.user_profile_name);
+        averageReviewRatingBar = view.findViewById(R.id.averageReviewValue);
+        gamesCreatedTextView = view.findViewById(R.id.gamesCreatedValue);
+        gamesPlayedTextView = view.findViewById(R.id.gamesPlayedValue);
+        topTagValueTextView = view.findViewById(R.id.topTagAwardedValue);
     }
     private void SetElementsBasedOnProfile(GetExtendedProfileResponse response){
+        SetAge(response.age);
+        SetGender(response.gender);
+        SetSkillLevel(response.skilllevel);
+        SetLocation(response.location);
+        SetUsername(response.username);
+        SetAverageRating(response.average_review);
+        SetGamesCounters(response.games_created, response.games_joined);
+        SetTopTag(response.top_tag, response.top_tag_count);
+    }
 
-        //TODO separate into functions with more checking
-        age.setText(String.format(getResources().getString(R.string.extended_profile_age_text), Integer.toString(response.age)));
+    private void SetAge(int age){
+        ageTextView.setText(
+                String.format(getResources().getString(R.string.extended_profile_age_text),
+                        Integer.toString(age)));
+    }
 
-        if (response.gender.equals("M")) {
-            gender.setText(getResources().getString(R.string.prompt_male));
-        } else if (response.gender.equals("F")) {
-            gender.setText(getResources().getString(R.string.prompt_female));
-        } else {
-            gender.setText(getResources().getString(R.string.prompt_other_gender));
+    private void SetGender(API_GENDER gender) {
+        switch (gender) {
+            case M:
+                genderTextView.setText(getResources().getString(R.string.prompt_male));
+                break;
+            case F:
+                genderTextView.setText(getResources().getString(R.string.prompt_female));
+                break;
+            case O:
+                genderTextView.setText(getResources().getString(R.string.prompt_other_gender));
+                break;
+            default:
+                genderTextView.setText(getResources().getString(R.string.none));
         }
+    }
 
-        skillevel.setText(
+    private void SetSkillLevel(int level){
+        skillevelTextView.setText(
                 String.format(
                         getResources().getString(R.string.extended_profile_skill_text),
-                        getResources().getString(SkillLevel.GetFriendlyTextResourceId(response.skilllevel)),
-                        response.skilllevel));
+                        getResources().getString(SkillLevel.GetFriendlyTextResourceId(level)), level));
+    }
 
-
-        LatLng = response.location.split(",");
-        double latitude = Double.parseDouble(LatLng[0].substring(1));
-        double longitude = Double.parseDouble(LatLng[1].substring(0, LatLng[1].length() - 1));
+    private void SetLocation(String loc){
+        String[] latLng = loc.split(",");
+        double latitude = Double.parseDouble(latLng[0].substring(1));
+        double longitude = Double.parseDouble(latLng[1].substring(0, latLng[1].length() - 1));
         String newLocation;
         try {
             List<Address> addresses  = geocoder.getFromLocation(latitude, longitude, 1);
             if (addresses.size() > 0) {
                 newLocation = addresses.get(0).getLocality() + ", " + addresses.get(0).getAdminArea() + ", " + addresses.get(0).getCountryCode();
             } else {
-                newLocation = "N/A";
+                newLocation = getResources().getString(R.string.none);
             }
         } catch (IOException e){
-            newLocation = "N/A";
+            newLocation = getResources().getString(R.string.none);
         }
 
-        location.setText(newLocation);
+        locationTextView.setText(newLocation);
+    }
 
-        username.setText(response.username);
+    private void SetUsername(String username){
+        usernameTextView.setText(username);
+    }
 
-        averageReview.setRating(response.average_review);
+    private void SetAverageRating(float average_review){
+        averageReviewRatingBar.setRating(average_review);
+    }
 
-        gamesCreated.setText(Integer.toString(response.games_created));
+    @SuppressLint("SetTextI18n") // We are displaying plain integers
+    private void SetGamesCounters(int created, int played){
+        gamesCreatedTextView.setText(Integer.toString(created));
 
-        gamesPlayed.setText(Integer.toString(response.games_joined));
+        gamesPlayedTextView.setText(Integer.toString(played));
+    }
 
-        topTagValue.setText(response.top_tag != null ? String.format(getResources().getString(R.string.extended_profile_top_tag_value), response.top_tag, response.top_tag_count) : getResources().getString(R.string.extended_profile_no_tags));
+    private void SetTopTag(String tag, int count){
+        if(tag != null){
+            topTagValueTextView.setText(String.format(getResources().getString(R.string.extended_profile_top_tag_value), tag, count));
+        }
+        else{
+            topTagValueTextView.setText(getResources().getString(R.string.extended_profile_no_tags));
+        }
+
+    }
+
+    private boolean viewingSelfProfile(){
+        return user_id.equals(String.valueOf(Authentication.getUserId(getActivity())));
     }
 }
-
-
-
