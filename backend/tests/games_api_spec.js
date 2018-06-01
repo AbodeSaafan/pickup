@@ -150,11 +150,13 @@ frisby.create("Joining a game: Creating a user to create a game")
 													.get(testHelper.getUsersOfGameEndpoint + "?jwt=" + user.token + "&game_id=" + gameId)
 													.expectJSON("?", {
 														user_id: parseInt(newUser1.user_id),
-														reviewed: false
+														reviewed: false,
+														username: newUser1.username
 													})
 													.expectJSON("?", {
 														user_id: parseInt(newUser.user_id),
-														reviewed: false
+														reviewed: false,
+														username: newUser.username
 													})
 													.expectStatus(200)
 													.toss();

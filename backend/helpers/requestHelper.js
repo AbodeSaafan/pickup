@@ -164,8 +164,8 @@ function getIfReviewed(users, reviewerId, finished){
 		databaseHelper.getIfReviewed(reviewerId, user.user_id, (reviewed)=>{
 			databaseHelper.getUsernameById(user.user_id, (username) =>{
 				final_results.push({"user_id": users[i].user_id, "username": username, "reviewed" : reviewed});
+				callback();
 			});
-			callback();
 		});
 	}, function () {
 		finished(final_results);
