@@ -19,6 +19,8 @@
     <color name="red">#ff0000</color>
     <color name="green">#77b735</color>
     <color name="paleturquoise">#AFEEEE</color>
+    <color name="darkred">#690a0a</color>
+    <color name="darkgreen">#0a690a</color>
     <!--<color name="darkturquoise">#00CED1</color>-->
 
 </resources>

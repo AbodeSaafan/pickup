@@ -59,6 +59,8 @@ public class GameViewFragment extends Fragment implements GetJwt.Callback {
     ListView listview;
     LinearLayout tagLayout;
     String jwtReal;
+    Button joinButton;
+    Button leaveButton;
 
 
     @Override
@@ -131,9 +133,9 @@ public class GameViewFragment extends Fragment implements GetJwt.Callback {
 
         }
 
-        gameId.setText(gameList.game_id);
+        gameId.setText("#" + gameList.game_id);
         gameName.setText(gameList.name);
-        gameDate.setText(gameList.finalStartTime);
+        gameDate.setText(gameList.finalStartTime + "to" + gameList.finalEndTime);
         gameDescription.setText(gameList.description);
         gameLocation.setText(newLocation);
         gameLocationNotes.setText(gameList.location_notes);
@@ -145,7 +147,6 @@ public class GameViewFragment extends Fragment implements GetJwt.Callback {
         jwtReal = jwt;
         GetUsersRequest request = createGetUsersRequest(jwt);
         Utils.getInstance(getActivity()).getRequestQueue(getActivity()).add(Game.getUsers_request(request, successful_userlist, error_userlist));
-
     }
 
     @Override
@@ -183,7 +184,7 @@ public class GameViewFragment extends Fragment implements GetJwt.Callback {
                 }
 
                 if(alreadyJoined) {
-                    Button leaveButton = new Button(getActivity());
+                    leaveButton = new Button(getActivity());
                     leaveButton.setText("Leave Game");
                     leaveButton.setBackgroundColor(getResources().getColor(R.color.red));
                     leaveButton.setOnClickListener(new View.OnClickListener() {
@@ -196,7 +197,7 @@ public class GameViewFragment extends Fragment implements GetJwt.Callback {
                     listview.addFooterView(leaveButton);
                 }
                 else {
-                    Button joinButton = new Button(getActivity());
+                    joinButton = new Button(getActivity());
                     joinButton.setText("Join Game +");
                     joinButton.setBackgroundColor(getResources().getColor(R.color.green));
                     joinButton.setOnClickListener(new View.OnClickListener() {
@@ -215,7 +216,6 @@ public class GameViewFragment extends Fragment implements GetJwt.Callback {
             catch (Exception e){
                 Log.e("game", "error parsing results");
             }
-
         }
     };
 
@@ -237,6 +237,7 @@ public class GameViewFragment extends Fragment implements GetJwt.Callback {
         public void onResponse(JSONObject response) {
             try{
                 Toast.makeText(getActivity(), "Successfully joined game!", Toast.LENGTH_SHORT).show();
+                joinButton.setBackgroundColor(getResources().getColor(R.color.darkgreen));
                 //Reload this page
             }
             catch (Exception e){
@@ -265,6 +266,7 @@ public class GameViewFragment extends Fragment implements GetJwt.Callback {
         public void onResponse(JSONObject response) {
             try{
                 Toast.makeText(getActivity(), "Successfully left game.", Toast.LENGTH_SHORT).show();
+                leaveButton.setBackgroundColor(getResources().getColor(R.color.darkred));
                 //Reload this page
             }
             catch (Exception e){
@@ -307,6 +309,7 @@ public class GameViewFragment extends Fragment implements GetJwt.Callback {
                 LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
         TextView tv=new TextView(getActivity());
         tv.setLayoutParams(lparams);
+        tv.setPadding(50,0,50,0);
         tv.setBackgroundResource(R.drawable.rounded_corner);
         tv.setText(text);
         this.tagLayout.addView(tv);

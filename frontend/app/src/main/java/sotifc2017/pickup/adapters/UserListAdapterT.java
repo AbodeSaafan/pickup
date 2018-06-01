@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import sotifc2017.pickup.R;
@@ -53,10 +54,13 @@ public class UserListAdapterT extends BaseAdapter {
             itemView = LayoutInflater.from(this.mContext).inflate(R.layout.fragment_user_list_item, null);
         }
 
-        TextView username = (TextView) itemView.findViewById(R.id.username);
+        TextView username = (TextView) itemView.findViewById(R.id.firstLastName);
+        ImageView icon = itemView.findViewById(R.id.icon);
         final String user_id = String.valueOf(user.user_id);
 
+        icon.setVisibility(View.VISIBLE);
         username.setText(user.username);
+        username.setTextSize(20);
 
         itemView.setOnClickListener(new View.OnClickListener() {
             @Override
