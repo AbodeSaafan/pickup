@@ -56,7 +56,7 @@ function validateAndCleanChangePasswordRequest(data){
 }
 
 function validateAndCleanLoginRequest(data){
-	validate(data.password, regex.passwordRegex, strings.invalidPassordSignIn);
+	validate(data.password, regex.passwordRegex, strings.invalidPasswordSignIn);
 	validate(data.email, regex.emailRegex, strings.invalidUsernameSignIn);
 	return data;
 }
