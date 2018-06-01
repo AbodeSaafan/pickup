@@ -1,0 +1,103 @@
+<!doctype html>
+<html class="no-js" lang="">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>Frisby Code Converter v0.1</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script type="text/javascript">
+        String.prototype.replaceAll = function(search, replacement) {
+            var target = this;
+            return target.split(search).join(replacement);
+        };
+
+        function convertToNewFrisby(myVariable) {
+            myVariable = myVariable.replaceAll(/\.toss\(\).*\n*\t*/g, "");
+
+            var frisbyCreateRegex = /frisby\.create\((.*)\)/;
+            var match = frisbyCreateRegex.exec(myVariable);
+
+            var name = match[1];
+            var replacementLine = "it(" + name + ", function() {";
+
+            myVariable = myVariable.replace(/frisby.create.*/, replacementLine);
+            myVariable = myVariable + "});";
+
+            myVariable = "describe('test', function () {\n" + myVariable + "\n});";
+
+            myVariable = myVariable.replaceAll(/frisby.create.*\n*\t*/g, "");
+
+            myVariable = myVariable.replaceAll("expectStatus(", "expect('status', ");
+            myVariable = myVariable.replaceAll("expectJSONContains(", "expect('json', ");
+            myVariable = myVariable.replaceAll("expectJSON(", "expect('jsonStrict', ");
+            myVariable = myVariable.replaceAll("expectBodyContains(", "expect('bodyContains', ");
+            myVariable = myVariable.replaceAll(/.*\.expectHeaderContains\(.*\r?\n|\r/g, "");
+            myVariable = myVariable.replaceAll("afterJSON", "then");
+            myVariable = myVariable.replaceAll(".get", "return frisby.get");
+            myVariable = myVariable.replaceAll(".post", "return frisby.post");
+            myVariable = myVariable.replaceAll(".put", "return frisby.put");
+            myVariable = myVariable.replaceAll(".delete", "return frisby.del");
+
+            myVariable = myVariable.replaceAll(".after", ".then");
+
+            var changeToJsonVarRegex = /\(function\ *\((.*?)\).*\t*\n*/m;
+
+            match = changeToJsonVarRegex.exec(myVariable);
+            var unvisited = myVariable;
+            var visited = "";
+            var secretSauce;
+
+            var x = 6;
+            while (x > 0) {
+                x--;
+                if (match && match[1]) {
+                    replacementLine = match[0] + "\n" + match[1] + " = " + match[1] + ".json;\n";
+                    myVariable = visited + unvisited.replace(match[0], replacementLine);
+
+                    secretSauce = visited.length + (myVariable.indexOf(match[0]) + match[0].length);
+                    unvisited = myVariable.slice(secretSauce, myVariable.length);
+                    visited = myVariable.slice(0, secretSauce);
+                    match = changeToJsonVarRegex.exec(unvisited);
+                } else {
+                    break;
+                }
+            }
+            return myVariable;
+        }
+
+        function convertCode() {
+            var oldCode = document.getElementById("oldCode").value;
+
+            document.getElementById("newCode").value = convertToNewFrisby(oldCode);
+        }
+    </script>
+</head>
+<h1>Frisby Converter v0.1</h1>
+
+<body>
+    <p>The idea of this little JS script with the HTML interface is to convert test code from using syntax for frisby frame work 0.8.5 to use the newer syntax for frisby 2.0.15. It is not clean code, not pretty, not optimized, and might have some flaws. Only meant to migrate tests over, not to write new tests and convert.
+    </p>
+
+    <table>
+        <tr>
+            <th>Old Frisby Code</th>
+            <td>
+                <textarea rows="20" cols="200" id="oldCode"></textarea>
+            </td>
+        </tr>
+        <tr>
+            <th>New Frisby Code</th>
+            <td>
+                <textarea rows="20" cols="200" disabled id="newCode"></textarea>
+            </td>
+        </tr>
+    </table>
+
+    <button style="position: absolute; left: 40%" onclick="convertCode();">Convert</button>
+
+</body>
+
+</html>
