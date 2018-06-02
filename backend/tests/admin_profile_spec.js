@@ -3,266 +3,230 @@ var testHelper = require("./testHelper");
 var strings = require("../api/universal_strings");
 
 
-// Get admin profile properly
-frisby.create("Register a user using the API with valid credentials to use for profile testing")
-	.post(testHelper.registerEndpoint, testHelper.createGenericUserMale())
-	.expectStatus(200)
-	.afterJSON(function (body) {
-		frisby.create("Get admin profile of user")
-			.get(testHelper.adminProfileEndpoint+"?jwt="+body.token)
-			.expectStatus(200)
-			.expectBodyContains("user_id")
-			.expectBodyContains("username")
-			.expectBodyContains("fname")
-			.expectBodyContains("lname")
-			.expectBodyContains("gender")
-			.expectBodyContains("dob")
-			.expectBodyContains("email")
-			.toss();
-	})
-	.afterJSON(function () {
-		frisby.create("Get admin profile of user")
-			.get(testHelper.adminProfileEndpoint+"?jwt=sabdhiadas")
-			.expectStatus(400)
-			.toss();
-	})
-	.toss();
+describe("Admin/Private profile api testing", function () {
+	it("Getting admin profile, successful path then bad token", function() {
+		return frisby.post(testHelper.registerEndpoint, testHelper.createGenericUserMale())
+			.expect("status", 200)
+			.then(function (userApiDetails) {
+				userApiDetails = userApiDetails.json;
+				return frisby.get(testHelper.adminProfileEndpoint+"?jwt="+userApiDetails.token)
+					.expect("status", 200)
+					.expect("bodyContains", "user_id")
+					.expect("bodyContains", "username")
+					.expect("bodyContains", "fname")
+					.expect("bodyContains", "lname")
+					.expect("bodyContains", "gender")
+					.expect("bodyContains", "dob")
+					.expect("bodyContains", "email");
+			})
+			.then(function () {
+				return frisby.get(testHelper.adminProfileEndpoint+"?jwt=sabdhiadas")
+					.expect("status", 400);
+			});
+	});
+	
 
 
-//Update ALL fields of Admin User
-frisby.create("Register a user using the API with valid credentials to use for profile testing")
-	.post(testHelper.registerEndpoint, testHelper.createGenericUserMale())
-	.expectStatus(200)
-	.afterJSON(function (body) {
-		frisby.create("Get admin profile of user")
-			.get(testHelper.adminProfileEndpoint+"?jwt="+body.token)
-			.expectStatus(200)
-			.afterJSON(function() {
-				frisby.create("Update admin profile of user")
-					.put(testHelper.adminProfileEndpoint, testHelper.createGenericUserUpdate(body.token))
-					.expectStatus(200)
-					.afterJSON(function(UpdateUser) {
-						frisby.create("Verify update of user details")
-							.get(testHelper.adminProfileEndpoint+"?jwt="+body.token)
-							.expectStatus(200)
-							.expectJSON({
-								user_id: body.user_id,
-								username: UpdateUser.username,
-								fname: UpdateUser.fname,
-								lname: UpdateUser.lname,
-								gender: UpdateUser.gender,
-								dob: UpdateUser.dob,
-								email: UpdateUser.email
-							})
-							.toss();
+	it("Can update all the fields of a user's admin profile", function() {
+		return frisby.post(testHelper.registerEndpoint, testHelper.createGenericUserMale())
+			.expect("status", 200)
+			.then(function (userApiDetails) {
+				userApiDetails = userApiDetails.json;
+				return frisby.get(testHelper.adminProfileEndpoint+"?jwt="+userApiDetails.token)
+					.expect("status", 200)
+					.then(function() {
+						return frisby.put(testHelper.adminProfileEndpoint, testHelper.createGenericUserUpdate(userApiDetails.token))
+							.expect("status", 200)
+							.then(function(updatedUserDetails) {
+								updatedUserDetails = updatedUserDetails.json;
+								return frisby.get(testHelper.adminProfileEndpoint+"?jwt="+userApiDetails.token)
+									.expect("status", 200)
+									.expect("jsonStrict", {
+										user_id: userApiDetails.user_id,
+										username: updatedUserDetails.username,
+										fname: updatedUserDetails.fname,
+										lname: updatedUserDetails.lname,
+										gender: updatedUserDetails.gender,
+										dob: updatedUserDetails.dob,
+										email: updatedUserDetails.email
+									});
+							});
+					});
+			});
+	});
+
+
+	it("Can update the first and last name fields of a user's admin profile", function() {
+		var user = testHelper.createGenericUserMale();
+		return frisby.post(testHelper.registerEndpoint, user)
+			.expect("status", 200)
+			.then(function (userApiDetails) {
+				userApiDetails = userApiDetails.json;
+				return frisby.put(testHelper.adminProfileEndpoint, testHelper.createGenericUserUpdateWithFnameLname(userApiDetails.token))
+					.expect("status", 200)
+					.then(function(updatedUserDetails) {
+						updatedUserDetails = updatedUserDetails.json;
+						return frisby.get(testHelper.adminProfileEndpoint+"?jwt="+userApiDetails.token)
+							.expect("jsonStrict", {
+								user_id: userApiDetails.user_id,
+								username: user.username,
+								fname: updatedUserDetails.fname,
+								lname: updatedUserDetails.lname,
+								gender: user.gender,
+								dob: user.dob,
+								email: user.email
+							});
+					});
+			});
+	});
+
+	it("Can update the username and email fields of a user's admin profile", function() {
+		var user = testHelper.createGenericUserMale();
+		return frisby.post(testHelper.registerEndpoint, user)
+			.expect("status", 200)
+			.then(function (userApiDetails) {
+				userApiDetails = userApiDetails.json;
+				return frisby.put(testHelper.adminProfileEndpoint, testHelper.createGenericUserUpdateWithUsernameEmail(userApiDetails.token, user.password))
+					.expect("status", 200)
+					.then(function(updatedUserDetails) {
+						updatedUserDetails = updatedUserDetails.json;
+						return frisby.get(testHelper.adminProfileEndpoint+"?jwt="+userApiDetails.token)
+							.expect("status", 200)
+							.expect("jsonStrict", {
+								user_id: userApiDetails.user_id,
+								username: updatedUserDetails.username,
+								fname: user.fname,
+								lname: user.lname,
+								gender: user.gender,
+								dob: user.dob,
+								email: updatedUserDetails.email
+							});
+					});
+			});
+	});
+
+	it("Can update the gender and dob fields of a user's admin profile", function() {
+		var user = testHelper.createGenericUserMale();
+		return frisby.post(testHelper.registerEndpoint, user)
+			.expect("status", 200)
+			.then(function (userApiDetails) {
+				userApiDetails = userApiDetails.json;
+				return frisby.put(testHelper.adminProfileEndpoint, testHelper.createGenericUserUpdateWithGenderDob(userApiDetails.token))
+					.expect("status", 200)
+					.then(function(updatedUserDetails) {
+						updatedUserDetails = updatedUserDetails.json;
+						return frisby.get(testHelper.adminProfileEndpoint+"?jwt="+userApiDetails.token)
+							.expect("status", 200)
+							.expect("jsonStrict", {
+								user_id: userApiDetails.user_id,
+								username: user.username,
+								fname: user.fname,
+								lname: user.lname,
+								gender: updatedUserDetails.gender,
+								dob: updatedUserDetails.dob,
+								email: user.email
+							});
+					});
+			});
+	});
+
+
+	it("Updating no field of an admin user profile by passing in empty params", function() {
+		var user = testHelper.createGenericUserMale();
+		return frisby.post(testHelper.registerEndpoint, user)
+			.expect("status", 200)
+			.then(function (userApiDetails) {
+				userApiDetails = userApiDetails.json;
+				return frisby.put(testHelper.adminProfileEndpoint, {
+					jwt: userApiDetails.token,
+					username:"",
+					password:"",
+					fname:"",
+					lname: "",
+					gender:"",
+					dob:"",
+					email:""
+				})
+					.expect("status", 200)
+					.then(function() {
+						return frisby.get(testHelper.adminProfileEndpoint+"?jwt="+userApiDetails.token)
+							.expect("status", 200)
+							.expect("jsonStrict", {
+								user_id: userApiDetails.user_id,
+								username: user.username,
+								fname: user.fname,
+								lname: user.lname,
+								gender: user.gender,
+								dob: user.dob,
+								email: user.email
+							});
+					});
+			});
+	});
+
+
+	it("Fails to update if details passed in are invalid", function() {
+		return frisby.post(testHelper.registerEndpoint, testHelper.createGenericUserMale())
+			.expect("status", 200)
+			.then(function (userApiDetails) {
+				userApiDetails = userApiDetails.json;
+				return frisby.put(testHelper.adminProfileEndpoint, {
+					jwt: userApiDetails.token,
+					username:"*",
+					password:"",
+					fname:"123",
+					lname: "",
+					gender:"",
+					dob:"",
+					email:"invalid_email"
+				})
+					.expect("status", 400);
+			});
+	});
+
+
+	it("Fails to update if jwt is invalid", function() {
+		return frisby.post(testHelper.registerEndpoint, testHelper.createGenericUserMale())
+			.expect("status", 200)
+			.then(function () {
+				return frisby.put(testHelper.adminProfileEndpoint, {
+					jwt: "123",
+					username:"rads286",
+					password:"",
+					fname:"",
+					lname: "",
+					gender:"",
+					dob:"",
+					email:"rads18@gmail.com"
+				})
+					.expect("status", 400);
+			});
+	});
+
+	it("Does not allow updating DOB to an invalid date", function() {
+		var user = testHelper.createGenericUserMale();
+		return frisby.post(testHelper.registerEndpoint, user)
+			.expect("status", 200)
+			.then(function (userApiDetails) {
+				userApiDetails = userApiDetails.json;
+				return frisby.put(testHelper.adminProfileEndpoint, testHelper.createGenericUserUpdateWithInvalidDob(userApiDetails.token))
+					.expect("status", 400)
+					.expect("jsonStrict", {
+						error: strings.ageIsNotAtMinimum
 					})
-					.toss();
-			})
-			.toss();
-	})
-	.toss();
-
-
-
-
-//Update only first and last name field of Admin User
-frisby.create("Register a user using the API with valid credentials to use for profile testing")
-	.post(testHelper.registerEndpoint, testHelper.createGenericUserMale())
-	.expectStatus(200)
-	.afterJSON(function (body) {
-		frisby.create("Update admin profile of user with firstName and lastName")
-			.put(testHelper.adminProfileEndpoint, testHelper.createGenericUserUpdateWithFnameLname(body.token))
-			.expectStatus(200)
-			.afterJSON(function(UpdateUser) {
-				frisby.create("Verify update of user details")
-					.get(testHelper.adminProfileEndpoint+"?jwt="+body.token)
-					.expectStatus(200)
-					.expectJSON({
-						user_id: body.user_id,
-						username: body.username,
-						fname: UpdateUser.fname,
-						lname: UpdateUser.lname,
-						gender: body.gender,
-						dob: body.dob,
-						email: body.email
-					})
-					.toss();
-			})
-			.toss();
-	})
-	.toss();
-
-
-
-
-//Update only username and email field of Admin User
-var user = testHelper.createGenericUserMale();
-frisby.create("Register a user using the API with valid credentials to use for profile testing")
-	.post(testHelper.registerEndpoint, user)
-	.expectStatus(200)
-	.afterJSON(function (body) {
-		frisby.create("Update admin profile of user with username and email")
-			.put(testHelper.adminProfileEndpoint, testHelper.createGenericUserUpdateWithUsernameEmail(body.token, user.password))
-			.expectStatus(200)
-			.afterJSON(function(UpdateUser) {
-				frisby.create("Verify update of user details")
-					.get(testHelper.adminProfileEndpoint+"?jwt="+body.token)
-					.expectStatus(200)
-					.expectJSON({
-						user_id: body.user_id,
-						username: UpdateUser.username,
-						fname: body.fname,
-						lname: body.lname,
-						gender: body.gender,
-						dob: body.dob,
-						email: UpdateUser.email
-					})
-					.toss();
-			})
-			.toss();
-	})
-	.toss();
-
-
-//Update only gender and dob field of Admin User
-
-frisby.create("Register a user using the API with valid credentials to use for profile testing")
-	.post(testHelper.registerEndpoint, testHelper.createGenericUserMale())
-	.expectStatus(200)
-	.afterJSON(function (body) {
-		frisby.create("Update admin profile of user with username and email")
-			.put(testHelper.adminProfileEndpoint, testHelper.createGenericUserUpdateWithGenderDob(body.token))
-			.expectStatus(200)
-			.afterJSON(function(UpdateUser) {
-				frisby.create("Verify update of user details")
-					.get(testHelper.adminProfileEndpoint+"?jwt="+body.token)
-					.expectStatus(200)
-					.expectJSON({
-						user_id: body.user_id,
-						username: body.username,
-						fname: body.fname,
-						lname: body.lname,
-						gender: UpdateUser.gender,
-						dob: UpdateUser.dob,
-						email: body.email
-					})
-					.toss();
-			})
-			.toss();
-	})
-	.toss();
-
-
-//Update no field of Admin User
-frisby.create("Register a user using the API with valid credentials to use for profile testing")
-	.post(testHelper.registerEndpoint, testHelper.createGenericUserMale())
-	.expectStatus(200)
-	.afterJSON(function (body) {
-		frisby.create("Update admin profile of user with username and email")
-			.put(testHelper.adminProfileEndpoint, {
-				jwt: body.token,
-				username:"",
-				password:"",
-				fname:"",
-				lname: "",
-				gender:"",
-				dob:"",
-				email:""
-			})
-			.expectStatus(200)
-			.afterJSON(function() {
-				frisby.create("Verify update of user details")
-					.get(testHelper.adminProfileEndpoint+"?jwt="+body.token)
-					.expectStatus(200)
-					.expectJSON({
-						user_id: body.user_id,
-						username: body.username,
-						fname: body.fname,
-						lname: body.lname,
-						gender: body.gender,
-						dob: body.dob,
-						email: body.email
-					})
-					.toss();
-			})
-			.toss();
-	})
-	.toss();
-
-
-//Updating with invalid details
-
-frisby.create("Register a user using the API with valid credentials to use for profile testing")
-	.post(testHelper.registerEndpoint, testHelper.createGenericUserMale())
-	.expectStatus(200)
-	.afterJSON(function (body) {
-		frisby.create("Update admin profile of user with invalid username, email and fname")
-			.put(testHelper.adminProfileEndpoint, {
-				jwt: body.token,
-				username:"*",
-				password:"",
-				fname:"123",
-				lname: "",
-				gender:"",
-				dob:"",
-				email:"invalid_email"
-			})
-			.expectStatus(400)
-			.toss();
-	})
-	.toss();
-
-
-//Updating with invalid jwt
-
-frisby.create("Register a user using the API with valid credentials to use for profile testing")
-	.post(testHelper.registerEndpoint, testHelper.createGenericUserMale())
-	.expectStatus(200)
-	.afterJSON(function () {
-		frisby.create("Update admin profile of user with invalid jwt")
-			.put(testHelper.adminProfileEndpoint, {
-				jwt: "123",
-				username:"rads286",
-				password:"",
-				fname:"",
-				lname: "",
-				gender:"",
-				dob:"",
-				email:"rads18@gmail.com"
-			})
-			.expectStatus(400)
-			.toss();
-	})
-	.toss();
-
-
-//Update dob field of Admin User with invalid age
-
-frisby.create("Register a user using the API with valid credentials to use for profile testing")
-	.post(testHelper.registerEndpoint, testHelper.createGenericUserMale())
-	.expectStatus(200)
-	.afterJSON(function (body) {
-		frisby.create("Update admin profile of user with invalid dob")
-			.put(testHelper.adminProfileEndpoint, testHelper.createGenericUserUpdateWithInvalidDob(body.token))
-			.expectStatus(400)
-			.expectJSON({
-				error: strings.ageIsNotAtMinimum
-			})
-			.afterJSON(function () {
-				frisby.create("Verify update of user details")
-					.get(testHelper.adminProfileEndpoint + "?jwt=" + body.token)
-					.expectStatus(200)
-					.expectJSON({
-						user_id: body.user_id,
-						username: body.username,
-						fname: body.fname,
-						lname: body.lname,
-						gender: body.gender,
-						dob: body.dob,
-						email: body.email
-					})
-					.toss();
-			})
-			.toss();
-	})
-	.toss();
+					.then(function () {
+						return frisby.get(testHelper.adminProfileEndpoint + "?jwt=" + userApiDetails.token)
+							.expect("status", 200)
+							.expect("jsonStrict", {
+								user_id: userApiDetails.user_id,
+								username: user.username,
+								fname: user.fname,
+								lname: user.lname,
+								gender: user.gender,
+								dob: user.dob,
+								email: user.email
+							});
+					});
+			});
+	});
+});
