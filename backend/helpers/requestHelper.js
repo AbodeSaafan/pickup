@@ -94,9 +94,9 @@ function validateAndCleanLeaveRequest(data){
 }
 
 function validateAndCleanReviewRequest(data){
-	validate(data.userId, regex.idRegex, strings.invalidUserId);
-	validate(data.gameId, regex.idRegex, strings.invalidGameId);
-	validate(data.rating, regex.ratingRegex, strings.invalidRating);
+	validateNumber(data.userId, strings.invalidUserId, 1, Number.MAX_SAFE_INTEGER);
+	validateNumber(data.gameId, strings.invalidGameId, 1, Number.MAX_SAFE_INTEGER);
+	validateNumber(data.rating, strings.invalidRating, 1, 10);
 	validateRatings(data.tags);
 	data.reviewed = data.reviewed == "true";
 	return data;
