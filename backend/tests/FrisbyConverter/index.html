@@ -53,9 +53,7 @@
             var visited = "";
             var secretSauce;
 
-            var x = 500;
-            while (x > 0) {
-                x--;
+            while (true) {
                 if (match && match[1]) {
                     replacementLine = match[0] + "\n" + match[1] + " = " + match[1] + ".json;\n";
                     myVariable = visited + unvisited.replace(match[0], replacementLine);
@@ -80,7 +78,7 @@
 
             chunks.forEach(function(chunk) {
                 if(chunk.trim()) {
-                newCode += convertToNewFrisby(chunk);
+                newCode += convertToNewFrisby(chunk) + "\n\n";
                 }
             });
 
