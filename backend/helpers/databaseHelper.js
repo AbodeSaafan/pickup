@@ -60,7 +60,7 @@ function getUserId(email, callback) {
 	pool.connect((err, client, done) => {
 		client.query(queryString, queryParams, (err, res) => {
 			if (!err && res.rows[0].user_id) {
-				callback(res.rows[0].user_id);
+				callback(parseInt(res.rows[0].user_id));
 			} else {
 				callback(false);
 			}
@@ -412,7 +412,7 @@ function createGame(userId, name, type, min_skill, max_skill, totalPlayers, star
 	pool.connect((err, client, done) => {
 		client.query(queryString, queryParams, (err, res) => {
 			if (!err && res && res.rows && res.rows[0] && res.rows[0].game_id) {
-				callback(res.rows[0].game_id);
+				callback(parseInt(res.rows[0].game_id));
 			} else {
 				callback(false);
 			}

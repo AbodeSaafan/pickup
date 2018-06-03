@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <title>Frisby Code Converter v0.1</title>
+    <title>Frisby Code Converter v0.2</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
@@ -20,13 +20,16 @@
             var frisbyCreateRegex = /frisby\.create\((.*)\)/;
             var match = frisbyCreateRegex.exec(myVariable);
 
+            if(!match || !match[1]) {
+                return myVariable; // Not valid test chunk
+            }
             var name = match[1];
             var replacementLine = "it(" + name + ", function() {";
 
             myVariable = myVariable.replace(/frisby.create.*/, replacementLine);
             myVariable = myVariable + "});";
 
-            myVariable = "describe('test', function () {\n" + myVariable + "\n});";
+            //myVariable = "describe('test', function () {\n" + myVariable + "\n});";
 
             myVariable = myVariable.replaceAll(/frisby.create.*\n*\t*/g, "");
 
@@ -50,7 +53,7 @@
             var visited = "";
             var secretSauce;
 
-            var x = 6;
+            var x = 500;
             while (x > 0) {
                 x--;
                 if (match && match[1]) {
@@ -71,14 +74,25 @@
         function convertCode() {
             var oldCode = document.getElementById("oldCode").value;
 
-            document.getElementById("newCode").value = convertToNewFrisby(oldCode);
+            var newCode = "";
+
+            var chunks = oldCode.split("\n\n");
+
+            chunks.forEach(function(chunk) {
+                if(chunk.trim()) {
+                newCode += convertToNewFrisby(chunk);
+                }
+            });
+
+            document.getElementById("newCode").value = newCode;
+            ///convertToNewFrisby(oldCode);
         }
     </script>
 </head>
-<h1>Frisby Converter v0.1</h1>
+<h1>Frisby Converter v0.2</h1>
 
 <body>
-    <p>The idea of this little JS script with the HTML interface is to convert test code from using syntax for frisby frame work 0.8.5 to use the newer syntax for frisby 2.0.15. It is not clean code, not pretty, not optimized, and might have some flaws. Only meant to migrate tests over, not to write new tests and convert.
+    <p>The idea of this little JS script with the HTML interface is to convert test code from using syntax for frisby frame work 0.8.5 to use the newer syntax for frisby 2.0.16. It is not clean code, not pretty, not optimized, and might have some flaws. Only meant to migrate tests over, not to write new tests and convert.
     </p>
 
     <table>
