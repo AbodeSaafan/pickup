@@ -2,51 +2,52 @@ var frisby = require("frisby");
 var strings = require("../api/universal_strings");
 var testHelper = require("./testHelper");
 
-var genericUser = testHelper.createGenericUserMale();
+describe("Register api testing", function ()  {
+	it("Register a user using the API with valid credentials", function() {
+		var genericUser = testHelper.createGenericUserMale();
+		return frisby.post(testHelper.registerEndpoint, genericUser) 
+			.expect("status", 200)
+			.expect("bodyContains", "token")
+			.expect("bodyContains", "user_id")
+			.expect("bodyContains", "refresh");
+	});
+	
 
-// Creating a user with valid creds
-frisby.create("Register a user using the API with valid credentials")
-	.post(testHelper.registerEndpoint, genericUser) 
-	.expectStatus(200)
-	.expectHeaderContains("content-type", "application/json")
-	.expectBodyContains("token")
-	.expectBodyContains("user_id")
-	.expectBodyContains("refresh")
-	.toss();
+	it("Register a user using the API with invalid user due to age restriction", function() {
+		return frisby.post(testHelper.registerEndpoint, testHelper.createInvalidAgeUser()) 
+			.expect("status", 400)
+			.expect("jsonStrict", {
+				error: strings.ageIsNotAtMinimum
+			});
+	});
+	
 
-// Creating a user with invalid age 
-frisby.create("Register a user using the API with invalid user due to age restriction")
-	.post(testHelper.registerEndpoint, testHelper.createInvalidAgeUser()) 
-	.expectStatus(400)
-	.expectJSON({
-		error: strings.ageIsNotAtMinimum
-	})
-	.toss();
-
-// Sending a register request without some params
-frisby.create("Attempt to register a user using the API with missing parameters")
-	.post(testHelper.registerEndpoint, {
-		password:"password123",
-		fname:"abode",
-		lname:"saafan",
-		gender:"m",
-		dob:"25/03/1996",
-		email:"abode@mail.com"
-	})
-	.expectStatus(400)
-	.expectHeaderContains("content-type", "application/json")
-	.expectJSON({
-		error: strings.invalidUsername
-	})
-	.toss();
-
-// Invalid since we just created one above and we are trying to re-use it
-frisby.create("Register a user using the API with an invalid email")
-	.post(testHelper.registerEndpoint, genericUser)
-	.expectStatus(400)
-	.expectHeaderContains("content-type", "application/json")
-	.expectBodyContains("error")
-	.expectJSON({
-		error: strings.emailError
-	})
-	.toss();
+	it("Attempt to register a user using the API with missing parameters", function() {
+		return frisby.post(testHelper.registerEndpoint, {
+			password:"password123",
+			fname:"abode",
+			lname:"saafan",
+			gender:"m",
+			dob:"25/03/1996",
+			email:"abode@mail.com"
+		})
+			.expect("status", 400)
+			.expect("jsonStrict", {
+				error: strings.invalidUsername
+			});
+	});
+	
+	
+	it("Register a user using the API with an invalid email (already used)", function() {
+		var genericUser = testHelper.createGenericUserMale();
+		return frisby.post(testHelper.registerEndpoint, genericUser) 
+			.expect("status", 200).then(function () {
+				return frisby.post(testHelper.registerEndpoint, genericUser)
+					.expect("status", 400)
+					.expect("bodyContains", "error")
+					.expect("jsonStrict", {
+						error: strings.uniqueEmailError
+					});
+			});
+	});
+});
