@@ -8,7 +8,7 @@ const util = require("util");
 
 // Set the review of a user by another user
 describe("Review api testing", function () {
-	it("Should allow a user to review a game they have played", function() {
+	it("Should allow a user to review a game they have played", function(doneFn) {
 		var user = testHelper.createGenericUserFixedBirth();
 		return frisby.post(testHelper.registerEndpoint, user)
 			.expect("status", 200)
@@ -46,7 +46,7 @@ describe("Review api testing", function () {
 													reviewed : false,
 													jwt : user.token
 												})
-													.expect("status", 200);
+													.expect("status", 200).done(doneFn);
 											});
 									});
 							});

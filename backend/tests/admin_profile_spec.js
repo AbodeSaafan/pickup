@@ -4,7 +4,7 @@ var strings = require("../api/universal_strings");
 
 
 describe("Admin/Private profile api testing", function () {
-	it("Getting admin profile, successful path then bad token", function() {
+	it("Getting admin profile, successful path then bad token", function(doneFn) {
 		return frisby.post(testHelper.registerEndpoint, testHelper.createGenericUserMale())
 			.expect("status", 200)
 			.then(function (userApiDetails) {
@@ -22,12 +22,12 @@ describe("Admin/Private profile api testing", function () {
 			.then(function () {
 				return frisby.get(testHelper.adminProfileEndpoint+"?jwt=sabdhiadas")
 					.expect("status", 400);
-			});
+			}).done(doneFn);
 	});
 	
 
 
-	it("Can update all the fields of a user's admin profile", function() {
+	it("Can update all the fields of a user's admin profile", function(doneFn) {
 		return frisby.post(testHelper.registerEndpoint, testHelper.createGenericUserMale())
 			.expect("status", 200)
 			.then(function (userApiDetails) {
@@ -49,14 +49,14 @@ describe("Admin/Private profile api testing", function () {
 										gender: updatedUserDetails.gender,
 										dob: updatedUserDetails.dob,
 										email: updatedUserDetails.email
-									});
+									}).done(doneFn);
 							});
 					});
 			});
 	});
 
 
-	it("Can update the first and last name fields of a user's admin profile", function() {
+	it("Can update the first and last name fields of a user's admin profile", function(doneFn) {
 		var user = testHelper.createGenericUserMale();
 		return frisby.post(testHelper.registerEndpoint, user)
 			.expect("status", 200)
@@ -75,12 +75,12 @@ describe("Admin/Private profile api testing", function () {
 								gender: user.gender,
 								dob: user.dob,
 								email: user.email
-							});
+							}).done(doneFn);
 					});
 			});
 	});
 
-	it("Can update the username and email fields of a user's admin profile", function() {
+	it("Can update the username and email fields of a user's admin profile", function(doneFn) {
 		var user = testHelper.createGenericUserMale();
 		return frisby.post(testHelper.registerEndpoint, user)
 			.expect("status", 200)
@@ -100,12 +100,12 @@ describe("Admin/Private profile api testing", function () {
 								gender: user.gender,
 								dob: user.dob,
 								email: updatedUserDetails.email
-							});
+							}).done(doneFn);
 					});
 			});
 	});
 
-	it("Can update the gender and dob fields of a user's admin profile", function() {
+	it("Can update the gender and dob fields of a user's admin profile", function(doneFn) {
 		var user = testHelper.createGenericUserMale();
 		return frisby.post(testHelper.registerEndpoint, user)
 			.expect("status", 200)
@@ -125,13 +125,13 @@ describe("Admin/Private profile api testing", function () {
 								gender: updatedUserDetails.gender,
 								dob: updatedUserDetails.dob,
 								email: user.email
-							});
+							}).done(doneFn);
 					});
 			});
 	});
 
 
-	it("Updating no field of an admin user profile by passing in empty params", function() {
+	it("Updating no field of an admin user profile by passing in empty params", function(doneFn) {
 		var user = testHelper.createGenericUserMale();
 		return frisby.post(testHelper.registerEndpoint, user)
 			.expect("status", 200)
@@ -159,13 +159,13 @@ describe("Admin/Private profile api testing", function () {
 								gender: user.gender,
 								dob: user.dob,
 								email: user.email
-							});
+							}).done(doneFn);
 					});
 			});
 	});
 
 
-	it("Fails to update if details passed in are invalid", function() {
+	it("Fails to update if details passed in are invalid", function(doneFn) {
 		return frisby.post(testHelper.registerEndpoint, testHelper.createGenericUserMale())
 			.expect("status", 200)
 			.then(function (userApiDetails) {
@@ -180,12 +180,12 @@ describe("Admin/Private profile api testing", function () {
 					dob:"",
 					email:"invalid_email"
 				})
-					.expect("status", 400);
+					.expect("status", 400).done(doneFn);
 			});
 	});
 
 
-	it("Fails to update if jwt is invalid", function() {
+	it("Fails to update if jwt is invalid", function(doneFn) {
 		return frisby.post(testHelper.registerEndpoint, testHelper.createGenericUserMale())
 			.expect("status", 200)
 			.then(function () {
@@ -199,11 +199,11 @@ describe("Admin/Private profile api testing", function () {
 					dob:"",
 					email:"rads18@gmail.com"
 				})
-					.expect("status", 400);
+					.expect("status", 400).done(doneFn);
 			});
 	});
 
-	it("Does not allow updating DOB to an invalid date", function() {
+	it("Does not allow updating DOB to an invalid date", function(doneFn) {
 		var user = testHelper.createGenericUserMale();
 		return frisby.post(testHelper.registerEndpoint, user)
 			.expect("status", 200)
@@ -225,7 +225,7 @@ describe("Admin/Private profile api testing", function () {
 								gender: user.gender,
 								dob: user.dob,
 								email: user.email
-							});
+							}).done(doneFn);
 					});
 			});
 	});

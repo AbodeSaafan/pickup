@@ -5,7 +5,7 @@ const util = require("util");
 
 describe("Extended profile api testing", function () {
 	
-	it("Should allow a user to get view their own extended profile with a valid jwt", function() {
+	it("Should allow a user to get view their own extended profile with a valid jwt", function(doneFn) {
 		var user = testHelper.createGenericUserMale();
 		return frisby.post(testHelper.registerEndpoint, user)
 			.expect("status", 200)
@@ -28,11 +28,11 @@ describe("Extended profile api testing", function () {
 						top_tag_count: null,
 						games_created: 0,
 						games_joined: 0
-					});
+					}).done(doneFn);
 			});
 	});
 
-	it("Should allow a user to get view another user's extended profile with a valid jwt", function() {
+	it("Should allow a user to get view another user's extended profile with a valid jwt", function(doneFn) {
 		return frisby.post(testHelper.registerEndpoint, testHelper.createGenericUserMale())
 			.expect("status", 200)
 			.expect("bodyContains", "token")
@@ -62,13 +62,13 @@ describe("Extended profile api testing", function () {
 								top_tag_count: null,
 								games_created: 0,
 								games_joined: 0
-							});
+							}).done(doneFn);
 					});
 			});
 	});
 	
 
-	it("Should accept a user's update to their own extended profile", function() {
+	it("Should accept a user's update to their own extended profile", function(doneFn) {
 		return frisby.post(testHelper.registerEndpoint, testHelper.createGenericUserMale())
 			.expect("status", 200)
 			.expect("bodyContains", "token")
@@ -78,10 +78,10 @@ describe("Extended profile api testing", function () {
 				body = body.json;
 				return frisby.put(testHelper.extendedProfileEndpoint, testHelper.createGenericExtendedProfile(body.token))
 					.expect("status", 200);
-			});
+			}).done(doneFn);
 	});
 
-	it("It should properly update a user's extended profile: skill level and location", function() {
+	it("It should properly update a user's extended profile: skill level and location", function(doneFn) {
 		var newUser = testHelper.createGenericUserMale();
 		return frisby.post(testHelper.registerEndpoint, newUser)
 			.expect("status", 200)
@@ -148,7 +148,7 @@ describe("Extended profile api testing", function () {
 																top_tag_count: null,
 																games_created: 0,
 																games_joined: 0
-															});
+															}).done(doneFn);
 													});
 											});
 									});
@@ -158,13 +158,13 @@ describe("Extended profile api testing", function () {
 	});
 	
 	
-	it("Should fail getting the extended profile of a user when the jwt is invalid", function() {
+	it("Should fail getting the extended profile of a user when the jwt is invalid", function(doneFn) {
 		return frisby.get(testHelper.extendedProfileEndpoint + "?jwt=**&userID=2")
-			.expect("status", 400);
+			.expect("status", 400).done(doneFn);
 	});
 	
 	// Using a useID that does not exist should fail
-	it("Should fail getting the extended profile of a user where the userId is invalid/does not exist", function() {
+	it("Should fail getting the extended profile of a user where the userId is invalid/does not exist", function(doneFn) {
 		return frisby.post(testHelper.registerEndpoint, testHelper.createGenericUserMale())
 			.expect("status", 200)
 			.expect("bodyContains", "token")
@@ -177,11 +177,11 @@ describe("Extended profile api testing", function () {
 					.then(function () {
 						return frisby.get(testHelper.extendedProfileEndpoint + "?jwt=" + body.token + "&userID=DoesNotExist")
 							.expect("status", 400);
-					});
+					}).done(doneFn);
 			});
 	});
 	
-	it("Should fail updating the skill level of a user if the skill level is invalid", function() {
+	it("Should fail updating the skill level of a user if the skill level is invalid", function(doneFn) {
 		return frisby.post(testHelper.registerEndpoint, testHelper.createGenericUserMale())
 			.expect("status", 200)
 			.expect("bodyContains", "token")
@@ -193,11 +193,11 @@ describe("Extended profile api testing", function () {
 					.expect("status", 400)
 					.expect("jsonStrict", {
 						error: strings.invalidGameSkill
-					});
+					}).done(doneFn);
 			});
 	});
 	
-	it("Should fail updating the skill level of a user if the location is invalid", function() {
+	it("Should fail updating the skill level of a user if the location is invalid", function(doneFn) {
 		return frisby.post(testHelper.registerEndpoint, testHelper.createGenericUserMale())
 			.expect("status", 200)
 			.expect("bodyContains", "token")
@@ -209,12 +209,12 @@ describe("Extended profile api testing", function () {
 					.expect("status", 400)
 					.expect("jsonStrict", {
 						error: strings.invalidGameLocation
-					});
+					}).done(doneFn);
 			});
 	});
 	
 	// Set the review of a user by another user
-	it("Joining a game: Creating a user to create a game", function() {
+	it("Joining a game: Creating a user to create a game", function(doneFn) {
 		var userDetails = testHelper.createGenericUserFixedBirth();
 		return frisby.post(testHelper.registerEndpoint, userDetails)
 			.expect("status", 200)
@@ -287,7 +287,7 @@ describe("Extended profile api testing", function () {
 																								top_tag_count: 1,
 																								games_created: 2,
 																								games_joined: 2
-																							});
+																							}).done(doneFn);
 																					});
 																			});
 																	});
@@ -301,7 +301,7 @@ describe("Extended profile api testing", function () {
 	});
 
 	
-	it("Should reflect the change when a user creates or joins a game", function() {
+	it("Should reflect the change when a user creates or joins a game", function(doneFn) {
 		var userDetails = testHelper.createGenericUserMale();
 		return frisby.post(testHelper.registerEndpoint, userDetails)
 			.expect("status", 200)
@@ -327,12 +327,12 @@ describe("Extended profile api testing", function () {
 								top_tag_count: null,
 								games_created: 1,
 								games_joined: 1
-							});
+							}).done(doneFn);
 					});
 			});
 	});
 
-	it("Should properly reflect the change when a user leaves a game", function() {
+	it("Should properly reflect the change when a user leaves a game", function(doneFn) {
 		var userDetails = testHelper.createGenericUserMale();
 		return frisby.post(testHelper.registerEndpoint, userDetails)
 			.expect("status", 200)
@@ -362,13 +362,13 @@ describe("Extended profile api testing", function () {
 										top_tag_count: null,
 										games_created: 1,
 										games_joined: 0
-									});
+									}).done(doneFn);
 							});
 					});
 			});
 	});
 
-	it("Should reflect a change in age or gender", function() {
+	it("Should reflect a change in age or gender", function(doneFn) {
 		var userDetails = testHelper.createGenericUserMale();
 		return frisby.post(testHelper.registerEndpoint, userDetails)
 			.expect("status", 200)
@@ -400,7 +400,7 @@ describe("Extended profile api testing", function () {
 								top_tag_count: null,
 								games_created: 0,
 								games_joined: 0
-							});
+							}).done(doneFn);
 					});
 			});
 	});

@@ -4,7 +4,7 @@ var testHelper = require("./testHelper");
 
 
 describe("Delete account api tests", function () {
-	it("Can delete a user account and make that user unable to login", function() {
+	it("Can delete a user account and make that user unable to login", function(doneFn) {
 		var userDetails = testHelper.createGenericUserMale();
 		return frisby.post(testHelper.registerEndpoint, userDetails)
 			.expect("status", 200)
@@ -17,7 +17,7 @@ describe("Delete account api tests", function () {
 							.expect("status", 400)
 							.expect("jsonStrict", {
 								"error": strings.userIdFail
-							});
+							}).done(doneFn);
 					});
 			});
 	});

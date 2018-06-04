@@ -5,7 +5,7 @@ var testHelper = require("./testHelper");
 var genericUser = testHelper.createGenericUserMale();
 
 describe("Login api tests", function () {
-	it("Attempt to login a user using the wrong password", function() {
+	it("Attempt to login a user using the wrong password", function(doneFn) {
 		return frisby.post(testHelper.loginEndpoint, {
 			email: genericUser.email,
 			password: "wrongPassword"
@@ -13,9 +13,9 @@ describe("Login api tests", function () {
 			.expect("status", 400)
 			.expect("jsonStrict", {
 				error: strings.invalidPasswordSignIn
-			});
+			}).done(doneFn);
 	});
-	it("Sending a login request with a correct email/password combination", function() {
+	it("Sending a login request with a correct email/password combination", function(doneFn) {
 		return frisby.post(testHelper.registerEndpoint, genericUser) 
 			.expect("status", 200)
 			.expect("bodyContains", "token")
@@ -30,6 +30,6 @@ describe("Login api tests", function () {
 					.expect("bodyContains", "token")
 					.expect("bodyContains", "user_id")
 					.expect("bodyContains", "token");
-			});
+			}).done(doneFn);
 	});
 });

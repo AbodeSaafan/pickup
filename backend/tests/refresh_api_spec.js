@@ -4,7 +4,7 @@ var testHelper = require("./testHelper");
 
 // Creating a user with valid creds for testing
 describe("Refresh api tests", function () {
-	it("Should be able to create refresh token, delete it, and only validate real tokens", function() {
+	it("Should be able to create refresh token, delete it, and only validate real tokens", function(doneFn) {
 		return frisby.post(testHelper.registerEndpoint, testHelper.createGenericUserMale()) 
 			.expect("status", 200)
 			.expect("bodyContains", "token")
@@ -22,7 +22,7 @@ describe("Refresh api tests", function () {
 									.expect("status", 400)
 									.expect("jsonStrict", {
 										error: strings.refreshDoesNotExist
-									});
+									}).done(doneFn);
 							});
 					});
 			});

@@ -3,7 +3,7 @@ var strings = require("../api/universal_strings");
 var testHelper = require("./testHelper");
 
 describe("Friends api testing", function () {
-	it("Should allow a user to send a friend reequest to another valid user", function() {
+	it("Should allow a user to send a friend reequest to another valid user", function(doneFn) {
 		return frisby.post(testHelper.registerEndpoint, testHelper.createGenericUserMale())
 			.expect("status", 200)
 			.expect("bodyContains", "token")
@@ -15,12 +15,12 @@ describe("Friends api testing", function () {
 					.then(function (friend) {
 						friend = friend.json;
 						return frisby.post(testHelper.sendfriendsEndpoint, testHelper.createGenericFriendRequest(user.token, friend.user_id))
-							.expect("status", 200);
+							.expect("status", 200).done(doneFn);
 					});
 			});
 	});
 
-	it("Should not allow user 2 to send a friend request to user 1 if user 1 has sent the request already", function() {
+	it("Should not allow user 2 to send a friend request to user 1 if user 1 has sent the request already", function(doneFn) {
 		return frisby.post(testHelper.registerEndpoint, testHelper.createGenericUserMale())
 			.expect("status", 200)
 			.expect("bodyContains", "token")
@@ -38,13 +38,13 @@ describe("Friends api testing", function () {
 									.expect("status", 400)
 									.expect("jsonStrict", {
 										error: strings.FriendRequestExists
-									});
+									}).done(doneFn);
 							});
 					});
 			});
 	});
 
-	it("Should allow a user to accept a friend request they have", function() {
+	it("Should allow a user to accept a friend request they have", function(doneFn) {
 		return frisby.post(testHelper.registerEndpoint, testHelper.createGenericUserMale())
 			.expect("status", 200)
 			.expect("bodyContains", "token")
@@ -59,13 +59,13 @@ describe("Friends api testing", function () {
 							.expect("status", 200)
 							.then(function () {
 								return frisby.put(testHelper.acceptFriendEndpoint+"?jwt="+friend.token+"&userId="+user.user_id)
-									.expect("status", 200);
+									.expect("status", 200).done(doneFn);
 							});
 					});
 			});
 	});
 
-	it("Should fail when a user tries to accept a friend request that does not exist", function() {
+	it("Should fail when a user tries to accept a friend request that does not exist", function(doneFn) {
 		return frisby.post(testHelper.registerEndpoint, testHelper.createGenericUserMale())
 			.expect("status", 200)
 			.expect("bodyContains", "token")
@@ -80,12 +80,12 @@ describe("Friends api testing", function () {
 							.expect("status", 400)
 							.expect("jsonStrict", {
 								error: strings.InvalidFriendRequest
-							});
+							}).done(doneFn);
 					});
 			});
 	});
 
-	it("Should not allow a user to accept a friend request on behalf of other users", function() {
+	it("Should not allow a user to accept a friend request on behalf of other users", function(doneFn) {
 		return frisby.post(testHelper.registerEndpoint, testHelper.createGenericUserMale())
 			.expect("status", 200)
 			.expect("bodyContains", "token")
@@ -103,13 +103,13 @@ describe("Friends api testing", function () {
 									.expect("status", 400)
 									.expect("jsonStrict", {
 										error: strings.InvalidFriendRequest
-									});
+									}).done(doneFn);
 							});
 					});
 			});
 	});
 
-	it("It should allow a user to decline a valid incoming friend request", function() {
+	it("It should allow a user to decline a valid incoming friend request", function(doneFn) {
 		return frisby.post(testHelper.registerEndpoint, testHelper.createGenericUserMale())
 			.expect("status", 200)
 			.expect("bodyContains", "token")
@@ -124,13 +124,13 @@ describe("Friends api testing", function () {
 							.expect("status", 200)
 							.then(function () {
 								return frisby.del(testHelper.deleteFriendEndpoint+"?jwt="+friend.token+"&userId="+user.user_id)
-									.expect("status", 200);
+									.expect("status", 200).done(doneFn);
 							});
 					});
 			});
 	});
 
-	it("Should allow a user to delete a friend from their friend's list", function() {
+	it("Should allow a user to delete a friend from their friend's list", function(doneFn) {
 		return frisby.post(testHelper.registerEndpoint, testHelper.createGenericUserMale())
 			.expect("status", 200)
 			.expect("bodyContains", "token")
@@ -148,14 +148,14 @@ describe("Friends api testing", function () {
 									.expect("status", 200)
 									.then(function () {
 										return frisby.del(testHelper.deleteFriendEndpoint+"?jwt="+user1.token+"&userId="+user2.user_id)
-											.expect("status", 200);
+											.expect("status", 200).done(doneFn);
 									});
 							});
 					});
 			});
 	});
 
-	it("Should allow a user to see their current friends on their friends list", function() {
+	it("Should allow a user to see their current friends on their friends list", function(doneFn) {
 		return frisby.post(testHelper.registerEndpoint, testHelper.createGenericUserMale())
 			.expect("status", 200)
 			.expect("bodyContains", "token")
@@ -199,7 +199,7 @@ describe("Friends api testing", function () {
 																		user_id: user3.user_id,
 																		fname: user3Details.fname,
 																		lname: user3Details.lname,
-																	});
+																	}).done(doneFn);
 															});
 													});
 											});
@@ -209,7 +209,7 @@ describe("Friends api testing", function () {
 			});
 	});
 
-	it("Should allow a user to block someone who they are not friends with upon recieving a request from that user", function() {
+	it("Should allow a user to block someone who they are not friends with upon recieving a request from that user", function(doneFn) {
 		return frisby.post(testHelper.registerEndpoint, testHelper.createGenericUserMale())
 			.expect("status", 200)
 			.expect("bodyContains", "token")
@@ -224,13 +224,13 @@ describe("Friends api testing", function () {
 							.expect("status", 200)
 							.then(function () {
 								return frisby.put(testHelper.blockFriendEndpoint+"?jwt="+user2.token+"&userId="+user1.user_id)
-									.expect("status", 200);
+									.expect("status", 200).done(doneFn);
 							});
 					});
 			});
 	});
 
-	it("Should allow a user to block someone who they are friends with", function() {
+	it("Should allow a user to block someone who they are friends with", function(doneFn) {
 		return frisby.post(testHelper.registerEndpoint, testHelper.createGenericUserMale())
 			.expect("status", 200)
 			.expect("bodyContains", "token")
@@ -248,14 +248,14 @@ describe("Friends api testing", function () {
 									.expect("status", 200)
 									.then(function () {
 										return frisby.put(testHelper.blockFriendEndpoint+"?jwt="+user1.token+"&userId="+user2.user_id)
-											.expect("status", 200);
+											.expect("status", 200).done(doneFn);
 									});
 							});
 					});
 			});
 	});
 
-	it("Should allow a user to block someone who they are not friends with even without a request from that user", function() {
+	it("Should allow a user to block someone who they are not friends with even without a request from that user", function(doneFn) {
 		return frisby.post(testHelper.registerEndpoint, testHelper.createGenericUserMale())
 			.expect("status", 200)
 			.expect("bodyContains", "token")
@@ -275,7 +275,7 @@ describe("Friends api testing", function () {
 									.expect("status", 200)
 									.then(function () {
 										return frisby.put(testHelper.blockFriendEndpoint+"?jwt="+user2.token+"&userId="+user1.user_id)
-											.expect("status", 200);
+											.expect("status", 200).done(doneFn);
 									});
 							});
 					});
@@ -283,7 +283,7 @@ describe("Friends api testing", function () {
 	});
 
 
-	it("Should be able to list all the blocked friends of a user", function() {
+	it("Should be able to list all the blocked friends of a user", function(doneFn) {
 		return frisby.post(testHelper.registerEndpoint, testHelper.createGenericUserMale())
 			.expect("status", 200)
 			.expect("bodyContains", "token")
@@ -333,7 +333,7 @@ describe("Friends api testing", function () {
 																						user_id: user3.user_id,
 																						fname: user3Details.fname,
 																						lname: user3Details.lname
-																					});
+																					}).done(doneFn);
 																			});
 																	});
 															});
@@ -345,7 +345,7 @@ describe("Friends api testing", function () {
 			});
 	});
 
-	it("Should list all the friend requests that a user has", function() {
+	it("Should list all the friend requests that a user has", function(doneFn) {
 		return frisby.post(testHelper.registerEndpoint, testHelper.createGenericUserMale())
 			.expect("status", 200)
 			.expect("bodyContains", "token")
@@ -401,7 +401,7 @@ describe("Friends api testing", function () {
 																		fname: user3Details.fname,
 																		lname: user3Details.lname,
 																		status: "requested"
-																	});
+																	}).done(doneFn);
 															});
 													});
 											});
@@ -410,5 +410,5 @@ describe("Friends api testing", function () {
 					});
 			});
 	});
-	
+
 });

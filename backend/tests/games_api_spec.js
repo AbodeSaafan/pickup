@@ -4,7 +4,7 @@ var testHelper = require("./testHelper");
 const util = require("util");
 
 describe("Games api testing", function() {
-	it("Should be able to create a game with no restrictions", function() {
+	it("Should be able to create a game with no restrictions", function(doneFn) {
 		return frisby.post(testHelper.registerEndpoint, testHelper.createGenericUserMale()) 
 			.expect("status", 200)
 			.expect("bodyContains", "token")
@@ -15,10 +15,10 @@ describe("Games api testing", function() {
 				return frisby.post(testHelper.createGameEndpoint, testHelper.createUnrestrictedGame(body.token, 1, 1))
 					.expect("status", 200)
 					.expect("bodyContains", "game_id");
-			});
+			}).done(doneFn);
 	});
 
-	it("Should be able to create a game with some enforced parameters", function() {
+	it("Should be able to create a game with some enforced parameters", function(doneFn) {
 		return frisby.post(testHelper.registerEndpoint, testHelper.createGenericUserMale())
 			.expect("status", 200)
 			.expect("bodyContains", "token")
@@ -27,16 +27,16 @@ describe("Games api testing", function() {
 				return frisby.post(testHelper.createGameEndpoint, testHelper.createGenericGame(body.token, 1, 1))
 					.expect("status", 200)
 					.expect("bodyContains", "game_id");
-			});
+			}).done(doneFn);
 	});
 
-	it("Should not allow a user to create a game with an invalid jwt token", function() {
+	it("Should not allow a user to create a game with an invalid jwt token", function(doneFn) {
 		return frisby.post(testHelper.createGameEndpoint, testHelper.createUnrestrictedGame({user_id: "1", email: "ab@mail.com"}))
-			.expect("status", 400);
+			.expect("status", 400).done(doneFn);
 	});
 
 
-	it("Should not allow a user to create multiple games that conflict", function() {
+	it("Should not allow a user to create multiple games that conflict", function(doneFn) {
 		return frisby.post(testHelper.registerEndpoint, testHelper.createGenericUserMale()) 
 			.expect("status", 200)
 			.expect("bodyContains", "token")
@@ -84,12 +84,12 @@ describe("Games api testing", function() {
 						return frisby.post(testHelper.createGameEndpoint, testHelper.createUnrestrictedGame(body.token, 0, 20))
 							.expect("status", 200)
 							.expect("bodyContains", "game_id");
-					});
+					}).done(doneFn);
 			});
 	});
 
 	
-	it("Should be able to get the users of a game given the game id and a valid jwt", function() {
+	it("Should be able to get the users of a game given the game id and a valid jwt", function(doneFn) {
 		return frisby.post(testHelper.registerEndpoint, testHelper.createGenericUserFixedBirth())
 			.expect("status", 200)
 			.expect("bodyContains", "token")
@@ -130,7 +130,7 @@ describe("Games api testing", function() {
 																reviewed: false,
 																username: userDetails.username
 															})
-															.expect("status", 200);
+															.expect("status", 200).done(doneFn);
 													});
 											});
 									});
@@ -140,7 +140,7 @@ describe("Games api testing", function() {
 	});
 
 
-	it("Should allow users the ability to join games", function() {
+	it("Should allow users the ability to join games", function(doneFn) {
 		return frisby.post(testHelper.registerEndpoint, testHelper.createGenericUserFixedBirth())
 			.expect("status", 200)
 			.expect("bodyContains", "token")
@@ -158,14 +158,14 @@ describe("Games api testing", function() {
 								newUser = newUser.json;
 								return frisby.put(util.format(testHelper.joinGameEndpoint, gameId, newUser.token))
 									.expect("status", 200)
-									.expect("bodyContains", "game_id");
+									.expect("bodyContains", "game_id").done(doneFn);
 							});
 					});
 			});
 	});
 
 
-	it("Should allow users to leave a game they have joined", function() {
+	it("Should allow users to leave a game they have joined", function(doneFn) {
 		return frisby.post(testHelper.registerEndpoint, testHelper.createGenericUserFixedBirth())
 			.expect("status", 200)
 			.expect("bodyContains", "token")
@@ -187,7 +187,7 @@ describe("Games api testing", function() {
 									.then(function (joinedGame) {
 										joinedGame = joinedGame.json;
 										return frisby.del(util.format(testHelper.leaveGameEndpoint, joinedGame.game_id, newUser.token))
-											.expect("status", 200);
+											.expect("status", 200).done(doneFn);
 									});
 							});
 					});
@@ -195,7 +195,7 @@ describe("Games api testing", function() {
 	});
 
 
-	it("Should report a failure when a user tries to leave a game they have not joined", function() {
+	it("Should report a failure when a user tries to leave a game they have not joined", function(doneFn) {
 		return frisby.post(testHelper.registerEndpoint, testHelper.createGenericUserFixedBirth())
 			.expect("status", 200)
 			.expect("bodyContains", "token")
@@ -211,7 +211,7 @@ describe("Games api testing", function() {
 							.then(function (newUser) {
 								newUser = newUser.json;
 								return frisby.del(util.format(testHelper.leaveGameEndpoint, game.game_id, newUser.token), newUser.token)
-									.expect("status", 400);
+									.expect("status", 400).done(doneFn);
 							});
 					});
 			});
