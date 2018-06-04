@@ -154,7 +154,9 @@ function validateAndCleanExtendedProfileRequest(data) {
 }
 
 function validateAndCleanFriendId (data) {
-	validate(data.userId, regex.idRegex, strings.invalidUserId);
+	// Sometimes we get strings here from PUT calls, so we convert it to an int first
+	data.userId = parseInt(data.userId);
+	validateNumber(data.userId, strings.invalidUserId, 1, Number.MAX_SAFE_INTEGER);
 	return data;
 }
 

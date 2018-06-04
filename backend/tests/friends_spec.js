@@ -2,516 +2,413 @@ var frisby = require("frisby");
 var strings = require("../api/universal_strings");
 var testHelper = require("./testHelper");
 
-//Send a friend request to valid User
+describe("Friends api testing", function () {
+	it("Should allow a user to send a friend reequest to another valid user", function() {
+		return frisby.post(testHelper.registerEndpoint, testHelper.createGenericUserMale())
+			.expect("status", 200)
+			.expect("bodyContains", "token")
+			.then(function (user) {
+				user = user.json;
+				return frisby.post(testHelper.registerEndpoint, testHelper.createGenericUserMale())
+					.expect("status", 200)
+					.expect("bodyContains", "user_id")
+					.then(function (friend) {
+						friend = friend.json;
+						return frisby.post(testHelper.sendfriendsEndpoint, testHelper.createGenericFriendRequest(user.token, friend.user_id))
+							.expect("status", 200);
+					});
+			});
+	});
 
-frisby.create("Sending a Friend Request: Creating a user to send a friend request")
-	.post(testHelper.registerEndpoint, testHelper.createGenericUserMale())
-	.expectStatus(200)
-	.expectBodyContains("token")
-	.afterJSON(function (user) {
-		frisby.create("Creating a new user to send the request to")
-			.post(testHelper.registerEndpoint, testHelper.createGenericUserMale())
-			.expectStatus(200)
-			.expectBodyContains("user_id")
-			.afterJSON(function (friend) {
-				frisby.create("Send a friend request")
-					.post(testHelper.sendfriendsEndpoint, testHelper.createGenericFriendRequest(user.token, friend.user_id))
-					.expectStatus(200)
-					.toss();
-			})
-			.toss();
-	})
-	.toss();
+	it("Should not allow user 2 to send a friend request to user 1 if user 1 has sent the request already", function() {
+		return frisby.post(testHelper.registerEndpoint, testHelper.createGenericUserMale())
+			.expect("status", 200)
+			.expect("bodyContains", "token")
+			.then(function (user) {
+				user = user.json;
+				return frisby.post(testHelper.registerEndpoint, testHelper.createGenericUserMale())
+					.expect("status", 200)
+					.expect("bodyContains", "user_id")
+					.then(function (friend) {
+						friend = friend.json;
+						return frisby.post(testHelper.sendfriendsEndpoint, testHelper.createGenericFriendRequest(user.token, friend.user_id))
+							.expect("status", 200)
+							.then(function() {
+								return frisby.post(testHelper.sendfriendsEndpoint, testHelper.createGenericFriendRequest(friend.token, user.user_id))
+									.expect("status", 400)
+									.expect("jsonStrict", {
+										error: strings.FriendRequestExists
+									});
+							});
+					});
+			});
+	});
 
+	it("Should allow a user to accept a friend request they have", function() {
+		return frisby.post(testHelper.registerEndpoint, testHelper.createGenericUserMale())
+			.expect("status", 200)
+			.expect("bodyContains", "token")
+			.then(function (user) {
+				user = user.json;
+				return frisby.post(testHelper.registerEndpoint, testHelper.createGenericUserMale())
+					.expect("status", 200)
+					.expect("bodyContains", "user_id")
+					.then(function (friend) {
+						friend = friend.json;
+						return frisby.post(testHelper.sendfriendsEndpoint, testHelper.createGenericFriendRequest(user.token, friend.user_id))
+							.expect("status", 200)
+							.then(function () {
+								return frisby.put(testHelper.acceptFriendEndpoint+"?jwt="+friend.token+"&userId="+user.user_id)
+									.expect("status", 200);
+							});
+					});
+			});
+	});
 
-//Invalid Test Case - Check that if User1 sends friend invite to user2
-//User2 can't send friend invite to user1
-
-frisby.create("Invalid Test Case: Sending Bi-directional Friend Requests: Creating a user to send a friend request")
-	.post(testHelper.registerEndpoint, testHelper.createGenericUserMale())
-	.expectStatus(200)
-	.expectBodyContains("token")
-	.afterJSON(function (user) {
-		frisby.create("Creating a new user to send the request to")
-			.post(testHelper.registerEndpoint, testHelper.createGenericUserMale())
-			.expectStatus(200)
-			.expectBodyContains("user_id")
-			.afterJSON(function (friend) {
-				frisby.create("User1 sends a friend request to User2")
-					.post(testHelper.sendfriendsEndpoint, testHelper.createGenericFriendRequest(user.token, friend.user_id))
-					.expectStatus(200)
-					.afterJSON(function() {
-						frisby.create("User2 sends a friend request to User1")
-							.post(testHelper.sendfriendsEndpoint, testHelper.createGenericFriendRequest(friend.token, user.user_id))
-							.expectStatus(400)
-							.expectJSON({
-								error: strings.FriendRequestExists
-							})
-							.toss();
-					})
-					.toss();
-			})
-			.toss();
-	})
-	.toss();
-
-
-//Accept a friend request with Valid credentials
-
-frisby.create("Accept a Friend Request: Creating a user to send a friend request")
-	.post(testHelper.registerEndpoint, testHelper.createGenericUserMale())
-	.expectStatus(200)
-	.expectBodyContains("token")
-	.afterJSON(function (user) {
-		frisby.create("Creating a new user to send the request to")
-			.post(testHelper.registerEndpoint, testHelper.createGenericUserMale())
-			.expectStatus(200)
-			.expectBodyContains("user_id")
-			.afterJSON(function (friend) {
-				frisby.create("Send a friend request")
-					.post(testHelper.sendfriendsEndpoint, testHelper.createGenericFriendRequest(user.token, friend.user_id))
-					.expectStatus(200)
-					.afterJSON(function () {
-						frisby.create("Accept the friend request")
-							.put(testHelper.acceptFriendEndpoint+"?jwt="+friend.token+"&userId="+user.user_id)
-							.expectStatus(200)
-							.toss();
-					})
-					.toss();
-			})
-			.toss();
-	})
-	.toss();
-
-
-//Accept a friend request when there is no friend request/no entry in DB
-frisby.create("Invalid Accept Request: Creating a user to send a friend request")
-	.post(testHelper.registerEndpoint, testHelper.createGenericUserMale())
-	.expectStatus(200)
-	.expectBodyContains("token")
-	.afterJSON(function (user) {
-		frisby.create("Creating a new user to send the request to")
-			.post(testHelper.registerEndpoint, testHelper.createGenericUserMale())
-			.expectStatus(200)
-			.expectBodyContains("user_id")
-			.afterJSON(function (friend) {
-				frisby.create("Accept the friend request")
-					.put(testHelper.acceptFriendEndpoint+"?jwt="+friend.token+"&userId="+user.user_id)
-					.expectStatus(400)
-					.expectJSON({
-						error: strings.InvalidFriendRequest
-					})
-					.toss();
-			})
-			.toss();
-	})
-	.toss();
-
-//Invalid Test Case
-//User1 Accepts a friend request
-//Which User1 has sent to User2
-frisby.create("Invalid Accept Request: Creating a user to send a friend request")
-	.post(testHelper.registerEndpoint, testHelper.createGenericUserMale())
-	.expectStatus(200)
-	.expectBodyContains("token")
-	.afterJSON(function (user1) {
-		frisby.create("Creating a new user to send the request to")
-			.post(testHelper.registerEndpoint, testHelper.createGenericUserMale())
-			.expectStatus(200)
-			.expectBodyContains("user_id")
-			.afterJSON(function (user2) {
-				frisby.create("User1 sends a friend request to User2")
-					.post(testHelper.sendfriendsEndpoint, testHelper.createGenericFriendRequest(user1.token, user2.user_id))
-					.expectStatus(200)
-					.afterJSON(function () {
-						frisby.create("User1 accept the friend request")
-							.put(testHelper.acceptFriendEndpoint+"?jwt="+user1.token+"&userId="+user2.user_id)
-							.expectStatus(400)
-							.expectJSON({
+	it("Should fail when a user tries to accept a friend request that does not exist", function() {
+		return frisby.post(testHelper.registerEndpoint, testHelper.createGenericUserMale())
+			.expect("status", 200)
+			.expect("bodyContains", "token")
+			.then(function (user) {
+				user = user.json;
+				return frisby.post(testHelper.registerEndpoint, testHelper.createGenericUserMale())
+					.expect("status", 200)
+					.expect("bodyContains", "user_id")
+					.then(function (friend) {
+						friend = friend.json;
+						return frisby.put(testHelper.acceptFriendEndpoint+"?jwt="+friend.token+"&userId="+user.user_id)
+							.expect("status", 400)
+							.expect("jsonStrict", {
 								error: strings.InvalidFriendRequest
-							})
-							.toss();
-					})
-					.toss();
-			})
-			.toss();
-	})
-	.toss();
+							});
+					});
+			});
+	});
 
+	it("Should not allow a user to accept a friend request on behalf of other users", function() {
+		return frisby.post(testHelper.registerEndpoint, testHelper.createGenericUserMale())
+			.expect("status", 200)
+			.expect("bodyContains", "token")
+			.then(function (user1) {
+				user1 = user1.json;
+				return frisby.post(testHelper.registerEndpoint, testHelper.createGenericUserMale())
+					.expect("status", 200)
+					.expect("bodyContains", "user_id")
+					.then(function (user2) {
+						user2 = user2.json;
+						return frisby.post(testHelper.sendfriendsEndpoint, testHelper.createGenericFriendRequest(user1.token, user2.user_id))
+							.expect("status", 200)
+							.then(function () {
+								return frisby.put(testHelper.acceptFriendEndpoint+"?jwt="+user1.token+"&userId="+user2.user_id)
+									.expect("status", 400)
+									.expect("jsonStrict", {
+										error: strings.InvalidFriendRequest
+									});
+							});
+					});
+			});
+	});
 
-//Decline a friend request (When recieving user declines the request)
-frisby.create("Decline a Friend Request: Creating a user to send a friend request")
-	.post(testHelper.registerEndpoint, testHelper.createGenericUserMale())
-	.expectStatus(200)
-	.expectBodyContains("token")
-	.afterJSON(function (user) {
-		frisby.create("Creating a new user to send the request to")
-			.post(testHelper.registerEndpoint, testHelper.createGenericUserMale())
-			.expectStatus(200)
-			.expectBodyContains("user_id")
-			.afterJSON(function (friend) {
-				frisby.create("Send a friend request")
-					.post(testHelper.sendfriendsEndpoint, testHelper.createGenericFriendRequest(user.token, friend.user_id))
-					.expectStatus(200)
-					.afterJSON(function () {
-						frisby.create("Delete the friend request")
-							.delete(testHelper.deleteFriendEndpoint+"?jwt="+friend.token+"&userId="+user.user_id)
-							.expectStatus(200)
-							.toss();
-					})
-					.toss();
-			})
-			.toss();
-	})
-	.toss();
+	it("It should allow a user to decline a valid incoming friend request", function() {
+		return frisby.post(testHelper.registerEndpoint, testHelper.createGenericUserMale())
+			.expect("status", 200)
+			.expect("bodyContains", "token")
+			.then(function (user) {
+				user = user.json;
+				return frisby.post(testHelper.registerEndpoint, testHelper.createGenericUserMale())
+					.expect("status", 200)
+					.expect("bodyContains", "user_id")
+					.then(function (friend) {
+						friend = friend.json;
+						return frisby.post(testHelper.sendfriendsEndpoint, testHelper.createGenericFriendRequest(user.token, friend.user_id))
+							.expect("status", 200)
+							.then(function () {
+								return frisby.del(testHelper.deleteFriendEndpoint+"?jwt="+friend.token+"&userId="+user.user_id)
+									.expect("status", 200);
+							});
+					});
+			});
+	});
 
+	it("Should allow a user to delete a friend from their friend's list", function() {
+		return frisby.post(testHelper.registerEndpoint, testHelper.createGenericUserMale())
+			.expect("status", 200)
+			.expect("bodyContains", "token")
+			.then(function (user1) {
+				user1 = user1.json;
+				return frisby.post(testHelper.registerEndpoint, testHelper.createGenericUserMale())
+					.expect("status", 200)
+					.expect("bodyContains", "user_id")
+					.then(function (user2) {
+						user2 = user2.json;
+						return frisby.post(testHelper.sendfriendsEndpoint, testHelper.createGenericFriendRequest(user1.token, user2.user_id))
+							.expect("status", 200)
+							.then(function () {
+								return frisby.put(testHelper.acceptFriendEndpoint+"?jwt="+user2.token+"&userId="+user1.user_id)
+									.expect("status", 200)
+									.then(function () {
+										return frisby.del(testHelper.deleteFriendEndpoint+"?jwt="+user1.token+"&userId="+user2.user_id)
+											.expect("status", 200);
+									});
+							});
+					});
+			});
+	});
 
-//Remove an Existing Friend (User1 removes User2)
-frisby.create("Remove a Friend: Creating a user to send a friend request")
-	.post(testHelper.registerEndpoint, testHelper.createGenericUserMale())
-	.expectStatus(200)
-	.expectBodyContains("token")
-	.afterJSON(function (user1) {
-		frisby.create("Creating a new user to send the request to")
-			.post(testHelper.registerEndpoint, testHelper.createGenericUserMale())
-			.expectStatus(200)
-			.expectBodyContains("user_id")
-			.afterJSON(function (user2) {
-				frisby.create("Send a friend request")
-					.post(testHelper.sendfriendsEndpoint, testHelper.createGenericFriendRequest(user1.token, user2.user_id))
-					.expectStatus(200)
-					.afterJSON(function () {
-						frisby.create("Accept the friend request")
-							.put(testHelper.acceptFriendEndpoint+"?jwt="+user2.token+"&userId="+user1.user_id)
-							.expectStatus(200)
-							.afterJSON(function () {
-								frisby.create("User1 removes User2 as their friend")
-									.delete(testHelper.deleteFriendEndpoint+"?jwt="+user1.token+"&userId="+user2.user_id)
-									.expectStatus(200)
-									.toss();
-							})
-							.toss();
-					})
-					.toss();
-			})
-			.toss();
-	})
-	.toss();
-
-
-
-//List all friends for a User
-
-frisby.create("List all friends of a user: Creating a user to send a friend request")
-	.post(testHelper.registerEndpoint, testHelper.createGenericUserMale())
-	.expectStatus(200)
-	.expectBodyContains("token")
-	.expectBodyContains("user_id")
-	.afterJSON(function (user1) {
-		frisby.create("Creating a new user to send the request to")
-			.post(testHelper.registerEndpoint, testHelper.createGenericUserMale())
-			.expectStatus(200)
-			.expectBodyContains("token")
-			.expectBodyContains("user_id")
-			.afterJSON(function (user2) {
-				frisby.create("Creating another user")
-					.post(testHelper.registerEndpoint, testHelper.createGenericUserMale())
-					.expectStatus(200)
-					.expectBodyContains("token")
-					.expectBodyContains("user_id")
-					.afterJSON(function (user3) {
-						frisby.create("user1 sends a friend request to user2")
-							.post(testHelper.sendfriendsEndpoint, testHelper.createGenericFriendRequest(user1.token, user2.user_id))
-							.expectStatus(200)
-							.afterJSON(function () {
-								frisby.create("user3 sends a friend request to user1")
-									.post(testHelper.sendfriendsEndpoint, testHelper.createGenericFriendRequest(user3.token, user1.user_id))
-									.expectStatus(200)
-									.afterJSON(function () {
-										frisby.create("user2 accepts user1's friend request")
-											.put(testHelper.acceptFriendEndpoint+"?jwt="+user2.token+"&userId="+user1.user_id)
-											.expectStatus(200)
-											.afterJSON(function () {
-												frisby.create("user1 accepts user3's friend request")
-													.put(testHelper.acceptFriendEndpoint+"?jwt="+user1.token+"&userId="+user3.user_id)
-													.expectStatus(200)
-													.afterJSON(function () {
-														frisby.create("List all friends for user1")
-															.get(testHelper.listFriendsEndpoint+"?jwt="+user1.token)
-															.expectStatus(200)
-															.expectJSON("friends.0", {
-																user_id: user2.user_id,
-																fname: user2.fname,
-																lname: user2.lname,
-															})
-															.expectJSON("friends.1", {
-																user_id: user3.user_id,
-																fname: user3.fname,
-																lname: user3.lname,
-															})
-															.toss();
-													})
-													.toss();
-											})
-											.toss();
-									})
-									.toss();
-							})
-							.toss();
-					})
-					.toss();
-			})
-			.toss();
-	})
-	.toss();
-
-
-
-//User2 blocks User1 upon recieving request from User1 (Success)
-frisby.create("Block a Friend after Friend Request: Creating a user to send a friend request")
-	.post(testHelper.registerEndpoint, testHelper.createGenericUserMale())
-	.expectStatus(200)
-	.expectBodyContains("token")
-	.afterJSON(function (user1) {
-		frisby.create("Creating a new user to send the request to")
-			.post(testHelper.registerEndpoint, testHelper.createGenericUserMale())
-			.expectStatus(200)
-			.expectBodyContains("user_id")
-			.afterJSON(function (user2) {
-				frisby.create("Send a friend request")
-					.post(testHelper.sendfriendsEndpoint, testHelper.createGenericFriendRequest(user1.token, user2.user_id))
-					.expectStatus(200)
-					.afterJSON(function () {
-						frisby.create("User2 blocks user1 after recieving the friend request")
-							.put(testHelper.blockFriendEndpoint+"?jwt="+user2.token+"&userId="+user1.user_id)
-							.expectStatus(200)
-							.toss();
-					})
-					.toss();
-			})
-			.toss();
-	})
-	.toss();
-
-
-
-//User2 blocks User1 after becoming friends (Success)
-frisby.create("Block an existing Friend: Creating a user to send a friend request")
-	.post(testHelper.registerEndpoint, testHelper.createGenericUserMale())
-	.expectStatus(200)
-	.expectBodyContains("token")
-	.afterJSON(function (user1) {
-		frisby.create("Creating a new user to send the request to")
-			.post(testHelper.registerEndpoint, testHelper.createGenericUserMale())
-			.expectStatus(200)
-			.expectBodyContains("user_id")
-			.afterJSON(function (user2) {
-				frisby.create("Send a friend request")
-					.post(testHelper.sendfriendsEndpoint, testHelper.createGenericFriendRequest(user1.token, user2.user_id))
-					.expectStatus(200)
-					.afterJSON(function () {
-						frisby.create("User2 accepts User1's friend request")
-							.put(testHelper.acceptFriendEndpoint+"?jwt="+user2.token+"&userId="+user1.user_id)
-							.expectStatus(200)
-							.afterJSON(function () {
-								frisby.create("User1 blocks user2 after becoming friends")
-									.put(testHelper.blockFriendEndpoint+"?jwt="+user1.token+"&userId="+user2.user_id)
-									.expectStatus(200)
-									.toss();
-							})
-							.toss();
-					})
-					.toss();
-			})
-			.toss();
-	})
-	.toss();
-
-
-
-//User1 blocks User2 after user1 deletes friend request sent from User2
-frisby.create("Block a user after deleting friend Request: Creating a user to send a friend request")
-	.post(testHelper.registerEndpoint, testHelper.createGenericUserMale())
-	.expectStatus(200)
-	.expectBodyContains("token")
-	.expectBodyContains("user_id")
-	.afterJSON(function (user1) {
-		frisby.create("Creating a new user to send the request to")
-			.post(testHelper.registerEndpoint, testHelper.createGenericUserMale())
-			.expectStatus(200)
-			.expectBodyContains("token")
-			.expectBodyContains("user_id")
-			.afterJSON(function (user2) {
-				frisby.create("User1 sends a friend request to user2")
-					.post(testHelper.sendfriendsEndpoint, testHelper.createGenericFriendRequest(user1.token, user2.user_id))
-					.expectStatus(200)
-					.afterJSON(function () {
-						frisby.create("User2 deletes User1's friend request")
-							.delete(testHelper.deleteFriendEndpoint+"?jwt="+user2.token+"&userId="+user1.user_id)
-							.expectStatus(200)
-							.afterJSON(function () {
-								frisby.create("User2 blocks User 1")
-									.put(testHelper.blockFriendEndpoint+"?jwt="+user2.token+"&userId="+user1.user_id)
-									.expectStatus(200)
-									.toss();
-							})
-							.toss();
-					})
-					.toss();
-			})
-			.toss();
-	})
-	.toss();
-
-
-//List all blocked friends for a User
-
-frisby.create("List all blocked users for a user: Creating a user to send a friend request")
-	.post(testHelper.registerEndpoint, testHelper.createGenericUserMale())
-	.expectStatus(200)
-	.expectBodyContains("token")
-	.expectBodyContains("user_id")
-	.afterJSON(function (user1) {
-		frisby.create("Creating a new user to send the request to")
-			.post(testHelper.registerEndpoint, testHelper.createGenericUserMale())
-			.expectStatus(200)
-			.expectBodyContains("token")
-			.expectBodyContains("user_id")
-			.afterJSON(function (user2) {
-				frisby.create("Creating another user")
-					.post(testHelper.registerEndpoint, testHelper.createGenericUserMale())
-					.expectStatus(200)
-					.expectBodyContains("token")
-					.expectBodyContains("user_id")
-					.afterJSON(function (user3) {
-						frisby.create("user2 sends a friend request to user1")
-							.post(testHelper.sendfriendsEndpoint, testHelper.createGenericFriendRequest(user2.token, user1.user_id))
-							.expectStatus(200)
-							.afterJSON(function () {
-								frisby.create("user3 sends a friend request to user1")
-									.post(testHelper.sendfriendsEndpoint, testHelper.createGenericFriendRequest(user3.token, user1.user_id))
-									.expectStatus(200)
-									.afterJSON(function () {
-										frisby.create("user1 accepts user2's friend request")
-											.put(testHelper.acceptFriendEndpoint+"?jwt="+user1.token+"&userId="+user2.user_id)
-											.expectStatus(200)
-											.afterJSON(function () {
-												frisby.create("user1 deletes user3's friend request")
-													.delete(testHelper.deleteFriendEndpoint+"?jwt="+user1.token+"&userId="+user3.user_id)
-													.expectStatus(200)
-													.afterJSON(function () {
-														frisby.create("User1 blocks User2")
-															.put(testHelper.blockFriendEndpoint+"?jwt="+user1.token+"&userId="+user2.user_id)
-															.expectStatus(200)
-															.afterJSON(function () {
-																frisby.create("User1 blocks User3")
-																	.put(testHelper.blockFriendEndpoint+"?jwt="+user1.token+"&userId="+user3.user_id)
-																	.expectStatus(200)
-																	.afterJSON(function () {
-																		frisby.create("List Blocked Users for User1")
-																			.get(testHelper.listBlockedUsersEndpoint+"?jwt="+user1.token)
-																			.expectStatus(200)
-																			.expectJSON("blockedUsers.?", {
-																				user_id: user2.user_id,
-																				fname: user2.fname,
-																				lname: user2.lname,
-																			})
-																			.expectJSON("blockedUsers.?", {
-																				user_id: user3.user_id,
-																				fname: user3.fname,
-																				lname: user3.lname
-																			})
-																			.toss();
+	it("Should allow a user to see their current friends on their friends list", function() {
+		return frisby.post(testHelper.registerEndpoint, testHelper.createGenericUserMale())
+			.expect("status", 200)
+			.expect("bodyContains", "token")
+			.expect("bodyContains", "user_id")
+			.then(function (user1) {
+				user1 = user1.json;
+				var user2Details = testHelper.createGenericUserMale();
+				return frisby.post(testHelper.registerEndpoint, user2Details)
+					.expect("status", 200)
+					.expect("bodyContains", "token")
+					.expect("bodyContains", "user_id")
+					.then(function (user2) {
+						user2 = user2.json;
+						var user3Details = testHelper.createGenericUserMale();
+						return frisby.post(testHelper.registerEndpoint, user3Details)
+							.expect("status", 200)
+							.expect("bodyContains", "token")
+							.expect("bodyContains", "user_id")
+							.then(function (user3) {
+								user3 = user3.json;
+								return frisby.post(testHelper.sendfriendsEndpoint, testHelper.createGenericFriendRequest(user1.token, user2.user_id))
+									.expect("status", 200)
+									.then(function () {
+										return frisby.post(testHelper.sendfriendsEndpoint, testHelper.createGenericFriendRequest(user3.token, user1.user_id))
+											.expect("status", 200)
+											.then(function () {
+												return frisby.put(testHelper.acceptFriendEndpoint+"?jwt="+user2.token+"&userId="+user1.user_id)
+													.expect("status", 200)
+													.then(function () {
+														return frisby.put(testHelper.acceptFriendEndpoint+"?jwt="+user1.token+"&userId="+user3.user_id)
+															.expect("status", 200)
+															.then(function () {
+																return frisby.get(testHelper.listFriendsEndpoint+"?jwt="+user1.token)
+																	.expect("status", 200)
+																	.expect("jsonStrict", "friends.0", {
+																		user_id: user2.user_id,
+																		fname: user2Details.fname,
+																		lname: user2Details.lname,
 																	})
-																	.toss();
-															})
-															.toss();
-													})
-													.toss();
-											})
-											.toss();
-									})
-									.toss();
-							})
-							.toss();
-					})
-					.toss();
-			})
-			.toss();
-	})
-	.toss();
+																	.expect("jsonStrict", "friends.1", {
+																		user_id: user3.user_id,
+																		fname: user3Details.fname,
+																		lname: user3Details.lname,
+																	});
+															});
+													});
+											});
+									});
+							});
+					});
+			});
+	});
 
-//List friend Requests
+	it("Should allow a user to block someone who they are not friends with upon recieving a request from that user", function() {
+		return frisby.post(testHelper.registerEndpoint, testHelper.createGenericUserMale())
+			.expect("status", 200)
+			.expect("bodyContains", "token")
+			.then(function (user1) {
+				user1 = user1.json;
+				return frisby.post(testHelper.registerEndpoint, testHelper.createGenericUserMale())
+					.expect("status", 200)
+					.expect("bodyContains", "user_id")
+					.then(function (user2) {
+						user2 = user2.json;
+						return frisby.post(testHelper.sendfriendsEndpoint, testHelper.createGenericFriendRequest(user1.token, user2.user_id))
+							.expect("status", 200)
+							.then(function () {
+								return frisby.put(testHelper.blockFriendEndpoint+"?jwt="+user2.token+"&userId="+user1.user_id)
+									.expect("status", 200);
+							});
+					});
+			});
+	});
 
-frisby.create("List Friend Requests for a User: Creating a user to send a friend request")
-	.post(testHelper.registerEndpoint, testHelper.createGenericUserMale())
-	.expectStatus(200)
-	.expectBodyContains("token")
-	.expectBodyContains("user_id")
-	.afterJSON(function (user1) {
-		frisby.create("Creating a new user to send the request to")
-			.post(testHelper.registerEndpoint, testHelper.createGenericUserMale())
-			.expectStatus(200)
-			.expectBodyContains("token")
-			.expectBodyContains("user_id")
-			.afterJSON(function (user2) {
-				frisby.create("Creating a new user to send the request to")
-					.post(testHelper.registerEndpoint, testHelper.createGenericUserMale())
-					.expectStatus(200)
-					.expectBodyContains("token")
-					.expectBodyContains("user_id")
-					.afterJSON(function (user3) {
-						frisby.create("Creating a new user to send the request to")
-							.post(testHelper.registerEndpoint, testHelper.createGenericUserMale())
-							.expectStatus(200)
-							.expectBodyContains("token")
-							.expectBodyContains("user_id")
-							.afterJSON(function (user4) {
-								frisby.create("User1 sends a friend request to user2")
-									.post(testHelper.sendfriendsEndpoint, testHelper.createGenericFriendRequest(user1.token, user2.user_id))
-									.expectStatus(200)
-									.afterJSON(function() {
-										frisby.create("User3 sends a friend request to user1")
-											.post(testHelper.sendfriendsEndpoint, testHelper.createGenericFriendRequest(user3.token, user1.user_id))
-											.expectStatus(200)
-											.afterJSON(function() {
-												frisby.create("User1 sends a friend request to user4")
-													.post(testHelper.sendfriendsEndpoint, testHelper.createGenericFriendRequest(user1.token, user4.user_id))
-													.expectStatus(200)
-													.afterJSON(function() {
-														frisby.create("List all friend requests for User1")
-															.get(testHelper.listFriendRequestEndpoint+"?jwt="+user1.token)
-															.expectStatus(200)
-															.expectJSON("ByUser.?", {
-																user_id: user2.user_id - 0, // The - 0 is to force it as a number
-																fname: user2.fname,
-																lname: user2.lname,
-																status: "requested"
-															})
-															.expectJSON("ByUser.?", {
-																user_id: user4.user_id - 0, // The - 0 is to force it as a number
-																fname: user4.fname,
-																lname: user4.lname,
-																status: "requested"
-															})
-															.expectJSON("ForUser.?", {
-																user_id: user3.user_id - 0, // The - 0 is to force it as a number
-																fname: user3.fname,
-																lname: user3.lname,
-																status: "requested"
-															})
-															.toss();
-													})
-													.toss();
-											})
-											.toss();
-									})
-									.toss();
-							})
-							.toss();
-					})
-					.toss();
-			})
-			.toss();
-	})
-	.toss();
+	it("Should allow a user to block someone who they are friends with", function() {
+		return frisby.post(testHelper.registerEndpoint, testHelper.createGenericUserMale())
+			.expect("status", 200)
+			.expect("bodyContains", "token")
+			.then(function (user1) {
+				user1 = user1.json;
+				return frisby.post(testHelper.registerEndpoint, testHelper.createGenericUserMale())
+					.expect("status", 200)
+					.expect("bodyContains", "user_id")
+					.then(function (user2) {
+						user2 = user2.json;
+						return frisby.post(testHelper.sendfriendsEndpoint, testHelper.createGenericFriendRequest(user1.token, user2.user_id))
+							.expect("status", 200)
+							.then(function () {
+								return frisby.put(testHelper.acceptFriendEndpoint+"?jwt="+user2.token+"&userId="+user1.user_id)
+									.expect("status", 200)
+									.then(function () {
+										return frisby.put(testHelper.blockFriendEndpoint+"?jwt="+user1.token+"&userId="+user2.user_id)
+											.expect("status", 200);
+									});
+							});
+					});
+			});
+	});
+
+	it("Should allow a user to block someone who they are not friends with even without a request from that user", function() {
+		return frisby.post(testHelper.registerEndpoint, testHelper.createGenericUserMale())
+			.expect("status", 200)
+			.expect("bodyContains", "token")
+			.expect("bodyContains", "user_id")
+			.then(function (user1) {
+				user1 = user1.json;
+				return frisby.post(testHelper.registerEndpoint, testHelper.createGenericUserMale())
+					.expect("status", 200)
+					.expect("bodyContains", "token")
+					.expect("bodyContains", "user_id")
+					.then(function (user2) {
+						user2 = user2.json;
+						return frisby.post(testHelper.sendfriendsEndpoint, testHelper.createGenericFriendRequest(user1.token, user2.user_id))
+							.expect("status", 200)
+							.then(function () {
+								return frisby.del(testHelper.deleteFriendEndpoint+"?jwt="+user2.token+"&userId="+user1.user_id)
+									.expect("status", 200)
+									.then(function () {
+										return frisby.put(testHelper.blockFriendEndpoint+"?jwt="+user2.token+"&userId="+user1.user_id)
+											.expect("status", 200);
+									});
+							});
+					});
+			});
+	});
+
+
+	it("Should be able to list all the blocked friends of a user", function() {
+		return frisby.post(testHelper.registerEndpoint, testHelper.createGenericUserMale())
+			.expect("status", 200)
+			.expect("bodyContains", "token")
+			.expect("bodyContains", "user_id")
+			.then(function (user1) {
+				user1 = user1.json;
+				var user2Details = testHelper.createGenericUserMale();
+				return frisby.post(testHelper.registerEndpoint, user2Details)
+					.expect("status", 200)
+					.expect("bodyContains", "token")
+					.expect("bodyContains", "user_id")
+					.then(function (user2) {
+						user2 = user2.json;
+						var user3Details = testHelper.createGenericUserMale();
+						return frisby.post(testHelper.registerEndpoint, user3Details)
+							.expect("status", 200)
+							.expect("bodyContains", "token")
+							.expect("bodyContains", "user_id")
+							.then(function (user3) {
+								user3 = user3.json;
+								return frisby.post(testHelper.sendfriendsEndpoint, testHelper.createGenericFriendRequest(user2.token, user1.user_id))
+									.expect("status", 200)
+									.then(function () {
+										return frisby.post(testHelper.sendfriendsEndpoint, testHelper.createGenericFriendRequest(user3.token, user1.user_id))
+											.expect("status", 200)
+											.then(function () {
+												return frisby.put(testHelper.acceptFriendEndpoint+"?jwt="+user1.token+"&userId="+user2.user_id)
+													.expect("status", 200)
+													.then(function () {
+														return frisby.del(testHelper.deleteFriendEndpoint+"?jwt="+user1.token+"&userId="+user3.user_id)
+															.expect("status", 200)
+															.then(function () {
+																return frisby.put(testHelper.blockFriendEndpoint+"?jwt="+user1.token+"&userId="+user2.user_id)
+																	.expect("status", 200)
+																	.then(function () {
+																		return frisby.put(testHelper.blockFriendEndpoint+"?jwt="+user1.token+"&userId="+user3.user_id)
+																			.expect("status", 200)
+																			.then(function () {
+																				return frisby.get(testHelper.listBlockedUsersEndpoint+"?jwt="+user1.token)
+																					.expect("status", 200)
+																					.expect("jsonStrict", "blockedUsers.?", {
+																						user_id: user2.user_id,
+																						fname: user2Details.fname,
+																						lname: user2Details.lname,
+																					})
+																					.expect("jsonStrict", "blockedUsers.?", {
+																						user_id: user3.user_id,
+																						fname: user3Details.fname,
+																						lname: user3Details.lname
+																					});
+																			});
+																	});
+															});
+													});
+											});
+									});
+							});
+					});
+			});
+	});
+
+	it("Should list all the friend requests that a user has", function() {
+		return frisby.post(testHelper.registerEndpoint, testHelper.createGenericUserMale())
+			.expect("status", 200)
+			.expect("bodyContains", "token")
+			.expect("bodyContains", "user_id")
+			.then(function (user1) {
+				user1 = user1.json;
+				var user2Details = testHelper.createGenericUserMale();
+				return frisby.post(testHelper.registerEndpoint, user2Details)
+					.expect("status", 200)
+					.expect("bodyContains", "token")
+					.expect("bodyContains", "user_id")
+					.then(function (user2) {
+						var user3Details = testHelper.createGenericUserMale();
+						user2 = user2.json;
+						return frisby.post(testHelper.registerEndpoint, user3Details)
+							.expect("status", 200)
+							.expect("bodyContains", "token")
+							.expect("bodyContains", "user_id")
+							.then(function (user3) {
+								user3 = user3.json;
+								var user4Details = testHelper.createGenericUserMale();
+								return frisby.post(testHelper.registerEndpoint, user4Details)
+									.expect("status", 200)
+									.expect("bodyContains", "token")
+									.expect("bodyContains", "user_id")
+									.then(function (user4) {
+										user4 = user4.json;
+										return frisby.post(testHelper.sendfriendsEndpoint, testHelper.createGenericFriendRequest(user1.token, user2.user_id))
+											.expect("status", 200)
+											.then(function() {
+												return frisby.post(testHelper.sendfriendsEndpoint, testHelper.createGenericFriendRequest(user3.token, user1.user_id))
+													.expect("status", 200)
+													.then(function() {
+														return frisby.post(testHelper.sendfriendsEndpoint, testHelper.createGenericFriendRequest(user1.token, user4.user_id))
+															.expect("status", 200)
+															.then(function() {
+																return frisby.get(testHelper.listFriendRequestEndpoint+"?jwt="+user1.token)
+																	.expect("status", 200)
+																	.expect("jsonStrict", "ByUser.?", {
+																		user_id: user2.user_id,
+																		fname: user2Details.fname,
+																		lname: user2Details.lname,
+																		status: "requested"
+																	})
+																	.expect("jsonStrict", "ByUser.?", {
+																		user_id: user4.user_id,
+																		fname: user4Details.fname,
+																		lname: user4Details.lname,
+																		status: "requested"
+																	})
+																	.expect("jsonStrict", "ForUser.?", {
+																		user_id: user3.user_id,
+																		fname: user3Details.fname,
+																		lname: user3Details.lname,
+																		status: "requested"
+																	});
+															});
+													});
+											});
+									});
+							});
+					});
+			});
+	});
+	
+});
