@@ -212,6 +212,7 @@ function updateTag(reviewId, tags, finished) {
 function filterGames(games, user_id, finished) {
 	var final_results = [];
 	async.forEachOf(games, function (game, i, callback) {
+		game.game_id = parseInt(game.game_id);
 		databaseHelper.ensureGameIsJoinableByPlayer(game.game_id, user_id, (playable) => {
 			game.player_restricted = !playable;
 			// Make sure enforced params is an array 

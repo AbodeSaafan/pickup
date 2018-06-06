@@ -168,7 +168,8 @@ describe("Search api testing", function () {
 								return frisby.get(testHelper.searchEndpoint+"?jwt="+new_user.token+"&search_object=game&game_id="+game.game_id)
 									.expect("status", 200)
 									.expect("json", "games[0].game_id", game.game_id)
-									.expect("json", "games[0].player_restricted", true);
+									.expect("json", "games[0].player_restricted", true)
+									.expect("json", "games[0].enforced_params", gameDetails.enforced_params);
 							}).done(doneFn);
 					});
 			});
