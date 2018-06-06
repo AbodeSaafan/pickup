@@ -189,6 +189,7 @@ public class MainSearchFragment extends Fragment implements GetJwt.Callback {
                 // get results
                 // display results by loading correct list view
                 ((HostingActivity) getActivity()).onDisplayGameSearchResults(response.get("games").toString());
+                loadingResponse.cancel();
 
             }
             catch (Exception e){
