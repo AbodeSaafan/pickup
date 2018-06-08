@@ -314,7 +314,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     //https://stackoverflow.com/questions/5658675/replacing-a-fragment-with-another-fragment-inside-activity-group
-    private void replaceFragment(Fragment frag, boolean backStackAdd, int fragId){
+    public void replaceFragment(Fragment frag, boolean backStackAdd, int fragId){
         hideKeyboard();
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
 

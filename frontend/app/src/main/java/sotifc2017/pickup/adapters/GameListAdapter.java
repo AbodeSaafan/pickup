@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.graphics.PorterDuff;
 import android.location.Address;
 import android.location.Geocoder;
+import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,7 +24,10 @@ import java.util.Locale;
 import java.util.TimeZone;
 
 import sotifc2017.pickup.R;
+import sotifc2017.pickup.activities.HostingActivity;
+import sotifc2017.pickup.api.Utils;
 import sotifc2017.pickup.api.models.GameModel;
+import sotifc2017.pickup.fragments.GameViewFragment;
 
 /**
  * Created by rkrishnan on 3/13/2018.
@@ -58,9 +62,9 @@ public class GameListAdapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup viewGroup) {
+    public View getView(final int position, View convertView, ViewGroup viewGroup) {
 
-        GameModel game = gamesList[position];
+        final GameModel game = gamesList[position];
         View itemView = convertView;
 
 
@@ -154,6 +158,21 @@ public class GameListAdapter extends BaseAdapter {
         } else if (difference > 7) {
             player_icon.setColorFilter(ContextCompat.getColor(mContext, R.color.green), PorterDuff.Mode.SRC_IN);
         }
+
+        itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //popup toast
+                Bundle bundle = new Bundle();
+                String gameJson = Utils.gson.toJson(gamesList[position]);
+                bundle.putString("gameJson", gameJson);
+
+                GameViewFragment gameViewFragment = new GameViewFragment();
+                gameViewFragment.setArguments(bundle);
+
+                ((HostingActivity) mContext).replaceFragment(gameViewFragment, true, -1);
+            }
+        });
 
 
         return itemView;

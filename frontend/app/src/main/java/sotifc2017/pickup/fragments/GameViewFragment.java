@@ -25,6 +25,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Locale;
 
 import sotifc2017.pickup.R;
 import sotifc2017.pickup.activities.SignInActivity;
@@ -95,8 +96,9 @@ public class GameViewFragment extends Fragment implements GetJwt.Callback {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        geocoder = new Geocoder(getActivity(), Locale.getDefault());
 
-        gameList = gameListJsonSerialize(savedInstanceState.getString("gameJson"));
+        gameList = gameListJsonSerialize(getArguments().getString("gameJson"));
     }
 
     @Override
