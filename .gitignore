@@ -71,3 +71,5 @@ private.key
 */captures
 .externalNativeBuild
 *google-services.json*
+*/.idea/caches
+*/.idea/codeStyles
