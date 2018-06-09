@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.text.InputType;
+import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -78,14 +79,13 @@ public class CreateGameFragment extends Fragment implements GetJwt.Callback {
     private EditText gameName;
     private EditText gameDescription;
 
-    private CheckBox casualGameCheck;
-    private CheckBox seriousGameCheck;
+    private RadioButton seriousGameRadio;
 
     private TextView skillOffsetRangeText;
     private RangeBar skillOffsetRange;
 
-    private RangeBar minPlayerSeekBar;
-    private TextView minPlayerText;
+    private RangeBar totalPlayerSeekBar;
+    private TextView totalPlayerText;
 
     private Calendar fromCalendar;
     private Calendar toCalendar;
@@ -228,22 +228,25 @@ public class CreateGameFragment extends Fragment implements GetJwt.Callback {
 
         gameName = view.findViewById(R.id.complete_text_view_game_name);
 
-        casualGameCheck = view.findViewById(R.id.checkbox_casual_game_type);
-        casualGameCheck.setOnCheckedChangeListener(new CheckBox.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean casualGameChecked) {
-                updateGameTypeCheckboxes();
-            }
-        });
-        seriousGameCheck = view.findViewById(R.id.checkbox_serious_game_type);
-        seriousGameCheck.setOnCheckedChangeListener(new CheckBox.OnCheckedChangeListener() {
+        seriousGameRadio = view.findViewById(R.id.radio_serious_game);
+        seriousGameRadio.setOnCheckedChangeListener(new CheckBox.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean seriousGameChecked) {
-                updateGameTypeCheckboxes();
+                skillOffsetRange.setEnabled(seriousGameChecked);
             }
         });
 
         gameDescription = view.findViewById(R.id.multiTextViewDescription);
+        gameDescription.setMovementMethod(new ScrollingMovementMethod());
+        gameDescription.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean enteredFocus) {
+                if (enteredFocus &&
+                        getString(R.string.create_new_game_description_hint).equals(gameDescription.getText().toString())) {
+                    gameDescription.setText("");
+                }
+            }
+        });
 
         skillOffsetRange = view.findViewById(R.id.range_bar_skill_offset);
         skillOffsetRangeText = view.findViewById(R.id.text_skill_offset_level);
@@ -257,14 +260,14 @@ public class CreateGameFragment extends Fragment implements GetJwt.Callback {
 
         });
 
-        minPlayerSeekBar = view.findViewById(R.id.range_bar_min_players);
-        minPlayerText = view.findViewById(R.id.text_minimum_players);
-        minPlayerText.setText(String.format(getString(R.string.game_search_minimum_player_message), 20));
-        minPlayerSeekBar.setOnRangeBarChangeListener(new RangeBar.OnRangeBarChangeListener() {
+        totalPlayerSeekBar = view.findViewById(R.id.range_bar_total_players);
+        totalPlayerText = view.findViewById(R.id.text_total_players);
+        totalPlayerText.setText(String.format(getString(R.string.create_new_game_total_players_message), 20));
+        totalPlayerSeekBar.setOnRangeBarChangeListener(new RangeBar.OnRangeBarChangeListener() {
             @Override
             public void onRangeChangeListener(RangeBar rangeBar, int leftPinIndex,
                                               int rightPinIndex, String leftPinValue, String rightPinValue) {
-                minPlayerText.setText(String.format(getString(R.string.game_search_minimum_player_message), Integer.parseInt(rightPinValue)));
+                totalPlayerText.setText(String.format(getString(R.string.create_new_game_total_players_message), Integer.parseInt(rightPinValue)));
             }
         });
 
@@ -407,14 +410,6 @@ public class CreateGameFragment extends Fragment implements GetJwt.Callback {
             default:
                 GetJwt.exitAppDialog(getActivity()).show();
         }
-    }
-
-    private void updateGameTypeCheckboxes(){
-        if(!casualGameCheck.isChecked() && !seriousGameCheck.isChecked()){
-            casualGameCheck.setChecked(true);
-            seriousGameCheck.setChecked(true);
-        }
-        skillOffsetRange.setEnabled(seriousGameCheck.isChecked());
     }
 
     public void showCustomDialogTimePicker()
@@ -575,15 +570,15 @@ public class CreateGameFragment extends Fragment implements GetJwt.Callback {
         gameModel.setName(gameName.getText().toString());
 
         // If both options are selected treat the game as serious for now.
-        GAME_TYPE game_type = seriousGameCheck.isChecked() ? GAME_TYPE.serious : GAME_TYPE.casual;
+        GAME_TYPE game_type = seriousGameRadio.isChecked() ? GAME_TYPE.serious : GAME_TYPE.casual;
         gameModel.setType(game_type.name());
 
         gameModel.setDescription(gameDescription.getText().toString());
 
-        int  offsetSkill = seriousGameCheck.isChecked() && skillOffsetRange.isEnabled() ? Integer.parseInt(skillOffsetRange.getRightPinValue()) : -1;
+        int  offsetSkill = seriousGameRadio.isChecked() && skillOffsetRange.isEnabled() ? Integer.parseInt(skillOffsetRange.getRightPinValue()) : -1;
         gameModel.setOffsetSkill(offsetSkill);
 
-        int totalPlayersRequired = Integer.parseInt(minPlayerSeekBar.getLeftPinValue());
+        int totalPlayersRequired = Integer.parseInt(totalPlayerSeekBar.getLeftPinValue());
         gameModel.setTotalPlayersRequired(totalPlayersRequired);
 
         String[] dates = dateRangeText.getText().toString().split(" - ");

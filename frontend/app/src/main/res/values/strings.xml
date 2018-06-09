@@ -75,9 +75,10 @@
     <string name="create_new_game_title">Create Game</string>
     <string name="create_new_game_name">Game Name:</string>
     <string name="create_new_game_type">Game Type:</string>
+    <string name="create_new_game_total_players_message">Total number of Players: %d</string>
     <string name="create_new_game_location_notes">Location Notes:</string>
     <string name="create_new_game_description">Description:</string>
-    <string name="create_new_game_description_hint">Tell us about your game</string>
+    <string name="create_new_game_description_hint">Tell us about your game...</string>
     <string name="create_new_game_skill_message">Skill: %d </string>
     <string name="create_new_game_skill_offset_message">Skill offset: up to %d levels away from you </string>
 
