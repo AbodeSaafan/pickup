@@ -23,19 +23,19 @@ var md5 = require("md5");
 * @apiSuccessExample Success-Response:
 *      HTTP/1.1 200 OK
 * 	{
+*		refresh: RefreshToken
 *	}
 *
 * @apiExample Example call::
 * 	{
 *    "token": "b43a545f90ec60bf5ed2a4bd45d81a711de7ba658faa6899d8240343b857664fc967a76cd622235313db8e2ec053fe34c26c",
 *    "old_password": "test1234",
-*		 "new_password": "test2876"
+*	 "new_password": "test2876"
 *	}
 *
 * @apiSampleRequest /api/changePassword
 */
 router.put("/", function (req, res) {
-
 	try {
 		var tok = tokenHelper.verifyToken(req.body.jwt);
 
@@ -47,9 +47,9 @@ router.put("/", function (req, res) {
 				var user_salt = requestHelper.generateSalt();
 				var user_new_hashed_Password = md5(user_salt + password_object.new_password);
 
-				databaseHelper.updatePassword(user_id, user_salt, user_new_hashed_Password, (update) => {
-					if (update) {
-						res.status(200).json(update); return;
+				databaseHelper.updatePassword(user_id, user_salt, user_new_hashed_Password, (refresh) => {
+					if (refresh) {
+						res.status(200).json({"refresh": refresh}); return;
 					} else {
 						res.status(400).json({"error": strings.updatePassword}); return;
 					}

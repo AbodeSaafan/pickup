@@ -138,6 +138,21 @@ function deleteRefreshToken(userId, refreshToken, callback) {
 	});
 }
 
+function deleteInvalidRefreshTokens(userId, callback) {
+	var queryString = "DELETE FROM refresh WHERE user_id = $1;";
+	var queryParams = [userId];
+
+	const pool = new pg.Pool({ connectionString: conString });
+	pool.connect((err, client, done) => {
+		// eslint-disable-next-line no-unused-vars
+		client.query(queryString, queryParams, (err, res) => {
+			callback();
+			done();
+			pool.end();
+		});
+	});
+}
+
 function populateExtendedProfile(user, callback) {
 	var queryString = "INSERT INTO extended_profile(user_id, username) VALUES($1, $2);";
 	//var age = calculateAge(user.dob);
@@ -791,7 +806,16 @@ function updatePassword(user_id, user_salt, user_new_hashed_Password, callback) 
 
 	pool.connect((err, client, done) => {
 		client.query(queryString, queryParams, (err, res) => {
-			callback(!err && res);
+			if(!err && res){
+				deleteInvalidRefreshTokens(user_id, () => {
+					createRefreshToken(user_id, (refreshToken) => {
+						callback(refreshToken);
+					});
+				});
+			}
+			else {
+				callback(false);
+			}
 			done();
 			pool.end();
 		});
