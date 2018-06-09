@@ -5,5 +5,5 @@ package sotifc2017.pickup.api.contracts;
  */
 
 public class ChangePasswordResponse {
-
+    public String refresh;
 }

@@ -38,6 +38,7 @@ import sotifc2017.pickup.api.GetJwt;
 import sotifc2017.pickup.api.PrivateProfile;
 import sotifc2017.pickup.api.Utils;
 import sotifc2017.pickup.api.contracts.ChangePasswordRequest;
+import sotifc2017.pickup.api.contracts.ChangePasswordResponse;
 import sotifc2017.pickup.api.contracts.GetPrivateProfileRequest;
 import sotifc2017.pickup.api.contracts.GetPrivateProfileResponse;
 import sotifc2017.pickup.api.contracts.UpdatePrivateProfileRequest;
@@ -257,6 +258,8 @@ public class SettingsFragment extends PreferenceFragment implements GetJwt.Callb
                 final EditText oldPasswordInput = promptsView.findViewById(R.id.old_password_val);
                 final EditText newpasswordInput = promptsView.findViewById(R.id.new_password_val);
                 final EditText confirmpasswordInput = promptsView.findViewById(R.id.confirm_password_val);
+
+                oldPasswordInput.requestFocus();
                 // set dialog message
                 alertDialogBuilder
                         .setCancelable(false)
@@ -518,7 +521,9 @@ public class SettingsFragment extends PreferenceFragment implements GetJwt.Callb
         @Override
         public void onResponse(JSONObject response) {
             try {
-                LoadProfileValuesFromResponse((Utils.gson.fromJson(response.toString(), GetPrivateProfileResponse.class)));
+                ChangePasswordResponse deserializedResponse = (Utils.gson.fromJson(response.toString(), ChangePasswordResponse.class));
+                Authentication.saveRefresh(getActivity(), deserializedResponse.refresh);
+
                 progressDialog.cancel();
             }
             //TODO: Implement Failure
