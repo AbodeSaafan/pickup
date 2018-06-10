@@ -49,6 +49,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import sotifc2017.pickup.Common.Defaults;
 import sotifc2017.pickup.R;
 import sotifc2017.pickup.api.Authentication;
 import sotifc2017.pickup.fragment_interfaces.OnFragmentReplacement;
@@ -204,6 +205,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     public void displayGames(Location location) {
         if (location != null && checkPermissions()) {
+            // Save as last known location
+            SaveLastKnownLocation(location);
             // Generates Sample Games. Take out when connected to backend.
             sampleGames = new ArrayList<>();
             Random random = new Random();
@@ -240,7 +243,14 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             mMap.setOnMapLoadedCallback(new GoogleMap.OnMapLoadedCallback() {
                 @Override
                 public void onMapLoaded() {
-                    zoomToUser(mMap, new LatLng(43, -79));
+                    Location lastKnown = GetLastKnownLocation();
+                    if(lastKnown.getAccuracy() == Float.MIN_VALUE){
+                        // Don't have any info
+                        // TODO we should prevent this with permission flow
+                        zoomToUser(mMap, new LatLng(43, -79));
+                    } else {
+                        zoomToUser(mMap, new LatLng(lastKnown.getLatitude(), lastKnown.getLongitude()));
+                    }
                 }
             });
         }
@@ -458,6 +468,30 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             view = new View(this);
         }
         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+    }
+
+    private void SaveLastKnownLocation(Location location){
+        getSharedPreferences(Defaults.FC_TAG, MODE_PRIVATE).edit()
+                .putBoolean("locationSaved", true).apply();
+        getSharedPreferences(Defaults.FC_TAG, MODE_PRIVATE).edit().
+                putLong("lastKnownLocationLat", Double.doubleToRawLongBits(location.getLatitude())).apply();
+        getSharedPreferences(Defaults.FC_TAG, MODE_PRIVATE).edit().
+                putLong("lastKnownLocationLng", Double.doubleToRawLongBits(location.getLongitude())).apply();
+    }
+
+    private Location GetLastKnownLocation(){
+        Location result = new Location("FromPrefs");
+        boolean locationSaved = getSharedPreferences(Defaults.FC_TAG, MODE_PRIVATE).getBoolean("locationSaved", false);
+
+        if(!locationSaved){
+            result.setAccuracy(Float.MIN_VALUE);
+            return result;
+        }
+
+        result.setLatitude(Double.longBitsToDouble(getSharedPreferences(Defaults.FC_TAG, MODE_PRIVATE).getLong("lastKnownLocationLat", Long.MIN_VALUE)));
+        result.setLongitude(Double.longBitsToDouble(getSharedPreferences(Defaults.FC_TAG, MODE_PRIVATE).getLong("lastKnownLocationLng", Long.MIN_VALUE)));
+
+        return result;
     }
 
 }
