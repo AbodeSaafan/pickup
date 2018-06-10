@@ -31,6 +31,9 @@ import android.widget.Toast;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -78,6 +81,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private static long back_pressed_time;
     private static long PERIOD = 2000;
     private int PLACE_PICKER_REQUEST = 1;
+    private LocationCallback mLocationCallback;
     Intent intent;
 
     @Override
@@ -103,6 +107,57 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         MapFragment mapFragment = new RefinedMapFragment();
         replaceFragment(mapFragment, false, R.id.action_map);
         mapFragment.getMapAsync(this);
+
+        mLocationCallback = new LocationCallback() {
+            @Override
+            public void onLocationResult(LocationResult locationResult) {
+                if (locationResult == null) {
+                    return;
+                }
+                for (Location location : locationResult.getLocations()) {
+                    zoomToUser(mMap, new LatLng(location.getLatitude(), location.getLongitude()));
+                    SaveLastKnownLocation(location);
+                }
+            }
+
+            ;
+        };
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        startLocationUpdates();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        stopLocationUpdates();
+    }
+
+    private void startLocationUpdates() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            return;
+        }
+        if(mFusedLocationClient == null) { return; }
+        mFusedLocationClient.requestLocationUpdates(createLocationRequest(),
+                mLocationCallback,
+                null /* Looper */);
+    }
+
+    private void stopLocationUpdates() {
+        mFusedLocationClient.removeLocationUpdates(mLocationCallback);
+    }
+
+    protected LocationRequest createLocationRequest() {
+        LocationRequest locationRequest = new LocationRequest();
+        locationRequest.setInterval(10000);
+        locationRequest.setFastestInterval(5000);
+        locationRequest.setPriority(locationRequest.PRIORITY_HIGH_ACCURACY);
+
+        return locationRequest;
     }
 
     private void setUpToolbarSearch() {
@@ -145,6 +200,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         mMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.style_json));
         if (checkPermissions()) {
             mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+            startLocationUpdates();
             mFusedLocationClient.getLastLocation()
                     .addOnSuccessListener(this, new OnSuccessListener<Location>() {
                         @Override
@@ -204,6 +260,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     public void displayGames(Location location) {
+        stopLocationUpdates();
         if (location != null && checkPermissions()) {
             // Save as last known location
             SaveLastKnownLocation(location);
@@ -471,6 +528,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     private void SaveLastKnownLocation(Location location){
+        Log.v("location", String.format("updating location with lat %f and lng %f", location.getLatitude(), location.getLongitude()));
         getSharedPreferences(Defaults.FC_TAG, MODE_PRIVATE).edit()
                 .putBoolean("locationSaved", true).apply();
         getSharedPreferences(Defaults.FC_TAG, MODE_PRIVATE).edit().
