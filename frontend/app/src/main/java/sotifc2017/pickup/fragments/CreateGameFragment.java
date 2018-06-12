@@ -548,7 +548,7 @@ public class CreateGameFragment extends Fragment implements GetJwt.Callback {
                 gameModel.getName(),
                 gameModel.getType(),
                 gameModel.getOffsetSkill(),
-                gameModel.totalPlayersRequired,
+                gameModel.total_players_required,
                 gameModel.getFinalStartTime(),
                 gameModel.getFinalEndTime() - gameModel.getFinalStartTime(),
                 gameModel.getLocation(),
