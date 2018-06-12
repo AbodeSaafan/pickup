@@ -89,7 +89,7 @@ describe("Search api testing", function () {
 									});
 							})
 							.then(function () {
-								return frisby.get(testHelper.searchEndpoint+"?jwt="+token+"&search_object=game&results_max=1&game_duration=50000")
+								return frisby.get(testHelper.searchEndpoint+"?jwt="+token+"&search_object=game&results_max=1&game_duration=99999999999")
 									.expect("status", 400)
 									.expect("jsonStrict", {
 										error: strings.emptySearchResults
