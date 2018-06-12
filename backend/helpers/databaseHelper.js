@@ -906,7 +906,7 @@ function getConstraintQuery(search_request) {
 			return query;
 		}
 		else if (search_request.game_name && search_request.game_name != "") {
-			queryConstraint.push("name LIKE '%" + search_request.game_name + "%' ");
+			queryConstraint.push("name ILIKE '%" + search_request.game_name + "%' ");
 		}
 		if (search_request.game_type && search_request.game_type != "") {
 			queryConstraint.push("type = '" + search_request.game_type + "'");

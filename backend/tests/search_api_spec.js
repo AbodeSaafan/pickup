@@ -27,6 +27,24 @@ describe("Search api testing", function () {
 									.expect("json", "games[0].player_restricted", false);
 							})
 							.then(function () {
+								return frisby.get(testHelper.searchEndpoint+"?jwt="+token+"&search_object=game&results_max=1&game_name=" + gameDetails.name.toLowerCase())
+									.expect("status", 200)
+									.expect("json", "games[0].game_id", game.game_id)
+									.expect("json", "games[0].player_restricted", false);
+							})
+							.then(function () {
+								return frisby.get(testHelper.searchEndpoint+"?jwt="+token+"&search_object=game&results_max=1&game_name=" + gameDetails.name.toUpperCase())
+									.expect("status", 200)
+									.expect("json", "games[0].game_id", game.game_id)
+									.expect("json", "games[0].player_restricted", false);
+							})
+							.then(function () {
+								return frisby.get(testHelper.searchEndpoint+"?jwt="+token+"&search_object=game&results_max=1&game_name=" + gameDetails.name.split(" ")[0].toUpperCase())
+									.expect("status", 200)
+									.expect("json", "games[0].game_id", game.game_id)
+									.expect("json", "games[0].player_restricted", false);
+							})
+							.then(function () {
 								return frisby.get(testHelper.searchEndpoint+"?jwt="+token+"&search_object=game&results_max=1&game_type="+gameDetails.type+"&game_id="+game.game_id)
 									.expect("status", 200)
 									.expect("json", "games[0].game_id", game.game_id)
