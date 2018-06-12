@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -77,16 +78,21 @@ public class GameListAdapter extends BaseAdapter {
         TextView location = itemView.findViewById(R.id.location);
         TextView dateTime = itemView.findViewById(R.id.dateTime);
         TextView players = itemView.findViewById(R.id.players);
+        TextView time = itemView.findViewById(R.id.time);
+        RelativeLayout player_info = itemView.findViewById(R.id.player_info);
 
         double latitude = game.location.get("lat");
         double longitude = game.location.get("lng");
 
 
         String newLocation = "";
+
         try {
             List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
             if (addresses.size() > 0) {
+
                 newLocation = addresses.get(0).getLocality() + ", " + addresses.get(0).getAdminArea() + ", " + addresses.get(0).getCountryCode();
+
             } else {
                 newLocation = "N/A";
             }
@@ -96,9 +102,14 @@ public class GameListAdapter extends BaseAdapter {
 
         }
 
-        String playerCount = String.valueOf(game.totalPlayersAdded) + "/" + String.valueOf(game.totalPlayersRequired);
+        String playerCount = String.valueOf(game.total_players_added) + "/" + String.valueOf(game.total_players_required);
         String date = "";
+        int start_time  = Integer.parseInt(game.start_time);
+        int end_time = Integer.parseInt(game.end_time);
+        String finalTime = "";
 
+
+        //Calculate Date
         SimpleDateFormat sdf_date = new SimpleDateFormat("d");
         if (date.endsWith("1") && !date.endsWith("11"))
             sdf_date = new SimpleDateFormat("EE MMM d'st' yyyy");
@@ -109,23 +120,40 @@ public class GameListAdapter extends BaseAdapter {
         else
             sdf_date = new SimpleDateFormat("EE MMM d'th' yyyy");
 
+        sdf_date.setTimeZone(TimeZone.getTimeZone("Etc/UTC"));
 
-        String start_date = sdf_date.format(new Date(game.finalStartTime));
-        String end_date = sdf_date.format(new Date(game.finalEndTime));
+        String start_date = sdf_date.format( new Date(start_time*1000L));
+        String end_date = sdf_date.format( new Date(end_time*1000L));
 
-        DateFormat time_format = new SimpleDateFormat("h:mm a");
+        System.out.println(start_date);
+        System.out.println(end_date);
+
+        //Calculate Time
+        SimpleDateFormat  time_format = new SimpleDateFormat("h:mm a");
         time_format.setTimeZone(TimeZone.getTimeZone("Etc/UTC"));
-        String start_time = time_format.format(new Date(game.finalStartTime));
-        String end_time = time_format.format(new Date(game.finalEndTime));
+
+        String startTime = time_format.format(new Date(start_time*1000L));
+        String endTime = time_format.format(new Date(end_time*1000L));
+
 
         if (start_date.equals(end_date)) {
-            date = start_date + ", " + start_time + "-" + end_time;
+            date = start_date + ", " + startTime + "-" + endTime;
         }
+        else {
+            date = start_date + " to " + end_date;
+            finalTime = startTime + "-" + endTime;
+
+        }
+
 
         gameName.setText(game.name);
         location.setText(newLocation);
         players.setText(playerCount);
         dateTime.setText(date);
+
+        if (finalTime != "") {
+            time.setText(finalTime);
+        }
 
         if (game.player_restricted) {
             ImageButton warning = itemView.findViewById(R.id.warning);
@@ -145,7 +173,7 @@ public class GameListAdapter extends BaseAdapter {
 
         ImageView player_icon = itemView.findViewById(R.id.player_icon);
 
-        int difference = game.totalPlayersRequired - game.totalPlayersAdded;
+        int difference = game.total_players_required - game.total_players_added;
 
         if (difference >= 0 && difference <= 3){
 

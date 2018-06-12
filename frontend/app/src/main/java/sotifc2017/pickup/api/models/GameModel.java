@@ -17,18 +17,18 @@ public class GameModel {
     public String name;
     public String type;
     public int offsetSkill;
-    public int totalPlayersRequired;
-    public int totalPlayersAdded;
-    public String startTime;
-    public String endTime;
+    public int total_players_required;
+    public int total_players_added;
+    public String start_time;
+    public String end_time;
     public int finalStartTime;
     public int finalEndTime;
     public HashMap<String, Double> location;
-    public int creatorId;
+    public int creator_id;
     public String description;
     public String location_notes;
     public String gender;
-    public int[] ageRange;
+    public int[] age_range;
     public ENFORCED_PARAMS[] enforced_params;
     public int time_created;
     public boolean player_restricted;
@@ -38,18 +38,18 @@ public class GameModel {
         this.name = "My game";
         this.type = "casual";
         this.offsetSkill = DEFAULT_INT;
-        this.totalPlayersRequired = DEFAULT_INT;
-        this.totalPlayersAdded = START_NUM_PLAYERS_ADDED;
-        this.startTime = String.valueOf(DEFAULT_INT);
-        this.endTime = String.valueOf(DEFAULT_INT);
+        this.total_players_required = DEFAULT_INT;
+        this.total_players_added = START_NUM_PLAYERS_ADDED;
+        this.start_time = String.valueOf(DEFAULT_INT);
+        this.end_time = String.valueOf(DEFAULT_INT);
         this.finalStartTime = DEFAULT_INT;
         this.finalEndTime = DEFAULT_INT;
         this.location = new HashMap<String, Double>() {};
-        this.creatorId = DEFAULT_INT;
+        this.creator_id = DEFAULT_INT;
         this.description = "Casual basketball game";
         this.location_notes = "Come around the back and knock on the blue door";
         this.gender = "f";
-        this.ageRange = new int[] { 20, 30 };
+        this.age_range = new int[] { 20, 30 };
         this.enforced_params = new ENFORCED_PARAMS[] {};
         this.time_created = DEFAULT_INT;
         this.player_restricted = DEFAULT_BOOLEAN;
@@ -67,18 +67,18 @@ public class GameModel {
         this.name = name;
         this.type = type;
         this.offsetSkill = offsetSkill;
-        this.totalPlayersRequired = totalPlayersRequired;
-        this.totalPlayersAdded = totalPlayersAdded;
-        this.startTime = startTime;
-        this.endTime = endTime;
+        this.total_players_required = totalPlayersRequired;
+        this.total_players_added = totalPlayersAdded;
+        this.start_time = startTime;
+        this.end_time = endTime;
         this.finalStartTime = finalStartTime;
         this.finalEndTime = finalEndTime;
         this.location = location;
-        this.creatorId = creatorId;
+        this.creator_id = creatorId;
         this.description = description;
         this.location_notes = location_notes;
         this.gender = gender;
-        this.ageRange = ageRange;
+        this.age_range = ageRange;
         this.enforced_params = enforced_params;
         this.time_created = time_created;
         this.player_restricted = player_restricted;
@@ -118,35 +118,35 @@ public class GameModel {
     }
 
     public int getTotalPlayersRequired() {
-        return totalPlayersRequired;
+        return total_players_required;
     }
 
     public void setTotalPlayersRequired(int total_players_required) {
-        this.totalPlayersRequired = total_players_required;
+        this.total_players_required = total_players_required;
     }
 
     public int getTotalPlayersAdded() {
-        return totalPlayersAdded;
+        return total_players_added;
     }
 
     public void setTotalPlayersAdded(int total_players_added) {
-        this.totalPlayersAdded = total_players_added;
+        this.total_players_added = total_players_added;
     }
 
     public String getStartTime() {
-        return startTime;
+        return start_time;
     }
 
     public void setStartTime(String start_time) {
-        this.startTime = start_time;
+        this.start_time = start_time;
     }
 
     public String getEndTime() {
-        return endTime;
+        return end_time;
     }
 
     public void setEndTime(String end_time) {
-        this.endTime = end_time;
+        this.end_time = end_time;
     }
 
     public int getFinalStartTime() {
@@ -174,11 +174,11 @@ public class GameModel {
     }
 
     public int getCreatorId() {
-        return creatorId;
+        return creator_id;
     }
 
     public void setCreatorId(int creatorId) {
-        this.creatorId = creatorId;
+        this.creator_id = creatorId;
     }
 
     public String getDescription() {
@@ -206,11 +206,11 @@ public class GameModel {
     }
 
     public int[] getAgeRange() {
-        return ageRange;
+        return age_range;
     }
 
     public void setAgeRange(int[] age_range) {
-        this.ageRange = age_range;
+        this.age_range = age_range;
     }
 
     public ENFORCED_PARAMS[] getEnforcedParams() {
