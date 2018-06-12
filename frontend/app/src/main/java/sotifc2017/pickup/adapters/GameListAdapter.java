@@ -90,8 +90,18 @@ public class GameListAdapter extends BaseAdapter {
         try {
             List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
             if (addresses.size() > 0) {
-
-                newLocation = addresses.get(0).getLocality() + ", " + addresses.get(0).getAdminArea() + ", " + addresses.get(0).getCountryCode();
+                if (addresses.get(0).getLocality() != null) {
+                    newLocation = newLocation + addresses.get(0).getLocality() + ", ";
+                }
+                if (addresses.get(0).getAdminArea() != null) {
+                    newLocation = newLocation + addresses.get(0).getAdminArea() + ", ";
+                }
+                if (addresses.get(0).getCountryCode() != null) {
+                    newLocation = newLocation + addresses.get(0).getCountryCode();
+                }
+                if (addresses.get(0).getCountryCode() == null) {
+                    newLocation = newLocation.substring(0, newLocation.length()-1);
+                }
 
             } else {
                 newLocation = "N/A";
