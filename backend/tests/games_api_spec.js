@@ -14,8 +14,8 @@ describe("Games api testing", function() {
 				body = body.json;
 				return frisby.post(testHelper.createGameEndpoint, testHelper.createUnrestrictedGame(body.token, 1, 1))
 					.expect("status", 200)
-					.expect("bodyContains", "game_id");
-			}).done(doneFn);
+					.expect("bodyContains", "game_id").done(doneFn);
+			});
 	});
 
 	it("Should be able to create a game with some enforced parameters", function(doneFn) {
@@ -26,8 +26,8 @@ describe("Games api testing", function() {
 				body = body.json;
 				return frisby.post(testHelper.createGameEndpoint, testHelper.createGenericGame(body.token, 1, 1))
 					.expect("status", 200)
-					.expect("bodyContains", "game_id");
-			}).done(doneFn);
+					.expect("bodyContains", "game_id").done(doneFn);
+			});
 	});
 
 	it("Should not allow a user to create a game with an invalid jwt token", function(doneFn) {
@@ -212,6 +212,44 @@ describe("Games api testing", function() {
 								newUser = newUser.json;
 								return frisby.del(util.format(testHelper.leaveGameEndpoint, game.game_id, newUser.token), newUser.token)
 									.expect("status", 400).done(doneFn);
+							});
+					});
+			});
+	});
+
+	it("Should report a failure when a user trys to create a game with an invalid location", function(doneFn) {
+		return frisby.post(testHelper.registerEndpoint, testHelper.createGenericUserMale())
+			.expect("status", 200)
+			.expect("bodyContains", "token")
+			.then(function (body) {
+				body = body.json;
+				var game = testHelper.createGenericGame(body.token, 1, 1);
+				game.location.lat = 91;
+				return frisby.post(testHelper.createGameEndpoint, game)
+					.expect("status", 400)
+					.expect("jsonStrict", {
+						error: strings.invalidGameLocation
+					}).then(function () {
+						game.location.lat = -91;
+						return frisby.post(testHelper.createGameEndpoint, game)
+							.expect("status", 400)
+							.expect("jsonStrict", {
+								error: strings.invalidGameLocation
+							}).then(function () {
+								game.location.lat = 85;
+								game.location.lng = 181;
+								return frisby.post(testHelper.createGameEndpoint, game)
+									.expect("status", 400)
+									.expect("jsonStrict", {
+										error: strings.invalidGameLocation
+									}).then(function () {
+										game.location.lng = -181;
+										return frisby.post(testHelper.createGameEndpoint, game)
+											.expect("status", 400)
+											.expect("jsonStrict", {
+												error: strings.invalidGameLocation
+											}).done(doneFn);
+									});
 							});
 					});
 			});

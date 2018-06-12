@@ -331,7 +331,11 @@ function validateAgeRange(ageRange){
 
 function validateLocation(location){
 	try{
-		if (location == null || location.lng == null || location.lat == null){
+		if (location == null || location.lng == null || location.lat == null
+			|| typeof location.lat !== "number" || typeof location.lng !== "number"
+			|| location.lat > 90 || location.lat < -90
+			|| location.lng > 180 || location.lng < -180
+		){
 			throw new Error(strings.invalidGameLocation);
 		}
 		return location;
