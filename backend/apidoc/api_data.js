@@ -113,7 +113,7 @@ define({ "api": [
       "examples": [
         {
           "title": "Success-Response:",
-          "content": "     HTTP/1.1 200 OK\n\t{\n\t}",
+          "content": "     HTTP/1.1 200 OK\n\t{\n\t\trefresh: RefreshToken\n\t}",
           "type": "json"
         }
       ]
@@ -121,7 +121,7 @@ define({ "api": [
     "examples": [
       {
         "title": "Example call::",
-        "content": "\t{\n   \"token\": \"b43a545f90ec60bf5ed2a4bd45d81a711de7ba658faa6899d8240343b857664fc967a76cd622235313db8e2ec053fe34c26c\",\n   \"old_password\": \"test1234\",\n\t\t \"new_password\": \"test2876\"\n\t}",
+        "content": "\t{\n   \"token\": \"b43a545f90ec60bf5ed2a4bd45d81a711de7ba658faa6899d8240343b857664fc967a76cd622235313db8e2ec053fe34c26c\",\n   \"old_password\": \"test1234\",\n\t \"new_password\": \"test2876\"\n\t}",
         "type": "json"
       }
     ],
