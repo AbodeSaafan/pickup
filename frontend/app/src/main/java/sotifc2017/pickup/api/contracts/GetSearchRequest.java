@@ -53,6 +53,18 @@ public class GetSearchRequest {
     /**
      *
      * @param jwt jwt token for request
+     * @param game_name the game name
+     * @return game search request
+     */
+    public static GetSearchRequest CreateGameRequest(String jwt, String game_name) {
+        GetSearchRequest request = new GetSearchRequest(jwt, SEARCH_TYPE.game);
+        request.game_name = game_name;
+        return request;
+    }
+
+    /**
+     *
+     * @param jwt jwt token for request
      * @param game_name name of the game, empty if not specified
      * @param game_type the type of game
      * @param game_skill_min the min skill, must be specified with skill max or -1

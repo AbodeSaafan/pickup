@@ -415,14 +415,16 @@ public class SearchGamesFragment extends Fragment implements SearchFragment {
         int gameId = gameIdCheckbox.isEnabled() && gameIdCheckbox.isChecked() &&
                     !gameIdEdittext.getText().toString().trim().isEmpty() ?
                         Integer.parseInt(gameIdEdittext.getText().toString().trim()) : -1;
+        String game_name = gameNameCheckbox.isEnabled() && gameNameCheckbox.isChecked() &&
+                !gameNameEdittext.getText().toString().trim().isEmpty() ?
+                gameNameEdittext.getText().toString().trim() : null;
         if(gameId > 0) {
             return GetSearchRequest.CreateGameRequest(jwt, gameId);
         }
+        else if(game_name != null && !game_name.isEmpty()){
+            return GetSearchRequest.CreateGameRequest(jwt, game_name);
+        }
         else{
-            String game_name = gameNameCheckbox.isEnabled() && gameNameCheckbox.isChecked() &&
-                               !gameNameEdittext.getText().toString().trim().isEmpty() ?
-                                    gameNameEdittext.getText().toString().trim() : null;
-
             GAME_TYPE game_type = casualGameCheck.isChecked() ?
                     seriousGameCheck.isChecked() ?
                             GAME_TYPE.both : GAME_TYPE.casual
