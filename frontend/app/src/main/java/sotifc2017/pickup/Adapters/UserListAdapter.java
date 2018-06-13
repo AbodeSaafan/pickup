@@ -11,6 +11,7 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import sotifc2017.pickup.R;
+import sotifc2017.pickup.activities.HostingActivity;
 import sotifc2017.pickup.api.models.UserModel;
 import sotifc2017.pickup.fragments.ExtendedProfileFragment;
 
@@ -72,26 +73,13 @@ public class UserListAdapter extends BaseAdapter {
                 ExtendedProfileFragment extendedViewProfileFragment = new ExtendedProfileFragment();
                 extendedViewProfileFragment.setArguments(bundle);
 
-                replaceFragment(extendedViewProfileFragment, true, -1);
+                ((HostingActivity) mContext).replaceFragment(extendedViewProfileFragment, true, -1);
 
             }
         });
 
 
-
         return itemView;
     }
-    private void replaceFragment(Fragment frag, boolean backStackAdd, int fragId){
-        FragmentTransaction transaction = mContext.getFragmentManager().beginTransaction();
-
-        // Replace whatever is in the fragment_container view with this fragment,
-        // and add the transaction to the back stack if needed
-        transaction.replace(R.id.fragment_container, frag);
-        if(backStackAdd) transaction.addToBackStack(String.valueOf(fragId));
-
-        // Commit the transaction
-        transaction.commit();
-    }
-
 
 }
