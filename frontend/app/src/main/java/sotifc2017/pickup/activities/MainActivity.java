@@ -321,7 +321,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                         @Override
                         public boolean onMarkerClick(Marker marker) {
-
+                            System.out.println(marker.getId());
+                            System.out.println(marker.getPosition());
                             Snackbar snackbar = Snackbar.make(floatGameItem, "", Snackbar.LENGTH_LONG);
                             Snackbar.SnackbarLayout slt = (Snackbar.SnackbarLayout) snackbar.getView();
 
