@@ -336,7 +336,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                             dateTime.setText("Jun 10, 2018 4:00 to 5:00 PM");
 
                             TextView player_info = snackView.findViewById(R.id.players);
-                            player_info.setText("Jun 10, 2018 4:00 to 5:00 PM");
+                            player_info.setText("1/10");
 
                             slt.setPadding(0,0,0,0);
                             slt.addView(snackView, 0);
