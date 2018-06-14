@@ -19,8 +19,11 @@
             android:layout_height="match_parent"
             tools:context="sotifc2017.pickup.activities.MainActivity">
 
-            <include layout="@layout/new_game_icon"/>
+
+
         </RelativeLayout>
+
+
     </RelativeLayout>
 
     <android.support.design.widget.NavigationView
@@ -29,5 +32,22 @@
         android:layout_height="match_parent"
         android:layout_gravity="start"
         app:menu="@menu/nav_menu"/>
+
+    <android.support.design.widget.CoordinatorLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/coordinatorLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingBottom="@dimen/activity_vertical_margin"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/activity_vertical_margin"
+        tools:context="com.sample.foo.usingcoordinatorlayout.FabAndSnackbarActivity">
+
+        <include layout="@layout/new_game_icon"/>
+
+    </android.support.design.widget.CoordinatorLayout>
+
 
 </android.support.v4.widget.DrawerLayout>

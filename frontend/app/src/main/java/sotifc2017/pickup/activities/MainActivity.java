@@ -5,14 +5,18 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -21,11 +25,14 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
@@ -43,6 +50,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MapStyleOptions;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -82,6 +90,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private NavigationView navigationView;
     private DrawerLayout drawerLayout;
     private ImageView searchButton;
+    private CoordinatorLayout floatGameItem;
+    private LayoutInflater inflater;
     private static long back_pressed_time;
     private static long PERIOD = 2000;
     private int PLACE_PICKER_REQUEST = 1;
@@ -100,6 +110,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         navigationView = findViewById(R.id.navigation_view_main);
         drawerLayout = findViewById(R.id.activity_map);
         searchButton = findViewById(R.id.toolbar_search_icon);
+        floatGameItem = findViewById(R.id.coordinatorLayout);
+        inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -304,6 +317,34 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 public void onMapLoaded() {
                     plotGames(mMap, sampleGames);
                     zoomToViewPoints(mMap, sampleGames);
+                    mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+
+                        @Override
+                        public boolean onMarkerClick(Marker marker) {
+
+                            Snackbar snackbar = Snackbar.make(floatGameItem, "", Snackbar.LENGTH_LONG);
+                            Snackbar.SnackbarLayout slt = (Snackbar.SnackbarLayout) snackbar.getView();
+
+                            View snackView = inflater.inflate(R.layout.fragment_game_list_item, null);
+                            TextView gameName = snackView.findViewById(R.id.gameName);
+                            gameName.setText("Rad's game");
+
+                            TextView gameLocation = snackView.findViewById(R.id.location);
+                            gameLocation.setText("Mississauga, ON");
+
+                            TextView dateTime = snackView.findViewById(R.id.dateTime);
+                            dateTime.setText("Jun 10, 2018 4:00 to 5:00 PM");
+
+                            TextView player_info = snackView.findViewById(R.id.players);
+                            player_info.setText("Jun 10, 2018 4:00 to 5:00 PM");
+
+                            slt.setPadding(0,0,0,0);
+                            slt.addView(snackView, 0);
+                            snackbar.show();
+
+                            return false;
+                        };
+                    });
                 }
             });
         }
@@ -324,6 +365,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             });
         }
     }
+
+
+
 
     private void setDrawerLayout() {
         ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.nav_open, R.string.nav_closed) {
