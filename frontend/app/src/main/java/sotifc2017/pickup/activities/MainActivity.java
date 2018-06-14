@@ -97,6 +97,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private int PLACE_PICKER_REQUEST = 1;
     private LocationCallback mLocationCallback;
     private GameModel[] games;
+    private HashMap<String, GameModel> pin_of_game = new HashMap<String, GameModel>();;
     Intent intent;
 
     @Override
@@ -253,14 +254,16 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     // Have to make sure OnMapReady() is invoked before using this.
     //TODO: Custom Map Marker
-    public void plotGameOnMap(GoogleMap mMap, LatLng gameLoc) {
-        mMap.addMarker(new MarkerOptions().position(gameLoc));
+    public void plotGameOnMap(GoogleMap mMap, LatLng gameLoc, int index) {
+        Marker marker = mMap.addMarker(new MarkerOptions().position(gameLoc));
+        pin_of_game.put(marker.getId(), games[index]);
+        //System.out.println(marker.getId());
     }
 
     //TODO: Want to use Game object, or whatever we actually pull from backend here. Need to sync-up.
     public void plotGames(GoogleMap mMap, List<LatLng> games) {
         for (LatLng game : games) {
-            plotGameOnMap(mMap, game);
+            plotGameOnMap(mMap, game, games.indexOf(game));
         }
     }
 
@@ -312,6 +315,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             for (GameModel game: games) {
                 sampleGames.add(new LatLng(game.location.get("lat"), game.location.get("lng")));
             }
+
+
             mMap.setOnMapLoadedCallback(new GoogleMap.OnMapLoadedCallback() {
                 @Override
                 public void onMapLoaded() {
@@ -325,6 +330,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                             System.out.println(marker.getPosition());
                             Snackbar snackbar = Snackbar.make(floatGameItem, "", Snackbar.LENGTH_LONG);
                             Snackbar.SnackbarLayout slt = (Snackbar.SnackbarLayout) snackbar.getView();
+
+                            //GameModel gameObject = pin_of_game.get(marker.getId());
 
                             View snackView = inflater.inflate(R.layout.fragment_game_list_item, null);
                             TextView gameName = snackView.findViewById(R.id.gameName);
