@@ -26,13 +26,6 @@
 
     </RelativeLayout>
 
-    <android.support.design.widget.NavigationView
-        android:id="@+id/navigation_view_main"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_gravity="start"
-        app:menu="@menu/nav_menu"/>
-
     <android.support.design.widget.CoordinatorLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
@@ -48,6 +41,15 @@
         <include layout="@layout/new_game_icon"/>
 
     </android.support.design.widget.CoordinatorLayout>
+
+    <android.support.design.widget.NavigationView
+        android:id="@+id/navigation_view_main"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        app:menu="@menu/nav_menu"/>
+
+
 
 
 </android.support.v4.widget.DrawerLayout>
