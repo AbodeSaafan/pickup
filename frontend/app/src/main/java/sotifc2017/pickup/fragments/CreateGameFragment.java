@@ -436,16 +436,16 @@ public class CreateGameFragment extends Fragment implements GetJwt.Callback {
 
     public void onSelectedTime(int hourStart, int minuteStart, int hourEnd, int minuteEnd)
     {
-        String startTime = hourStart + ":" + minuteStart + ":00";
-        String endTime = hourEnd + ":" + minuteEnd + ":00";
-        Log.d(FC_TAG, "Start: " + startTime + "\nEnd: " + endTime);
+        String partialStartTime = hourStart + ":" + minuteStart + ":00";
+        String partialEndTime = hourEnd + ":" + minuteEnd + ":00";
+        Log.d(FC_TAG, "Start: " + partialStartTime + "\nEnd: " + partialEndTime);
 
         timeSelector.setText(String.format(getString(R.string.create_new_game_time_hint),
-                startTime,
-                endTime));
+                partialStartTime,
+                partialEndTime));
 
-        gameModel.setStartTime(startTime);
-        gameModel.setEndTime(endTime);
+        gameModel.setPartialStartTime(partialStartTime);
+        gameModel.setPartialEndTime(partialEndTime);
     }
 
     private void showPlacePicker() {
@@ -548,9 +548,9 @@ public class CreateGameFragment extends Fragment implements GetJwt.Callback {
                 gameModel.getName(),
                 gameModel.getType(),
                 gameModel.getOffsetSkill(),
-                gameModel.total_players_required,
-                gameModel.getFinalStartTime(),
-                gameModel.getFinalEndTime() - gameModel.getFinalStartTime(),
+                gameModel.getTotalPlayersRequired(),
+                gameModel.getStartTime(),
+                gameModel.getDuration(),
                 gameModel.getLocation(),
                 gameModel.getLocationNotes(),
                 gameModel.getDescription(),
@@ -582,14 +582,16 @@ public class CreateGameFragment extends Fragment implements GetJwt.Callback {
 
         String[] dates = dateRangeText.getText().toString().split(" - ");
         String startDate = dates[0];
-        String startTime = gameModel.getStartTime();
+        String partialStartTime = gameModel.getPartialStartTime();
         String endDate = dates[1];
-        String endTime = gameModel.getEndTime();
+        String partialEndTime = gameModel.getPartialEndTime();
         try {
-            long finalStartTime = createFinalTime(startDate, startTime);
-            gameModel.setFinalStartTime(finalStartTime);
-            long finalEndTime = createFinalTime(endDate, endTime);
-            gameModel.setFinalEndTime(finalEndTime);
+            long startTime = createFinalTime(startDate, partialStartTime);
+            gameModel.setStartTime(startTime);
+            long endTime = createFinalTime(endDate, partialEndTime);
+            gameModel.setEndTime(endTime);
+
+            gameModel.setDuration(endTime - startTime);
         } catch (ParseException e) {
             Log.e(FC_TAG, "Parsing time: " + e);
         }

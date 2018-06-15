@@ -12,17 +12,16 @@ public class GameModel {
     private final int DEFAULT_INT = -1;
     private final boolean DEFAULT_BOOLEAN = false;
     private final int START_NUM_PLAYERS_ADDED = 0;
-    
+
     public int game_id;
     public String name;
     public String type;
     public int offsetSkill;
     public int total_players_required;
     public int total_players_added;
-    public String start_time;
-    public String end_time;
-    public long finalStartTime;
-    public long finalEndTime;
+    public long start_time;
+    public long end_time;
+    public long duration;
     public HashMap<String, Double> location;
     public int creator_id;
     public String description;
@@ -33,6 +32,10 @@ public class GameModel {
     public int time_created;
     public boolean player_restricted;
 
+    // Variables holding values for the computation of final results
+    public String partialStartTime;
+    public String partialEndTime;
+
     public GameModel () {
         this.game_id = DEFAULT_INT;
         this.name = "My game";
@@ -40,10 +43,9 @@ public class GameModel {
         this.offsetSkill = DEFAULT_INT;
         this.total_players_required = DEFAULT_INT;
         this.total_players_added = START_NUM_PLAYERS_ADDED;
-        this.start_time = String.valueOf(DEFAULT_INT);
-        this.end_time = String.valueOf(DEFAULT_INT);
-        this.finalStartTime = DEFAULT_INT;
-        this.finalEndTime = DEFAULT_INT;
+        this.start_time = DEFAULT_INT;
+        this.end_time = DEFAULT_INT;
+        this.duration = DEFAULT_INT;
         this.location = new HashMap<String, Double>() {};
         this.creator_id = DEFAULT_INT;
         this.description = "Casual basketball game";
@@ -53,15 +55,18 @@ public class GameModel {
         this.enforced_params = new ENFORCED_PARAMS[] {};
         this.time_created = DEFAULT_INT;
         this.player_restricted = DEFAULT_BOOLEAN;
+
+        this.partialStartTime = String.valueOf(DEFAULT_INT);
+        this.partialEndTime = String.valueOf(DEFAULT_INT);
     }
 
 
     //function for time-being
     public GameModel (int game_id, String name, String type, int offsetSkill, int totalPlayersRequired,
-                      int totalPlayersAdded, String startTime, String endTime,
-                      long finalStartTime, long finalEndTime, HashMap<String, Double> location,
+                      int totalPlayersAdded, long startTime, long endTime, long duration, HashMap<String, Double> location,
                       int creatorId, String description, String location_notes, String gender,
-                      int[] ageRange, ENFORCED_PARAMS[] enforced_params, int time_created, boolean player_restricted) {
+                      int[] ageRange, ENFORCED_PARAMS[] enforced_params, int time_created, boolean player_restricted,
+                      String partialStartTime, String partialEndTime) {
 
         this.game_id = game_id;
         this.name = name;
@@ -71,8 +76,7 @@ public class GameModel {
         this.total_players_added = totalPlayersAdded;
         this.start_time = startTime;
         this.end_time = endTime;
-        this.finalStartTime = finalStartTime;
-        this.finalEndTime = finalEndTime;
+        this.duration = duration;
         this.location = location;
         this.creator_id = creatorId;
         this.description = description;
@@ -83,6 +87,8 @@ public class GameModel {
         this.time_created = time_created;
         this.player_restricted = player_restricted;
 
+        this.partialStartTime = partialStartTime;
+        this.partialEndTime = partialEndTime;
     }
 
     public int getGameId() {
@@ -133,36 +139,28 @@ public class GameModel {
         this.total_players_added = total_players_added;
     }
 
-    public String getStartTime() {
+    public long getStartTime() {
         return start_time;
     }
 
-    public void setStartTime(String start_time) {
+    public void setStartTime(long start_time) {
         this.start_time = start_time;
     }
 
-    public String getEndTime() {
+    public long getEndTime() {
         return end_time;
     }
 
-    public void setEndTime(String end_time) {
+    public void setEndTime(long end_time) {
         this.end_time = end_time;
     }
 
-    public long getFinalStartTime() {
-        return finalStartTime;
+    public long getDuration() {
+        return duration;
     }
 
-    public void setFinalStartTime(long final_start_time) {
-        this.finalStartTime = final_start_time;
-    }
-
-    public long getFinalEndTime() {
-        return finalEndTime;
-    }
-
-    public void setFinalEndTime(long final_end_time) {
-        this.finalEndTime = final_end_time;
+    public void setDuration(long duration) {
+        this.duration = duration;
     }
 
     public HashMap<String, Double> getLocation() {
@@ -235,5 +233,21 @@ public class GameModel {
 
     public void setPlayerRestricted(boolean player_restricted) {
         this.player_restricted = player_restricted;
+    }
+
+    public String getPartialStartTime() {
+        return partialStartTime;
+    }
+
+    public void setPartialStartTime(String partialStartTime) {
+        this.partialStartTime = partialStartTime;
+    }
+
+    public String getPartialEndTime() {
+        return partialEndTime;
+    }
+
+    public void setPartialEndTime(String partialEndTime) {
+        this.partialEndTime = partialEndTime;
     }
 }

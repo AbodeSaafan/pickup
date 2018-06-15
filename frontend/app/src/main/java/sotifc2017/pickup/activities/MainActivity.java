@@ -674,8 +674,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         int[] skill_max = new int[] {7, 10, 8, 9};
         int[] total_players_required = new int[] {15, 10, 20, 12};
         int[] total_players_added = new int[] {12, 5, 11, 5};
-        String[] start_time = new String[] {"1504272395", "1504272380", "1504272350", "1504272358"};
-        String[] end_time = new String[] {"1504272600", "1504272700", "1504272800", "1504272370"};
+        long[] start_time = new long[] {1504272395, 1504272380, 1504272350, 1504272358};
+        long[] end_time = new long[] {1504272600, 1504272700, 1504272800, 1504272370};
         List<HashMap<String, Double>> locations = new ArrayList<HashMap<String, Double>>();
         locations.add(location_1);
         locations.add(location_2);
@@ -698,16 +698,33 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         enforced_params.add(new ENFORCED_PARAMS[] {ENFORCED_PARAMS.age});
         boolean[] player_restricted = new boolean[]{true, false, true, false};
 
-        GameModel game_1 = new GameModel(game_id[0], name[0], type[0], -1, total_players_required[0],total_players_added[0], start_time[0], end_time[0],
-                0, 0, locations.get(0),creator_id[0], descriptions[0], location_notes[0], gender[0],age_range.get(0), enforced_params.get(0), time_created[0], player_restricted[0]);
-        GameModel game_2 = new GameModel(game_id[1], name[1], type[1], -1, total_players_required[1],total_players_added[1], start_time[1], end_time[1],
-                0, 0, locations.get(1),creator_id[1], descriptions[1], location_notes[1], gender[1],age_range.get(1), enforced_params.get(1), time_created[1], player_restricted[1]);
-        GameModel game_3 = new GameModel(game_id[2], name[2], type[2], -1, total_players_required[2],total_players_added[2], start_time[2], end_time[2],
-                0, 0, locations.get(2),creator_id[2], descriptions[2], location_notes[2], gender[2],age_range.get(2), enforced_params.get(2), time_created[2], player_restricted[2]);
-        GameModel game_4 = new GameModel(game_id[3], name[3], type[3], -1, total_players_required[3],total_players_added[3], start_time[3], end_time[3],
-                0, 0, locations.get(3),creator_id[3], descriptions[3], location_notes[3], gender[3],age_range.get(3), enforced_params.get(3), time_created[3], player_restricted[3]);
+        List<GameModel> gamesLst = new ArrayList<GameModel>();
+        for (int i = 0; i <= 3; i++) {
+            GameModel game = new GameModel(game_id[i],
+                    name[i],
+                    type[i],
+                    -1,
+                    total_players_required[i],
+                    total_players_added[i],
+                    start_time[i],
+                    end_time[i],
+                    end_time[i] - start_time[i],
+                    locations.get(i),creator_id[i],
+                    descriptions[i],
+                    location_notes[i],
+                    gender[i],
+                    age_range.get(i),
+                    enforced_params.get(i),
+                    time_created[i],
+                    player_restricted[i],
+                    "-1",
+                    "-1");
 
-        games = new GameModel[] {game_1, game_2, game_3, game_4};
+            gamesLst.add(game);
+        }
+
+        games = new GameModel[gamesLst.size()];
+        games = gamesLst.toArray(games);
     };
 
 }

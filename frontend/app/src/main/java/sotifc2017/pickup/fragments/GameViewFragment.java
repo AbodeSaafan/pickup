@@ -137,7 +137,7 @@ public class GameViewFragment extends Fragment implements GetJwt.Callback {
 
         gameId.setText("#" + gameList.game_id);
         gameName.setText(gameList.name);
-        gameDate.setText(gameList.finalStartTime + "to" + gameList.finalEndTime);
+        gameDate.setText(gameList.start_time + "to" + gameList.end_time);
         gameDescription.setText(gameList.description);
         gameLocation.setText(newLocation);
         gameLocationNotes.setText(gameList.location_notes);

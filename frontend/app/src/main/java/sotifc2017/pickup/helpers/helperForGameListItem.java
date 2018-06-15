@@ -20,14 +20,11 @@ import sotifc2017.pickup.R;
 public class helperForGameListItem {
 
 
-    public HashMap<String, String> getDate (String game_start_time, String game_end_time) {
+    public HashMap<String, String> getDate(long start_time, long end_time) {
 
         HashMap<String, String> dateTime = new HashMap<String, String>();
         String date = "";
         String finalTime = "";
-
-        int start_time  = Integer.parseInt(game_start_time);
-        int end_time = Integer.parseInt(game_end_time);
 
         //Calculate Date
         SimpleDateFormat sdf_date = new SimpleDateFormat("d");
