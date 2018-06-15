@@ -30,6 +30,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -66,12 +67,14 @@ import java.util.Random;
 import sotifc2017.pickup.Common.Defaults;
 import sotifc2017.pickup.R;
 import sotifc2017.pickup.api.Authentication;
+import sotifc2017.pickup.api.Utils;
 import sotifc2017.pickup.api.enums.ENFORCED_PARAMS;
 import sotifc2017.pickup.api.models.GameModel;
 import sotifc2017.pickup.fragment_interfaces.OnFragmentReplacement;
 import sotifc2017.pickup.fragment_managers.ConfigurableFragmentItemsManager;
 import sotifc2017.pickup.fragments.CreateGameFragment;
 import sotifc2017.pickup.fragments.ExtendedProfileFragment;
+import sotifc2017.pickup.fragments.GameViewFragment;
 import sotifc2017.pickup.fragments.ListViewFragment;
 import sotifc2017.pickup.fragments.MainSearchFragment;
 import sotifc2017.pickup.fragments.RefinedMapFragment;
@@ -318,7 +321,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                             Snackbar snackbar = Snackbar.make(floatGameItem, "", Snackbar.LENGTH_LONG);
                             Snackbar.SnackbarLayout slt = (Snackbar.SnackbarLayout) snackbar.getView();
 
-                            GameModel gameObject = pin_of_game.get(marker.getId());
+                            final GameModel gameObject = pin_of_game.get(marker.getId());
                             View snackView = inflater.inflate(R.layout.fragment_game_list_item, null);
 
                             TextView gameName = snackView.findViewById(R.id.gameName);
@@ -350,6 +353,36 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                             slt.setPadding(0,0,0,0);
                             slt.addView(snackView, 0);
                             snackbar.show();
+
+                            if (gameObject.player_restricted) {
+                                ImageButton warning = snackView.findViewById(R.id.warning);
+                                warning.setVisibility(View.VISIBLE);
+                                snackView.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        //popup toast
+                                        Toast.makeText(v.getContext(), "Cannot join game", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+
+                            } else {
+                                snackView.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        //popup toast
+                                        Bundle bundle = new Bundle();
+                                        String gameJson = Utils.gson.toJson(gameObject);
+                                        bundle.putString("gameJson", gameJson);
+
+                                        GameViewFragment gameViewFragment = new GameViewFragment();
+                                        gameViewFragment.setArguments(bundle);
+
+                                        ((HostingActivity) mContext).replaceFragment(gameViewFragment, true, -1);
+                                    }
+                                });
+                            }
+
+
 
                             return false;
                         };
@@ -655,13 +688,13 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         List<int[]> age_range = new ArrayList<int[]>();
         age_range.add(new int[]{20, 30});
         age_range.add(new int[]{18, 35});
-        age_range.add(new int[]{});
+        age_range.add(new int[]{15, 20});
         age_range.add(new int[]{30, 45});
         int[] time_created = new int[] {1504272395, 1504272395, 1504272395, 1504272395};
         List<ENFORCED_PARAMS[]> enforced_params = new ArrayList<ENFORCED_PARAMS[]>();
         enforced_params.add(new ENFORCED_PARAMS[] {ENFORCED_PARAMS.age});
         enforced_params.add(new ENFORCED_PARAMS[] {ENFORCED_PARAMS.age, ENFORCED_PARAMS.gender});
-        enforced_params.add(new ENFORCED_PARAMS[] {ENFORCED_PARAMS.gender});
+        enforced_params.add(new ENFORCED_PARAMS[] {ENFORCED_PARAMS.age, ENFORCED_PARAMS.gender});
         enforced_params.add(new ENFORCED_PARAMS[] {ENFORCED_PARAMS.age});
         boolean[] player_restricted = new boolean[]{true, false, true, false};
 

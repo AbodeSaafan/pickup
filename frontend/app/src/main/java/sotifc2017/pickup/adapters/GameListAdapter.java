@@ -99,7 +99,7 @@ public class GameListAdapter extends BaseAdapter {
 
         TextView players = itemView.findViewById(R.id.players);
         players.setText(helper.getPlayerCount(game.total_players_added, game.total_players_required));
-        
+
 
         if (game.player_restricted) {
             ImageButton warning = itemView.findViewById(R.id.warning);
