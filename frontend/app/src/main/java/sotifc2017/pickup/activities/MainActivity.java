@@ -10,6 +10,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -29,7 +30,6 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -59,6 +59,7 @@ import com.mcsoft.timerangepickerdialog.RangeTimePickerDialog;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Random;
 
@@ -75,6 +76,7 @@ import sotifc2017.pickup.fragments.ListViewFragment;
 import sotifc2017.pickup.fragments.MainSearchFragment;
 import sotifc2017.pickup.fragments.RefinedMapFragment;
 import sotifc2017.pickup.fragments.SettingsFragment;
+import sotifc2017.pickup.helpers.helperForGameListItem;
 
 import static sotifc2017.pickup.Common.Defaults.FC_TAG;
 
@@ -97,7 +99,11 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private int PLACE_PICKER_REQUEST = 1;
     private LocationCallback mLocationCallback;
     private GameModel[] games;
-    private HashMap<String, GameModel> pin_of_game = new HashMap<String, GameModel>();;
+    private HashMap<String, GameModel> pin_of_game = new HashMap<String, GameModel>();
+    private helperForGameListItem helper;
+    private Geocoder geocoder;
+    private Activity mContext;
+
     Intent intent;
 
     @Override
@@ -112,7 +118,11 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         drawerLayout = findViewById(R.id.activity_map);
         searchButton = findViewById(R.id.toolbar_search_icon);
         floatGameItem = findViewById(R.id.coordinatorLayout);
+
         inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        helper = new helperForGameListItem();
+        geocoder = new Geocoder(this, Locale.getDefault());
+        mContext = (Activity) this;
 
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -257,7 +267,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     public void plotGameOnMap(GoogleMap mMap, LatLng gameLoc, int index) {
         Marker marker = mMap.addMarker(new MarkerOptions().position(gameLoc));
         pin_of_game.put(marker.getId(), games[index]);
-        //System.out.println(marker.getId());
     }
 
     //TODO: Want to use Game object, or whatever we actually pull from backend here. Need to sync-up.
@@ -289,29 +298,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             SaveLastKnownLocation(location);
             // Generates Sample Games. Take out when connected to backend.
             sampleGames = new ArrayList<>();
-            /*
-            Random random = new Random();
-            for (double i = 0; i < 8; i++) {
-                // Convert radius from meters to degrees.
-                double radiusInDegrees = 1000 / 111320f;
 
-                // Get a random distance and a random angle.
-                double u = random.nextDouble();
-                double v = random.nextDouble();
-                double w = radiusInDegrees * Math.sqrt(u);
-                double t = 2 * Math.PI * v;
-                // Get the x and y delta values.
-                double x = w * Math.cos(t);
-                double y = w * Math.sin(t);
-
-                // Compensate the x value.
-                double new_x = x / Math.cos(Math.toRadians(location.getLatitude()));
-
-                double foundLatitude = location.getLatitude() + y;
-                double foundLongitude = location.getLongitude() + new_x;
-                sampleGames.add(new LatLng(foundLatitude, foundLongitude));
-            }
-            */
             for (GameModel game: games) {
                 sampleGames.add(new LatLng(game.location.get("lat"), game.location.get("lng")));
             }
@@ -331,20 +318,34 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                             Snackbar snackbar = Snackbar.make(floatGameItem, "", Snackbar.LENGTH_LONG);
                             Snackbar.SnackbarLayout slt = (Snackbar.SnackbarLayout) snackbar.getView();
 
-                            //GameModel gameObject = pin_of_game.get(marker.getId());
-
+                            GameModel gameObject = pin_of_game.get(marker.getId());
                             View snackView = inflater.inflate(R.layout.fragment_game_list_item, null);
+
                             TextView gameName = snackView.findViewById(R.id.gameName);
-                            gameName.setText("Rad's game");
+                            gameName.setText(gameObject.name);
 
                             TextView gameLocation = snackView.findViewById(R.id.location);
-                            gameLocation.setText("Mississauga, ON");
+                            gameLocation.setText(helper.getLocation(geocoder, gameObject.location.get("lat"), gameObject.location.get("lng")));
+
 
                             TextView dateTime = snackView.findViewById(R.id.dateTime);
-                            dateTime.setText("Jun 10, 2018 4:00 to 5:00 PM");
+                            TextView finalTime = snackView.findViewById(R.id.time);
+                            HashMap<String, String> date_time = new HashMap<String, String>();
+                            date_time = helper.getDate(gameObject.start_time, gameObject.end_time);
+                            if (date_time.get("finalTime") == "") {
+                                dateTime.setText(date_time.get("dateTime"));
+                            } else {
+                                dateTime.setText(date_time.get("dateTime"));
+                                finalTime.setText(date_time.get("finalTime"));
+                            }
+
 
                             TextView player_info = snackView.findViewById(R.id.players);
-                            player_info.setText("1/10");
+                            player_info.setText(helper.getPlayerCount(gameObject.total_players_added, gameObject.total_players_required));
+
+                            ImageView player_icon = snackView.findViewById(R.id.player_icon);
+                            helper.setPlayerIcon(mContext, player_icon, gameObject.total_players_required, gameObject.total_players_added);
+
 
                             slt.setPadding(0,0,0,0);
                             slt.addView(snackView, 0);
@@ -624,12 +625,14 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         HashMap <String, Double> location_2 = new HashMap<String, Double>();
         location_2.put("lat", 43.618327);
         location_2.put("lng", -79.680148);
+        //Toronto Location
         HashMap <String, Double> location_3 = new HashMap<String, Double>();
-        location_3.put("lat", 43.626796);
-        location_3.put("lng", -79.684664);
+        location_3.put("lat", 43.655163);
+        location_3.put("lng", -79.388488);
+        //Brampton Location
         HashMap <String, Double> location_4 = new HashMap<String, Double>();
-        location_4.put("lat", 43.615908);
-        location_4.put("lng", -79.672354);
+        location_4.put("lat", 43.651489);
+        location_4.put("lng", -79.736289);
 
         int[] game_id = new int[] {1, 2, 3, 4};
         String[] name = new String[]{"radhika's game", "radhika's game pt II", "radhika's game pt III", "radhika's game pt IV"};
@@ -638,8 +641,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         int[] skill_max = new int[] {7, 10, 8, 9};
         int[] total_players_required = new int[] {15, 10, 20, 12};
         int[] total_players_added = new int[] {12, 5, 11, 5};
-        int[] start_time = new int[] {1504272395, 1504272380, 1504272350, 1504272358};
-        int[] end_time = new int[] {1504272600, 1504272700, 1504272800, 1504272370};
+        String[] start_time = new String[] {"1504272395", "1504272380", "1504272350", "1504272358"};
+        String[] end_time = new String[] {"1504272600", "1504272700", "1504272800", "1504272370"};
         List<HashMap<String, Double>> locations = new ArrayList<HashMap<String, Double>>();
         locations.add(location_1);
         locations.add(location_2);
@@ -662,14 +665,14 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         enforced_params.add(new ENFORCED_PARAMS[] {ENFORCED_PARAMS.age});
         boolean[] player_restricted = new boolean[]{true, false, true, false};
 
-        GameModel game_1 = new GameModel(game_id[0], name[0], type[0], -1, total_players_required[0],total_players_added[0], "", "",
-                start_time[0], end_time[0], locations.get(0),creator_id[0], descriptions[0], location_notes[0], gender[0],age_range.get(0), enforced_params.get(0), time_created[0], player_restricted[0]);
-        GameModel game_2 = new GameModel(game_id[1], name[1], type[1], -1, total_players_required[1],total_players_added[1], "", "",
-                start_time[1], end_time[1], locations.get(1),creator_id[1], descriptions[1], location_notes[1], gender[1],age_range.get(1), enforced_params.get(1), time_created[1], player_restricted[1]);
-        GameModel game_3 = new GameModel(game_id[2], name[2], type[2], -1, total_players_required[2],total_players_added[2], "", "",
-                start_time[2], end_time[2], locations.get(2),creator_id[2], descriptions[2], location_notes[2], gender[2],age_range.get(2), enforced_params.get(2), time_created[2], player_restricted[2]);
-        GameModel game_4 = new GameModel(game_id[3], name[3], type[3], -1, total_players_required[3],total_players_added[3], "", "",
-                start_time[3], end_time[3], locations.get(3),creator_id[3], descriptions[3], location_notes[3], gender[3],age_range.get(3), enforced_params.get(3), time_created[3], player_restricted[3]);
+        GameModel game_1 = new GameModel(game_id[0], name[0], type[0], -1, total_players_required[0],total_players_added[0], start_time[0], end_time[0],
+                0, 0, locations.get(0),creator_id[0], descriptions[0], location_notes[0], gender[0],age_range.get(0), enforced_params.get(0), time_created[0], player_restricted[0]);
+        GameModel game_2 = new GameModel(game_id[1], name[1], type[1], -1, total_players_required[1],total_players_added[1], start_time[1], end_time[1],
+                0, 0, locations.get(1),creator_id[1], descriptions[1], location_notes[1], gender[1],age_range.get(1), enforced_params.get(1), time_created[1], player_restricted[1]);
+        GameModel game_3 = new GameModel(game_id[2], name[2], type[2], -1, total_players_required[2],total_players_added[2], start_time[2], end_time[2],
+                0, 0, locations.get(2),creator_id[2], descriptions[2], location_notes[2], gender[2],age_range.get(2), enforced_params.get(2), time_created[2], player_restricted[2]);
+        GameModel game_4 = new GameModel(game_id[3], name[3], type[3], -1, total_players_required[3],total_players_added[3], start_time[3], end_time[3],
+                0, 0, locations.get(3),creator_id[3], descriptions[3], location_notes[3], gender[3],age_range.get(3), enforced_params.get(3), time_created[3], player_restricted[3]);
 
         games = new GameModel[] {game_1, game_2, game_3, game_4};
     };

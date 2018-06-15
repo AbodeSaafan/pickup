@@ -19,17 +19,15 @@ import sotifc2017.pickup.R;
 
 public class helperForGameListItem {
 
-    private HashMap<String, String> dateTime = new HashMap<String, String>();
-    private String playerCount = "";
-    private String location = "";
 
+    public HashMap<String, String> getDate (String game_start_time, String game_end_time) {
 
-    public HashMap<String, String> getDate (String game_startTime, String game_endTime) {
+        HashMap<String, String> dateTime = new HashMap<String, String>();
         String date = "";
-        int start_time  = Integer.parseInt(game_startTime);
-        int end_time = Integer.parseInt(game_endTime);
         String finalTime = "";
 
+        int start_time  = Integer.parseInt(game_start_time);
+        int end_time = Integer.parseInt(game_end_time);
 
         //Calculate Date
         SimpleDateFormat sdf_date = new SimpleDateFormat("d");
@@ -74,6 +72,7 @@ public class helperForGameListItem {
 
     public String getPlayerCount (int total_players_added, int total_players_required) {
 
+        String playerCount = "";
         playerCount = String.valueOf(total_players_added) + "/" + String.valueOf(total_players_required);
 
         return playerCount;
@@ -81,6 +80,7 @@ public class helperForGameListItem {
 
     public String getLocation (Geocoder geocoder, double latitude, double longitude) {
 
+        String location = "";
         try {
             List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
             if (addresses.size() > 0) {
