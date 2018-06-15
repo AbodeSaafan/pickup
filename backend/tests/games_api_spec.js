@@ -255,4 +255,18 @@ describe("Games api testing", function() {
 			});
 	});
 
+	it("This test is used for random generation of mock games", function(doneFn) {
+		return frisby.post(testHelper.registerEndpoint, testHelper.createGenericUserMale()) 
+			.expect("status", 200)
+			.expect("bodyContains", "token")
+			.expect("bodyContains", "user_id")
+			.expect("bodyContains", "refresh")
+			.then(function (body) {
+				body = body.json;
+				return frisby.post(testHelper.createGameEndpoint, testHelper.createMockGtaGame(body.token))
+					.expect("status", 200)
+					.expect("bodyContains", "game_id").done(doneFn);
+			});
+	});
+
 });

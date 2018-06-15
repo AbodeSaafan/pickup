@@ -39,6 +39,13 @@ function randomLocation(){
 	};
 }
 
+function randomGtaLocation(){
+	return {
+		"lng": (Math.random() * (-80 - (-79.5)) - 79.5).toFixed(3) * 1,
+		"lat": (Math.random() * (43.65 - (43.5)) + 43.5).toFixed(3) * 1
+	};
+}
+
 function randomDob(){
 	return "03/25/" + (Math.random() * (2000 - 1950) + 1950).toFixed(0) * 1;
 }
@@ -47,9 +54,33 @@ function randomSkillLevel(){
 	return (Math.random() * (10)).toFixed(0) * 1;
 }
 
+function randomGameType(){
+	return randomInt(0, 1) ? "casual" : "serious";
+}
+
+function randomGender(){
+	return randomInt(0, 1) ? "m" : "f";
+}
+
+function randomHours(){
+	return randomInt(2*60*60, 10*60*60).toFixed(0);
+}
+
+function mockGameStartTime(){
+	var x =  (parseInt(Math.floor(Date.now() / 1000).toFixed(0)) + parseInt(randomHours()));
+	return x;
+}
+
+function randomDuration(){ 
+	return parseInt(randomInt(30*60, 2*60*60).toFixed(0));
+}
 
 function randomPassword(){
 	return crypto.randomBytes(4).toString("hex");
+}
+
+function randomInt(low, high){
+	return (Math.random() * (high - low) + low);
 }
 
 
@@ -194,6 +225,23 @@ function createUnrestrictedGame(jwt, start, duration){
 	return game;
 }
 
+function createMockGtaGame(jwt){
+	return {
+		name: rNameg.place() + " game",
+		type: randomGameType(),
+		skill_offset: randomSkillLevel(),
+		total_players_required: 3 + randomSkillLevel(),
+		start_time: mockGameStartTime(),
+		duration: randomDuration(),
+		location: randomGtaLocation(),
+		location_notes: "Come around the back and knock on the blue door",
+		description: "Casual basketball game",
+		gender: randomGender(),
+		enforced_params: ["gender"],
+		jwt: jwt
+	};
+}
+
 function createGenericExtendedProfile (jwt) {
 	return {
 		jwt: jwt,
@@ -299,5 +347,6 @@ module.exports = {
 	createGenericExtendedProfileWithLocation,
 	createInvalidAgeUser,
 	createGenericUserUpdateWithInvalidDob,
-	calculateAge
+	calculateAge,
+	createMockGtaGame
 };
