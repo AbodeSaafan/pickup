@@ -106,6 +106,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private helperForGameListItem helper;
     private Geocoder geocoder;
     private Activity mContext;
+    private View snackView;
+    private Snackbar snackbar;
 
     Intent intent;
 
@@ -312,17 +314,18 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 public void onMapLoaded() {
                     plotGames(mMap, sampleGames);
                     zoomToViewPoints(mMap, sampleGames);
+
                     mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
 
                         @Override
                         public boolean onMarkerClick(Marker marker) {
                             System.out.println(marker.getId());
                             System.out.println(marker.getPosition());
-                            Snackbar snackbar = Snackbar.make(floatGameItem, "", Snackbar.LENGTH_LONG);
+                            snackbar = Snackbar.make(floatGameItem, "", Snackbar.LENGTH_INDEFINITE);
                             Snackbar.SnackbarLayout slt = (Snackbar.SnackbarLayout) snackbar.getView();
 
                             final GameModel gameObject = pin_of_game.get(marker.getId());
-                            View snackView = inflater.inflate(R.layout.fragment_game_list_item, null);
+                            snackView = inflater.inflate(R.layout.fragment_game_list_item, null);
 
                             TextView gameName = snackView.findViewById(R.id.gameName);
                             gameName.setText(gameObject.name);
@@ -354,6 +357,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                             slt.addView(snackView, 0);
                             snackbar.show();
 
+
+
                             if (gameObject.player_restricted) {
                                 ImageButton warning = snackView.findViewById(R.id.warning);
                                 warning.setVisibility(View.VISIBLE);
@@ -370,6 +375,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                                     @Override
                                     public void onClick(View v) {
                                         //popup toast
+                                        snackbar.dismiss();
                                         Bundle bundle = new Bundle();
                                         String gameJson = Utils.gson.toJson(gameObject);
                                         bundle.putString("gameJson", gameJson);
@@ -386,6 +392,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                             return false;
                         };
+
                     });
                 }
             });
@@ -674,8 +681,12 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         int[] skill_max = new int[] {7, 10, 8, 9};
         int[] total_players_required = new int[] {15, 10, 20, 12};
         int[] total_players_added = new int[] {12, 5, 11, 5};
-        long[] start_time = new long[] {1504272395, 1504272380, 1504272350, 1504272358};
-        long[] end_time = new long[] {1504272600, 1504272700, 1504272800, 1504272370};
+        //Game 1 -> June 15 (12:00 PM to 1:00 PM)
+        //Game 2 -> June 15 - June 16 (11:00 PM to 1:00 AM)
+        //Game 3 -> June 17 - June 18 (10:30 PM to 3:00 AM)
+        //Game 4 -> June 16 (9:00 AM to 1:45 PM)
+        long[] start_time = new long[] {1529078400, 1529118000, 1529289000, 1529154000};
+        long[] end_time = new long[] {1529082000, 1529125200, 1529305200, 1529171100};
         List<HashMap<String, Double>> locations = new ArrayList<HashMap<String, Double>>();
         locations.add(location_1);
         locations.add(location_2);
@@ -726,5 +737,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         games = new GameModel[gamesLst.size()];
         games = gamesLst.toArray(games);
     };
+
 
 }
