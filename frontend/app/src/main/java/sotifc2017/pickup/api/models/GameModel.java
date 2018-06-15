@@ -21,8 +21,8 @@ public class GameModel {
     public int total_players_added;
     public String start_time;
     public String end_time;
-    public int finalStartTime;
-    public int finalEndTime;
+    public long finalStartTime;
+    public long finalEndTime;
     public HashMap<String, Double> location;
     public int creator_id;
     public String description;
@@ -59,7 +59,7 @@ public class GameModel {
     //function for time-being
     public GameModel (int game_id, String name, String type, int offsetSkill, int totalPlayersRequired,
                       int totalPlayersAdded, String startTime, String endTime,
-                      int finalStartTime, int finalEndTime, HashMap<String, Double> location,
+                      long finalStartTime, long finalEndTime, HashMap<String, Double> location,
                       int creatorId, String description, String location_notes, String gender,
                       int[] ageRange, ENFORCED_PARAMS[] enforced_params, int time_created, boolean player_restricted) {
 
@@ -149,19 +149,19 @@ public class GameModel {
         this.end_time = end_time;
     }
 
-    public int getFinalStartTime() {
+    public long getFinalStartTime() {
         return finalStartTime;
     }
 
-    public void setFinalStartTime(int final_start_time) {
+    public void setFinalStartTime(long final_start_time) {
         this.finalStartTime = final_start_time;
     }
 
-    public int getFinalEndTime() {
+    public long getFinalEndTime() {
         return finalEndTime;
     }
 
-    public void setFinalEndTime(int final_end_time) {
+    public void setFinalEndTime(long final_end_time) {
         this.finalEndTime = final_end_time;
     }
 

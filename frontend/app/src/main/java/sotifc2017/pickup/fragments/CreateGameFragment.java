@@ -569,7 +569,6 @@ public class CreateGameFragment extends Fragment implements GetJwt.Callback {
     private void gatherUserInput() {
         gameModel.setName(gameName.getText().toString());
 
-        // If both options are selected treat the game as serious for now.
         GAME_TYPE game_type = seriousGameRadio.isChecked() ? GAME_TYPE.serious : GAME_TYPE.casual;
         gameModel.setType(game_type.name());
 
@@ -578,7 +577,7 @@ public class CreateGameFragment extends Fragment implements GetJwt.Callback {
         int  offsetSkill = seriousGameRadio.isChecked() && skillOffsetRange.isEnabled() ? Integer.parseInt(skillOffsetRange.getRightPinValue()) : -1;
         gameModel.setOffsetSkill(offsetSkill);
 
-        int totalPlayersRequired = Integer.parseInt(totalPlayerSeekBar.getLeftPinValue());
+        int totalPlayersRequired = Integer.parseInt(totalPlayerSeekBar.getRightPinValue());
         gameModel.setTotalPlayersRequired(totalPlayersRequired);
 
         String[] dates = dateRangeText.getText().toString().split(" - ");
@@ -587,9 +586,9 @@ public class CreateGameFragment extends Fragment implements GetJwt.Callback {
         String endDate = dates[1];
         String endTime = gameModel.getEndTime();
         try {
-            int finalStartTime = (int) createFinalTime(startDate, startTime);
+            long finalStartTime = createFinalTime(startDate, startTime);
             gameModel.setFinalStartTime(finalStartTime);
-            int finalEndTime = (int) createFinalTime(endDate, endTime);
+            long finalEndTime = createFinalTime(endDate, endTime);
             gameModel.setFinalEndTime(finalEndTime);
         } catch (ParseException e) {
             Log.e(FC_TAG, "Parsing time: " + e);
@@ -604,7 +603,7 @@ public class CreateGameFragment extends Fragment implements GetJwt.Callback {
         SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss", Locale.US);
         Date date = sdf.parse(startDate + " " + startTime);
 
-        return date.getTime();
+        return date.getTime() / 1000;
     }
 
     private Response.Listener<JSONObject> successful_create_game_profile = new Response.Listener<JSONObject>() {
