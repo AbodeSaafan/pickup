@@ -729,7 +729,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     time_created[i],
                     player_restricted[i],
                     "-1",
-                    "-1");
+                    "-1", 0, 0);
 
             gamesLst.add(game);
         }

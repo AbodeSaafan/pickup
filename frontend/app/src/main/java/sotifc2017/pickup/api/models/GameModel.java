@@ -31,6 +31,8 @@ public class GameModel {
     public ENFORCED_PARAMS[] enforced_params;
     public int time_created;
     public boolean player_restricted;
+    public int min_skill;
+    public int max_skill;
 
     // Variables holding values for the computation of final results
     public String partialStartTime;
@@ -58,6 +60,8 @@ public class GameModel {
 
         this.partialStartTime = String.valueOf(DEFAULT_INT);
         this.partialEndTime = String.valueOf(DEFAULT_INT);
+        this.min_skill = DEFAULT_INT;
+        this.max_skill = DEFAULT_INT;
     }
 
 
@@ -66,7 +70,7 @@ public class GameModel {
                       int totalPlayersAdded, long startTime, long endTime, long duration, HashMap<String, Double> location,
                       int creatorId, String description, String location_notes, String gender,
                       int[] ageRange, ENFORCED_PARAMS[] enforced_params, int time_created, boolean player_restricted,
-                      String partialStartTime, String partialEndTime) {
+                      String partialStartTime, String partialEndTime, int min_skill, int max_skill) {
 
         this.game_id = game_id;
         this.name = name;
@@ -89,6 +93,9 @@ public class GameModel {
 
         this.partialStartTime = partialStartTime;
         this.partialEndTime = partialEndTime;
+
+        this.min_skill = min_skill;
+        this.max_skill = max_skill;
     }
 
     public int getGameId() {
@@ -250,4 +257,8 @@ public class GameModel {
     public void setPartialEndTime(String partialEndTime) {
         this.partialEndTime = partialEndTime;
     }
+
+    public int getMinSkill() { return min_skill; }
+
+    public int getMaxSkill() {return max_skill;}
 }

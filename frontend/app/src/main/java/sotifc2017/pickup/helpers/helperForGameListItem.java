@@ -16,6 +16,7 @@ import java.util.Locale;
 import java.util.TimeZone;
 
 import sotifc2017.pickup.R;
+import sotifc2017.pickup.api.enums.ENFORCED_PARAMS;
 
 public class helperForGameListItem {
 
@@ -121,6 +122,37 @@ public class helperForGameListItem {
             player_icon.setColorFilter(ContextCompat.getColor(mContext, R.color.green), PorterDuff.Mode.SRC_IN);
         }
 
+    };
+
+    public String getGender(String gender, ENFORCED_PARAMS[] params)
+    {
+        if(params.length != 0)
+        {
+            for (ENFORCED_PARAMS param: params
+                    ) {
+                if(param == ENFORCED_PARAMS.gender)
+                {
+                    if(gender == "f")
+                    {
+                        return("Female Only");
+                    }
+                    else if (gender == "m"){
+                        return("Male Only");
+                    }
+                }
+
+            }
+        }
+        else{
+            if(gender == "f")
+            {
+                return("Female");
+            }
+            else if (gender == "m"){
+                return("Male");
+            }
+        }
+        return null;
     };
 
 

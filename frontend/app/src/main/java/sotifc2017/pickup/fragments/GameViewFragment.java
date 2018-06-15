@@ -24,6 +24,7 @@ import com.android.volley.VolleyError;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
@@ -36,9 +37,11 @@ import sotifc2017.pickup.api.GetJwt;
 import sotifc2017.pickup.api.Utils;
 import sotifc2017.pickup.api.contracts.GetUsersRequest;
 import sotifc2017.pickup.api.contracts.SimpleJWTRequest;
+import sotifc2017.pickup.api.enums.ENFORCED_PARAMS;
 import sotifc2017.pickup.api.models.GameModel;
 import sotifc2017.pickup.api.models.UserModel;
 import sotifc2017.pickup.fragment_interfaces.OnFragmentReplacement;
+import sotifc2017.pickup.helpers.helperForGameListItem;
 
 /**
  * Created by parezina on 4/4/2018.
@@ -62,6 +65,9 @@ public class GameViewFragment extends Fragment implements GetJwt.Callback {
     String jwtReal;
     Button joinButton;
     Button leaveButton;
+    boolean joinGame =false;
+    boolean leaveGame = false;
+    private helperForGameListItem helper;
 
 
     @Override
@@ -112,41 +118,59 @@ public class GameViewFragment extends Fragment implements GetJwt.Callback {
         gameDescription = (TextView) getView().findViewById(R.id.gameDescription);
         gameLocation = (TextView) getView().findViewById(R.id.address);
         gameLocationNotes = (TextView) getView().findViewById(R.id.locationNote);
+        helper = new helperForGameListItem();
 
-        createGameTag(gameList.type);
-        createGameTag(gameList.gender);
-        createGameTag(gameList.age_range[0] + "-" + gameList.age_range[1] +" years old");
-        createGameTag("Skill offset" + gameList.offsetSkill);
-
-        latitude = gameList.location.get("lat");
-        longitude = gameList.location.get("lng");
-        String newLocation = "";
-        try {
-            List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
-
-            if (addresses.size() > 0) {
-                newLocation = addresses.get(0).getLocality() + ", " + addresses.get(0).getAdminArea() + ", " + addresses.get(0).getCountryCode();
-            } else {
-                newLocation = "N/A";
-            }
+        if(!gameList.type.isEmpty())
+        {
+            createGameTag(gameList.type);
         }
-        catch (IOException e) {
-            e.printStackTrace();
+        if(!gameList.gender.isEmpty())
+        {
+            createGameTag(helper.getGender(gameList.gender, gameList.enforced_params));
+        }
+        if(!(gameList.age_range == null || gameList.age_range.length == 0)) {
+            createGameTag(gameList.age_range[0] + "-" + gameList.age_range[1] + " years old");
+        }
+        //
+        createGameTag("Skill: " + gameList.min_skill + " to " + gameList.max_skill);
 
+
+        String newLocation = "";
+        if(!gameList.location.isEmpty()) {
+            latitude = gameList.location.get("lat");
+            longitude = gameList.location.get("lng");
+            newLocation = helper.getLocation(geocoder, latitude, longitude);
         }
 
         gameId.setText("#" + gameList.game_id);
-        gameName.setText(gameList.name);
-        gameDate.setText(gameList.start_time + "to" + gameList.end_time);
-        gameDescription.setText(gameList.description);
+        if(!gameList.name.isEmpty()) {
+            gameName.setText(gameList.name);
+        }
+        HashMap<String, String> date_time = new HashMap<String, String>();
+        date_time = helper.getDate(gameList.start_time, gameList.end_time);
+        gameDate.setText(date_time.get("dateTime") + " to " + date_time.get("finalTime"));
+        if(!gameList.description.isEmpty()) {
+            gameDescription.setText(gameList.description);
+        }
         gameLocation.setText(newLocation);
-        gameLocationNotes.setText(gameList.location_notes);
+        if(!gameList.location_notes.isEmpty()) {
+            gameLocationNotes.setText(gameList.location_notes);
+        }
     }
 
 
     @Override
     public void jwtSuccess(String jwt) {
-        jwtReal = jwt;
+        if(joinGame){
+            SimpleJWTRequest request = createSimpleJWTRequest(jwt);
+            Utils.getInstance(getActivity()).getRequestQueue(getActivity()).add(Game.leave_game_request(request, Integer.toString(gameList.game_id), successful_leaveGame, error_leaveGame));
+            joinGame = false;
+        }
+        if(leaveGame){
+            SimpleJWTRequest request = createSimpleJWTRequest(jwt);
+            Utils.getInstance(getActivity()).getRequestQueue(getActivity()).add(Game.join_game_request(request, Integer.toString(gameList.game_id), successful_joinGame, error_joinGame));
+            leaveGame = false;
+        }
         GetUsersRequest request = createGetUsersRequest(jwt);
         Utils.getInstance(getActivity()).getRequestQueue(getActivity()).add(Game.getUsers_request(request, successful_userlist, error_userlist));
     }
@@ -192,8 +216,7 @@ public class GameViewFragment extends Fragment implements GetJwt.Callback {
                     leaveButton.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            SimpleJWTRequest request = createSimpleJWTRequest(jwtReal);
-                            Utils.getInstance(getActivity()).getRequestQueue(getActivity()).add(Game.leave_game_request(request, Integer.toString(gameList.game_id), successful_leaveGame, error_leaveGame));
+                            new GetJwt(GameViewFragment.this).execute(getActivity());
                         }
                     });
                     listview.addFooterView(leaveButton);
@@ -205,8 +228,7 @@ public class GameViewFragment extends Fragment implements GetJwt.Callback {
                     joinButton.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            SimpleJWTRequest request = createSimpleJWTRequest(jwtReal);
-                            Utils.getInstance(getActivity()).getRequestQueue(getActivity()).add(Game.join_game_request(request, Integer.toString(gameList.game_id), successful_joinGame, error_joinGame));
+                            new GetJwt(GameViewFragment.this).execute(getActivity());
                         }
                     });
                     listview.addFooterView(joinButton);
@@ -229,6 +251,8 @@ public class GameViewFragment extends Fragment implements GetJwt.Callback {
                 Log.e("game", errorJSON.toString());
             }
             catch (Exception e){
+
+                Log.e("game", e.getMessage());
                 Log.e("game", "error parsing failure");
             }
         }
@@ -314,6 +338,7 @@ public class GameViewFragment extends Fragment implements GetJwt.Callback {
         tv.setPadding(50,0,50,0);
         tv.setBackgroundResource(R.drawable.rounded_corner);
         tv.setText(text);
+        tv.setTextColor(getResources().getColor(R.color.primary_dark));
         this.tagLayout.addView(tv);
     }
 
