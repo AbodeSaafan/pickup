@@ -66,8 +66,12 @@ function randomHours(){
 	return randomInt(2*60*60, 10*60*60).toFixed(0);
 }
 
+function randomDays(){
+	return randomInt(24*60*60, 3*24*60*60).toFixed(0);
+}
+
 function mockGameStartTime(){
-	var x =  (parseInt(Math.floor(Date.now() / 1000).toFixed(0)) + parseInt(randomHours()));
+	var x =  (parseInt(Math.floor(Date.now() / 1000).toFixed(0)) + parseInt(randomDays()) + parseInt(randomHours()));
 	return x;
 }
 
@@ -237,7 +241,7 @@ function createMockGtaGame(jwt){
 		location_notes: "Come around the back and knock on the blue door",
 		description: "Casual basketball game",
 		gender: randomGender(),
-		enforced_params: ["gender"],
+		enforced_params: randomInt(1, 5) == 5 ? ["gender"] : [],
 		jwt: jwt
 	};
 }
