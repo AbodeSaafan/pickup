@@ -5,6 +5,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -35,6 +36,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -56,15 +59,22 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.mcsoft.timerangepickerdialog.RangeTimePickerDialog;
 
+import org.json.JSONObject;
+
+import java.net.HttpURLConnection;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import sotifc2017.pickup.Common.Defaults;
 import sotifc2017.pickup.R;
 import sotifc2017.pickup.api.Authentication;
+import sotifc2017.pickup.api.GetJwt;
+import sotifc2017.pickup.api.Search;
 import sotifc2017.pickup.api.Utils;
+import sotifc2017.pickup.api.contracts.GetSearchRequest;
 import sotifc2017.pickup.api.enums.ENFORCED_PARAMS;
 import sotifc2017.pickup.api.models.GameModel;
 import sotifc2017.pickup.fragment_interfaces.OnFragmentReplacement;
@@ -80,7 +90,7 @@ import sotifc2017.pickup.helpers.GameListItemHelper;
 
 import static sotifc2017.pickup.Common.Defaults.FC_TAG;
 
-public class MainActivity extends AppCompatActivity implements OnMapReadyCallback, HostingActivity, OnFragmentReplacement, RangeTimePickerDialog.ISelectedTime {
+public class MainActivity extends AppCompatActivity implements OnMapReadyCallback, HostingActivity, OnFragmentReplacement, RangeTimePickerDialog.ISelectedTime, GetJwt.Callback {
 
     private GoogleMap mMap;
     private FusedLocationProviderClient mFusedLocationClient;
@@ -98,13 +108,13 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private static long PERIOD = 2000;
     private int PLACE_PICKER_REQUEST = 1;
     private LocationCallback mLocationCallback;
-    private GameModel[] games;
     private HashMap<String, GameModel> pin_of_game = new HashMap<String, GameModel>();
     private GameListItemHelper helper;
     private Geocoder geocoder;
     private Activity mContext;
     private View snackView;
     private Snackbar snackbar;
+    private ProgressDialog loadingResponse;
 
     Intent intent;
 
@@ -153,6 +163,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
             ;
         };
+
     }
 
     @Override
@@ -172,7 +183,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             // TODO: Consider calling
             return;
         }
-        if(mFusedLocationClient == null) { return; }
+        if (mFusedLocationClient == null) {
+            return;
+        }
         mFusedLocationClient.requestLocationUpdates(createLocationRequest(),
                 mLocationCallback,
                 null /* Looper */);
@@ -209,13 +222,14 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     @Override
-    public void onBackPressed(){
+    public void onBackPressed() {
         int count = getFragmentManager().getBackStackEntryCount();
         if (count != 0) {
             super.onBackPressed();
         } else {
             if (back_pressed_time + PERIOD > System.currentTimeMillis()) super.onBackPressed();
-            else Toast.makeText(getBaseContext(), "Press once again to exit!", Toast.LENGTH_SHORT).show();
+            else
+                Toast.makeText(getBaseContext(), "Press once again to exit!", Toast.LENGTH_SHORT).show();
             back_pressed_time = System.currentTimeMillis();
         }
     }
@@ -237,8 +251,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                         @Override
                         public void onSuccess(Location location) {
                             // Got last known location. In some rare situations this can be null.
-                            createCustomGames();
-                            displayGames(location);
+                            //createCustomGames();
+                            new GetJwt(MainActivity.this).execute(MainActivity.this);
+                            //displayGames(location);
                         }
                     })
                     .addOnFailureListener(this, new OnFailureListener() {
@@ -247,13 +262,13 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                             Log.e("SotiFc", "Failed getting user's location");
                         }
                     });
-        }
-        else {
+        } else {
             askForPermissions();
-            createCustomGames();
-            displayGames(null);
+            //createCustomGames();
+
         }
     }
+
     public void askForPermissions() {
         ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, MY_PERMISSIONS_FINE_LOCATION);
         ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION}, MY_PERMISSIONS_COARSE_LOCATION);
@@ -264,36 +279,29 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED);
     }
 
-    // Have to make sure OnMapReady() is invoked before using this.
-    //TODO: Custom Map Marker
-    public void plotGameOnMap(GoogleMap mMap, LatLng gameLoc, int index) {
-        Marker marker = mMap.addMarker(new MarkerOptions().position(gameLoc));
-        pin_of_game.put(marker.getId(), games[index]);
-    }
 
     //TODO: Want to use Game object, or whatever we actually pull from backend here. Need to sync-up.
-    public void plotGames(GoogleMap mMap, List<LatLng> games) {
-        for (LatLng game : games) {
-            plotGameOnMap(mMap, game, games.indexOf(game));
+    public void plotGames(GameModel[] all_games, GoogleMap mMap) {
+        LatLngBounds.Builder builder = new LatLngBounds.Builder();
+
+        for (GameModel game : all_games) {
+            LatLng point = new LatLng(game.location.get("lat"), game.location.get("lng"));
+            Marker marker = mMap.addMarker(new MarkerOptions().position(point));
+            pin_of_game.put(marker.getId(), game);
+            builder.include(point);
         }
+
+        LatLngBounds bounds = builder.build();
+        int padding = 50;
+        mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, padding));
     }
 
     public void zoomToUser(GoogleMap mMap, LatLng userLoc) {
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(userLoc, 10));
     }
 
-    //From https://stackoverflow.com/questions/14828217/android-map-v2-zoom-to-show-all-the-markers
-    public void zoomToViewPoints(GoogleMap mMap, List<LatLng> locations) {
-        LatLngBounds.Builder builder = new LatLngBounds.Builder();
-        for (LatLng loc : locations) {
-            builder.include(loc);
-        }
-        LatLngBounds bounds = builder.build();
-        int padding = 50;
-        mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, padding));
-    }
 
-    public void displayGames(Location location) {
+    public void displayGames(final GameModel[] games, Location location) {
         stopLocationUpdates();
         if (location != null && checkPermissions()) {
             // Save as last known location
@@ -301,7 +309,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             // Generates Sample Games. Take out when connected to backend.
             sampleGames = new ArrayList<>();
 
-            for (GameModel game: games) {
+            for (GameModel game : games) {
                 sampleGames.add(new LatLng(game.location.get("lat"), game.location.get("lng")));
             }
 
@@ -309,8 +317,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             mMap.setOnMapLoadedCallback(new GoogleMap.OnMapLoadedCallback() {
                 @Override
                 public void onMapLoaded() {
-                    plotGames(mMap, sampleGames);
-                    zoomToViewPoints(mMap, sampleGames);
+                    plotGames(games, mMap);
+
 
                     mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
 
@@ -350,10 +358,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                             helper.setPlayerIcon(mContext, player_icon, gameObject.total_players_required, gameObject.total_players_added);
 
 
-                            slt.setPadding(0,0,0,0);
+                            slt.setPadding(0, 0, 0, 0);
                             slt.addView(snackView, 0);
                             snackbar.show();
-
 
 
                             if (gameObject.player_restricted) {
@@ -363,7 +370,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                                     @Override
                                     public void onClick(View v) {
                                         //popup toast
-                                        Toast.makeText(v.getContext(), "Cannot join game", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(MainActivity.this, "Cannot join game", Toast.LENGTH_SHORT).show();
+                                        dismissSnackbar();
                                     }
                                 });
 
@@ -372,7 +380,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                                     @Override
                                     public void onClick(View v) {
                                         //popup toast
-                                        snackbar.dismiss();
                                         Bundle bundle = new Bundle();
                                         String gameJson = Utils.gson.toJson(gameObject);
                                         bundle.putString("gameJson", gameJson);
@@ -386,21 +393,21 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                             }
 
 
-
                             return false;
-                        };
+                        }
+
+                        ;
 
                     });
                 }
             });
-        }
-        else {
+        } else {
             //TODO: Zoom to actual city from user's profile, not random points.
             mMap.setOnMapLoadedCallback(new GoogleMap.OnMapLoadedCallback() {
                 @Override
                 public void onMapLoaded() {
                     Location lastKnown = GetLastKnownLocation();
-                    if(lastKnown.getAccuracy() == Float.MIN_VALUE){
+                    if (lastKnown.getAccuracy() == Float.MIN_VALUE) {
                         // Don't have any info
                         // TODO we should prevent this with permission flow
                         zoomToUser(mMap, new LatLng(43, -79));
@@ -413,16 +420,16 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
 
-
-
     private void setDrawerLayout() {
         ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.nav_open, R.string.nav_closed) {
             public void onDrawerClosed(View drawerView) {
                 super.onDrawerClosed(drawerView);
             }
+
             public void onDrawerSlide(View drawerView, float slideOffset) {
                 super.onDrawerSlide(drawerView, slideOffset);
             }
+
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
             }
@@ -433,7 +440,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                switch(item.getItemId()) {
+                switch (item.getItemId()) {
                     case R.id.action_map:
                         MapFragment mapFragment = new RefinedMapFragment();
                         replaceFragment(mapFragment, true, R.id.action_map);
@@ -483,14 +490,16 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     //https://stackoverflow.com/questions/5658675/replacing-a-fragment-with-another-fragment-inside-activity-group
-    public void replaceFragment(Fragment frag, boolean backStackAdd, int fragId){
+    public void replaceFragment(Fragment frag, boolean backStackAdd, int fragId) {
         hideKeyboard();
+        dismissSnackbar();
+
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
 
         // Replace whatever is in the fragment_container view with this fragment,
         // and add the transaction to the back stack if needed
         transaction.replace(R.id.fragment_container, frag, String.valueOf(fragId));
-        if(backStackAdd) transaction.addToBackStack(null);
+        if (backStackAdd) transaction.addToBackStack(null);
 
         // Commit the transaction
         transaction.commit();
@@ -506,12 +515,11 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                         @Override
                         public void onSuccess(Location location) {
                             // Got last known location. In some rare situations this can be null.
-                            displayGames(location);
+
                         }
                     });
-        }
-        else {
-            displayGames(null);
+        } else {
+
         }
 
     }
@@ -561,8 +569,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     @Override
-    public void onSelectedTime(int hourStart, int minuteStart, int hourEnd, int minuteEnd)
-    {
+    public void onSelectedTime(int hourStart, int minuteStart, int hourEnd, int minuteEnd) {
         CreateGameFragment createGameFrag =
                 (CreateGameFragment) getFragmentManager().findFragmentByTag(String.valueOf(R.id.action_create_game));
 
@@ -577,7 +584,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         RelativeLayout fragmentContainer = (findViewById(R.id.fragment_container));
         RelativeLayout.LayoutParams layoutParam = (RelativeLayout.LayoutParams) fragmentContainer.getLayoutParams();
 
-        layoutParam.setMargins(0, padTop ? findViewById(R.id.toolbar).getHeight() : 0, 0 , 0);
+        layoutParam.setMargins(0, padTop ? findViewById(R.id.toolbar).getHeight() : 0, 0, 0);
 
         fragmentContainer.setLayoutParams(layoutParam);
         drawerLayout.closeDrawers();
@@ -585,7 +592,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     @Override
-    public void clearMenuItemSelection(){
+    public void clearMenuItemSelection() {
         ConfigurableFragmentItemsManager.enableFullMenu(navigationView);
     }
 
@@ -629,7 +636,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 
-    private void SaveLastKnownLocation(Location location){
+    private void SaveLastKnownLocation(Location location) {
         Log.v("location", String.format("updating location with lat %f and lng %f", location.getLatitude(), location.getLongitude()));
         getSharedPreferences(Defaults.FC_TAG, MODE_PRIVATE).edit()
                 .putBoolean("locationSaved", true).apply();
@@ -639,11 +646,11 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 putLong("lastKnownLocationLng", Double.doubleToRawLongBits(location.getLongitude())).apply();
     }
 
-    private Location GetLastKnownLocation(){
+    private Location GetLastKnownLocation() {
         Location result = new Location("FromPrefs");
         boolean locationSaved = getSharedPreferences(Defaults.FC_TAG, MODE_PRIVATE).getBoolean("locationSaved", false);
 
-        if(!locationSaved){
+        if (!locationSaved) {
             result.setAccuracy(Float.MIN_VALUE);
             return result;
         }
@@ -654,6 +661,97 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         return result;
     }
 
+    private void dismissSnackbar() {
+        if (snackbar != null) {
+            snackbar.dismiss();
+        }
+    }
+
+    private void plotSearchGames(String jwt) {
+        Location userLocation = GetLastKnownLocation();
+        Map<String, Double> game_location = new HashMap<>();
+        game_location.put("lat", userLocation.getLatitude());
+        game_location.put("lng", userLocation.getLongitude());
+
+        GetSearchRequest request = GetSearchRequest.CreateGameRequest(jwt, game_location, 20);
+        Utils.getInstance(this).getRequestQueue(this).add(Search.getSearch_request(request, successful_game_search, error_game_search));
+    }
+
+    @Override
+    public void jwtSuccess(String jwt) {
+        plotSearchGames(jwt);
+
+    }
+
+    @Override
+    public void jwtFailure(GetJwt.JwtOutcome outcome) {
+        switch (outcome) {
+            case NoRefresh:
+            case BadJwtRetrieval:
+                Intent intent = new Intent(this, SignInActivity.class);
+                startActivity(intent);
+            case ServerFault:
+            default:
+                GetJwt.exitAppDialog(this).show();
+        }
+    }
+
+    private Response.Listener<JSONObject> successful_game_search = new Response.Listener<JSONObject>() {
+        @Override
+        public void onResponse(JSONObject response) {
+            try {
+                // get results
+                // display results by loading correct list view
+                GameModel[] games = getGamesFromSearch(response.get("games").toString());
+                displayGames(games, GetLastKnownLocation());
+
+                loadingResponse.cancel();
+            } catch (Exception e) {
+                Log.e("search", "error parsing results");
+            }
+
+        }
+    };
+
+    private Response.ErrorListener error_game_search = new Response.ErrorListener() {
+        @Override
+        public void onErrorResponse(VolleyError error) {
+            try {
+                JSONObject errorJSON = new JSONObject(new String(error.networkResponse.data, "UTF-8"));
+                if (error.networkResponse.statusCode == HttpURLConnection.HTTP_BAD_REQUEST) {
+                    searchDoesNotHaveResults();
+                } else {
+                    Log.v("search", "panic?");
+                }
+                Log.e("search", errorJSON.toString());
+            } catch (Exception e) {
+                Log.e("search", "error parsing failure");
+            }
+        }
+    };
+
+    private GameModel[] getGamesFromSearch(String searchGamesResult) {
+        return Utils.gson.fromJson(searchGamesResult, GameModel[].class);
+    }
+
+    ;
+
+    private void searchDoesNotHaveResults() {
+        loadingResponse.cancel();
+        android.app.AlertDialog.Builder exitDialog = new android.app.AlertDialog.Builder(this).
+                setMessage(this.getString(R.string.main_search_nothing_matches)).
+                setCancelable(true).
+                setPositiveButton(
+                        "Okay",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                            }
+                        });
+        exitDialog.create().show();
+    }
+
+    /*
     private void createCustomGames() {
         // create the hard coded game Objects:
         HashMap<String, Double> location_1 = new HashMap<String, Double>();
@@ -734,6 +832,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         games = new GameModel[gamesLst.size()];
         games = gamesLst.toArray(games);
     };
+
+*/
 
 
 }

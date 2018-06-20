@@ -209,12 +209,15 @@ public class ExtendedProfileFragment extends Fragment implements GetJwt.Callback
     private void SetGender(API_GENDER gender) {
         switch (gender) {
             case M:
+            case m:
                 genderTextView.setText(getResources().getString(R.string.prompt_male));
                 break;
             case F:
+            case f:
                 genderTextView.setText(getResources().getString(R.string.prompt_female));
                 break;
             case O:
+            case o:
                 genderTextView.setText(getResources().getString(R.string.prompt_other_gender));
                 break;
             default:
