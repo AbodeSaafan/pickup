@@ -436,8 +436,8 @@ public class SearchGamesFragment extends Fragment implements SearchFragment {
             int  game_skill_max = seriousGameCheck.isChecked() && skillRange.isEnabled() ? Integer.parseInt(skillRange.getRightPinValue()) : -1;
 
             int game_total_players = Integer.parseInt(minPlayerSeekBar.getLeftPinValue());
-            long game_start_time = fromCalendar.getTimeInMillis();
-            long game_end_time = toCalendar.getTimeInMillis();
+            long game_start_time = Math.round((fromCalendar.getTimeInMillis() / 1000));
+            long game_end_time =  Math.round((toCalendar.getTimeInMillis() / 1000));
 
             Map<String, Double> game_location = new HashMap<String, Double>();
 
