@@ -12,13 +12,12 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.TimeZone;
 
 import sotifc2017.pickup.R;
 import sotifc2017.pickup.api.enums.ENFORCED_PARAMS;
 
-public class helperForGameListItem {
+public class GameListItemHelper {
 
 
     public HashMap<String, String> getDate(long start_time, long end_time) {
@@ -40,24 +39,23 @@ public class helperForGameListItem {
 
         sdf_date.setTimeZone(TimeZone.getTimeZone("Etc/UTC"));
 
-        String start_date = sdf_date.format( new Date(start_time*1000L));
-        String end_date = sdf_date.format( new Date(end_time*1000L));
+        String start_date = sdf_date.format(new Date(start_time * 1000L));
+        String end_date = sdf_date.format(new Date(end_time * 1000L));
 
 
         //Calculate Time
-        SimpleDateFormat  time_format = new SimpleDateFormat("h:mm a");
+        SimpleDateFormat time_format = new SimpleDateFormat("h:mm a");
         time_format.setTimeZone(TimeZone.getTimeZone("Etc/UTC"));
 
-        String startTime = time_format.format(new Date(start_time*1000L));
-        String endTime = time_format.format(new Date(end_time*1000L));
+        String startTime = time_format.format(new Date(start_time * 1000L));
+        String endTime = time_format.format(new Date(end_time * 1000L));
 
 
         if (start_date.equals(end_date)) {
             date = start_date + ", " + startTime + "-" + endTime;
             dateTime.put("dateTime", date);
             dateTime.put("finalTime", "");
-        }
-        else {
+        } else {
             date = start_date + " to " + end_date;
             finalTime = startTime + "-" + endTime;
             dateTime.put("dateTime", date);
@@ -66,17 +64,19 @@ public class helperForGameListItem {
         }
 
         return dateTime;
-    };
+    }
 
-    public String getPlayerCount (int total_players_added, int total_players_required) {
+
+    public String getPlayerCount(int total_players_added, int total_players_required) {
 
         String playerCount = "";
         playerCount = String.valueOf(total_players_added) + "/" + String.valueOf(total_players_required);
 
         return playerCount;
-    };
+    }
 
-    public String getLocation (Geocoder geocoder, double latitude, double longitude) {
+
+    public String getLocation(Geocoder geocoder, double latitude, double longitude) {
 
         String location = "";
         try {
@@ -92,7 +92,7 @@ public class helperForGameListItem {
                     location = location + addresses.get(0).getCountryCode();
                 }
                 if (addresses.get(0).getCountryCode() == null) {
-                    location = location.substring(0, location.length()-1);
+                    location = location.substring(0, location.length() - 1);
                 }
 
             } else {
@@ -104,13 +104,14 @@ public class helperForGameListItem {
 
         }
         return location;
-    };
+    }
 
-    public void setPlayerIcon (Activity mContext, ImageView player_icon, int total_players_required, int total_players_added) {
+
+    public void setPlayerIcon(Activity mContext, ImageView player_icon, int total_players_required, int total_players_added) {
 
         int difference = total_players_required - total_players_added;
 
-        if (difference >= 0 && difference <= 3){
+        if (difference >= 0 && difference <= 3) {
 
             player_icon.setColorFilter(ContextCompat.getColor(mContext, R.color.red), PorterDuff.Mode.SRC_IN);
 
@@ -122,40 +123,31 @@ public class helperForGameListItem {
             player_icon.setColorFilter(ContextCompat.getColor(mContext, R.color.green), PorterDuff.Mode.SRC_IN);
         }
 
-    };
+    }
 
-    public String getGender(String gender, ENFORCED_PARAMS[] params)
-    {
-        if(params.length != 0)
-        {
-            for (ENFORCED_PARAMS param: params
+
+    public String getGender(String gender, ENFORCED_PARAMS[] params) {
+        if (params.length != 0) {
+            for (ENFORCED_PARAMS param : params
                     ) {
-                if(param == ENFORCED_PARAMS.gender)
-                {
-                    if(gender == "f")
-                    {
-                        return("Female Only");
-                    }
-                    else if (gender == "m"){
-                        return("Male Only");
+                if (param == ENFORCED_PARAMS.gender) {
+                    if (gender == "f") {
+                        return ("Female Only");
+                    } else if (gender == "m") {
+                        return ("Male Only");
                     }
                 }
 
             }
-        }
-        else{
-            if(gender == "f")
-            {
-                return("Female");
-            }
-            else if (gender == "m"){
-                return("Male");
+        } else {
+            if (gender == "f") {
+                return ("Female");
+            } else if (gender == "m") {
+                return ("Male");
             }
         }
         return null;
-    };
-
-
+    }
 
 
 

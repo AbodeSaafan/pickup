@@ -9,7 +9,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
@@ -61,8 +60,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
-import java.util.Random;
 
 import sotifc2017.pickup.Common.Defaults;
 import sotifc2017.pickup.R;
@@ -79,7 +76,7 @@ import sotifc2017.pickup.fragments.ListViewFragment;
 import sotifc2017.pickup.fragments.MainSearchFragment;
 import sotifc2017.pickup.fragments.RefinedMapFragment;
 import sotifc2017.pickup.fragments.SettingsFragment;
-import sotifc2017.pickup.helpers.helperForGameListItem;
+import sotifc2017.pickup.helpers.GameListItemHelper;
 
 import static sotifc2017.pickup.Common.Defaults.FC_TAG;
 
@@ -103,7 +100,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private LocationCallback mLocationCallback;
     private GameModel[] games;
     private HashMap<String, GameModel> pin_of_game = new HashMap<String, GameModel>();
-    private helperForGameListItem helper;
+    private GameListItemHelper helper;
     private Geocoder geocoder;
     private Activity mContext;
     private View snackView;
@@ -125,7 +122,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         floatGameItem = findViewById(R.id.coordinatorLayout);
 
         inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        helper = new helperForGameListItem();
+        helper = new GameListItemHelper();
         geocoder = new Geocoder(this, Locale.getDefault());
         mContext = (Activity) this;
 

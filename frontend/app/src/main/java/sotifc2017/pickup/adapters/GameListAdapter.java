@@ -1,36 +1,26 @@
 package sotifc2017.pickup.adapters;
 
 import android.app.Activity;
-import android.graphics.PorterDuff;
-import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.IOException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Locale;
-import java.util.TimeZone;
 
 import sotifc2017.pickup.R;
 import sotifc2017.pickup.activities.HostingActivity;
 import sotifc2017.pickup.api.Utils;
 import sotifc2017.pickup.api.models.GameModel;
 import sotifc2017.pickup.fragments.GameViewFragment;
-import sotifc2017.pickup.helpers.helperForGameListItem;
+import sotifc2017.pickup.helpers.GameListItemHelper;
 
 
 /**
@@ -42,13 +32,13 @@ public class GameListAdapter extends BaseAdapter {
     private GameModel[] gamesList;
     private Activity mContext;
     private Geocoder geocoder;
-    private helperForGameListItem helper;
+    private GameListItemHelper helper;
 
     public GameListAdapter(Activity context, GameModel[] gameArrayList) {
         this.mContext = context;
         this.gamesList = gameArrayList;
         geocoder = new Geocoder(context, Locale.getDefault());
-        helper = new helperForGameListItem();
+        helper = new GameListItemHelper();
 
     }
 

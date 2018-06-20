@@ -3,7 +3,6 @@ package sotifc2017.pickup.fragments;
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.Intent;
-import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -23,9 +22,7 @@ import com.android.volley.VolleyError;
 
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Locale;
 
 import sotifc2017.pickup.R;
@@ -37,11 +34,10 @@ import sotifc2017.pickup.api.GetJwt;
 import sotifc2017.pickup.api.Utils;
 import sotifc2017.pickup.api.contracts.GetUsersRequest;
 import sotifc2017.pickup.api.contracts.SimpleJWTRequest;
-import sotifc2017.pickup.api.enums.ENFORCED_PARAMS;
 import sotifc2017.pickup.api.models.GameModel;
 import sotifc2017.pickup.api.models.UserModel;
 import sotifc2017.pickup.fragment_interfaces.OnFragmentReplacement;
-import sotifc2017.pickup.helpers.helperForGameListItem;
+import sotifc2017.pickup.helpers.GameListItemHelper;
 
 /**
  * Created by parezina on 4/4/2018.
@@ -67,7 +63,7 @@ public class GameViewFragment extends Fragment implements GetJwt.Callback {
     Button leaveButton;
     boolean joinGame =false;
     boolean leaveGame = false;
-    private helperForGameListItem helper;
+    private GameListItemHelper helper;
 
 
     @Override
@@ -118,7 +114,7 @@ public class GameViewFragment extends Fragment implements GetJwt.Callback {
         gameDescription = (TextView) getView().findViewById(R.id.gameDescription);
         gameLocation = (TextView) getView().findViewById(R.id.address);
         gameLocationNotes = (TextView) getView().findViewById(R.id.locationNote);
-        helper = new helperForGameListItem();
+        helper = new GameListItemHelper();
 
         if(!gameList.type.isEmpty())
         {
