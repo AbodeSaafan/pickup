@@ -109,6 +109,25 @@ public class GetSearchRequest {
     /**
      *
      * @param jwt jwt token for request
+     * @param game_location location of game, must be specified and valid
+     * @param game_location_range range of location search, -1 if not specified
+     * @return game search request
+     */
+    public static GetSearchRequest CreateGameRequest(String jwt,
+                                                     Map<String, Double> game_location,
+                                                     int game_location_range){
+        GetSearchRequest request = new GetSearchRequest(jwt, SEARCH_TYPE.game);
+        request.game_location = game_location;
+        if(request.game_location_range != -1){
+            request.game_location_range = game_location_range;
+        }
+
+        return request;
+    }
+
+    /**
+     *
+     * @param jwt jwt token for request
      * @param username the username for the search
      * @return user search request
      */
