@@ -12,7 +12,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.TimeZone;
 
 import sotifc2017.pickup.R;
 import sotifc2017.pickup.api.enums.ENFORCED_PARAMS;
@@ -37,15 +36,12 @@ public class GameListItemHelper {
         else
             sdf_date = new SimpleDateFormat("EE MMM d'th' yyyy");
 
-        sdf_date.setTimeZone(TimeZone.getTimeZone("Etc/UTC"));
-
         String start_date = sdf_date.format(new Date(start_time * 1000L));
         String end_date = sdf_date.format(new Date(end_time * 1000L));
 
 
         //Calculate Time
         SimpleDateFormat time_format = new SimpleDateFormat("h:mm a");
-        time_format.setTimeZone(TimeZone.getTimeZone("Etc/UTC"));
 
         String startTime = time_format.format(new Date(start_time * 1000L));
         String endTime = time_format.format(new Date(end_time * 1000L));
