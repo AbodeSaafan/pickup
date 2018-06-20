@@ -5,6 +5,7 @@ const conString = process.env.DATABASE_URL ? process.env.DATABASE_URL : "postgre
 var crypto = require("crypto");
 var md5 = require("md5");
 const util = require("util");
+var tokenHelper = require("./tokenHelper");
 
 function checkEmailUniqueness(user, callback) {
 	var queryString = "SELECT * FROM users WHERE email = '" + user.email + "' AND disabled = false;";
@@ -940,8 +941,9 @@ function getConstraintQuery(search_request) {
 
 	}
 	else if (search_request.search_object == "user") {
+		var selfId =  tokenHelper.getUserFromToken(search_request.jwt).user_id;
 		// User param validation
-		query += "SELECT user_id, username, fname FROM users WHERE username LIKE '%" + search_request.username + "%';";
+		query += "SELECT user_id, username, fname FROM users WHERE username LIKE '%" + search_request.username + "%' and user_id != " + selfId + ";";
 	}
 	return query;
 }
