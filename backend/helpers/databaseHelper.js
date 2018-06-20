@@ -87,14 +87,14 @@ function getUserRowById(userId, callback) {
 }
 
 function getUsernameById(userId, callback) {
-	var queryString = "SELECT username FROM users WHERE user_id = $1 AND disabled = false";
+	var queryString = "SELECT fname, username FROM users WHERE user_id = $1 AND disabled = false";
 	var queryParams = [userId];
 	const pool = new pg.Pool({ connectionString: conString });
 
 	pool.connect((err, client, done) => {
 		client.query(queryString, queryParams, (err, res) => {
-			if(!err && (res && res.rows[0])){
-				callback(res.rows[0].username);
+			if(!err && (res && res.rows[0] && res.rows[0].username && res.rows[0].fname)){
+				callback(res.rows[0]);
 			}
 			else{
 				callback(false);

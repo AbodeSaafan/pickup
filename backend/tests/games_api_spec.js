@@ -123,12 +123,14 @@ describe("Games api testing", function() {
 															.expect("jsonStrict", "?", {
 																user_id: newUser2.user_id,
 																reviewed: false,
-																username: userDetails2.username
+																username: userDetails2.username,
+																fname: userDetails2.fname
 															})
 															.expect("jsonStrict", "?", {
 																user_id: newUser1.user_id,
 																reviewed: false,
-																username: userDetails.username
+																username: userDetails.username,
+																fname: userDetails.fname
 															})
 															.expect("status", 200).done(doneFn);
 													});
