@@ -927,8 +927,11 @@ function getConstraintQuery(search_request) {
 		if (search_request.game_end_time && search_request.game_end_time > 0) {
 			queryConstraint.push("end_time <= " + search_request.game_end_time);
 		}
-		if (search_request.game_duration && search_request.game_duration) {
+		if (search_request.game_duration) {
 			queryConstraint.push("end_time >= start_time + " + search_request.game_duration);
+		}
+		else {
+			queryConstraint.push("end_time >= " + Math.floor(Date.now()/1000));
 		}
 		if (search_request.game_location && search_request.game_location_range && search_request.game_location_range > 0) {
 			var search_point = util.format("(%d, %d)", search_request.game_location.lat, search_request.game_location.lng);

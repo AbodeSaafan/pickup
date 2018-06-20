@@ -10,7 +10,8 @@ describe("Search api testing", function () {
 			.expect("bodyContains", "token")
 			.then(function (user) {
 				user = user.json;
-				var gameDetails = testHelper.createUnrestrictedGame(user.token, 15872, 100);
+				var startTime = parseInt(Math.floor(Date.now()/1000)) + 3600 + 15872;
+				var gameDetails = testHelper.createUnrestrictedGame(user.token, startTime, 100);
 				return frisby.post(testHelper.createGameEndpoint, gameDetails)
 					.expect("bodyContains", "game_id")
 					.then(function (game) {
@@ -51,7 +52,8 @@ describe("Search api testing", function () {
 									.expect("json", "games[0].player_restricted", false);
 							})
 							.then(function () {
-								return frisby.get(testHelper.searchEndpoint + "?jwt=" + token + "&search_object=game&results_max=1&game_start_time=15871&game_end_time=15972")
+								var endTime = startTime + 100;
+								return frisby.get(testHelper.searchEndpoint + "?jwt=" + token + "&search_object=game&results_max=1&game_start_time=" + startTime + "&game_end_time=" + endTime)
 									.expect("status", 200)
 									.expect("json", "games[0].game_id", game.game_id)
 									.expect("json", "games[0].player_restricted", false);
@@ -173,7 +175,7 @@ describe("Search api testing", function () {
 			.expect("bodyContains", "token")
 			.then(function (user) {
 				user = user.json;
-				var gameDetails = testHelper.createGenericGame(user.token, 100, 200);
+				var gameDetails = testHelper.createGenericGame(user.token, parseInt(Math.floor(Date.now()/1000)) + 3600 + 100, 200);
 				return frisby.post(testHelper.createGameEndpoint, gameDetails)
 					.expect("bodyContains", "game_id")
 					.then(function (game) {
