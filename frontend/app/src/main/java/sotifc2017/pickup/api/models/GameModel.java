@@ -3,6 +3,7 @@ package sotifc2017.pickup.api.models;
 import java.util.HashMap;
 
 import sotifc2017.pickup.api.enums.ENFORCED_PARAMS;
+import sotifc2017.pickup.api.enums.GAME_TYPE;
 
 /**
  * Created by asaafan on 3/8/2018.
@@ -15,7 +16,7 @@ public class GameModel {
 
     public int game_id;
     public String name;
-    public String type;
+    public GAME_TYPE type;
     public int offsetSkill;
     public int total_players_required;
     public int total_players_added;
@@ -41,7 +42,7 @@ public class GameModel {
     public GameModel () {
         this.game_id = DEFAULT_INT;
         this.name = "My game";
-        this.type = "casual";
+        this.type = GAME_TYPE.both;
         this.offsetSkill = DEFAULT_INT;
         this.total_players_required = DEFAULT_INT;
         this.total_players_added = START_NUM_PLAYERS_ADDED;
@@ -66,7 +67,7 @@ public class GameModel {
 
 
     //function for time-being
-    public GameModel (int game_id, String name, String type, int offsetSkill, int totalPlayersRequired,
+    public GameModel (int game_id, String name, GAME_TYPE type, int offsetSkill, int totalPlayersRequired,
                       int totalPlayersAdded, long startTime, long endTime, long duration, HashMap<String, Double> location,
                       int creatorId, String description, String location_notes, String gender,
                       int[] ageRange, ENFORCED_PARAMS[] enforced_params, int time_created, boolean player_restricted,
@@ -114,11 +115,11 @@ public class GameModel {
         this.name = name;
     }
 
-    public String getType() {
+    public GAME_TYPE getType() {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(GAME_TYPE type) {
         this.type = type;
     }
 

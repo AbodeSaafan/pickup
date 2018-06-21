@@ -12,8 +12,8 @@ public class SimpleJWTRequest {
         this.jwt = jwt;
     }
 
-    public static SimpleJWTRequest CreateSimpleJWTRequest(String jwt) {
-        SimpleJWTRequest request = new SimpleJWTRequest(jwt);
+    public static SimpleJWTRequest CreateSimpleJWTRequest(String token) {
+        SimpleJWTRequest request = new SimpleJWTRequest(token);
         return request;
     }
 }

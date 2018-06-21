@@ -570,7 +570,7 @@ public class CreateGameFragment extends Fragment implements GetJwt.Callback {
         gameModel.setName(gameName.getText().toString());
 
         GAME_TYPE game_type = seriousGameRadio.isChecked() ? GAME_TYPE.serious : GAME_TYPE.casual;
-        gameModel.setType(game_type.name());
+        gameModel.setType(game_type);
 
         gameModel.setDescription(gameDescription.getText().toString());
 

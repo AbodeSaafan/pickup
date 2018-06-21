@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import sotifc2017.pickup.api.enums.ENFORCED_PARAMS;
+import sotifc2017.pickup.api.enums.GAME_TYPE;
 
 /**
  * Created by Abode on 5/7/2018.
@@ -12,7 +13,7 @@ import sotifc2017.pickup.api.enums.ENFORCED_PARAMS;
 public class CreateGameRequest {
     public String jwt;
     public String name;
-    public String type;
+    public GAME_TYPE type;
     public int skill_offset;
     public int total_players_required;
     public long start_time;
@@ -25,7 +26,7 @@ public class CreateGameRequest {
     public ENFORCED_PARAMS[] enforced_params;
 
      public CreateGameRequest(String name,
-                              String type,
+                              GAME_TYPE type,
                               int skillOffset,
                               int total_players_required,
                               long start_time,

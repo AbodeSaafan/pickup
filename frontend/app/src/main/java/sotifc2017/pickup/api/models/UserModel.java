@@ -8,13 +8,13 @@ public class UserModel {
     public int user_id;
     public String username;
     public String fname;
-    public Boolean ifReviewed;
+    public Boolean reviewed;
 
-    public UserModel(int user_id, String user_name, Boolean ifReviewed, String fname)
+    public UserModel(int user_id, String username, Boolean reviewed, String fname)
     {
         this.user_id = user_id;
-        this.username = user_name;
+        this.username = username;
         this.fname = fname;
-        this.ifReviewed = ifReviewed;
+        this.reviewed = reviewed;
     }
 }

@@ -121,26 +121,13 @@ public class GameListItemHelper {
 
     }
 
-
-    public String getGender(String gender, ENFORCED_PARAMS[] params) {
-        if (params.length != 0) {
-            for (ENFORCED_PARAMS param : params
-                    ) {
-                if (param == ENFORCED_PARAMS.gender) {
-                    if (gender == "f") {
-                        return ("Female Only");
-                    } else if (gender == "m") {
-                        return ("Male Only");
-                    }
-                }
-
-            }
-        } else {
-            if (gender == "f") {
-                return ("Female");
-            } else if (gender == "m") {
-                return ("Male");
-            }
+    public String getGender(String gender)
+    {
+        if(gender.contains("f")) {
+            return("Female Only");
+        }
+        else if (gender.contains("m")){
+            return("Male Only");
         }
         return null;
     }

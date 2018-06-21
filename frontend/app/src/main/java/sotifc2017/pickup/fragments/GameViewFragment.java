@@ -20,6 +20,7 @@ import android.widget.Toast;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.HashMap;
@@ -34,6 +35,7 @@ import sotifc2017.pickup.api.GetJwt;
 import sotifc2017.pickup.api.Utils;
 import sotifc2017.pickup.api.contracts.GetUsersRequest;
 import sotifc2017.pickup.api.contracts.SimpleJWTRequest;
+import sotifc2017.pickup.api.enums.GAME_TYPE;
 import sotifc2017.pickup.api.models.GameModel;
 import sotifc2017.pickup.api.models.UserModel;
 import sotifc2017.pickup.fragment_interfaces.OnFragmentReplacement;
@@ -63,6 +65,7 @@ public class GameViewFragment extends Fragment implements GetJwt.Callback {
     Button leaveButton;
     boolean joinGame =false;
     boolean leaveGame = false;
+    boolean getUserList = true;
     private GameListItemHelper helper;
 
 
@@ -105,7 +108,7 @@ public class GameViewFragment extends Fragment implements GetJwt.Callback {
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-
+        getUserList = true;
         new GetJwt(this).execute(getActivity());
 
         gameId = (TextView) getView().findViewById(R.id.gameId);
@@ -116,19 +119,27 @@ public class GameViewFragment extends Fragment implements GetJwt.Callback {
         gameLocationNotes = (TextView) getView().findViewById(R.id.locationNote);
         helper = new GameListItemHelper();
 
-        if(!gameList.type.isEmpty())
-        {
-            createGameTag(gameList.type);
+        if(gameList.type == GAME_TYPE.both){
+            createGameTag("Both");
+            createGameTag("Skill: " + gameList.min_skill + " to " + gameList.max_skill);
         }
+        else if (gameList.type == GAME_TYPE.casual){
+            createGameTag("Casual");
+        }
+        else if (gameList.type == GAME_TYPE.serious){
+            createGameTag("Serious");
+            createGameTag("Skill: " + gameList.min_skill + " to " + gameList.max_skill);
+        }
+
+
         if(!gameList.gender.isEmpty())
         {
-            createGameTag(helper.getGender(gameList.gender, gameList.enforced_params));
+            createGameTag(helper.getGender(gameList.gender));
         }
         if(!(gameList.age_range == null || gameList.age_range.length == 0)) {
             createGameTag(gameList.age_range[0] + "-" + gameList.age_range[1] + " years old");
         }
-        //
-        createGameTag("Skill: " + gameList.min_skill + " to " + gameList.max_skill);
+
 
 
         String newLocation = "";
@@ -144,7 +155,7 @@ public class GameViewFragment extends Fragment implements GetJwt.Callback {
         }
         HashMap<String, String> date_time = new HashMap<String, String>();
         date_time = helper.getDate(gameList.start_time, gameList.end_time);
-        gameDate.setText(date_time.get("dateTime") + " to " + date_time.get("finalTime"));
+        gameDate.setText(date_time.get("dateTime") +"\n"+ date_time.get("finalTime"));
         if(!gameList.description.isEmpty()) {
             gameDescription.setText(gameList.description);
         }
@@ -157,18 +168,23 @@ public class GameViewFragment extends Fragment implements GetJwt.Callback {
 
     @Override
     public void jwtSuccess(String jwt) {
-        if(joinGame){
-            SimpleJWTRequest request = createSimpleJWTRequest(jwt);
-            Utils.getInstance(getActivity()).getRequestQueue(getActivity()).add(Game.leave_game_request(request, Integer.toString(gameList.game_id), successful_leaveGame, error_leaveGame));
-            joinGame = false;
-        }
         if(leaveGame){
+            leaveGame = false;
+            SimpleJWTRequest request = createSimpleJWTRequest(jwt );
+            Utils.getInstance(getActivity()).getRequestQueue(getActivity()).add(Game.leave_game_request(request, Integer.toString(gameList.game_id), successful_leaveGame, error_leaveGame));
+
+        }
+        else if(joinGame){
+            joinGame = false;
             SimpleJWTRequest request = createSimpleJWTRequest(jwt);
             Utils.getInstance(getActivity()).getRequestQueue(getActivity()).add(Game.join_game_request(request, Integer.toString(gameList.game_id), successful_joinGame, error_joinGame));
-            leaveGame = false;
+
         }
-        GetUsersRequest request = createGetUsersRequest(jwt);
-        Utils.getInstance(getActivity()).getRequestQueue(getActivity()).add(Game.getUsers_request(request, successful_userlist, error_userlist));
+        else if (getUserList) {
+            getUserList = false;
+            GetUsersRequest request = createGetUsersRequest(jwt);
+            Utils.getInstance(getActivity()).getRequestQueue(getActivity()).add(Game.getUsers_request(request, successful_userlist, error_userlist));
+        }
     }
 
     @Override
@@ -185,9 +201,9 @@ public class GameViewFragment extends Fragment implements GetJwt.Callback {
         }
     }
 
-    private Response.Listener<JSONObject> successful_userlist = new Response.Listener<JSONObject>() {
+    private Response.Listener<JSONArray> successful_userlist = new Response.Listener<JSONArray>() {
         @Override
-        public void onResponse(JSONObject response) {
+        public void onResponse(JSONArray response) {
             try{
                 // get results
                 // display results by loading correct list view
@@ -212,6 +228,7 @@ public class GameViewFragment extends Fragment implements GetJwt.Callback {
                     leaveButton.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
+                            leaveGame= true;
                             new GetJwt(GameViewFragment.this).execute(getActivity());
                         }
                     });
@@ -224,6 +241,7 @@ public class GameViewFragment extends Fragment implements GetJwt.Callback {
                     joinButton.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
+                            joinGame = true;
                             new GetJwt(GameViewFragment.this).execute(getActivity());
                         }
                     });
@@ -249,7 +267,7 @@ public class GameViewFragment extends Fragment implements GetJwt.Callback {
             catch (Exception e){
 
                 Log.e("game", e.getMessage());
-                Log.e("game", "error parsing failure");
+                Log.e("game", "error parsing failure Abode");
             }
         }
     };
@@ -260,6 +278,7 @@ public class GameViewFragment extends Fragment implements GetJwt.Callback {
             try{
                 Toast.makeText(getActivity(), "Successfully joined game!", Toast.LENGTH_SHORT).show();
                 joinButton.setBackgroundColor(getResources().getColor(R.color.darkgreen));
+                joinButton.setEnabled(false);
                 //Reload this page
             }
             catch (Exception e){
@@ -274,7 +293,7 @@ public class GameViewFragment extends Fragment implements GetJwt.Callback {
         public void onErrorResponse(VolleyError error) {
             try {
                 JSONObject errorJSON = new JSONObject(new String(error.networkResponse.data, "UTF-8"));
-                Toast.makeText(getActivity(), "Join Game failed: " + errorJSON.getString("jwtFailure"), Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "Join Game failed: " + errorJSON.getString("error"), Toast.LENGTH_SHORT).show();
             }
             //TODO: Implement Failure
             catch (Exception e){
@@ -289,6 +308,7 @@ public class GameViewFragment extends Fragment implements GetJwt.Callback {
             try{
                 Toast.makeText(getActivity(), "Successfully left game.", Toast.LENGTH_SHORT).show();
                 leaveButton.setBackgroundColor(getResources().getColor(R.color.darkred));
+                leaveButton.setEnabled(false);
                 //Reload this page
             }
             catch (Exception e){
