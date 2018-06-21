@@ -33,16 +33,13 @@ public class ListViewFragment extends Fragment {
 
 
         if (getArguments().containsKey("gameListJson")) {
-            System.out.println(getArguments().getString("gameListJson"));
             GameModel[] gameList = gameListJsonSerialize(getArguments().getString("gameListJson"));
-            System.out.println(gameList);
             GameListAdapter game_adapter = new GameListAdapter(getActivity(), gameList);
             listview.setAdapter(game_adapter);
 
         } else if (getArguments().containsKey("userListJson")) {
 
             UserModel[] userList = userListJsonSerialize(getArguments().getString("userListJson"));
-
             UserListAdapter user_adapter = new UserListAdapter(getActivity(), userList);
             listview.setAdapter(user_adapter);
 
