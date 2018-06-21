@@ -247,7 +247,7 @@ router.delete("/:game_id/leave", function(req, res){
 			if (gameExists) {
 				databaseHelper.leaveGame(tok.user_id, gameId, (hasLeftGame) => {
 					if (hasLeftGame) {
-						res.status(200).json(); return;
+						res.status(200).json({}); return;
 					}
 					else {
 						res.status(400).json({"error": strings.invalidLeaveGame}); return;
