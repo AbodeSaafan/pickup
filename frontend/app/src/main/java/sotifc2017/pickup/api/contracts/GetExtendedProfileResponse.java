@@ -1,6 +1,7 @@
 package sotifc2017.pickup.api.contracts;
 
 import sotifc2017.pickup.api.enums.API_GENDER;
+import sotifc2017.pickup.api.models.GameModel;
 
 /**
  * Created by rkrishnan on 1/16/2018.
@@ -18,4 +19,5 @@ public class GetExtendedProfileResponse {
     public int games_joined;
     public String top_tag;
     public int top_tag_count;
+    public GameModel[] recentGames;
 }

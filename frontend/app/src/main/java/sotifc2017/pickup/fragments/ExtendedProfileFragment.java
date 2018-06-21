@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.ListView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -36,7 +37,9 @@ import sotifc2017.pickup.api.GetJwt;
 import sotifc2017.pickup.api.Utils;
 import sotifc2017.pickup.api.contracts.GetExtendedProfileResponse;
 import sotifc2017.pickup.api.enums.API_GENDER;
+import sotifc2017.pickup.api.models.GameModel;
 import sotifc2017.pickup.fragment_interfaces.OnFragmentReplacement;
+import sotifc2017.pickup.adapters.GameListAdapter;
 
 public class ExtendedProfileFragment extends Fragment implements GetJwt.Callback {
     int currentFragmentId = R.id.action_profile;
@@ -57,6 +60,8 @@ public class ExtendedProfileFragment extends Fragment implements GetJwt.Callback
     private String user_id;
 
     private Geocoder geocoder;
+    private ListView listview;
+
 
     @Override
     public void onAttach(Activity activity) {
@@ -74,6 +79,7 @@ public class ExtendedProfileFragment extends Fragment implements GetJwt.Callback
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         loadingResponse = CommonComponents.getLoadingProgressDialog(getActivity());
         loadingResponse.show();
 
@@ -86,6 +92,7 @@ public class ExtendedProfileFragment extends Fragment implements GetJwt.Callback
         }
 
         new GetJwt(this).execute(getActivity());
+
 
         return inflater.inflate(R.layout.fragment_extended_profile, container, false);
     }
@@ -188,6 +195,8 @@ public class ExtendedProfileFragment extends Fragment implements GetJwt.Callback
         gamesCreatedTextView = view.findViewById(R.id.gamesCreatedValue);
         gamesPlayedTextView = view.findViewById(R.id.gamesPlayedValue);
         topTagValueTextView = view.findViewById(R.id.topTagAwardedValue);
+        listview = view.findViewById(R.id.list);
+
     }
     private void SetElementsBasedOnProfile(GetExtendedProfileResponse response){
         SetAge(response.age);
@@ -198,6 +207,7 @@ public class ExtendedProfileFragment extends Fragment implements GetJwt.Callback
         SetAverageRating(response.average_review);
         SetGamesCounters(response.games_created, response.games_joined);
         SetTopTag(response.top_tag, response.top_tag_count);
+        SetListView(response.recentGames);
     }
 
     private void SetAge(int age){
@@ -278,5 +288,10 @@ public class ExtendedProfileFragment extends Fragment implements GetJwt.Callback
 
     private boolean viewingSelfProfile(){
         return user_id.equals(String.valueOf(Authentication.getUserId(getActivity())));
+    }
+
+    private void SetListView(GameModel[] gamesJoined) {
+        GameListAdapter game_adapter = new GameListAdapter(getActivity(), gamesJoined);
+        listview.setAdapter(game_adapter);
     }
 }
