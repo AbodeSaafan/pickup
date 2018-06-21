@@ -35,6 +35,7 @@ var strings = require("./universal_strings");
 *		"top_tag": 4
 *		"games_created": 5
 *		"games_joined": 12
+*		"recentGames": { array of game objects (The most recent up to 10) }
 *		}
 *
 * @apiSampleRequest /api/extendedProfile
@@ -59,18 +60,28 @@ router.get("/", function (req, res) {
 					top_tag: ext_profile.top_tag,
 					top_tag_count: parseInt(ext_profile.top_tag_count),
 					games_created: parseInt(ext_profile.games_created),
-					games_joined: parseInt(ext_profile.games_joined)
+					games_joined: parseInt(ext_profile.games_joined),
+					recentGames: []
 				};
 
-				res.status(200).json(response); return;
+				databaseHelper.getRecentGamesForUser(reqUserID, (games) => {
+					if(games) {
+						requestHelper.filterGames(games, reqUserID, (filtered_games) => {
+							response.recentGames = filtered_games;
+							res.status(200).json(response); return;
+						});
+					}
+					else{
+						res.status(200).json(response); return;
+					}
+				});
 
-			}else{
+			} else {
 				res.status(400).json({"error": strings.userIdFail}); return;
 			}
 		});
 	}
-
-	catch(err){
+	catch(err) {
 		res.status(400).json(requestHelper.jsonError(err)); return;
 	}
 });

@@ -27,7 +27,8 @@ describe("Extended profile api testing", function () {
 						top_tag: null,
 						top_tag_count: null,
 						games_created: 0,
-						games_joined: 0
+						games_joined: 0,
+						recentGames: []
 					}).done(doneFn);
 			});
 	});
@@ -61,7 +62,8 @@ describe("Extended profile api testing", function () {
 								top_tag: null,
 								top_tag_count: null,
 								games_created: 0,
-								games_joined: 0
+								games_joined: 0,
+								recentGames: []
 							}).done(doneFn);
 					});
 			});
@@ -107,7 +109,8 @@ describe("Extended profile api testing", function () {
 								top_tag: null,
 								top_tag_count: null,
 								games_created: 0,
-								games_joined: 0
+								games_joined: 0,
+								recentGames: []
 							})
 							.then(function() {
 								var userExtProfileSecondUpdate = testHelper.createGenericExtendedProfileWithSkilllevel(body.token);
@@ -127,7 +130,8 @@ describe("Extended profile api testing", function () {
 												top_tag: null,
 												top_tag_count: null,
 												games_created: 0,
-												games_joined: 0
+												games_joined: 0,
+												recentGames: []
 											})
 											.then(function() {
 												var userExtProfileThirdUpdate = testHelper.createGenericExtendedProfileWithLocation(body.token);
@@ -147,7 +151,8 @@ describe("Extended profile api testing", function () {
 																top_tag: null,
 																top_tag_count: null,
 																games_created: 0,
-																games_joined: 0
+																games_joined: 0,
+																recentGames: []
 															}).done(doneFn);
 													});
 											});
@@ -214,19 +219,21 @@ describe("Extended profile api testing", function () {
 	});
 	
 	// Set the review of a user by another user
-	it("Joining a game: Creating a user to create a game", function(doneFn) {
+	it("Should return recent games properly as well as average review", function(doneFn) {
 		var userDetails = testHelper.createGenericUserFixedBirth();
 		return frisby.post(testHelper.registerEndpoint, userDetails)
 			.expect("status", 200)
 			.expect("bodyContains", "token")
 			.then(function (user) {
 				user = user.json;
-				return frisby.post(testHelper.createGameEndpoint, testHelper.createUnrestrictedGame(user.token, 100, 200))
+				var game1Details = testHelper.createUnrestrictedGame(user.token, 100, 200);
+				return frisby.post(testHelper.createGameEndpoint, game1Details)
 					.expect("status", 200)
 					.expect("bodyContains", "game_id")
 					.then(function (game) {
 						game = game.json;
-						return frisby.post(testHelper.createGameEndpoint, testHelper.createUnrestrictedGame(user.token, 500, 600))
+						var game2Details = testHelper.createUnrestrictedGame(user.token, 500, 600);
+						return frisby.post(testHelper.createGameEndpoint, game2Details)
 							.expect("status", 200)
 							.expect("bodyContains", "game_id")
 							.then(function (game1) {
@@ -275,19 +282,19 @@ describe("Extended profile api testing", function () {
 																					.then(function () {
 																						return frisby.get(testHelper.extendedProfileEndpoint + "?jwt=" + user.token + "&userID=" + user.user_id)
 																							.expect("status", 200)
-																							.expect("jsonStrict", {
-																								user_id: user.user_id,
-																								username: userDetails.username,
-																								age: testHelper.calculateAge(userDetails.dob),
-																								gender: userDetails.gender,
-																								skilllevel: userExtProfileDetails.skill_level,
-																								location: "(" + userExtProfileDetails.location.lat + "," + userExtProfileDetails.location.lng + ")",
-																								average_review: 3,
-																								top_tag: 1,
-																								top_tag_count: 1,
-																								games_created: 2,
-																								games_joined: 2
-																							}).done(doneFn);
+																							.expect("bodyContains", "user_id", user.user_id)
+																							.expect("bodyContains", "username", userDetails.username)
+																							.expect("bodyContains", "age", testHelper.calculateAge(userDetails.dob))
+																							.expect("bodyContains", "gender", userDetails.gender)
+																							.expect("bodyContains", "skilllevel", userExtProfileDetails.skill_level)
+																							.expect("bodyContains", "location", "(" + userExtProfileDetails.location.lat + "," + userExtProfileDetails.location.lng + ")")
+																							.expect("bodyContains", "average_review", 3)
+																							.expect("bodyContains", "top_tag", 1)
+																							.expect("bodyContains", "top_tag_count", 1)
+																							.expect("bodyContains", "games_created", 2)
+																							.expect("bodyContains", "games_joined", 2)
+																							.expect("jsonStrict", "recentGames.?.name", game1Details.name)
+																							.expect("jsonStrict", "recentGames.?.name", game2Details.name).done(doneFn);
 																					});
 																			});
 																	});
@@ -309,13 +316,14 @@ describe("Extended profile api testing", function () {
 			.expect("bodyContains", "user_id")
 			.then(function (body) {
 				body = body.json;
-				return frisby.post(testHelper.createGameEndpoint, testHelper.createUnrestrictedGame(body.token, 1, 1))
+				var gameDetails = testHelper.createUnrestrictedGame(body.token, 1, 1);
+				return frisby.post(testHelper.createGameEndpoint, gameDetails)
 					.expect("status", 200)
 					.expect("bodyContains", "game_id")
 					.then(function () {
 						return frisby.get(testHelper.extendedProfileEndpoint + "?jwt=" + body.token + "&userID=" + body.user_id)
 							.expect("status", 200)
-							.expect("jsonStrict", {
+							.expect("json", {
 								user_id: body.user_id,
 								username: userDetails.username,
 								age: testHelper.calculateAge(userDetails.dob),
@@ -361,7 +369,8 @@ describe("Extended profile api testing", function () {
 										top_tag: null,
 										top_tag_count: null,
 										games_created: 1,
-										games_joined: 0
+										games_joined: 0,
+										recentGames: []
 									}).done(doneFn);
 							});
 					});
@@ -382,7 +391,8 @@ describe("Extended profile api testing", function () {
 					lname: "",
 					gender:"F",
 					dob:"04/30/1996",
-					email:""
+					email:"",
+					recentGames: []
 				})
 					.expect("status", 200)
 					.then(function () {
@@ -399,7 +409,8 @@ describe("Extended profile api testing", function () {
 								top_tag: null,
 								top_tag_count: null,
 								games_created: 0,
-								games_joined: 0
+								games_joined: 0,
+								recentGames: []
 							}).done(doneFn);
 					});
 			});

@@ -197,6 +197,25 @@ function getExtendedProfile(userID, callback) {
 	});
 }
 
+function getRecentGamesForUser(userID, callback) {
+	var queryString = "SELECT * FROM GAMES WHERE game_id IN (SELECT game_id FROM gamers WHERE user_id = $1 ORDER BY time_joined DESC) LIMIT 10";
+	var queryParams = [userID];
+
+	const pool = new pg.Pool({ connectionString: conString });
+
+	pool.connect((err, client, done) => {
+		client.query(queryString, queryParams, (err, res) => {
+			if (!err && res.rows) {
+				callback(res.rows);
+			} else {
+				callback(false);
+			}
+			done();
+			pool.end();
+		});
+	});
+}
+
 function checkPasswordWithRefresh(emailIn, passIn, callback) {
 	var queryString = "SELECT user_id, salt, password FROM users WHERE email = $1;";
 	var queryParams = [emailIn];
@@ -867,7 +886,8 @@ module.exports = {
 	addTag,
 	deleteTag,
 	updatePassword,
-	getUsernameById
+	getUsernameById,
+	getRecentGamesForUser
 };
 
 //////////////// Helpers ////////////////
