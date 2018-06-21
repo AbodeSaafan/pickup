@@ -370,7 +370,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                                     @Override
                                     public void onClick(View v) {
                                         //popup toast
-                                        Toast.makeText(MainActivity.this, "Cannot join game", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(MainActivity.this, "Cannot view game due to restrictions", Toast.LENGTH_SHORT).show();
                                         dismissSnackbar();
                                     }
                                 });
@@ -680,7 +680,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     public void jwtSuccess(String jwt) {
         plotSearchGames(jwt);
-
     }
 
     @Override
@@ -750,90 +749,4 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                         });
         exitDialog.create().show();
     }
-
-    /*
-    private void createCustomGames() {
-        // create the hard coded game Objects:
-        HashMap<String, Double> location_1 = new HashMap<String, Double>();
-        location_1.put("lat", 43.624366);
-        location_1.put("lng", -79.670428);
-        HashMap <String, Double> location_2 = new HashMap<String, Double>();
-        location_2.put("lat", 43.618327);
-        location_2.put("lng", -79.680148);
-        //Toronto Location
-        HashMap <String, Double> location_3 = new HashMap<String, Double>();
-        location_3.put("lat", 43.655163);
-        location_3.put("lng", -79.388488);
-        //Brampton Location
-        HashMap <String, Double> location_4 = new HashMap<String, Double>();
-        location_4.put("lat", 43.651489);
-        location_4.put("lng", -79.736289);
-
-        int[] game_id = new int[] {1, 2, 3, 4};
-        String[] name = new String[]{"radhika's game", "radhika's game pt II", "radhika's game pt III", "radhika's game pt IV"};
-        String[] type = new String[]{"casual", "serious", "casual", "serious"};
-        int[] skill_min = new int[] {5, 3, 2, 4};
-        int[] skill_max = new int[] {7, 10, 8, 9};
-        int[] total_players_required = new int[] {15, 10, 20, 12};
-        int[] total_players_added = new int[] {12, 5, 11, 5};
-        //Game 1 -> June 15 (12:00 PM to 1:00 PM)
-        //Game 2 -> June 15 - June 16 (11:00 PM to 1:00 AM)
-        //Game 3 -> June 17 - June 18 (10:30 PM to 3:00 AM)
-        //Game 4 -> June 16 (9:00 AM to 1:45 PM)
-        long[] start_time = new long[] {1529078400, 1529118000, 1529289000, 1529154000};
-        long[] end_time = new long[] {1529082000, 1529125200, 1529305200, 1529171100};
-        List<HashMap<String, Double>> locations = new ArrayList<HashMap<String, Double>>();
-        locations.add(location_1);
-        locations.add(location_2);
-        locations.add(location_3);
-        locations.add(location_4);
-        int[] creator_id = new int[] {1, 2, 3, 4};
-        String[] descriptions = new String[] {"Casual basketball game", "Serious basketball game pt II", "Casual basketball game pt III", "Serious basketball game pt III"};
-        String[] location_notes = new String[] {"Come around the back and knock on the blue door", "Come around the back and knock on the red door", "Come around the back and knock on the yellow door", "Come around the back and knock on the purple door"};
-        String[] gender = new String[] {"A", "F", "M", "A"};
-        List<int[]> age_range = new ArrayList<int[]>();
-        age_range.add(new int[]{20, 30});
-        age_range.add(new int[]{18, 35});
-        age_range.add(new int[]{15, 20});
-        age_range.add(new int[]{30, 45});
-        int[] time_created = new int[] {1504272395, 1504272395, 1504272395, 1504272395};
-        List<ENFORCED_PARAMS[]> enforced_params = new ArrayList<ENFORCED_PARAMS[]>();
-        enforced_params.add(new ENFORCED_PARAMS[] {ENFORCED_PARAMS.age});
-        enforced_params.add(new ENFORCED_PARAMS[] {ENFORCED_PARAMS.age, ENFORCED_PARAMS.gender});
-        enforced_params.add(new ENFORCED_PARAMS[] {ENFORCED_PARAMS.age, ENFORCED_PARAMS.gender});
-        enforced_params.add(new ENFORCED_PARAMS[] {ENFORCED_PARAMS.age});
-        boolean[] player_restricted = new boolean[]{true, false, true, false};
-
-        List<GameModel> gamesLst = new ArrayList<GameModel>();
-        for (int i = 0; i <= 3; i++) {
-            GameModel game = new GameModel(game_id[i],
-                    name[i],
-                    type[i],
-                    -1,
-                    total_players_required[i],
-                    total_players_added[i],
-                    start_time[i],
-                    end_time[i],
-                    end_time[i] - start_time[i],
-                    locations.get(i),creator_id[i],
-                    descriptions[i],
-                    location_notes[i],
-                    gender[i],
-                    age_range.get(i),
-                    enforced_params.get(i),
-                    time_created[i],
-                    player_restricted[i],
-                    "-1",
-                    "-1", 0, 0);
-
-            gamesLst.add(game);
-        }
-
-        games = new GameModel[gamesLst.size()];
-        games = gamesLst.toArray(games);
-    };
-
-*/
-
-
 }
