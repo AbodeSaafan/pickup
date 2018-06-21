@@ -34,7 +34,8 @@ describe("Review api testing", function () {
 											.expect("jsonStrict", "0",{
 												user_id: parseInt(newUser.user_id),
 												username: joiningUser.username,
-												reviewed: false
+												reviewed: false,
+												fname: joiningUser.fname
 											})
 											.expect("status", 200)
 											.then(function(){
