@@ -318,8 +318,8 @@ function updateExtendedUser(userId, skill_level, location, callback) {
 }
 
 function getUsers(gameId, userid, callback) {
-	var queryString = "SELECT user_id FROM gamers WHERE game_id = $1 AND user_id != $2;";
-	var queryParams = [gameId, userid];
+	var queryString = "SELECT user_id FROM gamers WHERE game_id = $1";
+	var queryParams = [gameId];
 	const pool = new pg.Pool({ connectionString: conString });
 
 	pool.connect((err, client, done) => {
