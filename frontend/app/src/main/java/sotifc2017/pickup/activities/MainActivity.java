@@ -50,6 +50,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MapStyleOptions;
@@ -286,7 +287,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         for (GameModel game : all_games) {
             LatLng point = new LatLng(game.location.get("lat"), game.location.get("lng"));
-            Marker marker = mMap.addMarker(new MarkerOptions().position(point));
+            Marker marker = mMap.addMarker(new MarkerOptions().position(point).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)));
             pin_of_game.put(marker.getId(), game);
             builder.include(point);
         }
