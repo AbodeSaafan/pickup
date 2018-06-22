@@ -17,6 +17,7 @@ import java.util.Locale;
 
 import sotifc2017.pickup.R;
 import sotifc2017.pickup.activities.HostingActivity;
+import sotifc2017.pickup.activities.MainActivity;
 import sotifc2017.pickup.api.Utils;
 import sotifc2017.pickup.api.models.GameModel;
 import sotifc2017.pickup.fragments.GameViewFragment;
@@ -111,15 +112,20 @@ public class GameListAdapter extends BaseAdapter {
         itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //popup toast
-                Bundle bundle = new Bundle();
-                String gameJson = Utils.gson.toJson(gamesList[position]);
-                bundle.putString("gameJson", gameJson);
+                if(gamesList[position].player_restricted){
+                    Toast.makeText(mContext, "Cannot view game due to restrictions", Toast.LENGTH_SHORT).show();
+                }
+                else{
+                    //popup toast
+                    Bundle bundle = new Bundle();
+                    String gameJson = Utils.gson.toJson(gamesList[position]);
+                    bundle.putString("gameJson", gameJson);
 
-                GameViewFragment gameViewFragment = new GameViewFragment();
-                gameViewFragment.setArguments(bundle);
+                    GameViewFragment gameViewFragment = new GameViewFragment();
+                    gameViewFragment.setArguments(bundle);
 
-                ((HostingActivity) mContext).replaceFragment(gameViewFragment, true, -1);
+                    ((HostingActivity) mContext).replaceFragment(gameViewFragment, true, -1);
+                }
             }
         });
 
