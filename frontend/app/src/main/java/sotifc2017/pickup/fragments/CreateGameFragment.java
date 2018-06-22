@@ -48,14 +48,18 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 
+import sotifc2017.pickup.CommonComponents;
 import sotifc2017.pickup.R;
+import sotifc2017.pickup.activities.HostingActivity;
 import sotifc2017.pickup.activities.SignInActivity;
 import sotifc2017.pickup.api.Authentication;
 import sotifc2017.pickup.api.Games;
 import sotifc2017.pickup.api.GetJwt;
+import sotifc2017.pickup.api.Search;
 import sotifc2017.pickup.api.Utils;
 import sotifc2017.pickup.api.contracts.CreateGameRequest;
 import sotifc2017.pickup.api.contracts.CreateGameResponse;
+import sotifc2017.pickup.api.contracts.GetSearchRequest;
 import sotifc2017.pickup.api.enums.ENFORCED_PARAMS;
 import sotifc2017.pickup.api.enums.GAME_TYPE;
 import sotifc2017.pickup.api.models.GameModel;
@@ -558,7 +562,7 @@ public class CreateGameFragment extends Fragment implements GetJwt.Callback {
                 gameModel.getAgeRange(),
                 gameModel.getEnforcedParams(),
                 jwtToken);
-
+        CommonComponents.getLoadingProgressDialog((activity)).show();
         JsonObjectRequest request = Games.createGameRequest(req, successful_create_game_profile, error_create_game_profile);
 
         if (request != null) {
@@ -624,8 +628,9 @@ public class CreateGameFragment extends Fragment implements GetJwt.Callback {
     private Response.ErrorListener error_create_game_profile =  new Response.ErrorListener() {
         @Override
         public void onErrorResponse(VolleyError error) {
+            CommonComponents.getLoadingProgressDialog((getActivity())).hide();
             try {
-                String message = getErrorMessage(error);
+                String message = new JSONObject(new String(error.networkResponse.data, "UTF-8")).toString();
                 CreateGameFailure(message);
             }
             catch (Exception e){
@@ -648,12 +653,50 @@ public class CreateGameFragment extends Fragment implements GetJwt.Callback {
         return message;
     }
 
-    private void CreateGameSuccess(CreateGameResponse response) throws IOException {
-        Toast.makeText(getActivity(), "CreateGameResponse successsful. GameId: " + response.game_id, Toast.LENGTH_SHORT).show();
+    private void CreateGameSuccess(CreateGameResponse response) {
+        Toast.makeText(getActivity(), "CreateGameResponse successful. GameId: " + response.game_id, Toast.LENGTH_SHORT).show();
 
+        JsonObjectRequest request = Search.getSearch_request(GetSearchRequest.CreateGameRequest(jwtToken, response.game_id), successful_get_game, error_get_game);
+
+        Utils.getInstance(getActivity()).getRequestQueue(getActivity()).add(request);
     }
 
     private void CreateGameFailure(String message) {
         Toast.makeText(getActivity(), "CreateGameResponse failed: " + message, Toast.LENGTH_SHORT).show();
     }
+
+    private Response.Listener<JSONObject> successful_get_game = new Response.Listener<JSONObject>() {
+        @Override
+        public void onResponse(JSONObject response) {
+            try {
+                Bundle bundle = new Bundle();
+                GameModel[] games = Utils.gson.fromJson(response.get("games").toString(), GameModel[].class);
+                String gameJson = Utils.gson.toJson(games[0]);
+                bundle.putString("gameJson", gameJson);
+
+                GameViewFragment gameViewFragment = new GameViewFragment();
+                gameViewFragment.setArguments(bundle);
+                CommonComponents.getLoadingProgressDialog((getActivity())).hide();
+                ((HostingActivity) getActivity()).replaceFragment(gameViewFragment, true, -1);
+            }
+            catch (Exception e){
+                CreateGameFailure(e.getMessage());
+            }
+
+        }
+    };
+
+    private Response.ErrorListener error_get_game =  new Response.ErrorListener() {
+        @Override
+        public void onErrorResponse(VolleyError error) {
+            CommonComponents.getLoadingProgressDialog((getActivity())).hide();
+            try {
+                String message = getErrorMessage(error);
+                CreateGameFailure(message);
+            }
+            catch (Exception e){
+                CreateGameFailure(e.getMessage());
+            }
+        }
+    };
 }

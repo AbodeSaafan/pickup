@@ -10,9 +10,14 @@ import android.view.Window;
  */
 
 public class CommonComponents {
+    private static ProgressDialog singleDialog;
+
     private CommonComponents(){}
 
     public static ProgressDialog getLoadingProgressDialog(Context ctx){
+        if(singleDialog != null){
+            return singleDialog;
+        }
         ProgressDialog progressDialog = new ProgressDialog(ctx,
                 R.style.AppTheme_Dark);
 
@@ -22,7 +27,7 @@ public class CommonComponents {
         Window window = progressDialog.getWindow();
         window.setLayout(ActionBar.LayoutParams.WRAP_CONTENT, ActionBar.LayoutParams.WRAP_CONTENT);
         progressDialog.setCancelable(false);
-
+        singleDialog = progressDialog;
         return progressDialog;
     }
 }
