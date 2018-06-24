@@ -21,7 +21,6 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -38,7 +37,6 @@ import com.mcsoft.timerangepickerdialog.RangeTimePickerDialog;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -91,46 +89,23 @@ public class CreateGameFragment extends Fragment implements GetJwt.Callback {
     private RangeBar totalPlayerSeekBar;
     private TextView totalPlayerText;
 
-    private Calendar fromCalendar;
-    private Calendar toCalendar;
+    private Calendar gameCalendar;
+
     private final String dateFormat = "MM/dd/yyyy";
     private final String timeFormat = "HH:mm:ss";
     Date startDefaultDate = new Date(System.currentTimeMillis());
-    Date endDefaultDate = new Date(System.currentTimeMillis() + 604800000);
+    Date endDefaultDate = new Date(System.currentTimeMillis() + 360000);
     private EditText dateRangeText;
-    private DatePickerDialog.OnDateSetListener dateListenerFrom = new DatePickerDialog.OnDateSetListener() {
+    private DatePickerDialog.OnDateSetListener gameDateListener = new DatePickerDialog.OnDateSetListener() {
 
         @Override
         public void onDateSet(DatePicker view, int year, int monthOfYear,
                               int dayOfMonth) {
-            fromCalendar.set(Calendar.YEAR, year);
-            fromCalendar.set(Calendar.MONTH, monthOfYear);
-            fromCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+            gameCalendar.set(Calendar.YEAR, year);
+            gameCalendar.set(Calendar.MONTH, monthOfYear);
+            gameCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
 
-            long minDate = System.currentTimeMillis() > fromCalendar.getTimeInMillis() ? System.currentTimeMillis() : fromCalendar.getTimeInMillis();
-
-            DatePickerDialog dateToDatePicker = new DatePickerDialog(getActivity(), dateListenerTo, toCalendar
-                    .get(Calendar.YEAR), toCalendar.get(Calendar.MONTH),
-                    toCalendar.get(Calendar.DAY_OF_MONTH));
-
-            dateToDatePicker.getDatePicker().setMinDate(minDate);
-            dateToDatePicker.setMessage(getString(R.string.game_search_date_range_end_message));
-
-            dateToDatePicker.show();
-        }
-
-    };
-    private DatePickerDialog.OnDateSetListener dateListenerTo = new DatePickerDialog.OnDateSetListener() {
-
-        @Override
-        public void onDateSet(DatePicker view, int year, int monthOfYear,
-                              int dayOfMonth) {
-
-            toCalendar.set(Calendar.YEAR, year);
-            toCalendar.set(Calendar.MONTH, monthOfYear);
-            toCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-
-            updateDateRangeLabel(fromCalendar.getTime(), toCalendar.getTime());
+            updateDateRangeLabel(gameCalendar.getTime());
         }
 
     };
@@ -273,10 +248,9 @@ public class CreateGameFragment extends Fragment implements GetJwt.Callback {
             }
         });
 
-        dateRangeText = view.findViewById(R.id.create_game_date_range_from);
+        dateRangeText = view.findViewById(R.id.create_game_date);
         dateRangeText.setInputType(InputType.TYPE_NULL);
-        fromCalendar = Calendar.getInstance();
-        toCalendar = Calendar.getInstance();
+        gameCalendar = Calendar.getInstance();
         View.OnClickListener onDateClick = new View.OnClickListener() {
             //  Could/should  possibly change this to one date picker, that triggers another, that way
             // we have one field for the range of dates
@@ -284,9 +258,9 @@ public class CreateGameFragment extends Fragment implements GetJwt.Callback {
             public void onClick(View v) {
                 long minDate  = System.currentTimeMillis();
 
-                DatePickerDialog dateFromDatePicker = new DatePickerDialog(getActivity(), dateListenerFrom, fromCalendar
-                        .get(Calendar.YEAR), fromCalendar.get(Calendar.MONTH),
-                        fromCalendar.get(Calendar.DAY_OF_MONTH));
+                DatePickerDialog dateFromDatePicker = new DatePickerDialog(getActivity(), gameDateListener, gameCalendar
+                        .get(Calendar.YEAR), gameCalendar.get(Calendar.MONTH),
+                        gameCalendar.get(Calendar.DAY_OF_MONTH));
 
                 dateFromDatePicker.getDatePicker().setMinDate(minDate);
 
@@ -296,8 +270,8 @@ public class CreateGameFragment extends Fragment implements GetJwt.Callback {
         };
 
         dateRangeText.setOnClickListener(onDateClick);
-        // Set default date for search (1 week = 1000ms*60s*60min*24hr*7days = 604800000)
-        updateDateRangeLabel(startDefaultDate, endDefaultDate);
+
+        updateDateRangeLabel(startDefaultDate);
 
         timeSelector = view.findViewById(R.id.edit_text_time_selector);
         timeSelector.setOnClickListener(new View.OnClickListener()
@@ -341,9 +315,9 @@ public class CreateGameFragment extends Fragment implements GetJwt.Callback {
         super.onViewCreated(view, savedInstanceState);
     }
 
-    private void updateDateRangeLabel(Date startDate, Date endDate) {
+    private void updateDateRangeLabel(Date startDate) {
         SimpleDateFormat sdf = new SimpleDateFormat(dateFormat, Locale.US);
-        dateRangeText.setText(String.format(getString(R.string.game_search_date_range_display_text_label),sdf.format(startDate),sdf.format(endDate)));
+        dateRangeText.setText(sdf.format(startDate));
     }
 
     @Override
@@ -466,12 +440,11 @@ public class CreateGameFragment extends Fragment implements GetJwt.Callback {
         String[] dates = dateRangeText.getText().toString().split(" - ");
         String startDate = dates[0];
         String partialStartTime = gameModel.getPartialStartTime();
-        String endDate = dates[1];
         String partialEndTime = gameModel.getPartialEndTime();
         try {
             long startTime = createFinalTime(startDate, partialStartTime);
             gameModel.setStartTime(startTime);
-            long endTime = createFinalTime(endDate, partialEndTime);
+            long endTime = createFinalTime(startDate, partialEndTime);
             gameModel.setEndTime(endTime);
 
             gameModel.setDuration(endTime - startTime);
@@ -480,10 +453,12 @@ public class CreateGameFragment extends Fragment implements GetJwt.Callback {
         }
 
         gameModel.setLocationNotes(gameLocationNotes.getText().toString());
+        ArrayList<ENFORCED_PARAMS> list = new ArrayList<>();
+        if(checkboxRestrictGender.isChecked()) list.add(ENFORCED_PARAMS.gender );
+        if(checkboxRestrictAge.isChecked()) list.add(ENFORCED_PARAMS.age );
 
-        gameModel.setEnforcedParams(new ENFORCED_PARAMS[] {
-                checkboxRestrictGender.isChecked() ? ENFORCED_PARAMS.gender : null,
-                checkboxRestrictAge.isChecked() ? ENFORCED_PARAMS.age : null});
+
+        gameModel.setEnforcedParams(list.size() == 0 ? new ENFORCED_PARAMS[]{} : (ENFORCED_PARAMS[]) list.toArray());
     }
 
     private long createFinalTime(String startDate, String startTime) throws ParseException {
