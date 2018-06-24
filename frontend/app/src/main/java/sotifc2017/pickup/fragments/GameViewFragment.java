@@ -23,6 +23,7 @@ import com.android.volley.VolleyError;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Locale;
 
@@ -40,6 +41,9 @@ import sotifc2017.pickup.api.models.GameModel;
 import sotifc2017.pickup.api.models.UserModel;
 import sotifc2017.pickup.fragment_interfaces.OnFragmentReplacement;
 import sotifc2017.pickup.helpers.GameListItemHelper;
+
+import static sotifc2017.pickup.api.enums.ENFORCED_PARAMS.age;
+import static sotifc2017.pickup.api.enums.ENFORCED_PARAMS.gender;
 
 /**
  * Created by parezina on 4/4/2018.
@@ -120,23 +124,21 @@ public class GameViewFragment extends Fragment implements GetJwt.Callback {
         helper = new GameListItemHelper();
 
         if(gameList.type == GAME_TYPE.both){
-            createGameTag("Both");
+            createGameTag("Casual/Serious");
             createGameTag("Skill: " + gameList.min_skill + " to " + gameList.max_skill);
         }
         else if (gameList.type == GAME_TYPE.casual){
             createGameTag("Casual");
         }
-        else if (gameList.type == GAME_TYPE.serious){
+        else if (gameList.type == GAME_TYPE.serious) {
             createGameTag("Serious");
             createGameTag("Skill: " + gameList.min_skill + " to " + gameList.max_skill);
         }
-
-
-        if(!gameList.gender.isEmpty())
+        if(!gameList.gender.isEmpty() && Arrays.asList(gameList.enforced_params).contains(gender))
         {
             createGameTag(helper.getGender(gameList.gender));
         }
-        if(!(gameList.age_range == null || gameList.age_range.length == 0)) {
+        if(!(gameList.age_range == null || gameList.age_range.length == 0)&& Arrays.asList(gameList.enforced_params).contains(age)) {
             createGameTag(gameList.age_range[0] + "-" + gameList.age_range[1] + " years old");
         }
 
