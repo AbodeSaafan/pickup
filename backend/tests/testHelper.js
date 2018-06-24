@@ -58,10 +58,6 @@ function randomGameType(){
 	return randomInt(0, 1) ? "casual" : "serious";
 }
 
-function randomGender(){
-	return randomInt(0, 1) ? "m" : "f";
-}
-
 function randomHours(){
 	return randomInt(2*60*60, 10*60*60).toFixed(0);
 }
@@ -215,8 +211,6 @@ function createGenericGame(jwt, start, duration){
 		location: randomLocation(),
 		location_notes: "Come around the back and knock on the blue door",
 		description: "Casual basketball game",
-		gender: "f",
-		age_range: [20, 30],
 		enforced_params: ["gender", "age"],
 		jwt: jwt
 	};
@@ -225,7 +219,6 @@ function createGenericGame(jwt, start, duration){
 function createUnrestrictedGame(jwt, start, duration){
 	var game = createGenericGame(jwt, start, duration);
 	game.enforced_params = null;
-	game.age_range = null;
 	return game;
 }
 
@@ -240,7 +233,6 @@ function createMockGtaGame(jwt){
 		location: randomGtaLocation(),
 		location_notes: "Come around the back and knock on the blue door",
 		description: "Casual basketball game",
-		gender: randomGender(),
 		enforced_params: randomInt(1, 5) == 5 ? ["gender"] : [],
 		jwt: jwt
 	};

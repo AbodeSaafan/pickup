@@ -22,8 +22,6 @@ var strings = require("./universal_strings");
 * @apiParam {point} location The location of the game represented in location point object (lat/lng)
 * @apiParam {string} location_notes how to get into the court
 * @apiParam {string} description Short description for the game (less than 250 characters)
-* @apiParam {string} gender The preferred for the game (if any)
-* @apiParam {int[]} age_range The preferred age range for the game (if any)
 * @apiParam {string[]]} enforced_params List of parmeters that the creator wants to enforce
 *
 *
@@ -43,8 +41,6 @@ var strings = require("./universal_strings");
 *       "location": { "lng": -96.849, "lat": -144.336 },
 *       "location_notes": "Come around the back and knock on the blue door",
 *       "description": "Casual basketball game",
-*       "gender": "A",
-*       "age_range": "[20, 30]",
 *       "enforced_params": ["gender", "age"]
 *     }
 *
@@ -65,18 +61,23 @@ router.post("/", function(req, res){
 			if(!valid){
 				res.status(400).json({"error": strings.invalidGameScheduleConflict});
 			} else {
-				databaseHelper.getUserSkilllevel(tok.user_id, (userSkill) => {
+				databaseHelper.getUserSkillGenderAge(tok.user_id, (userSkillAgeGender) => {
 					var minSkill = 0;
 					var maxSkill = 10;
+					var userSkill = userSkillAgeGender.skilllevel;
+					var gender = userSkillAgeGender.gender;
+					var age_range = [
+						userSkillAgeGender.age - 2 < 18 ? 18 : userSkillAgeGender.age - 2,
+						userSkillAgeGender.age + 2
+					];
 					if(game.type.toLowerCase() == "serious"){
 						minSkill = ((userSkill - game.skill_offset) < 0) ? 0 : userSkill-game.skill_offset;
 						maxSkill = ((userSkill + game.skill_offset) > 10) ? 10 : userSkill+game.skill_offset;
 					}
-
 					databaseHelper.createGame(tok.user_id, game.name, game.type, minSkill, maxSkill,
 						game.total_players_required, game.start_time,
 						game.duration, game.location, game.location_notes,
-						game.description, game.gender, game.age_range, game.enforced_params,
+						game.description, gender, age_range, game.enforced_params,
 						(game_id) => {
 							if(game_id){
 								databaseHelper.addGamer(tok.user_id, game_id, (joinSuccess) => {

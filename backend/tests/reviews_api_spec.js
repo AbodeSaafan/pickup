@@ -31,7 +31,7 @@ describe("Review api testing", function () {
 									.expect("bodyContains", "game_id")
 									.then(function () {
 										return frisby.get(testHelper.getUsersOfGameEndpoint+"?jwt="+ user.token +"&game_id="+gameRealId)
-											.expect("jsonStrict", "0",{
+											.expect("jsonStrict", "?",{
 												user_id: parseInt(newUser.user_id),
 												username: joiningUser.username,
 												reviewed: false,

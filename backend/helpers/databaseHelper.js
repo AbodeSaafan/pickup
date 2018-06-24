@@ -436,7 +436,6 @@ function deleteTag(reviewId, callback) {
 
 
 function createGame(userId, name, type, min_skill, max_skill, totalPlayers, startTime, duration, location, locationNotes, description, gender, ageRange, enforcedParams, callback) {
-
 	var queryString = "INSERT INTO games(creator_id, name, type, min_skill, max_skill, total_players_required, start_time, end_time, location, location_notes, description, gender, age_range, enforced_params)"
 		+ "VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14) RETURNING game_id;";
 	var dblocation = "(" + location.lat + "," + location.lng + ")";
@@ -680,15 +679,19 @@ function checkIfFriendRequestExists(sender, invited_person, callback) {
 	});
 }
 
-function getUserSkilllevel(user_id, callback) {
-	var queryString = "SELECT skilllevel FROM extended_profile WHERE user_id = $1";
+function getUserSkillGenderAge(user_id, callback) {
+	var queryString = "SELECT skilllevel, dob, gender FROM extended_profile JOIN users ON users.user_id = extended_profile.user_id WHERE users.user_id = $1;";	
 	var queryParams = [user_id];
 
 	const pool = new pg.Pool({ connectionString: conString });
 	pool.connect((err, client, done) => {
 		client.query(queryString, queryParams, (err, res) => {
-			if (!err && res.rows[0]) {
-				callback(res.rows[0].skilllevel);
+			if (!err && res.rows[0] && res.rows[0].dob && res.rows[0].gender && res.rows[0].skilllevel >= 0) {
+				callback({
+					"age": calculateAge(res.rows[0].dob),
+					"skilllevel": res.rows[0].skilllevel,
+					"gender": res.rows[0].gender
+				});
 			} else {
 				callback(false);
 			}
@@ -875,7 +878,7 @@ module.exports = {
 	checkFriendEntryValidationForBlock,
 	blockFriendUpdateEntry,
 	blockFriendNewEntry,
-	getUserSkilllevel,
+	getUserSkillGenderAge,
 	listAllFriends,
 	listAllBlockedUsers,
 	searchObjects,
