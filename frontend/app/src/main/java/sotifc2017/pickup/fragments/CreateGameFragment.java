@@ -141,10 +141,8 @@ public class CreateGameFragment extends Fragment implements GetJwt.Callback {
     private EditText gameLocationNotes;
 
     private CheckBox checkboxRestrictAge;
-    private RadioGroup ageRadioGroup;
 
     private CheckBox checkboxRestrictGender;
-    private RadioGroup genderRadioGroup;
 
     public CreateGameFragment() {
     }
@@ -325,6 +323,9 @@ public class CreateGameFragment extends Fragment implements GetJwt.Callback {
             }
         });
 
+        checkboxRestrictAge =  view.findViewById(R.id.checkbox_restrict_age);
+        checkboxRestrictGender = view.findViewById(R.id.checkbox_restrict_gender);
+
         Button createGameSubmitButton = view.findViewById(R.id.button_create_game_submit);
         createGameSubmitButton.setOnClickListener(new View.OnClickListener()
         {
@@ -337,52 +338,7 @@ public class CreateGameFragment extends Fragment implements GetJwt.Callback {
 
         gameLocationNotes = view.findViewById(R.id.complete_text_location_notes);
 
-        ageRadioGroup = view.findViewById(R.id.age_radio_group);
-        disableRadioButtonsFor(ageRadioGroup);
-        checkboxRestrictAge = view.findViewById(R.id.checkbox_restrict_age);
-        checkboxRestrictAge.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton checkBox, boolean checked) {
-                updateRadioButtonsStateFor(ageRadioGroup, checked);
-
-                if (!checked) {
-                    removeEnforcedParams(ENFORCED_PARAMS.age);
-                }
-            }
-        });
-
-        genderRadioGroup = view.findViewById(R.id.gender_radio_group);
-        disableRadioButtonsFor(genderRadioGroup);
-        checkboxRestrictGender = view.findViewById(R.id.checkbox_restrict_gender);
-        checkboxRestrictGender.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton checkBox, boolean checked) {
-                updateRadioButtonsStateFor(genderRadioGroup, checked);
-
-                if (!checked) {
-                    removeEnforcedParams(ENFORCED_PARAMS.gender);
-                    gameModel.setGender("a");
-                }
-            }
-        });
-
         super.onViewCreated(view, savedInstanceState);
-    }
-
-    private void disableRadioButtonsFor(RadioGroup radioGroup) {
-        for(int i = 0; i < radioGroup.getChildCount(); i++){
-            radioGroup.getChildAt(i).setEnabled(false);
-        }
-    }
-
-    private void updateRadioButtonsStateFor(RadioGroup radioGroup, boolean enabled) {
-        for(int i = 0; i < radioGroup.getChildCount(); i++){
-            RadioButton radioButton = ((RadioButton) radioGroup.getChildAt(i));
-            radioButton.setEnabled(enabled);
-            if (!enabled) {
-                radioButton.setChecked(false);
-            }
-        }
     }
 
     private void updateDateRangeLabel(Date startDate, Date endDate) {
@@ -397,6 +353,7 @@ public class CreateGameFragment extends Fragment implements GetJwt.Callback {
         super.onResume();
     }
 
+    //TODO don't do this, avoid it by calling get jwt when a user hits create game
     @Override
     public void jwtSuccess(String jwt) {
         jwtToken = jwt;
@@ -467,85 +424,9 @@ public class CreateGameFragment extends Fragment implements GetJwt.Callback {
         }});
     }
 
-    public void onAgeRadioButtonClicked(View view) {
-        boolean checked = ((RadioButton) view).isChecked();
-
-        if (checked) {
-            addEnforcedParam(ENFORCED_PARAMS.age);
-            switch(view.getId()) {
-                case R.id.radio_18_range:
-                    gameModel.setAgeRange(new int[] {18, 25});
-                    break;
-                case R.id.radio_25_range:
-                    gameModel.setAgeRange(new int[] {25, 35});
-                    break;
-                case R.id.radio_35_range:
-                    gameModel.setAgeRange(new int[] {35, 45});
-                    break;
-                case R.id.radio_45_range:
-                    gameModel.setAgeRange(new int[] {45, 123});
-                    break;
-            }
-        }
-    }
-
-    public void onGenderRadioButtonClicked(View view) {
-        boolean checked = ((RadioButton) view).isChecked();
-
-        if (checked) {
-            addEnforcedParam(ENFORCED_PARAMS.gender);
-            switch(view.getId()) {
-                case R.id.radio_male_gender:
-                    gameModel.setGender("m");
-                    break;
-                case R.id.radio_female_gender:
-                    gameModel.setGender("f");
-                    break;
-            }
-        }
-    }
-
-    private void addEnforcedParam(ENFORCED_PARAMS paramToEnforce) {
-        boolean alreadyEnforced = false;
-        ENFORCED_PARAMS[] prevEnforcedParams = gameModel.getEnforcedParams();
-        for (ENFORCED_PARAMS param : prevEnforcedParams) {
-            if (param.equals(paramToEnforce)) {
-                alreadyEnforced = true;
-            }
-        }
-
-        if (alreadyEnforced) {
-            gameModel.setEnforcedParams(prevEnforcedParams);
-        } else {
-            gameModel.setEnforcedParams(combine(prevEnforcedParams, new ENFORCED_PARAMS[] {paramToEnforce}));
-        }
-    }
-
-    private void removeEnforcedParams(ENFORCED_PARAMS paramToRemove) {
-        ENFORCED_PARAMS[] prevEnforcedParams = gameModel.getEnforcedParams();
-        ArrayList<ENFORCED_PARAMS> newEnforcedParams = new ArrayList<>();
-        for (ENFORCED_PARAMS param : prevEnforcedParams) {
-            if (!param.equals(paramToRemove)) {
-                newEnforcedParams.add(param);
-            }
-        }
-        ENFORCED_PARAMS[] newEnforcedParamsArray = new ENFORCED_PARAMS[] {};
-
-        gameModel.setEnforcedParams(newEnforcedParams.toArray(newEnforcedParamsArray));
-    }
-
-    // https://javarevisited.blogspot.ca/2013/02/combine-integer-and-string-array-java-example-tutorial.html
-    public static ENFORCED_PARAMS[] combine(ENFORCED_PARAMS[] a, ENFORCED_PARAMS[] b){
-        int length = a.length + b.length;
-        ENFORCED_PARAMS[] result = new ENFORCED_PARAMS[length];
-        System.arraycopy(a, 0, result, 0, a.length);
-        System.arraycopy(b, 0, result, a.length, b.length);
-        return result;
-    }
-
     public void onCreateGameButtonClick() {
         Activity activity = getActivity();
-        gameModel.setCreatorId(Authentication.getUserId(activity));
+        //TODO no need to use a global variable gameModel, could do it in place
         gatherUserInput();
 
         CreateGameRequest req = new CreateGameRequest(
@@ -558,8 +439,6 @@ public class CreateGameFragment extends Fragment implements GetJwt.Callback {
                 gameModel.getLocation(),
                 gameModel.getLocationNotes(),
                 gameModel.getDescription(),
-                gameModel.getGender(),
-                gameModel.getAgeRange(),
                 gameModel.getEnforcedParams(),
                 jwtToken);
         CommonComponents.getLoadingProgressDialog((activity)).show();
@@ -602,7 +481,9 @@ public class CreateGameFragment extends Fragment implements GetJwt.Callback {
 
         gameModel.setLocationNotes(gameLocationNotes.getText().toString());
 
-        gameModel.setTimeCreated((int) System.currentTimeMillis());
+        gameModel.setEnforcedParams(new ENFORCED_PARAMS[] {
+                checkboxRestrictGender.isChecked() ? ENFORCED_PARAMS.gender : null,
+                checkboxRestrictAge.isChecked() ? ENFORCED_PARAMS.age : null});
     }
 
     private long createFinalTime(String startDate, String startTime) throws ParseException {

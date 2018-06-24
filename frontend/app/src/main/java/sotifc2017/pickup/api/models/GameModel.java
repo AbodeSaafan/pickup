@@ -69,8 +69,8 @@ public class GameModel {
     //function for time-being
     public GameModel (int game_id, String name, GAME_TYPE type, int offsetSkill, int totalPlayersRequired,
                       int totalPlayersAdded, long startTime, long endTime, long duration, HashMap<String, Double> location,
-                      int creatorId, String description, String location_notes, String gender,
-                      int[] ageRange, ENFORCED_PARAMS[] enforced_params, int time_created, boolean player_restricted,
+                      int creatorId, String description, String location_notes,
+                      ENFORCED_PARAMS[] enforced_params, int time_created, boolean player_restricted,
                       String partialStartTime, String partialEndTime, int min_skill, int max_skill) {
 
         this.game_id = game_id;
@@ -86,8 +86,6 @@ public class GameModel {
         this.creator_id = creatorId;
         this.description = description;
         this.location_notes = location_notes;
-        this.gender = gender;
-        this.age_range = ageRange;
         this.enforced_params = enforced_params;
         this.time_created = time_created;
         this.player_restricted = player_restricted;
@@ -225,14 +223,6 @@ public class GameModel {
 
     public void setEnforcedParams(ENFORCED_PARAMS[] enforced_params) {
         this.enforced_params = enforced_params;
-    }
-
-    public int getTimeCreated() {
-        return time_created;
-    }
-
-    public void setTimeCreated(int time_created) {
-        this.time_created = time_created;
     }
 
     public boolean isPlayerRestricted() {

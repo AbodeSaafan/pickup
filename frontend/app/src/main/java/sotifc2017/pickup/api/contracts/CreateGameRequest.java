@@ -22,7 +22,6 @@ public class CreateGameRequest {
     public String location_notes;
     public String description;
     public String gender;
-    public int[] age_range;
     public ENFORCED_PARAMS[] enforced_params;
 
      public CreateGameRequest(String name,
@@ -34,8 +33,6 @@ public class CreateGameRequest {
                               HashMap<String, Double> location,
                               String location_notes,
                               String description,
-                              String gender,
-                              int[] age_range,
                               ENFORCED_PARAMS[] enforced_params,
                               String jwt) {
           this.name = name;
@@ -47,8 +44,6 @@ public class CreateGameRequest {
           this.location = location;
           this.location_notes = location_notes;
           this.description = description;
-          this.gender = gender;
-          this.age_range = age_range;
           this.enforced_params = enforced_params;
           this.jwt = jwt;
      }
