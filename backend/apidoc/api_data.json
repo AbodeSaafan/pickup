@@ -1050,20 +1050,6 @@
           },
           {
             "group": "Parameter",
-            "type": "string",
-            "optional": false,
-            "field": "gender",
-            "description": "<p>The preferred for the game (if any)</p>"
-          },
-          {
-            "group": "Parameter",
-            "type": "int[]",
-            "optional": false,
-            "field": "age_range",
-            "description": "<p>The preferred age range for the game (if any)</p>"
-          },
-          {
-            "group": "Parameter",
             "type": "string[]]",
             "optional": false,
             "field": "enforced_params",
@@ -1107,7 +1093,7 @@
     "examples": [
       {
         "title": "Example call:",
-        "content": "{\n  \"jwt\": Encrypted_JWT_Token,\n  \"name\": \"abode's game\",\n  \"type\": \"casual\",\n  \"skill\": 5,\n  \"total_players_required\": 6,\n  \"start_time\": 1504272395,\n  \"duration\": 5400,\n  \"location\": { \"lng\": -96.849, \"lat\": -144.336 },\n  \"location_notes\": \"Come around the back and knock on the blue door\",\n  \"description\": \"Casual basketball game\",\n  \"gender\": \"A\",\n  \"age_range\": \"[20, 30]\",\n  \"enforced_params\": [\"gender\", \"age\"]\n}",
+        "content": "{\n  \"jwt\": Encrypted_JWT_Token,\n  \"name\": \"abode's game\",\n  \"type\": \"casual\",\n  \"skill\": 5,\n  \"total_players_required\": 6,\n  \"start_time\": 1504272395,\n  \"duration\": 5400,\n  \"location\": { \"lng\": -96.849, \"lat\": -144.336 },\n  \"location_notes\": \"Come around the back and knock on the blue door\",\n  \"description\": \"Casual basketball game\",\n  \"enforced_params\": [\"gender\", \"age\"]\n}",
         "type": "json"
       }
     ],
