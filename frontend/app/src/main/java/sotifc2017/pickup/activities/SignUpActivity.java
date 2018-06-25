@@ -140,6 +140,9 @@ public class SignUpActivity extends AppCompatActivity implements LoaderManager.L
                     VF.setDisplayedChild(1);
                     break;
                 case R.id.next1:
+                    if(validateDatePicked()) {
+                        return;
+                    }
                     VF.setDisplayedChild(2);
                     break;
                 case R.id.back1:
@@ -175,6 +178,7 @@ public class SignUpActivity extends AppCompatActivity implements LoaderManager.L
         DobLabel = findViewById(R.id.Dob);
         DobLabel.setInputType(InputType.TYPE_NULL);
         DobLabel.setHintTextColor(-1);
+        DobLabel.setText("Choose Date");
         genderSpinner = findViewById(R.id.gender_spinner);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
                 R.array.gender_array, android.R.layout.simple_spinner_item);
@@ -572,6 +576,26 @@ public class SignUpActivity extends AppCompatActivity implements LoaderManager.L
         dob = sdf.format(myCalendar.getTime());
 
         DobLabel.setText(sdf.format(myCalendar.getTime()));
+    }
+
+    private boolean validateDatePicked()
+    {
+        boolean cancel = false;
+        View focusView = null;
+        DobLabel.setError(null);
+        String test = DobLabel.getText().toString();
+        if (DobLabel.getText().toString().equals("Choose Date")) {
+            DobLabel.setError("Invalid Date");
+            focusView = DobLabel;
+            cancel = true;
+        }
+        if (cancel) {
+            // There was an error; don't attempt login and focus the first
+            // form field with an error.
+            focusView.requestFocus();
+            return true;
+        }
+        return false;
     }
 
     public void dobLabelClick(View view) {
