@@ -11,7 +11,11 @@ router.use("/reviews/", require("./reviews_api"));
 router.use("/search/", require("./search_api"));
 router.use("/friends/", require("./friends_api"));
 router.use("/delete/", require("./delete_account_api"));
-router.use("/verysecureandsecretlogs", require("./logs"));
+
+//Do NOT use in production, this endpoint is only for dev testing
+//router.use("/verysecureandsecretlogs", require("./logs"));
+//Do NOT use in production, this endpoint is only for dev testing
+
 router.use("/changePassword/", require("./change_password_api"));
 // Add more statements like the above to include other api files
 
