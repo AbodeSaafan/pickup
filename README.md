@@ -16,10 +16,10 @@ The Android app is under the frontend folder. The app is set to communciate with
 
 ## Developers
 * [Abdulqader (Abode) Saafan](https://www.linkedin.com/in/abdulqader-abode-saafan-098807123/)
-* Radhika Krishnan
-* Pavle Arezina
-* Christian Garcia
-* Quinn Daneyko
+* [Radhika Krishnan](https://www.linkedin.com/in/radhika-krishnan-141b24110/)
+* [Pavle Arezina](https://www.linkedin.com/in/pavle-arezina-40a17b109/)
+* [Christian Garcia](https://www.linkedin.com/in/christian-garcia-1b373a103/)
+* [Quinn Daneyko](https://www.linkedin.com/in/quinn-daneyko-7742a16b/)
 
 ## SOTI
 This project was created as an "Intern Project" during the developers' internship term at [SOTI](https://www.soti.net/). 
